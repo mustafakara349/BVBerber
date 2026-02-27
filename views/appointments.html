@@ -1,0 +1,145 @@
+<header
+    class="sticky top-0 z-20 bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-border-dark px-4 py-4 flex items-center justify-between">
+    <!-- Using data-action="back" -->
+    <button data-action="back"
+        class="flex items-center justify-center size-10 rounded-full hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors">
+        <span class="material-symbols-outlined">arrow_back_ios_new</span>
+    </button>
+    <h1 class="text-lg font-bold tracking-tight text-center flex-1">Randevularım</h1>
+    <div class="size-10"></div> <!-- Spacer for symmetry -->
+</header>
+
+<!-- Tabs Section -->
+<nav
+    class="bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-border-dark z-10 relative">
+    <div class="flex">
+        <button class="flex-1 py-4 text-sm font-bold border-b-2 border-primary text-primary transition-colors">
+            Yaklaşan
+        </button>
+        <button
+            class="flex-1 py-4 text-sm font-bold border-b-2 border-transparent text-slate-500 dark:text-muted-gold hover:text-slate-700 transition-colors">
+            Geçmiş
+        </button>
+    </div>
+</nav>
+
+<!-- pb-32 so it clears the bottom navigation bar -->
+<main class="flex-1 p-4 space-y-4 overflow-y-auto pb-32">
+
+    <!-- Upcoming Appointment Card 1 -->
+    <div
+        class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-border-dark flex flex-col group">
+        <div class="h-40 w-full bg-cover bg-center overflow-hidden relative">
+            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAL2DIJF9aW4ruLPrOQt7NrJ0bokffoXIJhkt0TY8yhJpoehZAB9008NxBv76bTONOGiAnSX11GQFnKLiqSht9_huW-5XId3RH2N_L0gqCqYX_zPr3yXURDcwVVKWNjCf1Zp4-F71U_tacTbOEnmaEIaTpxhOUepo18QX6bUp_hYCveypM0zLDSpDkV2-jpnRIPRvp5lKWOJlXz-HN2T2k9WPrPeh0Z0iVudTvxizrsKewAKYieDaOP3XkGEkIxJk_OoR4sCzo2wben');">
+            </div>
+        </div>
+        <div class="p-4 space-y-3 z-10 relative bg-white dark:bg-surface-dark">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-lg font-bold">Ahmet Yılmaz — Saç Kesimi</h3>
+                    <p class="text-slate-500 dark:text-muted-gold text-sm flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined text-sm">schedule</span>
+                        15 Ekim, Salı • 14:00
+                    </p>
+                </div>
+                <span
+                    class="bg-primary/20 text-primary px-2 py-1 rounded text-xs font-bold uppercase tracking-wider">Yakında</span>
+            </div>
+
+            <p class="text-sm text-slate-600 dark:text-muted-gold flex items-start gap-1">
+                <span class="material-symbols-outlined text-sm shrink-0 mt-0.5">location_on</span>
+                B&V ERKEK SAÇ TASARIM AKADEMİ MERKEZİ - Nişantaşı Şubesi
+            </p>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button
+                    class="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-red-500/30 text-red-500 text-sm font-bold hover:bg-red-500/10 active:scale-[0.98] transition-all">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                    İptal Et
+                </button>
+                <button
+                    class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-background-dark text-sm font-bold hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] transition-all">
+                    <span class="material-symbols-outlined text-lg">directions</span>
+                    Yol Tarifi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Appointment Card 2 -->
+    <div
+        class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-border-dark flex flex-col group">
+        <div class="h-40 w-full bg-cover bg-center overflow-hidden relative">
+            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCSWW36vRy0kvWTcgPijGjIRdHw5PdUFQgKI0X3EUAfM4n_4NzXCQKN7Zfu4bBu52BRznUHD4W2xs_i7MojvrkXi7DqGh0jgF-Y7LvYJBgTr5RX3tYpqX9wl_SiMkCE7VhaTbNkLFZC_QJmqFnOd-5Y-L8afzljTwlhJ6S5jLlwCSgpOEk6s4AUEMSWZyRi2KZlNizaxdEQ-xlEz8YQOOR1x042p44akQwSizDkMWo68LwB3zJcInbQvmTFtRTy1mmDLXkAKbx82kRZ');">
+            </div>
+        </div>
+
+        <div class="p-4 space-y-3 z-10 relative bg-white dark:bg-surface-dark">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-lg font-bold">Mehmet Kaya — Sakal Tasarımı</h3>
+                    <p class="text-slate-500 dark:text-muted-gold text-sm flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined text-sm">schedule</span>
+                        18 Ekim, Cuma • 10:30
+                    </p>
+                </div>
+                <span
+                    class="bg-primary/5 text-primary/60 px-2 py-1 rounded text-xs font-bold uppercase tracking-wider">Onaylandı</span>
+            </div>
+
+            <p class="text-sm text-slate-600 dark:text-muted-gold flex items-start gap-1">
+                <span class="material-symbols-outlined text-sm shrink-0 mt-0.5">location_on</span>
+                B&V ERKEK SAÇ TASARIM AKADEMİ MERKEZİ - Levent Şubesi
+            </p>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button
+                    class="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-red-500/30 text-red-500 text-sm font-bold hover:bg-red-500/10 active:scale-[0.98] transition-all">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                    İptal Et
+                </button>
+                <button
+                    class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-background-dark text-sm font-bold hover:shadow-lg hover:shadow-primary/20 active:scale-[0.98] transition-all">
+                    <span class="material-symbols-outlined text-lg">directions</span>
+                    Yol Tarifi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Title for Past -->
+    <div class="pt-6 pb-2">
+        <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest">Geçmiş Randevular</h2>
+    </div>
+
+    <!-- Past Appointment Card -->
+    <div
+        class="bg-white dark:bg-surface-dark/50 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-border-dark opacity-80 cursor-pointer hover:opacity-100 transition-opacity">
+        <div class="flex items-start justify-between mb-3">
+            <div class="flex gap-3">
+                <div class="size-12 rounded-lg bg-slate-100 dark:bg-border-dark flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-400">content_cut</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-700 dark:text-slate-200">Baran V. — VIP Bakım</h4>
+                    <p class="text-xs text-slate-500 dark:text-muted-gold mt-1">10 Eyl, Salı • 15:00</p>
+                </div>
+            </div>
+            <button
+                class="bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors">Yeniden</button>
+        </div>
+        <div class="flex items-center justify-between border-t border-slate-100 dark:border-border-dark pt-3">
+            <div class="flex gap-0.5 text-primary">
+                <span class="material-symbols-outlined text-sm filled-icon">star</span>
+                <span class="material-symbols-outlined text-sm filled-icon">star</span>
+                <span class="material-symbols-outlined text-sm filled-icon">star</span>
+                <span class="material-symbols-outlined text-sm filled-icon">star</span>
+                <span class="material-symbols-outlined text-sm filled-icon">star</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase">Değerlendirildi</span>
+        </div>
+    </div>
+
+</main>

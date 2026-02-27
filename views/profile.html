@@ -1,0 +1,67 @@
+<div class="relative flex min-h-screen w-full flex-col max-w-[430px] mx-auto overflow-x-hidden">
+    <!-- Header -->
+    <header class="flex items-center px-4 pt-6 pb-2 justify-between">
+        <div class="flex size-10 items-center justify-center rounded-full bg-slate-200/5 text-slate-100 hover:bg-slate-200/10 cursor-pointer transition-colors"
+            data-action="back">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </div>
+        <h1 class="text-lg font-bold tracking-tight">Profil</h1>
+        <div class="size-10 flex items-center justify-center cursor-pointer">
+            <span class="material-symbols-outlined text-primary">more_vert</span>
+        </div>
+    </header>
+
+    <!-- Profile Info -->
+    <div class="flex flex-col items-center py-8 gap-4">
+        <div class="relative">
+            <div class="size-32 rounded-full border-4 border-primary/20 p-1">
+                <div class="size-full rounded-full bg-cover bg-center"
+                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDo7z78Tvi5n-eiSxTeuDGm4IFc9-UzvaDtI6t7m61Zyk36mqPi1pD0P_tM8OZ6I0yrznkN40uBjPPbADb9pe02S9gPeVKOytnuYFlKv03tQqojLdXgDpaL_25QFY0FpY5B59zsqn8NlN5DU1GpO3O11p8OlEehBaP2UjqFlAsChy6O_bGNOOR6PNbJ2AxvEXyL3NGgAeGrDH20zJgX-XnfA4-N_biRsl_yjXE1uylytZOR98fyk9-JIKnXuXYw8PlK6lWFDvgi6ovs");'>
+                </div>
+            </div>
+            <div
+                class="absolute bottom-1 right-1 size-8 bg-primary rounded-full flex items-center justify-center border-4 border-background-dark text-background-dark shadow-lg cursor-pointer hover:bg-primary/90 transition-colors">
+                <span class="material-symbols-outlined text-sm font-bold">photo_camera</span>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <h2 class="text-2xl font-bold">Ahmet Yılmaz</h2>
+            <p class="text-slate-400 text-sm font-medium uppercase tracking-widest mt-1">B&V Üyesi</p>
+        </div>
+    </div>
+
+    <!-- Settings Links -->
+    <div class="flex flex-col px-4 gap-3 mt-4">
+        <div
+            class="flex items-center justify-between p-4 bg-slate-800/20 rounded-2xl hover:bg-slate-800/40 transition-colors cursor-pointer border border-white/5">
+            <div class="flex items-center gap-4">
+                <div class="size-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined">lock</span>
+                </div>
+                <span class="font-semibold text-[15px]">Güvenlik ve Giriş</span>
+            </div>
+            <span class="material-symbols-outlined text-slate-500">chevron_right</span>
+        </div>
+
+        <div
+            class="flex items-center justify-between p-4 bg-slate-800/20 rounded-2xl hover:bg-slate-800/40 transition-colors cursor-pointer border border-white/5">
+            <div class="flex items-center gap-4">
+                <div class="size-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined">help_center</span>
+                </div>
+                <span class="font-semibold text-[15px]">Destek ve Yardım</span>
+            </div>
+            <span class="material-symbols-outlined text-slate-500">chevron_right</span>
+        </div>
+    </div>
+
+    <!-- Logout -->
+    <!-- pb-32 to clear the bottom nav -->
+    <div class="mt-auto px-4 pb-32 pt-8">
+        <button
+            class="w-full flex items-center justify-center p-5 bg-red-500/10 text-red-500 font-bold tracking-widest uppercase text-sm rounded-2xl border border-red-500/20 hover:bg-red-500/20 active:scale-[0.98] transition-all">
+            Oturumu Kapat
+        </button>
+    </div>
+</div>
