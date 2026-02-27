@@ -1,25 +1,142 @@
-<div class="relative flex h-full w-full flex-col overflow-hidden items-center justify-center p-4">
-    <div class="absolute inset-0 z-0">
-        <!-- We will use a high quality barber background image -->
-        <div class="size-full bg-cover bg-center"
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAL2DIJF9aW4ruLPrOQt7NrJ0bokffoXIJhkt0TY8yhJpoehZAB9008NxBv76bTONOGiAnSX11GQFnKLiqSht9_huW-5XId3RH2N_L0gqCqYX_zPr3yXURDcwVVKWNjCf1Zp4-F71U_tacTbOEnmaEIaTpxhOUepo18QX6bUp_hYCveypM0zLDSpDkV2-jpnRIPRvp5lKWOJlXz-HN2T2k9WPrPeh0Z0iVudTvxizrsKewAKYieDaOP3XkGEkIxJk_OoR4sCzo2wben');">
+<div class="w-full flex-1 flex flex-col pb-24 overflow-y-auto">
+    <!-- Top Section -->
+    <div class="flex items-center justify-between mt-6 px-4">
+        <div class="flex items-center gap-3">
+            <!-- Avatar -->
+            <div class="w-[48px] h-[48px] rounded-full overflow-hidden bg-slate-200 border-2 border-[#393528]">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+            <div class="flex flex-col">
+                <span class="text-[12px] font-medium text-primary mb-[2px]">Hoş geldin,</span>
+                <span class="text-[16px] font-bold text-white leading-none tracking-wide">Ahmet Yılmaz</span>
+            </div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent"></div>
+        <!-- Notification -->
+        <button class="w-[42px] h-[42px] rounded-full bg-[#27241b] hover:bg-[#393528] transition-colors flex items-center justify-center text-white relative group">
+            <span class="material-symbols-outlined text-[24px]">notifications</span>
+        </button>
     </div>
 
-    <div class="relative z-10 text-center flex flex-col items-center mt-auto pb-8 w-full max-w-sm">
-        <div
-            class="w-20 h-20 mb-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary backdrop-blur-sm">
-            <span class="material-symbols-outlined text-4xl">content_cut</span>
+    <!-- Main Card -->
+    <div class="px-4 mt-8">
+        <div class="relative bg-gradient-to-br from-[#2a2922] to-[#1e1d17] rounded-[24px] overflow-hidden border border-white/5 p-6 pb-8 shadow-2xl">
+            <!-- Background Icon -->
+            <span class="material-symbols-outlined absolute -bottom-16 -right-16 text-[220px] text-primary/10 rotate-[200deg] select-none pointer-events-none">content_cut</span>
+            
+            <div class="relative z-10 w-full mb-8">
+                <h2 class="text-[26px] font-black text-white tracking-widest mb-3">B&V AKADEMİ</h2>
+                <p class="text-slate-200 text-[15px] leading-relaxed max-w-[240px]">
+                    Usta ellerden profesyonel<br>tasarım ve bakım hizmeti.
+                </p>
+            </div>
+            
+            <div class="relative z-10 flex items-center justify-between w-full mt-6">
+                <!-- Avatars list -->
+                <div class="flex items-center -space-x-3">
+                    <img src="https://i.pravatar.cc/100?img=1" class="w-10 h-10 rounded-full border-2 border-[#2a2922] object-cover relative z-30" />
+                    <img src="https://i.pravatar.cc/100?img=2" class="w-10 h-10 rounded-full border-2 border-[#2a2922] object-cover relative z-20" />
+                    <div class="w-10 h-10 rounded-full border-2 border-[#2a2922] bg-primary flex items-center justify-center text-background-dark font-bold text-sm relative z-10">
+                        +5
+                    </div>
+                </div>
+                
+                <a href="#appointment_selection" class="bg-primary text-background-dark font-black text-[14px] px-5 py-3.5 rounded-xl shadow-[0_4px_16px_rgba(244,192,37,0.25)] hover:scale-105 active:scale-95 transition-all">
+                    Hemen Randevu Al
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Günün Fırsatı Section has been removed as per user request -->
+
+    <!-- Hizmetlerimiz Header -->
+    <div class="flex items-center justify-between px-4 mt-10 mb-5">
+        <h3 class="text-[20px] font-bold text-white tracking-wide">Hizmetlerimiz</h3>
+        <a href="#services" class="text-[13px] font-bold text-primary hover:underline">Tümünü Gör</a>
+    </div>
+    
+    <!-- Hizmetlerimiz Horizontal Scroll container -->
+    <div class="flex overflow-x-auto gap-4 px-4 pb-4 snap-x snap-mandatory flex-nowrap" style="scrollbar-width: none; -ms-overflow-style: none;">
+        
+        <!-- Card 1 -->
+        <div class="min-w-[170px] snap-start flex flex-col gap-3 cursor-pointer group">
+            <div class="w-full h-[220px] rounded-[24px] overflow-hidden relative border border-white/5">
+                <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=500&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#181611]/90 via-[#181611]/10 to-transparent"></div>
+                <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/10">
+                    <span class="text-primary font-black text-[13px]">₺350</span>
+                </div>
+            </div>
+            <div class="px-1.5">
+                <h4 class="font-bold text-white text-[16px] mb-1.5 leading-tight tracking-wide">Saç Kesimi</h4>
+                <div class="flex items-center gap-1.5 text-slate-400">
+                    <span class="material-symbols-outlined text-[15px]">schedule</span>
+                    <span class="text-[13px] font-medium">45 dk</span>
+                </div>
+            </div>
         </div>
 
-        <h1 class="text-3xl font-bold text-white tracking-tight mb-2">B&V AKADEMİ</h1>
-        <p class="text-slate-300 text-sm mb-10 px-4">Modern saç tasarımları ve VIP bakım hizmetleriyle tarzınızı baştan
-            yaratın.</p>
+        <!-- Card 2 -->
+        <div class="min-w-[170px] snap-start flex flex-col gap-3 cursor-pointer group">
+            <div class="w-full h-[220px] rounded-[24px] overflow-hidden relative border border-white/5">
+                <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400&h=500&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#181611]/90 via-[#181611]/10 to-transparent"></div>
+                <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/10">
+                    <span class="text-primary font-black text-[13px]">₺200</span>
+                </div>
+            </div>
+            <div class="px-1.5">
+                <h4 class="font-bold text-white text-[16px] mb-1.5 leading-tight tracking-wide">Sakal Tıraşı</h4>
+                <div class="flex items-center gap-1.5 text-slate-400">
+                    <span class="material-symbols-outlined text-[15px]">schedule</span>
+                    <span class="text-[13px] font-medium">30 dk</span>
+                </div>
+            </div>
+        </div>
 
-        <a href="#services"
-            class="w-full bg-primary text-background-dark py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/30 active:scale-[0.98] transition-all text-center">
-            Hemen Randevu Al
-        </a>
+        <!-- Card 3 -->
+        <div class="min-w-[170px] snap-start flex flex-col gap-3 cursor-pointer group">
+            <div class="w-full h-[220px] rounded-[24px] overflow-hidden relative border border-white/5">
+                <img src="https://images.unsplash.com/photo-1512496015851-a1c8bd11a68d?w=400&h=500&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#181611]/90 via-[#181611]/10 to-transparent"></div>
+                <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/10">
+                    <span class="text-primary font-black text-[13px]">₺500</span>
+                </div>
+            </div>
+            <div class="px-1.5">
+                <h4 class="font-bold text-white text-[16px] mb-1.5 leading-tight tracking-wide">Cilt Bakımı</h4>
+                <div class="flex items-center gap-1.5 text-slate-400">
+                    <span class="material-symbols-outlined text-[15px]">schedule</span>
+                    <span class="text-[13px] font-medium">60 dk</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Location/Map Card based on image bottom peek -->
+    <div class="px-4 mt-6 mb-4">
+        <div class="w-full bg-[#1e1d17] hover:bg-[#27241b] transition-colors rounded-[20px] border border-white/5 overflow-hidden flex items-center h-[72px] cursor-pointer">
+            <div class="w-[84px] h-full relative">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=200&h=200&fit=crop" class="w-full h-full object-cover opacity-80" />
+                <div class="absolute inset-0 bg-primary/20"></div>
+            </div>
+            <div class="px-4 flex-1">
+                 <h4 class="font-bold text-white text-[15px] mb-1">Konumumuz</h4>
+                 <p class="text-slate-400 text-[12px] truncate">B&V Akademi, Kadıköy / İstanbul</p>
+            </div>
+            <div class="pr-5">
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-[18px]">location_on</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+/* CSS to completely hide scrollbar but keep horizontal scroll working */
+.flex.overflow-x-auto::-webkit-scrollbar {
+    display: none;
+}
+</style>
