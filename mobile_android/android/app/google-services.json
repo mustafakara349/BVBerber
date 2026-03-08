@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "530830581359",
+    "project_id": "bvbarber-ae2cd",
+    "storage_bucket": "bvbarber-ae2cd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:530830581359:android:560e41222eca714346379a",
+        "android_client_info": {
+          "package_name": "com.bvbarber.mobile_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxrnhVW5Dvi38IEG1b8r68ti2NjLM_M_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
