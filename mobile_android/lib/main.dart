@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:mobile_android/firebase_options.dart';
 import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/routes/app_routes.dart';
 
-void main() {
+import 'package:mobile_android/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: Firebase.initializeApp() eklenecek
-  runApp(const BVBarberApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        // İleride buraya başka provider'lar eklenebilir (Service vb.)
+      ],
+      child: const BVBarberApp(),
+    ),
+  );
 }
 
 class BVBarberApp extends StatelessWidget {
