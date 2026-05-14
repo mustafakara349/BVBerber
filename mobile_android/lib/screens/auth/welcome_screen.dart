@@ -10,14 +10,24 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.primaryColor,
+      backgroundColor: const Color(0xFF1A1A1A),
       body: Stack(
         fit: StackFit.expand,
         children: [
           // Arka plan berber dükkanı görseli
-          Image.network(
-            'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=800',
+          Image.asset(
+            'assets/images/welcome_bg.jpg',
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              // Görsel yoksa network'ten yükle
+              return Image.network(
+                'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=800',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(color: const Color(0xFF1A1A1A));
+                },
+              );
+            },
           ),
           // Koyu degrade kaplama
           Container(
@@ -26,10 +36,11 @@ class WelcomeScreen extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0x801B1B2F),
-                  Color(0xF01B1B2F),
+                  Color(0x601A1A1A),
+                  Color(0xCC1A1A1A),
+                  Color(0xF51A1A1A),
                 ],
-                stops: [0.0, 0.5],
+                stops: [0.0, 0.45, 0.7],
               ),
             ),
           ),
@@ -39,62 +50,127 @@ class WelcomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Column(
                 children: [
-                  const Spacer(flex: 2),
-                  // Makas Logosu
+                  const Spacer(flex: 3),
+                  // B&V Logo - Beyaz daire içinde
                   Container(
-                    width: 80,
-                    height: 80,
+                    width: 100,
+                    height: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppTheme.secondaryColor,
-                        width: 2,
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 20,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/bv_logo.png',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.content_cut, color: Color(0xFFB8860B), size: 32),
+                              SizedBox(height: 2),
+                              Text(
+                                'B&V',
+                                style: TextStyle(
+                                  color: Color(0xFFB8860B),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
-                    child: const Icon(
-                      Icons.content_cut,
-                      color: AppTheme.secondaryColor,
-                      size: 40,
-                    ),
                   ),
-                  const SizedBox(height: 24),
-                  // B&V COFFE BARBER
+                  const SizedBox(height: 28),
+                  // B&V COFFEE BARBER
                   const Text(
-                    'B&V COFFE BARBER',
+                    'B&V COFFEE BARBER',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 26,
+                      fontSize: 28,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 1.5,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 12),
-                  // Slogan
+                  const SizedBox(height: 14),
+                  // Açıklama
                   const Text(
-                    'Stilinizi keşfedin ve size özel bir\nbakım deneyimi yaşayın.',
+                    'Kolay randevu seçeneği ile üye olmadan ve giriş\nyapmadan randevu alabilirsiniz.',
                     style: TextStyle(
-                      color: Colors.white60,
+                      color: Colors.white54,
                       fontSize: 14,
-                      height: 1.5,
+                      height: 1.6,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
-                  // Feature Chips
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildFeatureChip(Icons.groups_outlined, 'UZMAN KADRO'),
-                      const SizedBox(width: 16),
-                      _buildFeatureChip(Icons.calendar_today_outlined, 'KOLAY RANDEVU'),
-                    ],
+                  // KOLAY RANDEVU butonu
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: Colors.white12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.calendar_month_outlined, color: AppTheme.secondaryColor, size: 20),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'KOLAY RANDEVU',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const Spacer(flex: 1),
-                  // Giriş Yap Butonu
+
+                  const SizedBox(height: 32),
+                  // KOLAY RANDEVU butonu
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: Colors.white12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.calendar_month_outlined, color: AppTheme.secondaryColor, size: 20),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'UZMAN KADRO',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(flex: 2),
+                  // Giriş Yap Butonu (Sarı, dolu)
                   SizedBox(
                     width: double.infinity,
-                    height: 52,
+                    height: 54,
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, AppRoutes.login);
@@ -103,7 +179,7 @@ class WelcomeScreen extends StatelessWidget {
                         backgroundColor: AppTheme.secondaryColor,
                         foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(30),
                         ),
                         elevation: 4,
                         textStyle: const TextStyle(
@@ -114,20 +190,20 @@ class WelcomeScreen extends StatelessWidget {
                       child: const Text('Giriş Yap'),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  // Üye Ol Butonu
+                  const SizedBox(height: 14),
+                  // Üye Ol Butonu (Kenarlıklı, şeffaf)
                   SizedBox(
                     width: double.infinity,
-                    height: 52,
+                    height: 54,
                     child: OutlinedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, AppRoutes.register);
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.white38, width: 1.5),
+                        side: const BorderSide(color: Colors.white24, width: 1.5),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(30),
                         ),
                         textStyle: const TextStyle(
                           fontSize: 18,
@@ -166,33 +242,6 @@ class WelcomeScreen extends StatelessWidget {
                   const SizedBox(height: 32),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Widget _buildFeatureChip(IconData icon, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha(15),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: AppTheme.secondaryColor, size: 18),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
             ),
           ),
         ],

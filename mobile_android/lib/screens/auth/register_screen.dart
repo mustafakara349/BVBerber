@@ -1,9 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile_android/core/app_theme.dart';
+import 'package:mobile_android/providers/auth_provider.dart';
+import 'package:mobile_android/routes/app_routes.dart';
 import 'package:mobile_android/utils/validators.dart';
 
-/// Kayıt ekranı – Yeni Hesap Oluştur
+/// Kayıt ekranı – Hesap Oluştur
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -14,6 +17,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _surnameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -24,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _surnameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
@@ -32,34 +37,67 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   InputDecoration _inputDecoration({
-    required String label,
     required String hint,
-    required IconData icon,
+    IconData? icon,
     Widget? suffixIcon,
   }) {
     return InputDecoration(
-      labelText: label,
-      labelStyle: const TextStyle(color: Colors.white38, fontSize: 12),
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.white24),
-      prefixIcon: Icon(icon, color: Colors.white38, size: 20),
+      hintStyle: const TextStyle(color: Colors.white24, fontSize: 15),
+      prefixIcon: icon != null ? Icon(icon, color: Colors.white38, size: 20) : null,
       suffixIcon: suffixIcon,
       filled: true,
       fillColor: const Color(0xFF2A2A2A),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(color: Color(0xFF3A3A3A)),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(color: AppTheme.secondaryColor, width: 1.5),
       ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppTheme.errorColor),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppTheme.errorColor, width: 1.5),
+      ),
     );
+  }
+
+  Future<void> _handleRegister() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    await authProvider.signUp(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      name: _nameController.text.trim(),
+      surname: _surnameController.text.trim(),
+      phone: _phoneController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    if (authProvider.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.errorMessage!),
+          backgroundColor: AppTheme.errorColor,
+        ),
+      );
+      authProvider.clearError();
+    } else {
+      // Kayıt başarılı → Profil fotoğrafı ekranına git
+      Navigator.pushReplacementNamed(context, AppRoutes.profilePhoto);
+    }
   }
 
   @override
@@ -76,69 +114,103 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 const SizedBox(height: 8),
                 // Geri butonu
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white24),
+                  ),
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                    padding: EdgeInsets.zero,
+                  ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 // Logo
                 Center(
                   child: Container(
-                    width: 64,
-                    height: 64,
+                    width: 80,
+                    height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppTheme.secondaryColor, width: 2),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 15,
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
-                    child: const Icon(
-                      Icons.content_cut,
-                      color: AppTheme.secondaryColor,
-                      size: 30,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/bv_logo.png',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.content_cut, color: Color(0xFFB8860B), size: 24),
+                              SizedBox(height: 2),
+                              Text(
+                                'B&V',
+                                style: TextStyle(
+                                  color: Color(0xFFB8860B),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
                 // Başlık
                 const Center(
                   child: Text(
-                    'Yeni Hesap Oluştur',
+                    'Hesap Oluştur',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 const SizedBox(height: 32),
-                // Ad Soyad
-                const Text('Ad Soyad', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                // Ad
+                const Text('Ad', style: TextStyle(color: Colors.white54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _nameController,
                   style: const TextStyle(color: Colors.white),
                   validator: Validators.name,
-                  decoration: _inputDecoration(
-                    label: '',
-                    hint: 'Adınızı ve soyadınızı girin',
-                    icon: Icons.person_outlined,
-                  ),
+                  decoration: _inputDecoration(hint: 'Adınız'),
                 ),
                 const SizedBox(height: 20),
-                // E-posta
-                const Text('E-posta', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                // Soyad
+                const Text('Soyad', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _surnameController,
+                  style: const TextStyle(color: Colors.white),
+                  validator: Validators.name,
+                  decoration: _inputDecoration(hint: 'Soyadınız'),
+                ),
+                const SizedBox(height: 20),
+                // Email
+                const Text('Email', style: TextStyle(color: Colors.white54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   style: const TextStyle(color: Colors.white),
                   validator: Validators.email,
-                  decoration: _inputDecoration(
-                    label: '',
-                    hint: 'eposta@adresiniz.com',
-                    icon: Icons.email_outlined,
-                  ),
+                  decoration: _inputDecoration(hint: 'example@email.com'),
                 ),
                 const SizedBox(height: 20),
                 // Telefon Numarası
@@ -149,11 +221,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   keyboardType: TextInputType.phone,
                   style: const TextStyle(color: Colors.white),
                   validator: Validators.phone,
-                  decoration: _inputDecoration(
-                    label: '',
-                    hint: '05XX XXX XX XX',
-                    icon: Icons.phone_outlined,
-                  ),
+                  decoration: _inputDecoration(hint: '05'),
                 ),
                 const SizedBox(height: 20),
                 // Şifre
@@ -165,12 +233,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: const TextStyle(color: Colors.white),
                   validator: Validators.password,
                   decoration: _inputDecoration(
-                    label: '',
-                    hint: '••••••••',
-                    icon: Icons.lock_outlined,
+                    hint: 'Şifre',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                         color: Colors.white38,
                         size: 20,
                       ),
@@ -188,12 +254,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: const TextStyle(color: Colors.white),
                   validator: (value) => Validators.confirmPassword(value, _passwordController.text),
                   decoration: _inputDecoration(
-                    label: '',
-                    hint: '••••••••',
-                    icon: Icons.lock_outlined,
+                    hint: 'Şifre Tekrar',
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                        _obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                         color: Colors.white38,
                         size: 20,
                       ),
@@ -201,40 +265,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
-                // Kayıt Ol Butonu
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // TODO: Firebase kayıt işlemi
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.secondaryColor,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                const SizedBox(height: 36),
+                // Üye Ol Butonu
+                Consumer<AuthProvider>(
+                  builder: (context, auth, _) {
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 54,
+                      child: ElevatedButton(
+                        onPressed: auth.isLoading ? null : _handleRegister,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.secondaryColor,
+                          foregroundColor: Colors.black,
+                          disabledBackgroundColor: AppTheme.secondaryColor.withOpacity(0.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 4,
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        child: auth.isLoading
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.black,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : const Text('Üye Ol'),
                       ),
-                      elevation: 4,
-                      textStyle: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    child: const Text('Kayıt Ol'),
-                  ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 24),
-                // Zaten hesabınız var mı?
+                // Zaten hesabın var mı? Giriş Yap
                 Center(
                   child: RichText(
                     text: TextSpan(
                       style: const TextStyle(color: Colors.white54, fontSize: 14),
                       children: [
-                        const TextSpan(text: 'Zaten hesabınız var mı? '),
+                        const TextSpan(text: 'Zaten hesabın var mı?  '),
                         TextSpan(
                           text: 'Giriş Yap',
                           style: const TextStyle(
@@ -243,22 +317,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Navigator.pop(context);
+                              Navigator.pushReplacementNamed(context, AppRoutes.login);
                             },
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                // Footer
-                const Center(
-                  child: Text(
-                    '© 2026 B&V Coffe Barber. Tüm hakları saklıdır.',
-                    style: TextStyle(color: Colors.white24, fontSize: 11),
-                  ),
-                ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
               ],
             ),
           ),

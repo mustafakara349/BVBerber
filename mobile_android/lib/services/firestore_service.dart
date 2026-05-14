@@ -1,10 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /// Firestore veritabanı servisi
-/// 
-/// Firebase yapılandırması tamamlandığında bu sınıf
-/// koleksiyonlar üzerinde CRUD işlemlerini yönetecek.
+///
+/// Koleksiyonlar üzerinde CRUD işlemlerini yönetir.
 class FirestoreService {
-  // TODO: Firestore instance eklenecek
-  // final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   /// Belge oluştur
   Future<void> createDocument({
@@ -12,8 +12,7 @@ class FirestoreService {
     required String docId,
     required Map<String, dynamic> data,
   }) async {
-    // TODO: Firestore entegrasyonu
-    throw UnimplementedError('Firebase yapılandırması bekleniyor');
+    await _db.collection(collection).doc(docId).set(data);
   }
 
   /// Belge oku
@@ -21,8 +20,8 @@ class FirestoreService {
     required String collection,
     required String docId,
   }) async {
-    // TODO: Firestore entegrasyonu
-    throw UnimplementedError('Firebase yapılandırması bekleniyor');
+    final doc = await _db.collection(collection).doc(docId).get();
+    return doc.data();
   }
 
   /// Belge güncelle
@@ -31,8 +30,7 @@ class FirestoreService {
     required String docId,
     required Map<String, dynamic> data,
   }) async {
-    // TODO: Firestore entegrasyonu
-    throw UnimplementedError('Firebase yapılandırması bekleniyor');
+    await _db.collection(collection).doc(docId).update(data);
   }
 
   /// Belge sil
@@ -40,15 +38,41 @@ class FirestoreService {
     required String collection,
     required String docId,
   }) async {
-    // TODO: Firestore entegrasyonu
-    throw UnimplementedError('Firebase yapılandırması bekleniyor');
+    await _db.collection(collection).doc(docId).delete();
   }
 
   /// Koleksiyon sorgula
   Future<List<Map<String, dynamic>>> getCollection({
     required String collection,
   }) async {
-    // TODO: Firestore entegrasyonu
-    throw UnimplementedError('Firebase yapılandırması bekleniyor');
+    final snapshot = await _db.collection(collection).get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      data['id'] = doc.id;
+      return data;
+    }).toList();
+  }
+
+  /// Koleksiyonu gerçek zamanlı dinle
+  Stream<List<Map<String, dynamic>>> streamCollection({
+    required String collection,
+  }) {
+    return _db.collection(collection).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    });
+  }
+
+  /// Belirli bir belgeyi gerçek zamanlı dinle
+  Stream<Map<String, dynamic>?> streamDocument({
+    required String collection,
+    required String docId,
+  }) {
+    return _db.collection(collection).doc(docId).snapshots().map((doc) {
+      return doc.data();
+    });
   }
 }

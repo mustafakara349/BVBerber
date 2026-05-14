@@ -5,7 +5,10 @@ import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/routes/app_routes.dart';
 
 import 'package:mobile_android/providers/auth_provider.dart';
+import 'package:mobile_android/providers/service_provider.dart';
+import 'package:mobile_android/providers/appointment_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,11 +16,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   
+  // Türkçe tarih formatlaması için gerekli
+  await initializeDateFormatting('tr_TR', null);
+  
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        // İleride buraya başka provider'lar eklenebilir (Service vb.)
+        ChangeNotifierProvider(create: (_) => ServiceProvider()),
+        ChangeNotifierProvider(create: (_) => AppointmentProvider()),
       ],
       child: const BVBarberApp(),
     ),
