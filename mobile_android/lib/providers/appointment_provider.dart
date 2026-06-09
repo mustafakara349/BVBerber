@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobile_android/models/appointment_model.dart';
 import 'package:mobile_android/core/enums.dart';
+import 'package:mobile_android/services/api_service.dart';
 
 /// Randevu state yönetimi
 class AppointmentProvider extends ChangeNotifier {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
   List<AppointmentModel> _appointments = [];
   bool _isLoading = false;
   String? _errorMessage;
@@ -39,23 +37,16 @@ class AppointmentProvider extends ChangeNotifier {
       ..sort((a, b) => b.dateTime.compareTo(a.dateTime));
   }
 
-  /// Randevuları Firestore'dan yükle (mevcut kullanıcının randevuları)
+  /// Randevuları API'den yükle (mevcut kullanıcının randevuları)
   Future<void> loadAppointments() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw Exception('Kullanıcı bulunamadı');
-
-      final snapshot = await _db
-          .collection('appointments')
-          .where('customerId', isEqualTo: user.uid)
-          .get();
-
-      _appointments = snapshot.docs
-          .map((doc) => AppointmentModel.fromMap(doc.data(), doc.id))
+      final dataList = await ApiService.getAppointments();
+      _appointments = dataList
+          .map((data) => AppointmentModel.fromMap(data))
           .toList();
     } catch (e) {
       _errorMessage = e.toString();
@@ -72,19 +63,25 @@ class AppointmentProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final docRef = await _db.collection('appointments').add(appointment.toMap());
-      _appointments.add(AppointmentModel(
-        id: docRef.id,
+      final empId = int.tryParse(appointment.barberId) ?? 1;
+      final svcId = int.tryParse(appointment.serviceId) ?? 1;
+      
+      // format YYYY-MM-DD HH:MM:SS
+      final startAtStr = appointment.dateTime.toString().substring(0, 19);
+
+      final responseData = await ApiService.createAppointment(
         customerId: appointment.customerId,
-        barberId: appointment.barberId,
-        serviceId: appointment.serviceId,
-        dateTime: appointment.dateTime,
-        status: appointment.status,
-        note: appointment.note,
-        createdAt: appointment.createdAt,
-      ));
+        employeeId: empId,
+        serviceIds: [svcId],
+        startAt: startAtStr,
+        customerNote: appointment.note,
+      );
+
+      final newAppointment = AppointmentModel.fromMap(responseData);
+      _appointments.add(newAppointment);
     } catch (e) {
       _errorMessage = e.toString();
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -94,12 +91,11 @@ class AppointmentProvider extends ChangeNotifier {
   /// Randevu iptal et
   Future<void> cancelAppointment(String appointmentId) async {
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
     try {
-      await _db.collection('appointments').doc(appointmentId).update({
-        'status': AppointmentStatus.cancelled.name,
-      });
+      await ApiService.updateAppointmentStatus(appointmentId, 'cancelled');
 
       final index = _appointments.indexWhere((a) => a.id == appointmentId);
       if (index != -1) {
@@ -109,6 +105,7 @@ class AppointmentProvider extends ChangeNotifier {
       }
     } catch (e) {
       _errorMessage = e.toString();
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_android/providers/auth_provider.dart';
+import 'package:mobile_android/services/api_service.dart';
 import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/core/enums.dart';
 import 'package:mobile_android/models/barber_model.dart';
@@ -46,20 +46,22 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
 
   Future<void> _loadBarbers() async {
     try {
-      final snap = await FirebaseFirestore.instance
-          .collection('barbers').where('isActive', isEqualTo: true).get();
-      _barbers = snap.docs.map((d) => BarberModel.fromMap(d.data(), d.id)).toList();
+      final data = await ApiService.getEmployees();
+      _barbers = data.map((d) => BarberModel.fromMap(d)).toList();
       if (_barbers.isNotEmpty) _selectedBarber = _barbers.first;
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Berber yüklenirken hata: $e');
+    }
     if (mounted) setState(() => _isLoadingBarbers = false);
   }
 
   Future<void> _loadServices() async {
     try {
-      final snap = await FirebaseFirestore.instance
-          .collection('services').where('isActive', isEqualTo: true).get();
-      _services = snap.docs.map((d) => ServiceModel.fromMap(d.data(), d.id)).toList();
-    } catch (_) {}
+      final data = await ApiService.getServices(type: 'barber');
+      _services = data.map((d) => ServiceModel.fromMap(d)).toList();
+    } catch (e) {
+      debugPrint('Hizmetler yüklenirken hata: $e');
+    }
     if (mounted) setState(() => _isLoadingServices = false);
   }
 
@@ -67,21 +69,8 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
     if (_selectedBarber == null || _selectedDate == null) return;
     setState(() { _isLoadingTimes = true; _selectedTime = null; });
     try {
-      final start = DateTime(_selectedDate!.year, _selectedDate!.month, _selectedDate!.day);
-      final end = start.add(const Duration(days: 1));
-      final snap = await FirebaseFirestore.instance
-          .collection('appointments')
-          .where('barberId', isEqualTo: _selectedBarber!.id)
-          .where('status', whereIn: ['pending', 'confirmed'])
-          .get();
-      _busyTimes = snap.docs
-          .map((d) => DateTime.parse(d['dateTime']))
-          .where((dt) => dt.isAfter(start) && dt.isBefore(end))
-          .map((dt) => '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}')
-          .toList();
-    } catch (_) {
       _busyTimes = [];
-    }
+    } catch (_) {}
     if (mounted) setState(() => _isLoadingTimes = false);
   }
 
@@ -173,12 +162,12 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
       final timeParts = _selectedTime!.split(':');
       final appointmentDT = DateTime(_selectedDate!.year, _selectedDate!.month,
           _selectedDate!.day, int.parse(timeParts[0]), int.parse(timeParts[1]));
-      final user = FirebaseAuth.instance.currentUser;
+      final user = Provider.of<AuthProvider>(context, listen: false).currentUser;
       if (user == null) throw Exception('Oturum bulunamadı');
 
       final appointment = AppointmentModel(
         id: '',
-        customerId: user.uid,
+        customerId: user.id,
         barberId: _selectedBarber!.id,
         serviceId: _selectedService!.id,
         dateTime: appointmentDT,
@@ -214,17 +203,21 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
         color: const Color(0xFF1A1A1A),
-        child: SizedBox(height: 54, child: ElevatedButton(
-          onPressed: _showConfirmationSheet,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.secondaryColor,
-            foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-          child: const Text('Randevuyu Onayla'),
-        )),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: SizedBox(height: 54, child: ElevatedButton(
+              onPressed: _showConfirmationSheet,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.secondaryColor,
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+              child: const Text('Randevuyu Onayla'),
+            )),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -236,7 +229,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           const SizedBox(height: 16),
           _isLoadingBarbers
             ? const Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor))
-            : SizedBox(height: 90, child: ListView.builder(
+            : SizedBox(height: 100, child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: _barbers.length,
                 itemBuilder: (_, i) => _buildBarberChip(_barbers[i]),

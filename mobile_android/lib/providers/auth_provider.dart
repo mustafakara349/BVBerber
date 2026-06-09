@@ -1,20 +1,54 @@
 import 'package:flutter/material.dart';
-
-import 'package:mobile_android/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mobile_android/services/api_service.dart';
+import 'package:mobile_android/models/user_model.dart';
 
 /// Kimlik doğrulama state yönetimi
 class AuthProvider extends ChangeNotifier {
-  final AuthService _authService = AuthService();
   bool _isLoading = false;
   bool _isLoggedIn = false;
   String? _errorMessage;
+  UserModel? _currentUser;
 
   bool get isLoading => _isLoading;
-  bool get isLoggedIn {
-    // Uygulama her başladığında durumu AuthService'ten alır
-    return _authService.isLoggedIn;
-  }
+  bool get isLoggedIn => _isLoggedIn;
   String? get errorMessage => _errorMessage;
+  UserModel? get currentUser => _currentUser;
+
+  /// Oturum durumunu başlat (Uygulama açılışında çağrılır)
+  Future<bool> tryAutoLogin() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      final rememberMe = prefs.getBool('remember_me') ?? false;
+      
+      if (token != null && rememberMe) {
+        final userData = await ApiService.getMe();
+        _currentUser = UserModel.fromMap(userData);
+        _isLoggedIn = true;
+        return true;
+      } else {
+        // Token var ama Beni Hatırla seçilmediyse veya token yoksa temizle
+        if (token != null) {
+          await ApiService.logout();
+        }
+        _currentUser = null;
+        _isLoggedIn = false;
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Auto login hatası: $e');
+      _currentUser = null;
+      _isLoggedIn = false;
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 
   /// Giriş yap
   Future<void> signIn(String email, String password) async {
@@ -23,10 +57,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authService.signInWithEmail(email, password);
+      final loginData = await ApiService.login(email, password);
+      _currentUser = UserModel.fromMap(loginData['user']);
       _isLoggedIn = true;
     } catch (e) {
-      _errorMessage = e.toString().replaceAll('Exception: ', ''); // Hata mesajındaki gereksiz Exception yazısını kaldırıyoruz
+      _isLoggedIn = false;
+      _currentUser = null;
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -46,15 +83,18 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authService.signUpWithEmail(
-        email: email, 
-        password: password, 
-        name: name, 
-        surname: surname, 
+      final registerData = await ApiService.register(
+        email: email,
+        password: password,
+        name: name,
+        surname: surname,
         phone: phone,
       );
+      _currentUser = UserModel.fromMap(registerData['user']);
       _isLoggedIn = true;
     } catch (e) {
+      _isLoggedIn = false;
+      _currentUser = null;
       _errorMessage = e.toString().replaceAll('Exception: ', '');
     } finally {
       _isLoading = false;
@@ -64,18 +104,8 @@ class AuthProvider extends ChangeNotifier {
 
   /// Şifre Sıfırlama
   Future<void> resetPassword(String email) async {
-    _isLoading = true;
-    _errorMessage = null;
+    _errorMessage = 'Şifre sıfırlama işlemi şu anda desteklenmiyor.';
     notifyListeners();
-    
-    try {
-      await _authService.resetPassword(email);
-    } catch (e) {
-      _errorMessage = e.toString().replaceAll('Exception: ', '');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
   }
 
   /// Çıkış yap
@@ -84,8 +114,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authService.signOut();
+      await ApiService.logout();
       _isLoggedIn = false;
+      _currentUser = null;
+      
+      // Çıkış yapıldığında Beni Hatırla tercihini sıfırla
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('remember_me');
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
     } finally {

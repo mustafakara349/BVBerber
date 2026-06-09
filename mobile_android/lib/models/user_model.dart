@@ -22,32 +22,44 @@ class UserModel {
     required this.createdAt,
   });
 
-  /// Firestore'dan gelen Map'i modele dönüştür
-  factory UserModel.fromMap(Map<String, dynamic> map, String id) {
+  /// Firestore veya Laravel API'den gelen Map'i modele dönüştür
+  factory UserModel.fromMap(Map<String, dynamic> map, [String id = '']) {
+    final rawId = map['id']?.toString() ?? id;
+    final roleSlug = map['role'] is Map ? map['role']['slug'] : map['role'];
+    
+    UserRole userRole = UserRole.customer;
+    if (roleSlug == 'barber') {
+      userRole = UserRole.barber;
+    } else if (roleSlug == 'super_admin' || roleSlug == 'owner' || roleSlug == 'manager' || roleSlug == 'admin') {
+      userRole = UserRole.admin;
+    }
+
     return UserModel(
-      id: id,
-      name: map['name'] ?? '',
-      surname: map['surname'] ?? '',
+      id: rawId,
+      name: map['first_name'] ?? map['name'] ?? '',
+      surname: map['last_name'] ?? map['surname'] ?? '',
       email: map['email'] ?? '',
       phone: map['phone'] ?? '',
-      role: UserRole.values.firstWhere(
-        (e) => e.name == map['role'],
-        orElse: () => UserRole.customer,
-      ),
-      profileImageUrl: map['profileImageUrl'],
-      createdAt: DateTime.parse(map['createdAt'] ?? DateTime.now().toIso8601String()),
+      role: userRole,
+      profileImageUrl: map['profile_photo'] ?? map['profileImageUrl'],
+      createdAt: DateTime.parse(map['created_at'] ?? map['createdAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 
-  /// Modeli Firestore'a yazmak için Map'e dönüştür
+  /// Modeli Map'e dönüştür
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
+      'first_name': name,
+      'last_name': surname,
       'name': name,
       'surname': surname,
       'email': email,
       'phone': phone,
       'role': role.name,
+      'profile_photo': profileImageUrl,
       'profileImageUrl': profileImageUrl,
+      'created_at': createdAt.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
     };
   }

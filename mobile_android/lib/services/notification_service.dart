@@ -8,14 +8,12 @@ class NotificationService {
 
   /// Bildirim izinlerini iste
   Future<void> requestPermission() async {
-    // TODO: FCM entegrasyonu
-    throw UnimplementedError('Firebase yapılandırması bekleniyor');
+    // No-op
   }
 
   /// FCM token al
   Future<String?> getToken() async {
-    // TODO: FCM entegrasyonu
-    throw UnimplementedError('Firebase yapılandırması bekleniyor');
+    return null;
   }
 
   /// Foreground bildirim dinleyicisi

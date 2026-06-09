@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/core/enums.dart';
@@ -173,44 +172,32 @@ class _AppointmentCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Hizmet + Fiyat + Durum
-        FutureBuilder<List<DocumentSnapshot>>(
-          future: Future.wait([
-            FirebaseFirestore.instance.collection('services').doc(appointment.serviceId).get(),
-            FirebaseFirestore.instance.collection('barbers').doc(appointment.barberId).get(),
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Container(width: 44, height: 44,
+              decoration: BoxDecoration(
+                color: AppTheme.secondaryColor.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.content_cut, color: AppTheme.secondaryColor, size: 22)),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(appointment.serviceName ?? 'Hizmet', style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+              if (appointment.barberName != null && appointment.barberName!.trim().isNotEmpty)
+                Text(appointment.barberName!.trim(), style: const TextStyle(color: Colors.white38, fontSize: 13)),
+            ])),
+            Text('₺${(appointment.price ?? 0.0).toStringAsFixed(0)}', style: const TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
           ]),
-          builder: (context, snap) {
-            final serviceName = snap.data?[0].exists == true ? (snap.data![0].data() as Map)['name'] ?? 'Hizmet' : 'Hizmet';
-            final servicePrice = snap.data?[0].exists == true ? (snap.data![0].data() as Map)['price']?.toDouble() ?? 0.0 : 0.0;
-            final barberName = snap.data?[1].exists == true ? '${(snap.data![1].data() as Map)['name'] ?? ''} ${(snap.data![1].data() as Map)['surname'] ?? ''}' : '';
-
-            return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Container(width: 44, height: 44,
-                  decoration: BoxDecoration(
-                    color: AppTheme.secondaryColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12)),
-                  child: const Icon(Icons.content_cut, color: AppTheme.secondaryColor, size: 22)),
-                const SizedBox(width: 12),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(serviceName, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
-                  if (barberName.trim().isNotEmpty)
-                    Text(barberName.trim(), style: const TextStyle(color: Colors.white38, fontSize: 13)),
-                ])),
-                Text('₺${servicePrice.toStringAsFixed(0)}', style: const TextStyle(
-                  color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-              ]),
-              const SizedBox(height: 4),
-              Align(alignment: Alignment.centerRight, child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(6)),
-                child: Text(statusText, style: TextStyle(
-                  color: statusColor, fontSize: 11, fontWeight: FontWeight.w600)),
-              )),
-            ]);
-          },
-        ),
+          const SizedBox(height: 4),
+          Align(alignment: Alignment.centerRight, child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: statusColor.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(6)),
+            child: Text(statusText, style: TextStyle(
+              color: statusColor, fontSize: 11, fontWeight: FontWeight.w600)),
+          )),
+        ]),
         const SizedBox(height: 12),
         // Tarih
         Row(children: [

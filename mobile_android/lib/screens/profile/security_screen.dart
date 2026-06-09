@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobile_android/core/app_theme.dart';
 
 /// Güvenlik ve Giriş ekranı – Şifre değiştirme
@@ -88,7 +87,6 @@ class _SecurityScreenState extends State<SecurityScreen> {
   Future<void> _handleChangePassword() async {
     if (!_formKey.currentState!.validate()) return;
 
-    // Ek güvenlik kontrolleri
     if (!_isMinLength) {
       _showError('Yeni şifre en az 6 karakter olmalıdır.');
       return;
@@ -98,62 +96,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
-
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null || user.email == null) {
-        throw Exception('Kullanıcı oturumu bulunamadı.');
-      }
-
-      // 1. Mevcut şifreyi doğrula (re-authenticate)
-      final credential = EmailAuthProvider.credential(
-        email: user.email!,
-        password: _currentPasswordController.text.trim(),
-      );
-
-      await user.reauthenticateWithCredential(credential);
-
-      // 2. Yeni şifreyi güncelle
-      await user.updatePassword(_newPasswordController.text.trim());
-
-      if (!mounted) return;
-
-      // Başarılı
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Şifreniz başarıyla güncellendi!'),
-          backgroundColor: AppTheme.successColor,
-        ),
-      );
-
-      // Formu temizle
-      _currentPasswordController.clear();
-      _newPasswordController.clear();
-      _confirmPasswordController.clear();
-
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      String message;
-      switch (e.code) {
-        case 'wrong-password':
-          message = 'Mevcut şifreniz yanlış.';
-          break;
-        case 'weak-password':
-          message = 'Yeni şifre çok zayıf. Daha güçlü bir şifre deneyin.';
-          break;
-        case 'requires-recent-login':
-          message = 'Bu işlem için tekrar giriş yapmanız gerekiyor.';
-          break;
-        default:
-          message = 'Şifre değiştirilemedi: ${e.message}';
-      }
-      _showError(message);
-    } catch (e) {
-      _showError('Şifre değiştirilemedi. Mevcut şifrenizi kontrol edin.');
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+    _showError('Şifre değiştirme işlemi şu anda sadece web panel üzerinden yapılabilmektedir.');
   }
 
   void _showError(String message) {

@@ -18,25 +18,29 @@ class ServiceModel {
     this.isActive = true,
   });
 
-  factory ServiceModel.fromMap(Map<String, dynamic> map, String id) {
+  factory ServiceModel.fromMap(Map<String, dynamic> map, [String id = '']) {
     return ServiceModel(
-      id: id,
+      id: map['id']?.toString() ?? id,
       name: map['name'] ?? '',
       description: map['description'] ?? '',
-      price: (map['price'] ?? 0).toDouble(),
-      durationMinutes: map['durationMinutes'] ?? 30,
-      imageUrl: map['imageUrl'],
-      isActive: map['isActive'] ?? true,
+      price: double.tryParse(map['price']?.toString() ?? '') ?? 0.0,
+      durationMinutes: map['duration_minutes'] ?? map['durationMinutes'] ?? 30,
+      imageUrl: map['image'] ?? map['imageUrl'],
+      isActive: map['is_active'] ?? map['isActive'] ?? true,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'description': description,
       'price': price,
+      'duration_minutes': durationMinutes,
       'durationMinutes': durationMinutes,
+      'image': imageUrl,
       'imageUrl': imageUrl,
+      'is_active': isActive,
       'isActive': isActive,
     };
   }

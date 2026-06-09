@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/models/service_model.dart';
+import 'package:mobile_android/providers/service_provider.dart';
 
-/// Hizmetler ekranı – Firestore'dan veri çeker
+/// Hizmetler ekranı – API'den veri çeker
 class ServicesScreen extends StatefulWidget {
   const ServicesScreen({super.key});
 
@@ -12,6 +13,14 @@ class ServicesScreen extends StatefulWidget {
 }
 
 class _ServicesScreenState extends State<ServicesScreen> {
+  late Future<void> _loadServicesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadServicesFuture = Provider.of<ServiceProvider>(context, listen: false).loadServices();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,13 +41,9 @@ class _ServicesScreenState extends State<ServicesScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              // Hizmetler listesi - Firestore stream
               Expanded(
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('services')
-                      .where('isActive', isEqualTo: true)
-                      .snapshots(),
+                child: FutureBuilder<void>(
+                  future: _loadServicesFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
@@ -55,41 +60,41 @@ class _ServicesScreenState extends State<ServicesScreen> {
                       );
                     }
 
-                    final docs = snapshot.data?.docs ?? [];
+                    return Consumer<ServiceProvider>(
+                      builder: (context, serviceProvider, child) {
+                        final services = [
+                          ...serviceProvider.services,
+                          ...serviceProvider.cafeServices,
+                        ];
 
-                    if (docs.isEmpty) {
-                      return const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.content_cut, color: Colors.white24, size: 64),
-                            SizedBox(height: 16),
-                            Text(
-                              'Henüz hizmet eklenmemiş',
-                              style: TextStyle(color: Colors.white38, fontSize: 16),
+                        if (services.isEmpty) {
+                          return const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.content_cut, color: Colors.white24, size: 64),
+                                SizedBox(height: 16),
+                                Text(
+                                  'Henüz hizmet eklenmemiş',
+                                  style: TextStyle(color: Colors.white38, fontSize: 16),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    }
+                          );
+                        }
 
-                    final services = docs
-                        .map((doc) => ServiceModel.fromMap(
-                              doc.data() as Map<String, dynamic>,
-                              doc.id,
-                            ))
-                        .toList();
-
-                    return GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 14,
-                        mainAxisSpacing: 20,
-                        childAspectRatio: 0.72,
-                      ),
-                      itemCount: services.length,
-                      itemBuilder: (context, index) {
-                        return _buildServiceCard(services[index]);
+                        return GridView.builder(
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 14,
+                            mainAxisSpacing: 20,
+                            childAspectRatio: 0.72,
+                          ),
+                          itemCount: services.length,
+                          itemBuilder: (context, index) {
+                            return _buildServiceCard(services[index]);
+                          },
+                        );
                       },
                     );
                   },

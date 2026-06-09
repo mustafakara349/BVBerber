@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_android/providers/auth_provider.dart';
+import 'package:mobile_android/providers/service_provider.dart';
 import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/models/service_model.dart';
 import 'package:mobile_android/routes/app_routes.dart';
@@ -9,7 +10,12 @@ import 'package:url_launcher/url_launcher.dart';
 /// Ana sayfa ekranı
 class HomeScreen extends StatefulWidget {
   final VoidCallback? onNavigateToServices;
-  const HomeScreen({super.key, this.onNavigateToServices});
+  final VoidCallback? onNavigateToProfile;
+  const HomeScreen({
+    super.key,
+    this.onNavigateToServices,
+    this.onNavigateToProfile,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,28 +34,61 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadData() async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.currentUser == null) {
+        await authProvider.tryAutoLogin();
+      }
+      
+      final user = authProvider.currentUser;
       if (user != null) {
-        // Kullanıcı bilgilerini çek
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-        _userData = userDoc.data();
-
-        // Hizmetleri çek
-        final servicesSnapshot = await FirebaseFirestore.instance
-            .collection('services')
-            .where('isActive', isEqualTo: true)
-            .get();
-        _services = servicesSnapshot.docs
-            .map((doc) => ServiceModel.fromMap(doc.data(), doc.id))
-            .toList();
+        _userData = user.toMap();
+        
+        final serviceProvider = Provider.of<ServiceProvider>(context, listen: false);
+        await serviceProvider.loadServices();
+        _services = serviceProvider.services;
       }
     } catch (e) {
       debugPrint('Veri yüklenirken hata: $e');
     } finally {
       if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _launchNativeMap() async {
+    const latitude = 36.923826;
+    const longitude = 34.903672;
+    final label = Uri.encodeComponent('B&V Coffee Barber');
+    
+    // Android: geo URI triggers the native app chooser list
+    final androidUri = Uri.parse('geo:$latitude,$longitude?q=$latitude,$longitude($label)');
+    // iOS: maps URI
+    final iosUri = Uri.parse('maps://?q=$label&ll=$latitude,$longitude');
+    
+    // Fallback web URL
+    final webUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
+    
+    final isAndroid = Theme.of(context).platform == TargetPlatform.android;
+    final targetUri = isAndroid ? androidUri : iosUri;
+    
+    try {
+      if (await canLaunchUrl(targetUri)) {
+        await launchUrl(targetUri, mode: LaunchMode.externalApplication);
+      } else {
+        await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      try {
+        await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      } catch (_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Harita veya tarayıcı açılamadı.'),
+              backgroundColor: AppTheme.errorColor,
+            ),
+          );
+        }
+      }
     }
   }
 
@@ -77,18 +116,21 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 children: [
                   // Profil fotoğrafı
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppTheme.secondaryColor, width: 2),
-                    ),
-                    child: ClipOval(
-                      child: profileUrl != null
-                          ? Image.network(profileUrl, fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(Icons.person, color: Colors.white38))
-                          : const Icon(Icons.person, color: Colors.white38),
+                  GestureDetector(
+                    onTap: () => widget.onNavigateToProfile?.call(),
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppTheme.secondaryColor, width: 2),
+                      ),
+                      child: ClipOval(
+                        child: profileUrl != null
+                            ? Image.network(profileUrl, fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const Icon(Icons.person, color: Colors.white38))
+                            : const Icon(Icons.person, color: Colors.white38),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -311,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'B&V COFFE...',
+                            'B&V COFFEE BARBER',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -332,12 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     // Yol tarifi butonu
                     GestureDetector(
-                      onTap: () async {
-                        final url = Uri.parse('https://maps.google.com/?q=Tarsus,Mersin');
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url, mode: LaunchMode.externalApplication);
-                        }
-                      },
+                      onTap: _launchNativeMap,
                       child: Container(
                         width: 44,
                         height: 44,

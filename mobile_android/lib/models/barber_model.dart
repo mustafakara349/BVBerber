@@ -22,15 +22,43 @@ class BarberModel {
     this.isActive = true,
   });
 
-  factory BarberModel.fromMap(Map<String, dynamic> map, String id) {
+  factory BarberModel.fromMap(Map<String, dynamic> map, [String id = '']) {
+    final rawId = map['id']?.toString() ?? id;
+    
+    final userMap = map['user'] as Map<String, dynamic>?;
+    final fullName = map['full_name'] ?? '';
+    String name = map['name'] ?? '';
+    String surname = map['surname'] ?? '';
+    if (userMap != null) {
+      name = userMap['first_name'] ?? '';
+      surname = userMap['last_name'] ?? '';
+    } else if (fullName.isNotEmpty) {
+      final parts = fullName.split(' ');
+      if (parts.length > 1) {
+        name = parts.sublist(0, parts.length - 1).join(' ');
+        surname = parts.last;
+      } else {
+        name = fullName;
+      }
+    }
+
+    final phone = userMap?['phone'] ?? map['phone'] ?? '';
+    final bio = map['biography'] ?? map['bio'];
+    final profileImageUrl = userMap?['profile_photo'] ?? map['profileImageUrl'];
+    
+    final servicesList = map['services'] as List?;
+    final serviceIds = servicesList != null
+        ? servicesList.map((s) => (s is Map ? s['id']?.toString() : s.toString())).whereType<String>().toList()
+        : List<String>.from(map['serviceIds'] ?? []);
+
     return BarberModel(
-      id: id,
-      name: map['name'] ?? '',
-      surname: map['surname'] ?? '',
-      phone: map['phone'] ?? '',
-      bio: map['bio'],
-      profileImageUrl: map['profileImageUrl'],
-      serviceIds: List<String>.from(map['serviceIds'] ?? []),
+      id: rawId,
+      name: name,
+      surname: surname,
+      phone: phone,
+      bio: bio,
+      profileImageUrl: profileImageUrl,
+      serviceIds: serviceIds,
       workingHours: (map['workingHours'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(
               key,
@@ -38,12 +66,13 @@ class BarberModel {
             ),
           ) ??
           {},
-      isActive: map['isActive'] ?? true,
+      isActive: map['is_active'] ?? map['isActive'] ?? true,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'surname': surname,
       'phone': phone,
@@ -51,6 +80,7 @@ class BarberModel {
       'profileImageUrl': profileImageUrl,
       'serviceIds': serviceIds,
       'workingHours': workingHours,
+      'is_active': isActive,
       'isActive': isActive,
     };
   }

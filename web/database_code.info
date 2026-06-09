@@ -1,0 +1,992 @@
+-- =========================================================
+-- B&V APP - COMPLETE MYSQL DATABASE SCHEMA
+-- Version: 1.0
+-- MySQL 8+
+-- Engine: InnoDB
+-- Charset: utf8mb4
+-- =========================================================
+
+CREATE DATABASE IF NOT EXISTS bvapp_db
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE bvapp_db;
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- =========================================================
+-- ROLES
+-- =========================================================
+
+CREATE TABLE roles (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    slug VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- PERMISSIONS
+-- =========================================================
+
+CREATE TABLE permissions (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    slug VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- ROLE PERMISSIONS
+-- =========================================================
+
+CREATE TABLE role_permissions (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    role_id BIGINT UNSIGNED NOT NULL,
+    permission_id BIGINT UNSIGNED NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_role_permissions_role
+        FOREIGN KEY (role_id) REFERENCES roles(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_role_permissions_permission
+        FOREIGN KEY (permission_id) REFERENCES permissions(id)
+        ON DELETE CASCADE,
+
+    UNIQUE KEY uq_role_permission (role_id, permission_id)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- USERS
+-- =========================================================
+
+CREATE TABLE users (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) NOT NULL UNIQUE,
+    role_id BIGINT UNSIGNED NOT NULL,
+
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    phone VARCHAR(20) UNIQUE,
+    password VARCHAR(255) NOT NULL,
+
+    gender ENUM('male', 'female', 'other') NULL,
+    birth_date DATE NULL,
+
+    profile_photo VARCHAR(255) NULL,
+
+    email_verified_at TIMESTAMP NULL,
+    phone_verified_at TIMESTAMP NULL,
+    last_login_at TIMESTAMP NULL,
+
+    status ENUM('active', 'inactive', 'blocked', 'deleted') DEFAULT 'active',
+
+    remember_token VARCHAR(100) NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+
+    CONSTRAINT fk_users_role
+        FOREIGN KEY (role_id) REFERENCES roles(id)
+        ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_users_role ON users(role_id);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_phone ON users(phone);
+CREATE INDEX idx_users_status ON users(status);
+
+-- =========================================================
+-- BRANCHES
+-- =========================================================
+
+CREATE TABLE branches (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) NOT NULL UNIQUE,
+
+    name VARCHAR(150) NOT NULL,
+    slug VARCHAR(150) NOT NULL UNIQUE,
+
+    phone VARCHAR(20) NULL,
+    email VARCHAR(150) NULL,
+
+    city VARCHAR(100) NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    address TEXT NOT NULL,
+
+    latitude DECIMAL(10,8) NULL,
+    longitude DECIMAL(11,8) NULL,
+
+    timezone VARCHAR(50) DEFAULT 'Europe/Istanbul',
+
+    logo VARCHAR(255) NULL,
+    cover_image VARCHAR(255) NULL,
+
+    opening_time TIME NULL,
+    closing_time TIME NULL,
+
+    is_active BOOLEAN DEFAULT TRUE,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- BRANCH SETTINGS
+-- =========================================================
+
+CREATE TABLE branch_settings (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    branch_id BIGINT UNSIGNED NOT NULL,
+
+    appointment_interval INT DEFAULT 30,
+    cancellation_limit_hours INT DEFAULT 2,
+    currency VARCHAR(10) DEFAULT 'TRY',
+
+    loyalty_enabled BOOLEAN DEFAULT TRUE,
+    review_enabled BOOLEAN DEFAULT TRUE,
+    online_payment_enabled BOOLEAN DEFAULT FALSE,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_branch_settings_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE,
+
+    UNIQUE KEY uq_branch_settings_branch (branch_id)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- EMPLOYEES
+-- =========================================================
+
+CREATE TABLE employees (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    branch_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    employee_code VARCHAR(50) NOT NULL UNIQUE,
+
+    title VARCHAR(100) NULL,
+    biography TEXT NULL,
+
+    hire_date DATE NOT NULL,
+    leave_date DATE NULL,
+
+    salary_type ENUM(
+        'fixed',
+        'commission',
+        'fixed_plus_commission',
+        'hourly'
+    ) DEFAULT 'fixed',
+
+    salary_amount DECIMAL(10,2) DEFAULT 0,
+    commission_rate DECIMAL(5,2) DEFAULT 0,
+
+    daily_work_limit INT DEFAULT 20,
+
+    appointment_color VARCHAR(20) DEFAULT '#000000',
+
+    is_visible BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN DEFAULT TRUE,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+
+    CONSTRAINT fk_employees_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_employees_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_employees_branch ON employees(branch_id);
+CREATE INDEX idx_employees_user ON employees(user_id);
+CREATE INDEX idx_employees_active ON employees(is_active);
+
+-- =========================================================
+-- SERVICE CATEGORIES
+-- =========================================================
+
+CREATE TABLE service_categories (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    branch_id BIGINT UNSIGNED NOT NULL,
+
+    name VARCHAR(100) NOT NULL,
+    description TEXT NULL,
+
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_service_categories_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- SERVICES
+-- =========================================================
+
+CREATE TABLE services (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    branch_id BIGINT UNSIGNED NOT NULL,
+    category_id BIGINT UNSIGNED NULL,
+
+    name VARCHAR(150) NOT NULL,
+    slug VARCHAR(150) NOT NULL,
+
+    description TEXT NULL,
+
+    duration_minutes INT NOT NULL,
+    buffer_time INT DEFAULT 0,
+
+    price DECIMAL(10,2) NOT NULL,
+    discounted_price DECIMAL(10,2) NULL,
+
+    gender_type ENUM('male', 'female', 'unisex') DEFAULT 'unisex',
+
+    image VARCHAR(255) NULL,
+
+    is_popular BOOLEAN DEFAULT FALSE,
+    is_featured BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+
+    CONSTRAINT fk_services_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_services_category
+        FOREIGN KEY (category_id) REFERENCES service_categories(id)
+        ON DELETE SET NULL,
+
+    UNIQUE KEY uq_service_slug_branch (branch_id, slug)
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_services_branch ON services(branch_id);
+CREATE INDEX idx_services_category ON services(category_id);
+CREATE INDEX idx_services_active ON services(is_active);
+
+-- =========================================================
+-- EMPLOYEE SERVICES
+-- =========================================================
+
+CREATE TABLE employee_services (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    employee_id BIGINT UNSIGNED NOT NULL,
+    service_id BIGINT UNSIGNED NOT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_employee_services_employee
+        FOREIGN KEY (employee_id) REFERENCES employees(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_employee_services_service
+        FOREIGN KEY (service_id) REFERENCES services(id)
+        ON DELETE CASCADE,
+
+    UNIQUE KEY uq_employee_service (employee_id, service_id)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- EMPLOYEE SCHEDULES
+-- =========================================================
+
+CREATE TABLE employee_schedules (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    employee_id BIGINT UNSIGNED NOT NULL,
+
+    work_date DATE NOT NULL,
+
+    start_time TIME NULL,
+    end_time TIME NULL,
+
+    break_start TIME NULL,
+    break_end TIME NULL,
+
+    is_day_off BOOLEAN DEFAULT FALSE,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_employee_schedules_employee
+        FOREIGN KEY (employee_id) REFERENCES employees(id)
+        ON DELETE CASCADE,
+
+    UNIQUE KEY uq_employee_workdate (employee_id, work_date)
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_employee_schedules_date ON employee_schedules(work_date);
+
+-- =========================================================
+-- EMPLOYEE LEAVES
+-- =========================================================
+
+CREATE TABLE employee_leaves (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    employee_id BIGINT UNSIGNED NOT NULL,
+    approved_by BIGINT UNSIGNED NULL,
+
+    leave_type ENUM(
+        'annual',
+        'sick',
+        'unpaid',
+        'official',
+        'other'
+    ) DEFAULT 'annual',
+
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+
+    reason TEXT NULL,
+
+    approval_status ENUM(
+        'pending',
+        'approved',
+        'rejected'
+    ) DEFAULT 'pending',
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_employee_leaves_employee
+        FOREIGN KEY (employee_id) REFERENCES employees(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_employee_leaves_approved_by
+        FOREIGN KEY (approved_by) REFERENCES users(id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- APPOINTMENTS
+-- =========================================================
+
+CREATE TABLE appointments (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    uuid CHAR(36) NOT NULL UNIQUE,
+
+    branch_id BIGINT UNSIGNED NOT NULL,
+    customer_id BIGINT UNSIGNED NOT NULL,
+    employee_id BIGINT UNSIGNED NOT NULL,
+
+    appointment_code VARCHAR(30) NOT NULL UNIQUE,
+
+    start_at DATETIME NOT NULL,
+    end_at DATETIME NOT NULL,
+
+    total_duration INT NOT NULL,
+
+    subtotal DECIMAL(10,2) DEFAULT 0,
+    discount_amount DECIMAL(10,2) DEFAULT 0,
+    tax_amount DECIMAL(10,2) DEFAULT 0,
+    total_price DECIMAL(10,2) DEFAULT 0,
+
+    status ENUM(
+        'pending',
+        'confirmed',
+        'completed',
+        'cancelled',
+        'rejected',
+        'no_show',
+        'in_progress'
+    ) DEFAULT 'pending',
+
+    payment_status ENUM(
+        'unpaid',
+        'paid',
+        'partial',
+        'refunded'
+    ) DEFAULT 'unpaid',
+
+    payment_method ENUM(
+        'cash',
+        'credit_card',
+        'bank_transfer',
+        'online'
+    ) NULL,
+
+    source ENUM(
+        'mobile_app',
+        'walk_in',
+        'admin_panel',
+        'phone',
+        'instagram',
+        'website'
+    ) DEFAULT 'mobile_app',
+
+    customer_note TEXT NULL,
+    internal_note TEXT NULL,
+
+    cancellation_reason TEXT NULL,
+
+    cancelled_by BIGINT UNSIGNED NULL,
+    cancelled_at TIMESTAMP NULL,
+
+    completed_at TIMESTAMP NULL,
+
+    no_show BOOLEAN DEFAULT FALSE,
+
+    reminder_sent BOOLEAN DEFAULT FALSE,
+
+    checked_in_at TIMESTAMP NULL,
+
+    created_by BIGINT UNSIGNED NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+
+    CONSTRAINT fk_appointments_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_appointments_customer
+        FOREIGN KEY (customer_id) REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_appointments_employee
+        FOREIGN KEY (employee_id) REFERENCES employees(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_appointments_cancelled_by
+        FOREIGN KEY (cancelled_by) REFERENCES users(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_appointments_created_by
+        FOREIGN KEY (created_by) REFERENCES users(id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_appointments_employee_date ON appointments(employee_id, start_at);
+CREATE INDEX idx_appointments_customer ON appointments(customer_id);
+CREATE INDEX idx_appointments_status ON appointments(status);
+CREATE INDEX idx_appointments_branch_date ON appointments(branch_id, start_at);
+CREATE INDEX idx_appointments_payment_status ON appointments(payment_status);
+
+-- =========================================================
+-- APPOINTMENT SERVICES
+-- =========================================================
+
+CREATE TABLE appointment_services (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    appointment_id BIGINT UNSIGNED NOT NULL,
+    service_id BIGINT UNSIGNED NOT NULL,
+    employee_id BIGINT UNSIGNED NOT NULL,
+
+    quantity INT DEFAULT 1,
+
+    duration_minutes INT NOT NULL,
+
+    unit_price DECIMAL(10,2) NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_appointment_services_appointment
+        FOREIGN KEY (appointment_id) REFERENCES appointments(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_appointment_services_service
+        FOREIGN KEY (service_id) REFERENCES services(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_appointment_services_employee
+        FOREIGN KEY (employee_id) REFERENCES employees(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- APPOINTMENT STATUS LOGS
+-- =========================================================
+
+CREATE TABLE appointment_status_logs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    appointment_id BIGINT UNSIGNED NOT NULL,
+    changed_by BIGINT UNSIGNED NULL,
+
+    old_status VARCHAR(50) NULL,
+    new_status VARCHAR(50) NOT NULL,
+
+    note TEXT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_appointment_status_logs_appointment
+        FOREIGN KEY (appointment_id) REFERENCES appointments(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_appointment_status_logs_user
+        FOREIGN KEY (changed_by) REFERENCES users(id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- TRANSACTIONS
+-- =========================================================
+
+CREATE TABLE transactions (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    branch_id BIGINT UNSIGNED NOT NULL,
+    appointment_id BIGINT UNSIGNED NULL,
+    created_by BIGINT UNSIGNED NULL,
+
+    transaction_type ENUM(
+        'income',
+        'expense',
+        'refund'
+    ) NOT NULL,
+
+    amount DECIMAL(10,2) NOT NULL,
+
+    currency VARCHAR(10) DEFAULT 'TRY',
+
+    payment_method ENUM(
+        'cash',
+        'credit_card',
+        'bank_transfer',
+        'online'
+    ) NULL,
+
+    description TEXT NULL,
+
+    transaction_date DATETIME NOT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_transactions_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_transactions_appointment
+        FOREIGN KEY (appointment_id) REFERENCES appointments(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_transactions_created_by
+        FOREIGN KEY (created_by) REFERENCES users(id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_transactions_branch_date
+ON transactions(branch_id, transaction_date);
+
+CREATE INDEX idx_transactions_type
+ON transactions(transaction_type);
+
+-- =========================================================
+-- PAYMENTS
+-- =========================================================
+
+CREATE TABLE payments (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    appointment_id BIGINT UNSIGNED NOT NULL,
+
+    amount DECIMAL(10,2) NOT NULL,
+
+    payment_method ENUM(
+        'cash',
+        'credit_card',
+        'bank_transfer',
+        'online'
+    ) NOT NULL,
+
+    transaction_reference VARCHAR(255) NULL,
+
+    paid_at DATETIME NOT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_payments_appointment
+        FOREIGN KEY (appointment_id) REFERENCES appointments(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- EXPENSE CATEGORIES
+-- =========================================================
+
+CREATE TABLE expense_categories (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    branch_id BIGINT UNSIGNED NOT NULL,
+
+    name VARCHAR(100) NOT NULL,
+    description TEXT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_expense_categories_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- EXPENSES
+-- =========================================================
+
+CREATE TABLE expenses (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    branch_id BIGINT UNSIGNED NOT NULL,
+    category_id BIGINT UNSIGNED NOT NULL,
+    created_by BIGINT UNSIGNED NULL,
+
+    amount DECIMAL(10,2) NOT NULL,
+
+    expense_date DATE NOT NULL,
+
+    description TEXT NULL,
+
+    receipt_file VARCHAR(255) NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_expenses_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_expenses_category
+        FOREIGN KEY (category_id) REFERENCES expense_categories(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_expenses_created_by
+        FOREIGN KEY (created_by) REFERENCES users(id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- CUSTOMER NOTES
+-- =========================================================
+
+CREATE TABLE customer_notes (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    customer_id BIGINT UNSIGNED NOT NULL,
+    employee_id BIGINT UNSIGNED NOT NULL,
+
+    note TEXT NOT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_customer_notes_customer
+        FOREIGN KEY (customer_id) REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_customer_notes_employee
+        FOREIGN KEY (employee_id) REFERENCES employees(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- REVIEWS
+-- =========================================================
+
+CREATE TABLE reviews (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    appointment_id BIGINT UNSIGNED NOT NULL,
+    customer_id BIGINT UNSIGNED NOT NULL,
+    employee_id BIGINT UNSIGNED NOT NULL,
+
+    rating TINYINT UNSIGNED NOT NULL,
+    comment TEXT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_reviews_appointment
+        FOREIGN KEY (appointment_id) REFERENCES appointments(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_reviews_customer
+        FOREIGN KEY (customer_id) REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_reviews_employee
+        FOREIGN KEY (employee_id) REFERENCES employees(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT chk_reviews_rating
+        CHECK (rating >= 1 AND rating <= 5)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- LOYALTY ACCOUNTS
+-- =========================================================
+
+CREATE TABLE loyalty_accounts (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    customer_id BIGINT UNSIGNED NOT NULL UNIQUE,
+
+    points_balance INT DEFAULT 0,
+    total_earned INT DEFAULT 0,
+    total_spent INT DEFAULT 0,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_loyalty_accounts_customer
+        FOREIGN KEY (customer_id) REFERENCES users(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- LOYALTY TRANSACTIONS
+-- =========================================================
+
+CREATE TABLE loyalty_transactions (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    loyalty_account_id BIGINT UNSIGNED NOT NULL,
+
+    type ENUM('earn', 'spend', 'expire', 'manual') NOT NULL,
+
+    points INT NOT NULL,
+
+    description TEXT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_loyalty_transactions_account
+        FOREIGN KEY (loyalty_account_id) REFERENCES loyalty_accounts(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- CAMPAIGNS
+-- =========================================================
+
+CREATE TABLE campaigns (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    branch_id BIGINT UNSIGNED NOT NULL,
+
+    title VARCHAR(255) NOT NULL,
+    description TEXT NULL,
+
+    discount_type ENUM('percentage', 'fixed') NOT NULL,
+
+    discount_value DECIMAL(10,2) NOT NULL,
+
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+
+    is_active BOOLEAN DEFAULT TRUE,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_campaigns_branch
+        FOREIGN KEY (branch_id) REFERENCES branches(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- COUPONS
+-- =========================================================
+
+CREATE TABLE coupons (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    campaign_id BIGINT UNSIGNED NOT NULL,
+
+    code VARCHAR(50) NOT NULL UNIQUE,
+
+    usage_limit INT DEFAULT 1,
+    used_count INT DEFAULT 0,
+
+    expires_at DATETIME NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_coupons_campaign
+        FOREIGN KEY (campaign_id) REFERENCES campaigns(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- NOTIFICATIONS
+-- =========================================================
+
+CREATE TABLE notifications (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    title VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+
+    type VARCHAR(100) NULL,
+
+    data JSON NULL,
+
+    is_read BOOLEAN DEFAULT FALSE,
+
+    sent_at TIMESTAMP NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_notifications_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_notifications_user_read
+ON notifications(user_id, is_read);
+
+-- =========================================================
+-- DEVICES
+-- =========================================================
+
+CREATE TABLE devices (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    device_type ENUM('ios', 'android', 'web') NOT NULL,
+
+    push_token TEXT NOT NULL,
+
+    app_version VARCHAR(50) NULL,
+
+    last_active_at TIMESTAMP NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_devices_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- AUDIT LOGS
+-- =========================================================
+
+CREATE TABLE audit_logs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    user_id BIGINT UNSIGNED NULL,
+
+    action VARCHAR(255) NOT NULL,
+
+    model_type VARCHAR(255) NOT NULL,
+    model_id BIGINT UNSIGNED NOT NULL,
+
+    old_values JSON NULL,
+    new_values JSON NULL,
+
+    ip_address VARCHAR(100) NULL,
+
+    user_agent TEXT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_audit_logs_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- SETTINGS
+-- =========================================================
+
+CREATE TABLE settings (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    setting_key VARCHAR(150) NOT NULL UNIQUE,
+    setting_value TEXT NULL,
+
+    description TEXT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- PASSWORD RESET TOKENS
+-- =========================================================
+
+CREATE TABLE password_reset_tokens (
+    email VARCHAR(255) PRIMARY KEY,
+    token VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NULL
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- PERSONAL ACCESS TOKENS (LARAVEL SANCTUM)
+-- =========================================================
+
+CREATE TABLE personal_access_tokens (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    tokenable_type VARCHAR(255) NOT NULL,
+    tokenable_id BIGINT UNSIGNED NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    token VARCHAR(64) NOT NULL UNIQUE,
+    abilities TEXT NULL,
+    last_used_at TIMESTAMP NULL,
+    expires_at TIMESTAMP NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+
+    INDEX idx_tokenable (tokenable_type, tokenable_id)
+) ENGINE=InnoDB;
+
+-- =========================================================
+-- DEFAULT ROLE SEEDS
+-- =========================================================
+
+INSERT INTO roles (name, slug) VALUES
+('Super Admin', 'super_admin'),
+('Owner', 'owner'),
+('Manager', 'manager'),
+('Receptionist', 'receptionist'),
+('Barber', 'barber'),
+('Customer', 'customer');
+
+-- =========================================================
+-- DEFAULT SETTINGS
+-- =========================================================
+
+INSERT INTO settings (setting_key, setting_value, description) VALUES
+('app_name', 'B&V App', 'Application name'),
+('currency', 'TRY', 'Default currency'),
+('tax_rate', '20', 'Default tax rate'),
+('appointment_interval', '30', 'Default appointment interval'),
+('loyalty_enabled', '1', 'Loyalty system enabled');
+
+SET FOREIGN_KEY_CHECKS = 1;

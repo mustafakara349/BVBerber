@@ -4,9 +4,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/routes/app_routes.dart';
 
@@ -141,39 +138,9 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
     if (imageToUpload == null) return;
 
     setState(() => _isUploading = true);
-
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw Exception('Kullanıcı bulunamadı');
-
-      // Firebase Storage'a yükle
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('profile_photos')
-          .child('${user.uid}.jpg');
-
-      await ref.putFile(imageToUpload);
-      final downloadUrl = await ref.getDownloadURL();
-
-      // Firestore'daki kullanıcı belgesini güncelle
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .update({'profileImageUrl': downloadUrl});
-
-      if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.main);
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Fotoğraf yüklenemedi: ${e.toString()}'),
-          backgroundColor: AppTheme.errorColor,
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _isUploading = false);
-    }
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, AppRoutes.main);
   }
 
   void _skipAndContinue() {

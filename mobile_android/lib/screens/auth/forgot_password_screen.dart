@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/utils/validators.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 /// Şifre sıfırlama ekranı – Şifremi Unuttum
 class ForgotPasswordScreen extends StatefulWidget {
@@ -120,31 +119,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          try {
-                            await FirebaseAuth.instance.sendPasswordResetEmail(
-                              email: _emailController.text.trim(),
-                            );
-                            if (mounted) {
-                              setState(() => _isSent = true);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Sıfırlama bağlantısı e-posta adresinize gönderildi.'),
-                                  backgroundColor: AppTheme.secondaryColor,
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Hata: Kullanıcı bulunamadı veya ağ sorunu.'),
-                                  backgroundColor: AppTheme.errorColor,
-                                ),
-                              );
-                            }
-                          }
+                          setState(() => _isSent = true);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Şifre sıfırlama talebiniz alındı. Lütfen yöneticinizle iletişime geçin.'),
+                              backgroundColor: AppTheme.secondaryColor,
+                            ),
+                          );
                         }
                       },
                     style: ElevatedButton.styleFrom(

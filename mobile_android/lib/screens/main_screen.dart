@@ -26,6 +26,11 @@ class _MainScreenState extends State<MainScreen> {
           _currentIndex = 2; // Hizmetler sekmesi index'i
         });
       },
+      onNavigateToProfile: () {
+        setState(() {
+          _currentIndex = 3; // Profil sekmesi index'i
+        });
+      },
     ),
     const AppointmentsScreen(),
     const ServicesScreen(),

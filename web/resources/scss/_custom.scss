@@ -1,0 +1,130 @@
+
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0,0,0,.45);
+	backdrop-filter: blur(1px);
+	display: none;
+	z-index: 1030;
+}
+.overlay.show {
+	display: block;
+}
+.sidebar {
+	width: 240px;
+	background: $white;
+	transition: width .3s, left .3s;
+  border-right: 1px solid $gray-200;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	padding-top: 70px;
+	z-index: 1030;
+	.nav-link {
+		color: $gray-700;
+		padding: 10px 14px;
+		display: flex;
+		align-items: center;
+    font-size: 13.5px;
+    font-weight: 500;
+		gap: 12px;
+		white-space: nowrap;
+    margin: 2px 14px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+		&:hover {
+			color: $primary;
+      background-color: rgba($primary, 0.05);
+		}
+		&.active {
+			color: #E66239 !important;
+			background-color: rgba(230, 98, 57, 0.14) !important;
+			font-weight: 600 !important;
+			position: relative;
+
+			&::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				top: 0;
+				height: 100%;
+				width: 4px;
+				background-color: #E66239 !important;
+				border-radius: 8px 0 0 8px;
+			}
+		}
+    .ti {
+      font-size: 19px;
+    }
+	}
+	.nav-text {
+		transition: opacity .2s;
+	}
+	.logo-area {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 70px;
+		width: 100%;
+		background: $white;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding-left: 24px;
+		color: $gray-900;
+    border-bottom: 1px solid $gray-200;
+	}
+}
+.sidebar.collapsed {
+	width: 60px;
+	.nav-link{
+		margin: 0 0px;
+		background-color: transparent;
+		padding: 8px 18px;
+	}
+	.nav-text {
+		display: none;
+	}
+	.logo-text {
+		display: none;
+	}
+}
+.topbar {
+	height: 70px;
+	margin-left: 240px;
+	// transition: margin-left .3s;
+}
+.topbar.full {
+	margin-left: 60px;
+}
+.content {
+	margin-left: 240px;
+	// transition: margin-left .3s;
+	// padding: 20px;
+}
+.content.full {
+	margin-left: 60px;
+}
+@media (max-width: 992px) {
+	.sidebar {
+		left: -240px;
+	}
+	.sidebar.mobile-show {
+		left: 0;
+	}
+	.topbar {
+		margin-left: 0 !important;
+		width: 100% !important;
+	}
+	.content {
+		margin-left: 0 !important;
+	}
+}
+
+
+@import "./avatar";
+@import "./button";
+@import "./icon-shape";
+@import "./utilities";

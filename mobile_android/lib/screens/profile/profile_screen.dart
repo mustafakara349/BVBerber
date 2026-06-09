@@ -1,10 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/providers/auth_provider.dart' as app_auth;
 import 'package:mobile_android/routes/app_routes.dart';
@@ -18,7 +14,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final ImagePicker _picker = ImagePicker();
   Map<String, dynamic>? _userData;
   bool _isLoading = true;
   bool _isUploadingPhoto = false;
@@ -31,13 +26,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _loadUserData() async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
+      final authProvider = Provider.of<app_auth.AuthProvider>(context, listen: false);
+      if (authProvider.currentUser == null) {
+        await authProvider.tryAutoLogin();
+      }
+      final user = authProvider.currentUser;
       if (user != null) {
-        final doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-        _userData = doc.data();
+        _userData = user.toMap();
       }
     } catch (e) {
       debugPrint('Kullanıcı verisi yüklenemedi: $e');
@@ -117,59 +112,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _pickAndUploadPhoto(ImageSource source) async {
-    try {
-      final XFile? pickedFile = await _picker.pickImage(
-        source: source,
-        maxWidth: 512,
-        maxHeight: 512,
-        imageQuality: 85,
-      );
-      if (pickedFile == null) return;
-
-      setState(() => _isUploadingPhoto = true);
-
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return;
-
-      final file = File(pickedFile.path);
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('profile_photos')
-          .child('${user.uid}.jpg');
-
-      await ref.putFile(file);
-      final downloadUrl = await ref.getDownloadURL();
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .update({'profileImageUrl': downloadUrl});
-
-      // Yerel veriyi güncelle
-      setState(() {
-        _userData?['profileImageUrl'] = downloadUrl;
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profil fotoğrafı güncellendi'),
-            backgroundColor: AppTheme.successColor,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Fotoğraf yüklenemedi: ${e.toString()}'),
-            backgroundColor: AppTheme.errorColor,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isUploadingPhoto = false);
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Profil fotoğrafı güncelleme işlemi şu anda web panel üzerinden yapılmaktadır.'),
+        backgroundColor: AppTheme.errorColor,
+      ),
+    );
   }
 
   Future<void> _handleSignOut() async {
