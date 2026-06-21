@@ -35,7 +35,7 @@ class MobileApiController extends Controller
                     'name' => $result['user']->first_name,
                     'surname' => $result['user']->last_name,
                     'phone' => $result['user']->phone ?? '',
-                    'profileImageUrl' => $result['user']->profile_photo ? url('storage/' . $result['user']->profile_photo) : '',
+                    'profileImageUrl' => $result['user']->profile_photo ? $request->schemeAndHttpHost() . '/storage/' . $result['user']->profile_photo : '',
                     'role' => 'customer',
                 ],
                 'token' => $result['token'],
@@ -150,7 +150,7 @@ class MobileApiController extends Controller
         ]);
 
         return $this->success([
-            'profileImageUrl' => url('storage/' . $path)
+            'profileImageUrl' => $request->schemeAndHttpHost() . '/storage/' . $path
         ], 'Photo uploaded successfully');
     }
 
@@ -186,12 +186,12 @@ class MobileApiController extends Controller
         $orderBy = $request->input('orderBy');
         $descending = $request->input('descending', true);
 
-        $user = $request->user();
+        $user = auth('sanctum')->user() ?? $request->user();
 
         switch ($collection) {
             case 'services':
                 $query = \App\Models\Service::query()->active();
-                $services = $query->with('category')->get()->map(function ($service) {
+                $services = $query->with('category')->get()->map(function ($service) use ($request) {
                     return [
                         'id' => (string)$service->id,
                         'name' => $service->name,
@@ -199,7 +199,8 @@ class MobileApiController extends Controller
                         'category' => $service->category->name ?? 'Diğer',
                         'duration' => (int)$service->duration_minutes,
                         'price' => (int)$service->price,
-                        'imageUrl' => $service->image ? url('storage/' . $service->image) : '',
+                        'discountedPrice' => $service->discounted_price ? (int)$service->discounted_price : null,
+                        'imageUrl' => $service->image ? $request->schemeAndHttpHost() . '/storage/' . $service->image : '',
                         'isActive' => (bool)$service->is_active,
                     ];
                 });
@@ -207,7 +208,7 @@ class MobileApiController extends Controller
 
             case 'barbers':
                 $query = \App\Models\Employee::query()->active()->visible();
-                $barbers = $query->with(['user', 'reviews'])->get()->map(function ($employee) {
+                $barbers = $query->with(['user', 'reviews'])->get()->map(function ($employee) use ($request) {
                     return [
                         'id' => (string)$employee->id,
                         'userId' => (string)$employee->user_id,
@@ -218,6 +219,7 @@ class MobileApiController extends Controller
                         'isAvailable' => (bool)$employee->is_active,
                         'rating' => (double)$employee->average_rating,
                         'reviewCount' => (int)$employee->reviews()->count(),
+                        'profileImageUrl' => $employee->user->profile_photo ? $request->schemeAndHttpHost() . '/storage/' . $employee->user->profile_photo : '',
                     ];
                 });
                 return $this->success($barbers);
@@ -225,6 +227,9 @@ class MobileApiController extends Controller
             case 'appointments':
                 $userId = null;
                 $barberId = null;
+                $date = null;
+                $time = null;
+                $status = null;
 
                 foreach ($where as $w) {
                     if ($w['field'] === 'userId') {
@@ -233,10 +238,19 @@ class MobileApiController extends Controller
                     if ($w['field'] === 'barberId') {
                         $barberId = $w['value'];
                     }
+                    if ($w['field'] === 'date') {
+                        $date = $w['value'];
+                    }
+                    if ($w['field'] === 'time') {
+                        $time = $w['value'];
+                    }
+                    if ($w['field'] === 'status') {
+                        $status = $w['value'];
+                    }
                 }
 
                 if ($userId) {
-                    if (!$user || $user->id != $userId) {
+                    if (!$user || (string)$user->id !== (string)$userId) {
                         return $this->error('Unauthorized', 403);
                     }
                     $query = \App\Models\Appointment::with(['employee.user', 'appointmentServices.service'])
@@ -248,27 +262,37 @@ class MobileApiController extends Controller
                     return $this->error('Invalid query params', 400);
                 }
 
-                $appointments = $query->get()->map(function ($appt) {
+                if ($date) {
+                    $query->whereDate('start_at', $date);
+                }
+                if ($time) {
+                    $query->whereRaw("TIME_FORMAT(start_at, '%H:%i') = ?", [$time]);
+                }
+                if ($status) {
+                    if ($status === 'active') {
+                        $query->whereIn('status', [\App\Enums\AppointmentStatus::Pending, \App\Enums\AppointmentStatus::Confirmed]);
+                    } elseif ($status === 'cancelled') {
+                        $query->whereIn('status', [\App\Enums\AppointmentStatus::Cancelled, \App\Enums\AppointmentStatus::Rejected]);
+                    } elseif ($status === 'completed') {
+                        $query->whereIn('status', [\App\Enums\AppointmentStatus::Completed, \App\Enums\AppointmentStatus::NoShow]);
+                    }
+                }
+
+                $appointments = $query->get()->map(function ($appt) use ($request) {
                     $firstService = $appt->appointmentServices->first()?->service;
                     
-                    $status = 'active';
-                    if (in_array($appt->status->value, ['cancelled', 'rejected'])) {
-                        $status = 'cancelled';
-                    } elseif (in_array($appt->status->value, ['completed', 'no_show'])) {
-                        $status = 'completed';
-                    }
-
                     return [
                         'id' => (string)$appt->id,
                         'userId' => (string)$appt->customer_id,
                         'barberId' => (string)$appt->employee_id,
                         'barberName' => $appt->employee->full_name ?? '',
+                        'barberImageUrl' => ($appt->employee && $appt->employee->user && $appt->employee->user->profile_photo) ? $request->schemeAndHttpHost() . '/storage/' . $appt->employee->user->profile_photo : '',
                         'serviceId' => $firstService ? (string)$firstService->id : '',
                         'serviceName' => $firstService->name ?? '',
                         'date' => $appt->start_at->format('Y-m-d'),
                         'time' => $appt->start_at->format('H:i'),
                         'price' => (int)$appt->total_price,
-                        'status' => $status,
+                        'status' => $appt->status->value,
                         'createdAt' => $appt->created_at->toISOString(),
                         'updatedAt' => $appt->updated_at->toISOString(),
                     ];
@@ -396,6 +420,9 @@ class MobileApiController extends Controller
         }
 
         if ($collection === 'users') {
+            if ($id === 'me' && $user) {
+                $id = $user->id;
+            }
             if (!$user || $user->id != $id) {
                 return $this->error('Unauthorized', 403);
             }
@@ -407,7 +434,7 @@ class MobileApiController extends Controller
                 'name' => $user->first_name,
                 'surname' => $user->last_name,
                 'phone' => $user->phone ?? '',
-                'profileImageUrl' => $user->profile_photo ? url('storage/' . $user->profile_photo) : '',
+                'profileImageUrl' => $user->profile_photo ? $request->schemeAndHttpHost() . '/storage/' . $user->profile_photo : '',
                 'role' => 'customer',
             ]);
         }
