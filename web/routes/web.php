@@ -73,6 +73,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/products-sales', [App\Http\Controllers\Web\ProductSaleController::class, 'index'])->name('products.sales.index');
         Route::post('/products-sales', [App\Http\Controllers\Web\ProductSaleController::class, 'store'])->name('products.sales.store');
 
+        // Stock Management (New Modules)
+        Route::resource('suppliers', App\Http\Controllers\Web\SupplierController::class)->except(['create', 'edit', 'show']);
+        Route::get('/stock-movements', [App\Http\Controllers\Web\StockMovementController::class, 'index'])->name('stock-movements.index');
+        Route::resource('purchase-orders', App\Http\Controllers\Web\PurchaseOrderController::class)->except(['edit', 'update', 'destroy']);
+        Route::resource('stock-counts', App\Http\Controllers\Web\StockCountController::class)->except(['edit', 'update', 'destroy']);
+
         // Campaigns
         Route::get('/campaigns', [App\Http\Controllers\Web\CampaignController::class, 'index'])->name('campaigns.index');
         Route::post('/campaigns', [App\Http\Controllers\Web\CampaignController::class, 'store'])->name('campaigns.store');

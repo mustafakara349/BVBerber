@@ -53,10 +53,7 @@ class ProductSaleController extends Controller
         DB::transaction(function () use ($validated, $product, $branchId) {
             $totalPrice = $product->sell_price * $validated['quantity'];
 
-            // 1. Stok düşür
-            $product->decrement('stock_quantity', $validated['quantity']);
-
-            // 2. Satış kaydı
+            // 1. Satış kaydı
             $sale = ProductSale::create([
                 'branch_id' => $branchId,
                 'product_id' => $product->id,
@@ -66,7 +63,21 @@ class ProductSaleController extends Controller
                 'unit_price' => $product->sell_price,
                 'total_price' => $totalPrice,
                 'sold_at' => now(),
+                'sale_code' => 'SALE-' . time() . '-' . rand(100, 999),
+                'payment_method' => $validated['payment_method'],
+                'discount_amount' => 0,
             ]);
+
+            // 2. Stok düşür ve hareket kaydını oluştur
+            app(\App\Services\StockService::class)->stockOut(
+                $product, 
+                $validated['quantity'], 
+                'sale', 
+                $product->sell_price, 
+                'product_sales', 
+                $sale->id, 
+                'Satış İşlemi'
+            );
 
             // 3. Kasaya Gelir olarak kaydet
             Transaction::create([

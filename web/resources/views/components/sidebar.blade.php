@@ -70,7 +70,7 @@
             </a>
         </li>
 
-        <li class="px-4 pt-4 pb-2"><small class="nav-text">Stok & Satış</small></li>
+        <li class="px-4 pt-4 pb-2"><small class="nav-text">Stok & Tedarik</small></li>
 
         <li>
             <a class="nav-link {{ (request()->is('products') || request()->routeIs('products.index') || request()->routeIs('products.store') || request()->routeIs('products.update') || request()->routeIs('products.destroy')) ? 'active' : '' }}" href="{{ route('products.index') }}">
@@ -83,6 +83,34 @@
             <a class="nav-link {{ (request()->is('products-sales*') || request()->routeIs('products.sales.*')) ? 'active' : '' }}" href="{{ route('products.sales.index') }}">
                 <i class="ti ti-shopping-cart"></i>
                 <span class="nav-text">Hızlı Satış</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="nav-link {{ (request()->is('suppliers*') || request()->routeIs('suppliers.*')) ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
+                <i class="ti ti-truck"></i>
+                <span class="nav-text">Tedarikçiler</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="nav-link {{ (request()->is('purchase-orders*') || request()->routeIs('purchase-orders.*')) ? 'active' : '' }}" href="{{ route('purchase-orders.index') }}">
+                <i class="ti ti-file-invoice"></i>
+                <span class="nav-text">Mal Alımları</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="nav-link {{ (request()->is('stock-movements*') || request()->routeIs('stock-movements.*')) ? 'active' : '' }}" href="{{ route('stock-movements.index') }}">
+                <i class="ti ti-transfer-in"></i>
+                <span class="nav-text">Stok Hareketleri</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="nav-link {{ (request()->is('stock-counts*') || request()->routeIs('stock-counts.*')) ? 'active' : '' }}" href="{{ route('stock-counts.index') }}">
+                <i class="ti ti-clipboard-list"></i>
+                <span class="nav-text">Sayım & Fire</span>
             </a>
         </li>
 

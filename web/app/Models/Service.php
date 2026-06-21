@@ -6,6 +6,7 @@ use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Service extends Model
@@ -44,6 +45,11 @@ class Service extends Model
     public function employees(): BelongsToMany
     {
         return $this->belongsToMany(Employee::class, 'employee_services');
+    }
+
+    public function serviceProducts(): HasMany
+    {
+        return $this->hasMany(ServiceProduct::class);
     }
 
     public function getEffectivePriceAttribute(): float

@@ -9,13 +9,15 @@ class ProductSale extends Model
 {
     protected $fillable = [
         'branch_id', 'product_id', 'customer_id', 'created_by',
-        'quantity', 'unit_price', 'total_price', 'sold_at'
+        'quantity', 'unit_price', 'total_price', 'sold_at',
+        'sale_code', 'payment_method', 'discount_amount', 'notes'
     ];
 
     protected $casts = [
         'quantity' => 'integer',
         'unit_price' => 'decimal:2',
         'total_price' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'sold_at' => 'datetime',
     ];
 

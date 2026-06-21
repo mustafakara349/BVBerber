@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: localhost
--- Üretim Zamanı: 08 Haz 2026, 17:39:31
+-- Üretim Zamanı: 21 Haz 2026, 18:03:56
 -- Sunucu sürümü: 10.4.28-MariaDB
 -- PHP Sürümü: 8.2.4
 
@@ -138,7 +138,12 @@ INSERT INTO `appointments` (`id`, `uuid`, `branch_id`, `customer_id`, `employee_
 (91, '0239abf6-565f-46bd-b669-9b0c4d3382bb', 1, 7, 2, 'BV-L8GWWXPH', '2026-05-23 19:30:00', '2026-05-23 20:00:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'admin_panel', NULL, NULL, NULL, NULL, NULL, '2026-05-23 17:10:08', 0, 0, NULL, 1, '2026-05-23 11:52:51', '2026-05-23 17:10:08', NULL),
 (92, '64647bdb-bacb-4431-aece-c0c42686ec46', 1, 8, 2, 'BV-BZFILNCU', '2026-05-23 19:00:00', '2026-05-23 19:30:00', 30, 250.00, 0.00, 0.00, 250.00, 'completed', 'paid', 'cash', 'admin_panel', NULL, NULL, NULL, NULL, NULL, '2026-05-23 17:10:50', 0, 0, NULL, 1, '2026-05-23 11:53:04', '2026-05-23 17:10:50', NULL),
 (93, '781ae779-3854-4b70-b581-d80c315f0275', 1, 10, 5, 'BV-YFFI9NEF', '2026-05-23 18:30:00', '2026-05-23 19:00:00', 30, 450.00, 0.00, 0.00, 450.00, 'no_show', 'unpaid', NULL, 'admin_panel', NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, NULL, 1, '2026-05-23 15:16:23', '2026-05-23 17:11:20', NULL),
-(94, '983494de-889f-4a0d-aed8-cab8244b404c', 1, 7, 3, 'BV-RCQ2DFU2', '2026-05-23 21:30:00', '2026-05-23 22:00:00', 30, 300.00, 0.00, 0.00, 300.00, 'completed', 'paid', 'cash', 'admin_panel', NULL, NULL, NULL, NULL, NULL, '2026-05-25 10:56:41', 0, 0, NULL, 1, '2026-05-23 17:27:23', '2026-05-25 10:56:41', NULL);
+(94, '983494de-889f-4a0d-aed8-cab8244b404c', 1, 7, 3, 'BV-RCQ2DFU2', '2026-05-23 21:30:00', '2026-05-23 22:00:00', 30, 300.00, 0.00, 0.00, 300.00, 'completed', 'paid', 'cash', 'admin_panel', NULL, NULL, NULL, NULL, NULL, '2026-05-25 10:56:41', 0, 0, NULL, 1, '2026-05-23 17:27:23', '2026-05-25 10:56:41', NULL),
+(95, '07215bb2-b1d9-4cc4-9d6c-18cdfa6473cf', 1, 13, 2, 'APT-SSTPC4', '2026-06-08 10:00:00', '2026-06-08 10:40:00', 40, 600.00, 0.00, 0.00, 600.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-08 17:06:09', 0, 0, NULL, 1, '2026-06-08 17:04:28', '2026-06-08 17:06:09', NULL),
+(96, 'c94de0a1-3d61-4d34-9e6c-e248be7a145b', 1, 16, 2, 'APT-O1DFKQ', '2026-06-08 10:00:00', '2026-06-08 10:40:00', 40, 600.00, 0.00, 0.00, 600.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-08 17:06:15', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-08 17:06:15', NULL),
+(97, 'a943e909-e20b-4af1-b5d9-a19f8b1ce29e', 1, 17, 2, 'APT-EKCQ4B', '2026-06-08 14:00:00', '2026-06-08 14:30:00', 30, 500.00, 50.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-08 17:06:04', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-08 17:06:04', NULL),
+(98, 'b63c19c6-07a3-4f6e-87be-d254fcce6ba6', 1, 18, 3, 'APT-GVL3JZ', '2026-06-09 11:00:00', '2026-06-09 12:30:00', 90, 1200.00, 0.00, 0.00, 1200.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-20 12:22:53', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-20 12:22:53', NULL),
+(99, '1c848cf9-0480-4334-a2ea-a8ebd852a5a8', 1, 16, 2, 'APT-XV5VVP', '2026-06-09 16:00:00', '2026-06-09 16:30:00', 30, 500.00, 50.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-20 12:22:50', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-20 12:22:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -215,7 +220,11 @@ INSERT INTO `appointment_services` (`id`, `appointment_id`, `service_id`, `emplo
 (54, 91, 1, 2, 1, 30, 450.00, 450.00, '2026-05-23 11:52:51'),
 (55, 92, 6, 2, 1, 30, 250.00, 250.00, '2026-05-23 11:53:04'),
 (56, 93, 1, 5, 1, 30, 450.00, 450.00, '2026-05-23 15:16:23'),
-(57, 94, 2, 3, 1, 30, 300.00, 300.00, '2026-05-23 17:27:23');
+(57, 94, 2, 3, 1, 30, 300.00, 300.00, '2026-05-23 17:27:23'),
+(58, 96, 4, 2, 1, 40, 600.00, 600.00, '2026-06-08 17:04:57'),
+(59, 97, 1, 2, 1, 30, 500.00, 450.00, '2026-06-08 17:04:57'),
+(60, 98, 3, 3, 1, 90, 1200.00, 1200.00, '2026-06-08 17:04:57'),
+(61, 99, 1, 2, 1, 30, 500.00, 450.00, '2026-06-08 17:04:57');
 
 -- --------------------------------------------------------
 
@@ -414,7 +423,12 @@ INSERT INTO `appointment_status_logs` (`id`, `appointment_id`, `changed_by`, `ol
 (181, 94, NULL, NULL, 'pending', NULL, '2026-05-23 17:27:23'),
 (182, 94, 1, 'pending', 'confirmed', NULL, '2026-05-23 17:29:09'),
 (183, 94, 1, 'confirmed', 'completed', NULL, '2026-05-25 10:56:41'),
-(184, 88, 1, 'confirmed', 'completed', NULL, '2026-05-25 10:56:44');
+(184, 88, 1, 'confirmed', 'completed', NULL, '2026-05-25 10:56:44'),
+(185, 97, 1, 'confirmed', 'completed', NULL, '2026-06-08 17:06:04'),
+(186, 95, 1, 'confirmed', 'completed', NULL, '2026-06-08 17:06:09'),
+(187, 96, 1, 'confirmed', 'completed', NULL, '2026-06-08 17:06:15'),
+(188, 99, 1, 'confirmed', 'completed', NULL, '2026-06-20 12:22:50'),
+(189, 98, 1, 'confirmed', 'completed', NULL, '2026-06-20 12:22:53');
 
 -- --------------------------------------------------------
 
@@ -780,7 +794,40 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `model_type`, `model_id`, `
 (335, 1, 'updated', 'App\\Models\\Appointment', 47, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null,\\\"updated_at\\\":\\\"2026-05-18T15:14:48.000000Z\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\",\\\"updated_at\\\":\\\"2026-05-30 18:00:27\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-30 15:00:27'),
 (336, 1, 'updated', 'App\\Models\\Appointment', 33, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null,\\\"updated_at\\\":\\\"2026-05-18T15:14:16.000000Z\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\",\\\"updated_at\\\":\\\"2026-05-30 18:14:15\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-30 15:14:15'),
 (337, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-05-30T14:27:45.000000Z\\\",\\\"updated_at\\\":\\\"2026-05-30T14:27:45.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-08 17:45:30\\\",\\\"updated_at\\\":\\\"2026-06-08 17:45:30\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 14:45:30'),
-(338, 1, 'updated', 'App\\Models\\Appointment', 46, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null,\\\"updated_at\\\":\\\"2026-05-18T15:14:55.000000Z\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\",\\\"updated_at\\\":\\\"2026-06-08 17:51:24\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 14:51:24');
+(338, 1, 'updated', 'App\\Models\\Appointment', 46, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null,\\\"updated_at\\\":\\\"2026-05-18T15:14:55.000000Z\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\",\\\"updated_at\\\":\\\"2026-06-08 17:51:24\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 14:51:24'),
+(339, 1, 'created', 'App\\Models\\Product', 1, NULL, '\"{\\\"name\\\":\\\"Tarak\\\",\\\"sku\\\":null,\\\"barcode\\\":null,\\\"description\\\":\\\"Ergonomik tarak.\\\",\\\"purchase_price\\\":\\\"50.00\\\",\\\"sell_price\\\":\\\"300.00\\\",\\\"stock_quantity\\\":\\\"10\\\",\\\"branch_id\\\":1,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-08 19:48:11\\\",\\\"created_at\\\":\\\"2026-06-08 19:48:11\\\",\\\"id\\\":1}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 16:48:11'),
+(340, 1, 'updated', 'App\\Models\\Product', 1, '\"{\\\"stock_quantity\\\":10}\"', '\"{\\\"stock_quantity\\\":8}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 16:48:25'),
+(341, NULL, 'created', 'App\\Models\\User', 13, NULL, '\"{\\\"role_id\\\":6,\\\"first_name\\\":\\\"Aylin\\\",\\\"last_name\\\":\\\"Y\\\\u0131lmaz\\\",\\\"email\\\":\\\"aylin.yilmaz.1780938267@example.com\\\",\\\"phone\\\":\\\"+905326374005\\\",\\\"password\\\":\\\"$2y$12$RPuMNI515FeG4sfAR0kYi.eY2y1jmbfOBk4lrlx6nHhmtUU38v0Ie\\\",\\\"gender\\\":\\\"female\\\",\\\"birth_date\\\":\\\"1995-08-15 00:00:00\\\",\\\"status\\\":\\\"active\\\",\\\"uuid\\\":\\\"6afdc9d7-0c0f-4c79-8ead-074901add972\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:28\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:28\\\",\\\"id\\\":13}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:28'),
+(342, NULL, 'created', 'App\\Models\\User', 14, NULL, '\"{\\\"role_id\\\":6,\\\"first_name\\\":\\\"Burak\\\",\\\"last_name\\\":\\\"Kaya\\\",\\\"email\\\":\\\"burak.kaya.1780938267@example.com\\\",\\\"phone\\\":\\\"+905423344241\\\",\\\"password\\\":\\\"$2y$12$ZihS4FFqWLRYFHerwp2mP.NeJoKh6twXl45cIbNDmbzV5YE6v12J6\\\",\\\"gender\\\":\\\"male\\\",\\\"birth_date\\\":\\\"1990-03-22 00:00:00\\\",\\\"status\\\":\\\"active\\\",\\\"uuid\\\":\\\"77039879-5aa5-4a54-91d6-e6284794f1c2\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:28\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:28\\\",\\\"id\\\":14}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:28'),
+(343, NULL, 'created', 'App\\Models\\User', 15, NULL, '\"{\\\"role_id\\\":6,\\\"first_name\\\":\\\"Cem\\\",\\\"last_name\\\":\\\"Arslan\\\",\\\"email\\\":\\\"cem.arslan.1780938267@example.com\\\",\\\"phone\\\":\\\"+905525934387\\\",\\\"password\\\":\\\"$2y$12$NK.kbIA7L1QvMWHM45cLD..AaW5sqZrDPZtcqkiTJcwBwYGTvHimO\\\",\\\"gender\\\":\\\"male\\\",\\\"birth_date\\\":\\\"1988-11-05 00:00:00\\\",\\\"status\\\":\\\"active\\\",\\\"uuid\\\":\\\"fd435eb2-4a57-44c7-a6d0-61940dbe227c\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:28\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:28\\\",\\\"id\\\":15}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:28'),
+(344, NULL, 'created', 'App\\Models\\Appointment', 95, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":13,\\\"employee_id\\\":2,\\\"appointment_code\\\":\\\"APT-SSTPC4\\\",\\\"start_at\\\":\\\"2026-06-08 10:00:00\\\",\\\"end_at\\\":\\\"2026-06-08 10:40:00\\\",\\\"total_duration\\\":40,\\\"subtotal\\\":600,\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"total_price\\\":600,\\\"status\\\":\\\"confirmed\\\",\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":\\\"cash\\\",\\\"source\\\":\\\"website\\\",\\\"created_by\\\":1,\\\"uuid\\\":\\\"07215bb2-b1d9-4cc4-9d6c-18cdfa6473cf\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:28\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:28\\\",\\\"id\\\":95}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:28'),
+(345, NULL, 'created', 'App\\Models\\User', 16, NULL, '\"{\\\"role_id\\\":6,\\\"first_name\\\":\\\"Aylin\\\",\\\"last_name\\\":\\\"Y\\\\u0131lmaz\\\",\\\"email\\\":\\\"aylin.yilmaz.1780938296@example.com\\\",\\\"phone\\\":\\\"+905322449560\\\",\\\"password\\\":\\\"$2y$12$OxswNlu\\\\\\/x2UiVArFvj4NB.44tUXRcTdy014IOQCToestNEqaVR2i6\\\",\\\"gender\\\":\\\"female\\\",\\\"birth_date\\\":\\\"1995-08-15 00:00:00\\\",\\\"status\\\":\\\"active\\\",\\\"uuid\\\":\\\"bb973654-e0f8-46dc-a685-045147c813eb\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"id\\\":16}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:57'),
+(346, NULL, 'created', 'App\\Models\\User', 17, NULL, '\"{\\\"role_id\\\":6,\\\"first_name\\\":\\\"Burak\\\",\\\"last_name\\\":\\\"Kaya\\\",\\\"email\\\":\\\"burak.kaya.1780938296@example.com\\\",\\\"phone\\\":\\\"+905424104886\\\",\\\"password\\\":\\\"$2y$12$6kMscjvKl8NrOc5\\\\\\/B\\\\\\/Lp7e5Yd\\\\\\/zkVJ96MWCMsBNdUilreTV9UKymC\\\",\\\"gender\\\":\\\"male\\\",\\\"birth_date\\\":\\\"1990-03-22 00:00:00\\\",\\\"status\\\":\\\"active\\\",\\\"uuid\\\":\\\"dab4504a-ed4e-46af-842e-f2516da37fee\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"id\\\":17}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:57'),
+(347, NULL, 'created', 'App\\Models\\User', 18, NULL, '\"{\\\"role_id\\\":6,\\\"first_name\\\":\\\"Cem\\\",\\\"last_name\\\":\\\"Arslan\\\",\\\"email\\\":\\\"cem.arslan.1780938296@example.com\\\",\\\"phone\\\":\\\"+905529794637\\\",\\\"password\\\":\\\"$2y$12$EmTmBke7QlgisjVg6pX9ze459MyemtStWv2jZR0VMIN3aaqx6alty\\\",\\\"gender\\\":\\\"male\\\",\\\"birth_date\\\":\\\"1988-11-05 00:00:00\\\",\\\"status\\\":\\\"active\\\",\\\"uuid\\\":\\\"a2094963-570f-4119-b3c7-6a112f3c2738\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"id\\\":18}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:57'),
+(348, NULL, 'created', 'App\\Models\\Appointment', 96, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":16,\\\"employee_id\\\":2,\\\"appointment_code\\\":\\\"APT-O1DFKQ\\\",\\\"start_at\\\":\\\"2026-06-08 10:00:00\\\",\\\"end_at\\\":\\\"2026-06-08 10:40:00\\\",\\\"total_duration\\\":40,\\\"subtotal\\\":600,\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"total_price\\\":600,\\\"status\\\":\\\"confirmed\\\",\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":\\\"cash\\\",\\\"source\\\":\\\"website\\\",\\\"created_by\\\":1,\\\"uuid\\\":\\\"c94de0a1-3d61-4d34-9e6c-e248be7a145b\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"id\\\":96}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:57'),
+(349, NULL, 'created', 'App\\Models\\Appointment', 97, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":17,\\\"employee_id\\\":2,\\\"appointment_code\\\":\\\"APT-EKCQ4B\\\",\\\"start_at\\\":\\\"2026-06-08 14:00:00\\\",\\\"end_at\\\":\\\"2026-06-08 14:30:00\\\",\\\"total_duration\\\":30,\\\"subtotal\\\":500,\\\"discount_amount\\\":50,\\\"tax_amount\\\":0,\\\"total_price\\\":450,\\\"status\\\":\\\"confirmed\\\",\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":\\\"cash\\\",\\\"source\\\":\\\"website\\\",\\\"created_by\\\":1,\\\"uuid\\\":\\\"a943e909-e20b-4af1-b5d9-a19f8b1ce29e\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"id\\\":97}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:57'),
+(350, NULL, 'created', 'App\\Models\\Appointment', 98, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":18,\\\"employee_id\\\":3,\\\"appointment_code\\\":\\\"APT-GVL3JZ\\\",\\\"start_at\\\":\\\"2026-06-09 11:00:00\\\",\\\"end_at\\\":\\\"2026-06-09 12:30:00\\\",\\\"total_duration\\\":90,\\\"subtotal\\\":1200,\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"total_price\\\":1200,\\\"status\\\":\\\"confirmed\\\",\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":\\\"credit_card\\\",\\\"source\\\":\\\"website\\\",\\\"created_by\\\":1,\\\"uuid\\\":\\\"b63c19c6-07a3-4f6e-87be-d254fcce6ba6\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"id\\\":98}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:57'),
+(351, NULL, 'created', 'App\\Models\\Appointment', 99, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":16,\\\"employee_id\\\":2,\\\"appointment_code\\\":\\\"APT-XV5VVP\\\",\\\"start_at\\\":\\\"2026-06-09 16:00:00\\\",\\\"end_at\\\":\\\"2026-06-09 16:30:00\\\",\\\"total_duration\\\":30,\\\"subtotal\\\":500,\\\"discount_amount\\\":50,\\\"tax_amount\\\":0,\\\"total_price\\\":450,\\\"status\\\":\\\"confirmed\\\",\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":\\\"credit_card\\\",\\\"source\\\":\\\"website\\\",\\\"created_by\\\":1,\\\"uuid\\\":\\\"1c848cf9-0480-4334-a2ea-a8ebd852a5a8\\\",\\\"updated_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"created_at\\\":\\\"2026-06-08 20:04:57\\\",\\\"id\\\":99}\"', '127.0.0.1', 'Symfony', '2026-06-08 17:04:57'),
+(352, 1, 'updated', 'App\\Models\\Appointment', 97, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-08T17:04:57.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-08 20:06:04\\\",\\\"updated_at\\\":\\\"2026-06-08 20:06:04\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 17:06:04'),
+(353, 1, 'updated', 'App\\Models\\Appointment', 97, '\"{\\\"payment_status\\\":\\\"unpaid\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 17:06:04'),
+(354, 1, 'updated', 'App\\Models\\Appointment', 95, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-08T17:04:28.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-08 20:06:09\\\",\\\"updated_at\\\":\\\"2026-06-08 20:06:09\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 17:06:09'),
+(355, 1, 'updated', 'App\\Models\\Appointment', 95, '\"{\\\"payment_status\\\":\\\"unpaid\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 17:06:09'),
+(356, 1, 'updated', 'App\\Models\\Appointment', 96, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-08T17:04:57.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-08 20:06:15\\\",\\\"updated_at\\\":\\\"2026-06-08 20:06:15\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 17:06:15'),
+(357, 1, 'updated', 'App\\Models\\Appointment', 96, '\"{\\\"payment_status\\\":\\\"unpaid\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 17:06:15'),
+(358, 1, 'deleted', 'App\\Models\\User', 17, '\"{\\\"id\\\":17,\\\"uuid\\\":\\\"dab4504a-ed4e-46af-842e-f2516da37fee\\\",\\\"role_id\\\":6,\\\"first_name\\\":\\\"Burak\\\",\\\"last_name\\\":\\\"Kaya\\\",\\\"email\\\":\\\"burak.kaya.1780938296@example.com\\\",\\\"phone\\\":\\\"+905424104886\\\",\\\"password\\\":\\\"$2y$12$6kMscjvKl8NrOc5\\\\\\/B\\\\\\/Lp7e5Yd\\\\\\/zkVJ96MWCMsBNdUilreTV9UKymC\\\",\\\"gender\\\":\\\"male\\\",\\\"birth_date\\\":\\\"1990-03-21T22:00:00.000000Z\\\",\\\"profile_photo\\\":null,\\\"email_verified_at\\\":null,\\\"phone_verified_at\\\":null,\\\"last_login_at\\\":null,\\\"status\\\":\\\"active\\\",\\\"remember_token\\\":null,\\\"created_at\\\":\\\"2026-06-08T17:04:57.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-08T17:06:36.000000Z\\\",\\\"deleted_at\\\":\\\"2026-06-08T17:06:36.000000Z\\\"}\"', NULL, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-06-08 17:06:36'),
+(359, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-08T14:45:30.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-08T14:45:30.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-20 15:22:41\\\",\\\"updated_at\\\":\\\"2026-06-20 15:22:41\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-20 12:22:41'),
+(360, 1, 'updated', 'App\\Models\\Appointment', 99, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-08T17:04:57.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-20 15:22:50\\\",\\\"updated_at\\\":\\\"2026-06-20 15:22:50\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-20 12:22:50'),
+(361, 1, 'updated', 'App\\Models\\Appointment', 99, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":\\\"credit_card\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-20 12:22:50'),
+(362, 1, 'updated', 'App\\Models\\Appointment', 98, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-08T17:04:57.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-20 15:22:53\\\",\\\"updated_at\\\":\\\"2026-06-20 15:22:53\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-20 12:22:53'),
+(363, 1, 'updated', 'App\\Models\\Appointment', 98, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":\\\"credit_card\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-20 12:22:53'),
+(364, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-20T12:22:41.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-20T12:22:41.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-20 18:18:44\\\",\\\"updated_at\\\":\\\"2026-06-20 18:18:44\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-20 15:18:44'),
+(365, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-20T15:18:44.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-20T15:18:44.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 18:04:19\\\",\\\"updated_at\\\":\\\"2026-06-21 18:04:19\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:04:19'),
+(366, 1, 'updated', 'App\\Models\\Service', 6, '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-05-23T15:19:10.000000Z\\\"}\"', '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-21 18:06:55\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:06:55'),
+(367, 1, 'created', 'App\\Models\\Product', 2, NULL, '\"{\\\"name\\\":\\\"Sa\\\\u00e7 Spreyii\\\",\\\"sku\\\":null,\\\"barcode\\\":\\\"38219141294\\\\\\\"\\\",\\\"description\\\":\\\"Sa\\\\u00e7\\\\u0131n\\\\u0131z\\\\u0131 sabitlemek i\\\\u00e7in en iyisi.\\\",\\\"purchase_price\\\":\\\"125\\\",\\\"sell_price\\\":\\\"250\\\",\\\"stock_quantity\\\":\\\"3\\\",\\\"branch_id\\\":1,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-21 18:08:16\\\",\\\"created_at\\\":\\\"2026-06-21 18:08:16\\\",\\\"id\\\":2}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:08:16'),
+(368, 1, 'updated', 'App\\Models\\Product', 2, '\"{\\\"stock_quantity\\\":3}\"', '\"{\\\"stock_quantity\\\":2}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:09:30'),
+(369, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T15:04:19.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T15:04:19.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 18:42:51\\\",\\\"updated_at\\\":\\\"2026-06-21 18:42:51\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:42:51'),
+(370, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T15:42:51.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T15:42:51.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 18:57:37\\\",\\\"updated_at\\\":\\\"2026-06-21 18:57:37\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:57:37'),
+(371, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T15:57:37.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T15:57:37.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 18:57:45\\\",\\\"updated_at\\\":\\\"2026-06-21 18:57:45\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:57:45');
 
 -- --------------------------------------------------------
 
@@ -861,10 +908,10 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('bv-barber-cache-dashboard.barbers.1', 'a:4:{i:0;a:8:{s:2:\"id\";i:3;s:4:\"name\";s:10:\"Burak Kaya\";s:5:\"title\";s:10:\"VIP Barber\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:1;s:7:\"revenue\";d:1000;s:6:\"rating\";d:4.5;s:15:\"commission_rate\";s:5:\"20.00\";}i:1;a:8:{s:2:\"id\";i:1;s:4:\"name\";s:13:\"Ahmet Yılmaz\";s:5:\"title\";s:11:\"Salon Owner\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"15.00\";}i:2;a:8:{s:2:\"id\";i:2;s:4:\"name\";s:10:\"Emre Demir\";s:5:\"title\";s:13:\"Senior Barber\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:5;s:15:\"commission_rate\";s:5:\"35.00\";}i:3;a:8:{s:2:\"id\";i:4;s:4:\"name\";s:12:\"Selin Aydın\";s:5:\"title\";s:12:\"Receptionist\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:4:\"0.00\";}}', 1778775903),
-('bv-barber-cache-dashboard.chart.1', 'a:12:{i:0;a:3:{s:5:\"month\";i:1;s:5:\"label\";s:3:\"Oca\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";i:2;s:5:\"label\";s:4:\"Şub\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";i:3;s:5:\"label\";s:3:\"Mar\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";i:4;s:5:\"label\";s:3:\"Nis\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";i:5;s:5:\"label\";s:3:\"May\";s:7:\"revenue\";d:1000;}i:5;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:3:\"Haz\";s:7:\"revenue\";d:0;}i:6;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:3:\"Tem\";s:7:\"revenue\";d:0;}i:7;a:3:{s:5:\"month\";i:8;s:5:\"label\";s:4:\"Ağu\";s:7:\"revenue\";d:0;}i:8;a:3:{s:5:\"month\";i:9;s:5:\"label\";s:3:\"Eyl\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";i:10;s:5:\"label\";s:3:\"Eki\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";i:11;s:5:\"label\";s:3:\"Kas\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";i:12;s:5:\"label\";s:3:\"Ara\";s:7:\"revenue\";d:0;}}', 1778775903),
-('bv-barber-cache-dashboard.services.1', 'a:1:{i:0;O:8:\"stdClass\":4:{s:2:\"id\";i:3;s:4:\"name\";s:14:\"VIP Full Paket\";s:11:\"usage_count\";i:1;s:13:\"total_revenue\";s:7:\"1200.00\";}}', 1778775903),
-('bv-barber-cache-dashboard.widgets.1', 'a:4:{s:7:\"revenue\";a:4:{s:5:\"daily\";i:0;s:6:\"weekly\";s:7:\"1000.00\";s:7:\"monthly\";s:7:\"1000.00\";s:6:\"yearly\";s:7:\"1000.00\";}s:12:\"appointments\";a:7:{s:11:\"today_total\";i:0;s:15:\"today_completed\";i:0;s:13:\"today_pending\";i:0;s:11:\"month_total\";i:3;s:15:\"month_cancelled\";i:0;s:13:\"month_no_show\";i:0;s:17:\"cancellation_rate\";d:0;}s:9:\"financial\";a:3:{s:6:\"income\";d:1450;s:7:\"expense\";d:4300;s:6:\"profit\";d:-2850;}s:9:\"customers\";a:4:{s:5:\"total\";i:3;s:14:\"new_this_month\";i:3;s:5:\"loyal\";i:0;s:12:\"avg_spending\";d:1000;}}', 1778775603);
+('bv-barber-cache-dashboard.barbers.1', 'a:4:{i:0;a:8:{s:2:\"id\";i:2;s:4:\"name\";s:10:\"Emre Demir\";s:5:\"title\";s:13:\"Senior Barber\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:4;s:7:\"revenue\";d:2100;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"35.00\";}i:1;a:8:{s:2:\"id\";i:3;s:4:\"name\";s:10:\"Burak Kaya\";s:5:\"title\";s:10:\"VIP Barber\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:1;s:7:\"revenue\";d:1200;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"20.00\";}i:2;a:8:{s:2:\"id\";i:1;s:4:\"name\";s:13:\"Ahmet Yılmaz\";s:5:\"title\";s:11:\"Salon Owner\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"15.00\";}i:3;a:8:{s:2:\"id\";i:5;s:4:\"name\";s:19:\"Deneme Çalışanı\";s:5:\"title\";s:6:\"Berber\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:4:\"0.00\";}}', 1782057808),
+('bv-barber-cache-dashboard.chart.1.all_periods', 'a:3:{s:4:\"year\";a:12:{i:0;a:3:{s:5:\"month\";i:1;s:5:\"label\";s:3:\"Oca\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";i:2;s:5:\"label\";s:4:\"Şub\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";i:3;s:5:\"label\";s:3:\"Mar\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";i:4;s:5:\"label\";s:3:\"Nis\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";i:5;s:5:\"label\";s:3:\"May\";s:7:\"revenue\";d:24050;}i:5;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:3:\"Haz\";s:7:\"revenue\";d:5149;}i:6;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:3:\"Tem\";s:7:\"revenue\";d:0;}i:7;a:3:{s:5:\"month\";i:8;s:5:\"label\";s:4:\"Ağu\";s:7:\"revenue\";d:0;}i:8;a:3:{s:5:\"month\";i:9;s:5:\"label\";s:3:\"Eyl\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";i:10;s:5:\"label\";s:3:\"Eki\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";i:11;s:5:\"label\";s:3:\"Kas\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";i:12;s:5:\"label\";s:3:\"Ara\";s:7:\"revenue\";d:0;}}s:5:\"month\";a:30:{i:0;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"1 Haz\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"2 Haz\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"3 Haz\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"4 Haz\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"5 Haz\";s:7:\"revenue\";d:0;}i:5;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"6 Haz\";s:7:\"revenue\";d:0;}i:6;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"7 Haz\";s:7:\"revenue\";d:0;}i:7;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"8 Haz\";s:7:\"revenue\";d:3249;}i:8;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"9 Haz\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"10 Haz\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"11 Haz\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"12 Haz\";s:7:\"revenue\";d:0;}i:12;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"13 Haz\";s:7:\"revenue\";d:0;}i:13;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"14 Haz\";s:7:\"revenue\";d:0;}i:14;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"15 Haz\";s:7:\"revenue\";d:0;}i:15;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"16 Haz\";s:7:\"revenue\";d:0;}i:16;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"17 Haz\";s:7:\"revenue\";d:0;}i:17;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"18 Haz\";s:7:\"revenue\";d:0;}i:18;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"19 Haz\";s:7:\"revenue\";d:0;}i:19;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"20 Haz\";s:7:\"revenue\";d:1650;}i:20;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"21 Haz\";s:7:\"revenue\";d:250;}i:21;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"22 Haz\";s:7:\"revenue\";d:0;}i:22;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"23 Haz\";s:7:\"revenue\";d:0;}i:23;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"24 Haz\";s:7:\"revenue\";d:0;}i:24;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"25 Haz\";s:7:\"revenue\";d:0;}i:25;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"26 Haz\";s:7:\"revenue\";d:0;}i:26;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"27 Haz\";s:7:\"revenue\";d:0;}i:27;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"28 Haz\";s:7:\"revenue\";d:0;}i:28;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"29 Haz\";s:7:\"revenue\";d:0;}i:29;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"30 Haz\";s:7:\"revenue\";d:0;}}s:3:\"day\";a:24:{i:0;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"00:00\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"01:00\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"02:00\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"03:00\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"04:00\";s:7:\"revenue\";d:0;}i:5;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"05:00\";s:7:\"revenue\";d:0;}i:6;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"06:00\";s:7:\"revenue\";d:0;}i:7;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"07:00\";s:7:\"revenue\";d:0;}i:8;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"08:00\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"09:00\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"10:00\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"11:00\";s:7:\"revenue\";d:0;}i:12;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"12:00\";s:7:\"revenue\";d:0;}i:13;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"13:00\";s:7:\"revenue\";d:0;}i:14;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"14:00\";s:7:\"revenue\";d:0;}i:15;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"15:00\";s:7:\"revenue\";d:0;}i:16;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"16:00\";s:7:\"revenue\";d:0;}i:17;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"17:00\";s:7:\"revenue\";d:0;}i:18;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"18:00\";s:7:\"revenue\";d:250;}i:19;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"19:00\";s:7:\"revenue\";d:0;}i:20;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"20:00\";s:7:\"revenue\";d:0;}i:21;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"21:00\";s:7:\"revenue\";d:0;}i:22;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"22:00\";s:7:\"revenue\";d:0;}i:23;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"23:00\";s:7:\"revenue\";d:0;}}}', 1782057808),
+('bv-barber-cache-dashboard.services.1', 'a:2:{i:0;a:4:{s:2:\"id\";i:1;s:4:\"name\";s:18:\"Modern Saç Kesimi\";s:11:\"usage_count\";i:15;s:13:\"total_revenue\";s:8:\"13050.00\";}i:1;a:4:{s:2:\"id\";i:3;s:4:\"name\";s:14:\"VIP Full Paket\";s:11:\"usage_count\";i:6;s:13:\"total_revenue\";s:7:\"7998.00\";}}', 1782057808),
+('bv-barber-cache-dashboard.widgets.1', 'a:4:{s:7:\"revenue\";a:5:{s:5:\"daily\";d:250;s:13:\"daily_expense\";d:0;s:6:\"weekly\";d:1900;s:7:\"monthly\";d:5149;s:6:\"yearly\";d:29199;}s:12:\"appointments\";a:7:{s:11:\"today_total\";i:0;s:15:\"today_completed\";i:0;s:13:\"today_pending\";i:0;s:11:\"month_total\";i:5;s:15:\"month_cancelled\";i:0;s:13:\"month_no_show\";i:0;s:17:\"cancellation_rate\";d:0;}s:9:\"financial\";a:3:{s:6:\"income\";d:5149;s:7:\"expense\";d:0;s:6:\"profit\";d:5149;}s:9:\"customers\";a:5:{s:5:\"total\";i:11;s:14:\"new_this_month\";i:5;s:5:\"loyal\";i:6;s:12:\"avg_spending\";d:660;s:7:\"genders\";a:3:{s:4:\"male\";i:8;s:6:\"female\";i:3;s:5:\"other\";i:0;}}}', 1782057808);
 
 -- --------------------------------------------------------
 
@@ -1260,7 +1307,11 @@ CREATE TABLE `loyalty_accounts` (
 INSERT INTO `loyalty_accounts` (`id`, `customer_id`, `points_balance`, `total_earned`, `total_spent`, `created_at`, `updated_at`) VALUES
 (1, 6, 120, 300, 180, '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
 (2, 7, 500, 700, 200, '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
-(3, 8, 50, 50, 0, '2026-05-14 13:44:51', '2026-05-14 13:44:51');
+(3, 8, 50, 50, 0, '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
+(4, 17, 450, 450, 0, '2026-06-08 17:06:04', '2026-06-08 17:06:04'),
+(5, 13, 600, 600, 0, '2026-06-08 17:06:09', '2026-06-08 17:06:09'),
+(6, 16, 1050, 1050, 0, '2026-06-08 17:06:15', '2026-06-20 12:22:50'),
+(7, 18, 1200, 1200, 0, '2026-06-20 12:22:53', '2026-06-20 12:22:53');
 
 -- --------------------------------------------------------
 
@@ -1284,7 +1335,12 @@ CREATE TABLE `loyalty_transactions` (
 INSERT INTO `loyalty_transactions` (`id`, `loyalty_account_id`, `type`, `points`, `description`, `created_at`) VALUES
 (1, 1, 'earn', 100, 'Randevu sonrası puan kazanımı', '2026-05-14 13:44:51'),
 (2, 1, 'spend', 50, 'İndirim kullanımı', '2026-05-14 13:44:51'),
-(3, 2, 'earn', 500, 'VIP paket bonus puanı', '2026-05-14 13:44:51');
+(3, 2, 'earn', 500, 'VIP paket bonus puanı', '2026-05-14 13:44:51'),
+(4, 4, 'earn', 450, 'Randevu Tamamlandı (#APT-EKCQ4B)', '2026-06-08 17:06:04'),
+(5, 5, 'earn', 600, 'Randevu Tamamlandı (#APT-SSTPC4)', '2026-06-08 17:06:09'),
+(6, 6, 'earn', 600, 'Randevu Tamamlandı (#APT-O1DFKQ)', '2026-06-08 17:06:15'),
+(7, 6, 'earn', 450, 'Randevu Tamamlandı (#APT-XV5VVP)', '2026-06-20 12:22:50'),
+(8, 7, 'earn', 1200, 'Randevu Tamamlandı (#APT-GVL3JZ)', '2026-06-20 12:22:53');
 
 -- --------------------------------------------------------
 
@@ -1303,7 +1359,42 @@ CREATE TABLE `migrations` (
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(1, '2026_05_30_170000_create_debts_table', 1);
+(1, '2026_05_30_170000_create_debts_table', 1),
+(2, '2026_06_08_000032_create_products_and_sales_tables', 2),
+(3, '0001_01_01_000000_create_users_table', 1),
+(4, '0001_01_01_000001_create_cache_table', 1),
+(5, '0001_01_01_000002_create_jobs_table', 1),
+(6, '2026_06_08_000001_create_roles_table', 1),
+(7, '2026_06_08_000002_create_permissions_table', 1),
+(8, '2026_06_08_000003_create_role_permissions_table', 1),
+(9, '2026_06_08_000004_update_users_table', 1),
+(10, '2026_06_08_000005_create_branches_table', 1),
+(11, '2026_06_08_000006_create_branch_settings_table', 1),
+(12, '2026_06_08_000007_create_employees_table', 1),
+(13, '2026_06_08_000008_create_service_categories_table', 1),
+(14, '2026_06_08_000009_create_services_table', 1),
+(15, '2026_06_08_000010_create_employee_services_table', 1),
+(16, '2026_06_08_000011_create_employee_schedules_table', 1),
+(17, '2026_06_08_000012_create_employee_leaves_table', 1),
+(18, '2026_06_08_000013_create_appointments_table', 1),
+(19, '2026_06_08_000014_create_appointment_services_table', 1),
+(20, '2026_06_08_000015_create_appointment_status_logs_table', 1),
+(21, '2026_06_08_000016_create_transactions_table', 1),
+(22, '2026_06_08_000017_create_payments_table', 1),
+(23, '2026_06_08_000018_create_expense_categories_table', 1),
+(24, '2026_06_08_000019_create_expenses_table', 1),
+(25, '2026_06_08_000020_create_customer_notes_table', 1),
+(26, '2026_06_08_000021_create_reviews_table', 1),
+(27, '2026_06_08_000022_create_loyalty_tables', 1),
+(28, '2026_06_08_000023_create_campaigns_table', 1),
+(29, '2026_06_08_000024_create_coupons_table', 1),
+(30, '2026_06_08_000025_create_notifications_table', 1),
+(31, '2026_06_08_000026_create_devices_table', 1),
+(32, '2026_06_08_000027_create_audit_logs_table', 1),
+(33, '2026_06_08_000028_create_settings_table', 1),
+(34, '2026_06_08_000029_fix_debts_foreign_keys', 1),
+(35, '2026_06_08_000030_create_debts_table', 1),
+(36, '2026_06_08_000031_add_missing_indexes', 1);
 
 -- --------------------------------------------------------
 
@@ -1401,7 +1492,12 @@ INSERT INTO `payments` (`id`, `appointment_id`, `amount`, `payment_method`, `tra
 (38, 52, 450.00, 'cash', NULL, '2026-05-30 18:00:14', '2026-05-30 15:00:14'),
 (39, 47, 300.00, 'cash', NULL, '2026-05-30 18:00:27', '2026-05-30 15:00:27'),
 (40, 33, 300.00, 'cash', NULL, '2026-05-30 18:14:15', '2026-05-30 15:14:15'),
-(41, 46, 999.00, 'cash', NULL, '2026-06-08 17:51:24', '2026-06-08 14:51:24');
+(41, 46, 999.00, 'cash', NULL, '2026-06-08 17:51:24', '2026-06-08 14:51:24'),
+(42, 97, 450.00, 'cash', NULL, '2026-06-08 20:06:04', '2026-06-08 17:06:04'),
+(43, 95, 600.00, 'cash', NULL, '2026-06-08 20:06:09', '2026-06-08 17:06:09'),
+(44, 96, 600.00, 'cash', NULL, '2026-06-08 20:06:15', '2026-06-08 17:06:15'),
+(45, 99, 450.00, 'cash', NULL, '2026-06-20 15:22:50', '2026-06-20 12:22:50'),
+(46, 98, 1200.00, 'cash', NULL, '2026-06-20 15:22:53', '2026-06-20 12:22:53');
 
 -- --------------------------------------------------------
 
@@ -1435,6 +1531,64 @@ CREATE TABLE `personal_access_tokens` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `products`
+--
+
+CREATE TABLE `products` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `branch_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `sku` varchar(100) DEFAULT NULL,
+  `barcode` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `purchase_price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `sell_price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `stock_quantity` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Tablo döküm verisi `products`
+--
+
+INSERT INTO `products` (`id`, `branch_id`, `name`, `sku`, `barcode`, `description`, `purchase_price`, `sell_price`, `stock_quantity`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 1, 'Tarak', NULL, NULL, 'Ergonomik tarak.', 50.00, 300.00, 8, 1, '2026-06-08 16:48:11', '2026-06-08 16:48:25', NULL),
+(2, 1, 'Saç Spreyii', NULL, '38219141294\"', 'Saçınızı sabitlemek için en iyisi.', 125.00, 250.00, 2, 1, '2026-06-21 15:08:16', '2026-06-21 15:09:30', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `product_sales`
+--
+
+CREATE TABLE `product_sales` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `branch_id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `customer_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `quantity` int(11) NOT NULL,
+  `unit_price` decimal(10,2) NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `sold_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Tablo döküm verisi `product_sales`
+--
+
+INSERT INTO `product_sales` (`id`, `branch_id`, `product_id`, `customer_id`, `created_by`, `quantity`, `unit_price`, `total_price`, `sold_at`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 10, 1, 2, 300.00, 600.00, '2026-06-08 16:48:25', '2026-06-08 16:48:25', '2026-06-08 16:48:25'),
+(2, 1, 2, 8, 1, 1, 250.00, 250.00, '2026-06-21 15:09:30', '2026-06-21 15:09:30', '2026-06-21 15:09:30');
 
 -- --------------------------------------------------------
 
@@ -1528,7 +1682,7 @@ INSERT INTO `services` (`id`, `branch_id`, `category_id`, `name`, `slug`, `descr
 (3, 1, 3, 'VIP Full Paket', 'vip-full-paket', 'Saç + sakal + bakım + maske.', 90, 15, 1200.00, NULL, 'male', 'vip_1.png', 1, 1, 1, '2026-05-14 13:44:44', '2026-05-23 17:16:20', NULL),
 (4, 1, 4, 'Yüz Bakımı', 'yuz-bakimi', 'Derin cilt temizliği.', 40, 10, 600.00, NULL, 'unisex', 'care_1.png', 0, 0, 1, '2026-05-14 13:44:44', '2026-05-14 17:34:01', NULL),
 (5, 1, 1, 'Çocuk Saç Kesimi', 'cocuk-sac-kesimi', 'Çocuk müşteriler için saç kesimi.', 30, 5, 350.00, NULL, 'male', 'child_1.png', 0, 0, 1, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
-(6, 1, 4, 'Fön Çekimi', 'fon-cekimi', 'Saça şekil vermek bizim işimiz. Sizi biz FÖNleyelim.', 30, 0, 250.00, NULL, 'male', NULL, 0, 0, 0, '2026-05-18 13:28:28', '2026-05-23 15:19:10', NULL);
+(6, 1, 4, 'Fön Çekimi', 'fon-cekimi', 'Saça şekil vermek bizim işimiz. Sizi biz FÖNleyelim.', 30, 0, 250.00, NULL, 'male', NULL, 0, 0, 1, '2026-05-18 13:28:28', '2026-06-21 15:06:55', NULL);
 
 -- --------------------------------------------------------
 
@@ -1577,8 +1731,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('3tpNs0mAqhMhTC7rUcJJBymzmQqGTNPjB4AY4R2O', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJlVEFuRUZTajNrNVE2WVJKQ0lJVU9GaGRUeE5zc2Z4QXNPS1ZCeU9mIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzEyNy4wLjAuMTo4MDAwXC9kYXNoYm9hcmQiLCJyb3V0ZSI6ImRhc2hib2FyZCJ9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX0sImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjoxfQ==', 1778775334),
-('ZPRII3lMMx4GzXIsKFOVV9cKg8rfGZL9cJhRhXmu', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJHODFNUDROOU1aUmdlaHRFZDlvY2FuN01CRGl6ZTZ0a3Noa05lZktrIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9kYXNoYm9hcmQiLCJyb3V0ZSI6ImRhc2hib2FyZCJ9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX0sImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjoxfQ==', 1778775247);
+('ElW5PP2TAN1YG7kaaiitu264MEwWw8IjASRr55ip', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJ0TFY0RjlBbU8yMXhKTHZ5eHpDVUNDOVM5dFhoeVRRSVE1Tm05MFRqIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzEyNy4wLjAuMTo4MDAwXC9hcHBvaW50bWVudHMiLCJyb3V0ZSI6ImFwcG9pbnRtZW50cy5pbmRleCJ9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX0sInVybCI6W10sImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjoxfQ==', 1782057199),
+('wU2c0AyY7xvW2iqf7E9qJNXmbGQkQT55dSwn72WW', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiI5R0ZmSkNoZ0ZIYjlVWHNVODFWMVY5UEM3Y2dDdmdUdGUwS3ZKSkpKIiwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119LCJfcHJldmlvdXMiOnsidXJsIjoiaHR0cDpcL1wvMTI3LjAuMC4xOjgwMDBcL3Byb2R1Y3RzLXNhbGVzIiwicm91dGUiOiJwcm9kdWN0cy5zYWxlcy5pbmRleCJ9LCJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI6MX0=', 1782057809);
 
 -- --------------------------------------------------------
 
@@ -1681,7 +1835,14 @@ INSERT INTO `transactions` (`id`, `branch_id`, `appointment_id`, `expense_id`, `
 (47, 1, 52, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Borç Tahsilatı - Mert Şahin (#BV-OHOIQNBJ)', '2026-05-30 18:00:14', '2026-05-30 15:00:14', '2026-05-30 15:00:14'),
 (48, 1, 47, NULL, 1, 'income', 300.00, 'TRY', 'cash', 'Borç Tahsilatı - Görkem FİDAN (#BV-VJ8PDIAV)', '2026-05-30 18:00:27', '2026-05-30 15:00:27', '2026-05-30 15:00:27'),
 (49, 1, 33, NULL, 1, 'income', 300.00, 'TRY', 'cash', 'Borç Tahsilatı - Can Öztürk (#APT-3010)', '2026-05-30 18:14:15', '2026-05-30 15:14:15', '2026-05-30 15:14:15'),
-(50, 1, 46, NULL, 1, 'income', 999.00, 'TRY', 'cash', 'Borç Tahsilatı - Görkem FİDAN (#BV-V43BVGP4)', '2026-06-08 17:51:24', '2026-06-08 14:51:24', '2026-06-08 14:51:24');
+(50, 1, 46, NULL, 1, 'income', 999.00, 'TRY', 'cash', 'Borç Tahsilatı - Görkem FİDAN (#BV-V43BVGP4)', '2026-06-08 17:51:24', '2026-06-08 14:51:24', '2026-06-08 14:51:24'),
+(51, 1, NULL, NULL, 1, 'income', 600.00, 'TRY', 'cash', 'Ürün Satışı - Tarak (2 adet)', '2026-06-08 19:48:25', '2026-06-08 16:48:25', '2026-06-08 16:48:25'),
+(52, 1, 97, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #APT-EKCQ4B (Burak Kaya)', '2026-06-08 20:06:04', '2026-06-08 17:06:04', '2026-06-08 17:06:04'),
+(53, 1, 95, NULL, 1, 'income', 600.00, 'TRY', 'cash', 'Randevu Ödemesi - #APT-SSTPC4 (Aylin Yılmaz)', '2026-06-08 20:06:09', '2026-06-08 17:06:09', '2026-06-08 17:06:09'),
+(54, 1, 96, NULL, 1, 'income', 600.00, 'TRY', 'cash', 'Randevu Ödemesi - #APT-O1DFKQ (Aylin Yılmaz)', '2026-06-08 20:06:15', '2026-06-08 17:06:15', '2026-06-08 17:06:15'),
+(55, 1, 99, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #APT-XV5VVP (Aylin Yılmaz)', '2026-06-20 15:22:50', '2026-06-20 12:22:50', '2026-06-20 12:22:50'),
+(56, 1, 98, NULL, 1, 'income', 1200.00, 'TRY', 'cash', 'Randevu Ödemesi - #APT-GVL3JZ (Cem Arslan)', '2026-06-20 15:22:53', '2026-06-20 12:22:53', '2026-06-20 12:22:53'),
+(57, 1, NULL, NULL, 1, 'income', 250.00, 'TRY', 'cash', 'Ürün Satışı - Saç Spreyii (1 adet)', '2026-06-21 18:09:30', '2026-06-21 15:09:30', '2026-06-21 15:09:30');
 
 -- --------------------------------------------------------
 
@@ -1716,7 +1877,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `uuid`, `role_id`, `first_name`, `last_name`, `email`, `phone`, `password`, `gender`, `birth_date`, `profile_photo`, `email_verified_at`, `phone_verified_at`, `last_login_at`, `status`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '107e093a-4f9b-11f1-98d5-2e5e95d91c8b', 1, 'Mustafa', 'Kara', 'admin@bvbarber.com', '05554443322', '$2y$12$fEkyZNWK6pFExjKlPWpgtu21TtVSe7qDGzBIAH9EnrtHG6pCL.2Zi', 'male', '2000-01-01', NULL, NULL, NULL, '2026-06-08 14:45:30', 'active', NULL, '2026-05-14 13:44:44', '2026-06-08 14:45:30', NULL),
+(1, '107e093a-4f9b-11f1-98d5-2e5e95d91c8b', 1, 'Mustafa', 'Kara', 'admin@bvbarber.com', '05554443322', '$2y$12$fEkyZNWK6pFExjKlPWpgtu21TtVSe7qDGzBIAH9EnrtHG6pCL.2Zi', 'male', '2000-01-01', NULL, NULL, NULL, '2026-06-21 15:57:45', 'active', NULL, '2026-05-14 13:44:44', '2026-06-21 15:57:45', NULL),
 (2, '107e6100-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Ahmet', 'Yılmaz', 'owner@bvbarber.com', '+905552222222', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1990-03-12', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-19 13:00:57', NULL),
 (3, '107e7186-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Emre', 'Demir', 'emre@bvbarber.com', '+905553333333', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1995-06-15', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
 (4, '107e7208-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Burak', 'Kaya', 'burak@bvbarber.com', '+905554444444', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1993-08-22', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
@@ -1727,7 +1888,13 @@ INSERT INTO `users` (`id`, `uuid`, `role_id`, `first_name`, `last_name`, `email`
 (9, 'ad3f020b-1a57-434d-8672-d5cd49c81950', 6, 'Görkem', 'FİDAN', 'grkmfdn55@gmail.com', '05555555555', '$2y$12$ruWbuIK7clDcKiPQI6b24O1J2tDOvUfObY8vaOtr.Kp8VLnOWwHLG', 'male', '2000-01-01', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 17:32:59', '2026-05-14 17:32:59', NULL),
 (10, '27e96822-8cb0-4b7a-b4e1-083f4f05d36f', 6, 'MUSTAFA', 'KARA', 'mustafakara200533@gmail.com', '5528120412', '$2y$12$ezy9r0EIgMECj4BxSEPWDOg2oR0BjexJWGvNNtk8nGD.9dpL.7UwS', 'male', '2005-12-04', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-18 13:26:34', '2026-05-18 13:26:34', NULL),
 (11, '0688d9ee-eb10-43cf-8348-4a76908e380b', 5, 'Deneme', 'Çalışanı', 'deneme@mail.com', '05525525252', '$2y$12$x1z6BHucOz4VL.DyyYrHFObTWuxE1Dtq7yIDNbfZacaTAkOO0Jx3a', NULL, NULL, NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-18 13:36:45', '2026-05-18 13:36:45', NULL),
-(12, '17366b11-e10f-4566-875d-2892a3fb7344', 6, 'Sinem', 'DURMAZ', 'sinem@mail.com', '05555555123', '$2y$12$J/Hk26PFda6oy9CAEtbo0OA9elHtZa86z3V8yO5HzkmH5m778hVz2', 'female', '2005-01-17', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-18 15:09:30', '2026-05-18 15:09:30', NULL);
+(12, '17366b11-e10f-4566-875d-2892a3fb7344', 6, 'Sinem', 'DURMAZ', 'sinem@mail.com', '05555555123', '$2y$12$J/Hk26PFda6oy9CAEtbo0OA9elHtZa86z3V8yO5HzkmH5m778hVz2', 'female', '2005-01-17', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-18 15:09:30', '2026-05-18 15:09:30', NULL),
+(13, '6afdc9d7-0c0f-4c79-8ead-074901add972', 6, 'Aylin', 'Yılmaz', 'aylin.yilmaz.1780938267@example.com', '+905326374005', '$2y$12$RPuMNI515FeG4sfAR0kYi.eY2y1jmbfOBk4lrlx6nHhmtUU38v0Ie', 'female', '1995-08-15', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:28', '2026-06-08 17:04:28', NULL),
+(14, '77039879-5aa5-4a54-91d6-e6284794f1c2', 6, 'Burak', 'Kaya', 'burak.kaya.1780938267@example.com', '+905423344241', '$2y$12$ZihS4FFqWLRYFHerwp2mP.NeJoKh6twXl45cIbNDmbzV5YE6v12J6', 'male', '1990-03-22', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:28', '2026-06-08 17:04:28', NULL),
+(15, 'fd435eb2-4a57-44c7-a6d0-61940dbe227c', 6, 'Cem', 'Arslan', 'cem.arslan.1780938267@example.com', '+905525934387', '$2y$12$NK.kbIA7L1QvMWHM45cLD..AaW5sqZrDPZtcqkiTJcwBwYGTvHimO', 'male', '1988-11-05', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:28', '2026-06-08 17:04:28', NULL),
+(16, 'bb973654-e0f8-46dc-a685-045147c813eb', 6, 'Aylin', 'Yılmaz', 'aylin.yilmaz.1780938296@example.com', '+905322449560', '$2y$12$OxswNlu/x2UiVArFvj4NB.44tUXRcTdy014IOQCToestNEqaVR2i6', 'female', '1995-08-15', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:57', '2026-06-08 17:04:57', NULL),
+(17, 'dab4504a-ed4e-46af-842e-f2516da37fee', 6, 'Burak', 'Kaya', 'burak.kaya.1780938296@example.com', '+905424104886', '$2y$12$6kMscjvKl8NrOc5/B/Lp7e5Yd/zkVJ96MWCMsBNdUilreTV9UKymC', 'male', '1990-03-22', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:57', '2026-06-08 17:06:36', '2026-06-08 17:06:36'),
+(18, 'a2094963-570f-4119-b3c7-6a112f3c2738', 6, 'Cem', 'Arslan', 'cem.arslan.1780938296@example.com', '+905529794637', '$2y$12$EmTmBke7QlgisjVg6pX9ze459MyemtStWv2jZR0VMIN3aaqx6alty', 'male', '1988-11-05', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:57', '2026-06-08 17:04:57', NULL);
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -1964,6 +2131,25 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `idx_tokenable` (`tokenable_type`,`tokenable_id`);
 
 --
+-- Tablo için indeksler `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `products_branch_id_barcode_unique` (`branch_id`,`barcode`),
+  ADD KEY `products_branch_id_is_active_index` (`branch_id`,`is_active`);
+
+--
+-- Tablo için indeksler `product_sales`
+--
+ALTER TABLE `product_sales`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_sales_branch_id_foreign` (`branch_id`),
+  ADD KEY `product_sales_product_id_foreign` (`product_id`),
+  ADD KEY `product_sales_customer_id_foreign` (`customer_id`),
+  ADD KEY `product_sales_created_by_foreign` (`created_by`),
+  ADD KEY `product_sales_sold_at_index` (`sold_at`);
+
+--
 -- Tablo için indeksler `reviews`
 --
 ALTER TABLE `reviews`
@@ -2051,25 +2237,25 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `appointment_services`
 --
 ALTER TABLE `appointment_services`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `appointment_status_logs`
 --
 ALTER TABLE `appointment_status_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=190;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=339;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=372;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `branches`
@@ -2165,19 +2351,19 @@ ALTER TABLE `jobs`
 -- Tablo için AUTO_INCREMENT değeri `loyalty_accounts`
 --
 ALTER TABLE `loyalty_accounts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `loyalty_transactions`
 --
 ALTER TABLE `loyalty_transactions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `notifications`
@@ -2189,7 +2375,7 @@ ALTER TABLE `notifications`
 -- Tablo için AUTO_INCREMENT değeri `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `permissions`
@@ -2202,6 +2388,18 @@ ALTER TABLE `permissions`
 --
 ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `product_sales`
+--
+ALTER TABLE `product_sales`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `reviews`
@@ -2243,13 +2441,13 @@ ALTER TABLE `settings`
 -- Tablo için AUTO_INCREMENT değeri `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
@@ -2389,6 +2587,21 @@ ALTER TABLE `notifications`
 --
 ALTER TABLE `payments`
   ADD CONSTRAINT `fk_payments_appointment` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE;
+
+--
+-- Tablo kısıtlamaları `products`
+--
+ALTER TABLE `products`
+  ADD CONSTRAINT `products_branch_id_foreign` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE;
+
+--
+-- Tablo kısıtlamaları `product_sales`
+--
+ALTER TABLE `product_sales`
+  ADD CONSTRAINT `product_sales_branch_id_foreign` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `product_sales_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `product_sales_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `product_sales_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
 -- Tablo kısıtlamaları `reviews`

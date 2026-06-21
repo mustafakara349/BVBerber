@@ -89,7 +89,7 @@
                                 <td class="text-center">
                                     @if($product->stock_quantity <= 0)
                                         <span class="badge bg-danger text-white rounded-pill px-3 py-2">Tükendi</span>
-                                    @elseif($product->stock_quantity <= 5)
+                                    @elseif($product->stock_quantity <= ($product->critical_stock ?? 5))
                                         <span class="badge bg-warning text-dark rounded-pill px-3 py-2">{{ $product->stock_quantity }} Adet (Kritik)</span>
                                     @else
                                         <span class="badge bg-success text-white rounded-pill px-3 py-2">{{ $product->stock_quantity }} Adet</span>
@@ -121,6 +121,7 @@
                                             data-purchase="{{ $product->purchase_price }}"
                                             data-sell="{{ $product->sell_price }}"
                                             data-stock="{{ $product->stock_quantity }}"
+                                            data-critical="{{ $product->critical_stock }}"
                                             data-active="{{ $product->is_active ? 1 : 0 }}"
                                             title="Düzenle">
                                             <i class="ti ti-pencil fs-5"></i>
@@ -193,11 +194,15 @@
                         </div>
                     </div>
                     <div class="row g-3 mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label fw-semibold text-secondary">Stok Miktarı *</label>
                             <input type="number" step="1" min="0" name="stock_quantity" class="form-control border-0 bg-light" value="0" required>
                         </div>
-                        <div class="col-md-6 d-flex align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-secondary">Kritik Stok</label>
+                            <input type="number" step="1" min="0" name="critical_stock" class="form-control border-0 bg-light" value="5">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
                             <div class="form-check form-switch mb-2">
                                 <input class="form-check-input" type="checkbox" name="is_active" id="isActive" checked value="1">
                                 <label class="form-check-label fw-semibold" for="isActive">Satışa Açık</label>
@@ -255,11 +260,15 @@
                         </div>
                     </div>
                     <div class="row g-3 mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label fw-semibold text-secondary">Stok Miktarı *</label>
                             <input type="number" step="1" min="0" name="stock_quantity" id="edit_stock" class="form-control border-0 bg-light" required>
                         </div>
-                        <div class="col-md-6 d-flex align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-secondary">Kritik Stok</label>
+                            <input type="number" step="1" min="0" name="critical_stock" id="edit_critical_stock" class="form-control border-0 bg-light">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
                             <div class="form-check form-switch mb-2">
                                 <input class="form-check-input" type="checkbox" name="is_active" id="edit_is_active" value="1">
                                 <label class="form-check-label fw-semibold" for="edit_is_active">Satışa Açık</label>
@@ -299,6 +308,7 @@
                 document.getElementById('edit_purchase').value = button.getAttribute('data-purchase');
                 document.getElementById('edit_sell').value = button.getAttribute('data-sell');
                 document.getElementById('edit_stock').value = button.getAttribute('data-stock');
+                document.getElementById('edit_critical_stock').value = button.getAttribute('data-critical') || 5;
                 document.getElementById('edit_is_active').checked = button.getAttribute('data-active') === '1';
             });
         }

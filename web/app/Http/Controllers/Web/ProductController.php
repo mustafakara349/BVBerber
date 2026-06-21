@@ -50,6 +50,7 @@ class ProductController extends Controller
             'purchase_price' => 'required|numeric|min:0',
             'sell_price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
+            'critical_stock' => 'nullable|integer|min:0',
         ]);
 
         $validated['branch_id'] = $branchId;
@@ -74,6 +75,7 @@ class ProductController extends Controller
             'purchase_price' => 'required|numeric|min:0',
             'sell_price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
+            'critical_stock' => 'nullable|integer|min:0',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
