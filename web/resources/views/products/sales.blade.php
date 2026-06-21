@@ -10,7 +10,7 @@
                 <p class="text-muted mb-0">Salondaki stok ürünlerinizi kasadan anında satın ve tahsilatı kaydedin.</p>
             </div>
             <div>
-                <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#newSaleModal">
+                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#newSaleModal">
                     <i class="ti ti-shopping-cart fs-5"></i> Yeni Satış
                 </button>
             </div>
@@ -91,7 +91,7 @@
 <div class="modal fade" id="newSaleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow-lg">
-            <div class="modal-header border-0 bg-success text-white py-3">
+            <div class="modal-header border-0 bg-primary text-white py-3">
                 <h5 class="modal-title fw-bold">Yeni Ürün Satışı</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
             </div>
@@ -142,7 +142,7 @@
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
                     <button type="button" class="btn btn-light rounded-pill px-4 text-secondary" data-bs-dismiss="modal">Vazgeç</button>
-                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm text-white">Satışı Tamamla</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm text-white">Satışı Tamamla</button>
                 </div>
             </form>
         </div>

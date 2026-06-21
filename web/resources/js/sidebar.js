@@ -30,14 +30,19 @@ const sidebar = document.getElementById('sidebar');
       });
     }
 
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    const navLinks = document.querySelectorAll('.sidebar .nav-link');
-
-    if (navLinks.length > 0) {
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === currentPage) {
-          link.classList.add('active');
-        }
-      });
-    }
+// Restore & save sidebar scroll position
+const sidebarNav = document.querySelector('.sidebar .nav');
+if (sidebarNav) {
+  const savedScroll = localStorage.getItem('sidebar-scroll');
+  const activeLink = sidebarNav.querySelector('.nav-link.active');
+  
+  if (savedScroll !== null) {
+    sidebarNav.scrollTop = parseInt(savedScroll, 10);
+  } else if (activeLink) {
+    activeLink.scrollIntoView({ block: 'nearest' });
+  }
+  
+  sidebarNav.addEventListener('scroll', () => {
+    localStorage.setItem('sidebar-scroll', sidebarNav.scrollTop);
+  });
+}

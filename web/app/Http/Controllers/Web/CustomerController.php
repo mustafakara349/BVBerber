@@ -52,34 +52,44 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Müşteri başarıyla eklendi.');
     }
 
-    public function show($id)
+    public function show(User $customer)
     {
-        $customer = User::customers()->with(['appointments.employee.user', 'appointments.appointmentServices.service'])->findOrFail($id);
-        
+        // Sadece müşteri rolündeki kullanıcıları göster
+        if ($customer->role?->slug !== 'customer') {
+            abort(404);
+        }
+
+        $customer->load(['appointments.employee.user', 'appointments.appointmentServices.service']);
+
         $totalSpent = $customer->appointments()->where('status', 'completed')->sum('total_price');
         $completedAppointments = $customer->appointments()->where('status', 'completed')->count();
-        
+
         return view('customers.show', compact('customer', 'totalSpent', 'completedAppointments'));
     }
 
-    public function edit($id)
+    public function edit(User $customer)
     {
-        $customer = User::customers()->findOrFail($id);
+        if ($customer->role?->slug !== 'customer') {
+            abort(404);
+        }
+
         return view('customers.edit', compact('customer'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, User $customer)
     {
-        $customer = User::customers()->findOrFail($id);
+        if ($customer->role?->slug !== 'customer') {
+            abort(404);
+        }
 
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
-            'last_name' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email,' . $customer->id,
-            'phone' => 'nullable|string',
-            'gender' => 'nullable|in:male,female,other',
+            'last_name'  => 'required|string|max:100',
+            'email'      => 'required|email|unique:users,email,' . $customer->id,
+            'phone'      => 'nullable|string',
+            'gender'     => 'nullable|in:male,female,other',
             'birth_date' => 'nullable|date',
-            'status' => 'required|in:active,inactive,blocked',
+            'status'     => 'required|in:active,inactive,blocked',
         ]);
 
         $customer->update($validated);
@@ -91,9 +101,12 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Müşteri başarıyla güncellendi.');
     }
 
-    public function destroy($id)
+    public function destroy(User $customer)
     {
-        $customer = User::customers()->findOrFail($id);
+        if ($customer->role?->slug !== 'customer') {
+            abort(404);
+        }
+
         $customer->delete();
         return redirect()->route('customers.index')->with('success', 'Müşteri silindi.');
     }

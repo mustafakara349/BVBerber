@@ -1,4 +1,4 @@
-<aside id="sidebar" class="sidebar shadow-sm" style="padding-top: 70px;">
+<aside id="sidebar" class="sidebar shadow-sm" style="display: flex; flex-direction: column; overflow: hidden; height: 100vh; padding-top: 0 !important;">
     <style>
         /* Force high-visibility active sidebar menu item background and styles */
         .sidebar .nav-link.active {
@@ -25,14 +25,14 @@
         }
     </style>
 
-    <div class="logo-area px-4" style="height: 70px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding-left: 24px; position: absolute; top: 0; left: 0; width: 100%; background: #ffffff;">
+    <div class="logo-area px-4" style="height: 70px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding-left: 24px; background: #ffffff; z-index: 10; flex-shrink: 0; position: relative !important; top: auto !important; left: auto !important;">
         <a href="{{ route('dashboard') }}" class="d-inline-flex align-items-center" style="text-decoration: none;">
             <span class="fw-bold text-primary fs-5">B&V</span>
             <span class="logo-text ms-2 fw-semibold text-dark">Barber</span>
         </a>
     </div>
 
-    <ul class="nav flex-column">
+    <ul class="nav flex-column flex-nowrap" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 24px;">
         <li class="px-4 py-2"><small class="nav-text">Ana Menü</small></li>
 
         <li>
@@ -73,7 +73,7 @@
         <li class="px-4 pt-4 pb-2"><small class="nav-text">Stok & Satış</small></li>
 
         <li>
-            <a class="nav-link {{ (request()->is('products') || request()->routeIs('products.index')) ? 'active' : '' }}" href="{{ route('products.index') }}">
+            <a class="nav-link {{ (request()->is('products') || request()->routeIs('products.index') || request()->routeIs('products.store') || request()->routeIs('products.update') || request()->routeIs('products.destroy')) ? 'active' : '' }}" href="{{ route('products.index') }}">
                 <i class="ti ti-box"></i>
                 <span class="nav-text">Ürün Yönetimi</span>
             </a>
@@ -154,28 +154,7 @@
                 <span class="nav-text">Ayarlar</span>
             </a>
         </li>
+        <li class="py-4"></li>
     </ul>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const normalizePath = (path) => path.replace(/\/+$/, '').toLowerCase();
-            const currentPath = normalizePath(window.location.pathname);
-            
-            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
-                const href = link.getAttribute('href');
-                if (href) {
-                    try {
-                        const url = new URL(href, window.location.origin);
-                        const linkPath = normalizePath(url.pathname);
-                        
-                        if (linkPath === currentPath) {
-                            link.classList.add('active');
-                        } else if (linkPath !== '' && linkPath !== '/dashboard' && currentPath.startsWith(linkPath)) {
-                            link.classList.add('active');
-                        }
-                    } catch (e) {}
-                }
-            });
-        });
-    </script>
 </aside>
+

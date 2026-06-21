@@ -108,6 +108,23 @@ class AppointmentController extends Controller
         return view('appointments.create', compact('employees', 'services', 'customers'));
     }
 
+    public function edit(Appointment $appointment): View
+    {
+        if ($appointment->branch_id !== session('active_branch_id', 1)) {
+            abort(403, 'Yetkisiz işlem.');
+        }
+
+        $branchId = session('active_branch_id', 1);
+        $employees = Employee::forBranch($branchId)->active()->visible()->with('user')->get();
+        $services = Service::forBranch($branchId)->active()->get();
+        $customers = \App\Models\User::customers()->active()->get();
+
+        $appointment->load(['appointmentServices.service']);
+
+        // Düzenleme için create view'ını kullan (appointment verisi ile)
+        return view('appointments.create', compact('employees', 'services', 'customers', 'appointment'));
+    }
+
     public function store(StoreAppointmentRequest $request): RedirectResponse
     {
         $data = $request->validated();

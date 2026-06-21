@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Repositories\Contracts\AppointmentRepositoryInterface;
-use App\Repositories\Contracts\BaseRepositoryInterface;
 use App\Repositories\Contracts\DashboardRepositoryInterface;
 use App\Repositories\Eloquent\AppointmentRepository;
 use App\Repositories\Eloquent\DashboardRepository;

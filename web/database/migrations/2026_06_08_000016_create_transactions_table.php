@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('branch_id')->constrained('branches')->onDelete('cascade');
             $table->foreignId('appointment_id')->nullable()->constrained('appointments')->onDelete('set null');
+            $table->foreignId('expense_id')->nullable()->constrained('expenses')->onDelete('cascade');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('transaction_type', ['income', 'expense', 'refund']);
             $table->decimal('amount', 10, 2);

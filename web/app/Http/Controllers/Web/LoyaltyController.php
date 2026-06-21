@@ -16,7 +16,7 @@ class LoyaltyController extends Controller
     public function show(User $customer)
     {
         // Yalnızca müşteri rolü olanları göster
-        if ($customer->role->name !== 'customer') {
+        if ($customer->role?->slug !== 'customer') {
             abort(404);
         }
 

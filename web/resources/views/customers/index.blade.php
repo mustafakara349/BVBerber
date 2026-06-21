@@ -89,18 +89,18 @@
                                     @endif
                                 </td>
                                 <td class="text-end pe-4">
-                                    <div class="btn-group shadow-sm">
-                                        <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-sm btn-light text-info" title="Görüntüle">
-                                            <i class="ti ti-eye"></i>
+                                    <div class="d-inline-flex gap-2">
+                                        <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-outline-info btn-sm rounded-circle p-2 border-0" title="Görüntüle">
+                                            <i class="ti ti-eye fs-5"></i>
                                         </a>
-                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-light text-primary" title="Düzenle">
-                                            <i class="ti ti-pencil"></i>
+                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-outline-primary btn-sm rounded-circle p-2 border-0" title="Düzenle">
+                                            <i class="ti ti-pencil fs-5"></i>
                                         </a>
                                         <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu müşteriyi silmek istediğinize emin misiniz?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light text-danger" style="border-top-left-radius: 0; border-bottom-left-radius: 0;" title="Sil">
-                                                <i class="ti ti-trash"></i>
+                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-2 border-0" title="Sil">
+                                                <i class="ti ti-trash fs-5"></i>
                                             </button>
                                         </form>
                                     </div>

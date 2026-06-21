@@ -229,7 +229,7 @@
                             <th>Tutar</th>
                             <th>Durum</th>
                             <th>Ödeme</th>
-                            <th></th>
+                            <th class="pe-4 text-end">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -272,18 +272,18 @@
                                     {{ $apt->payment_status->label() }}
                                 </span>
                             </td>
-                            <td>
-                                <div class="btn-group shadow-sm">
-                                    <a href="{{ route('appointments.show', $apt) }}" class="btn btn-sm btn-light text-primary" title="Görüntüle">
-                                        <i class="ti ti-eye"></i>
+                            <td class="pe-4 text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a href="{{ route('appointments.show', $apt) }}" class="btn btn-outline-primary btn-sm rounded-circle p-2 border-0" title="Görüntüle">
+                                        <i class="ti ti-eye fs-5"></i>
                                     </a>
                                     @if($apt->status->value != 'cancelled' && $apt->status->value != 'completed')
                                     <form action="{{ route('appointments.update-status', $apt) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?');">
                                         @csrf
                                         @method('PATCH')
                                         <input type="hidden" name="status" value="cancelled">
-                                        <button type="submit" class="btn btn-sm btn-light text-danger" style="border-top-left-radius: 0; border-bottom-left-radius: 0;" title="İptal Et">
-                                            <i class="ti ti-x"></i>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-2 border-0" title="İptal Et">
+                                            <i class="ti ti-x fs-5"></i>
                                         </button>
                                     </form>
                                     @endif
