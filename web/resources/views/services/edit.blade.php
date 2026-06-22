@@ -19,7 +19,7 @@
     <div class="col-xl-8 col-lg-10">
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-body p-4">
-                <form action="{{ route('services.update', $service->id) }}" method="POST">
+                <form action="{{ route('services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -69,6 +69,20 @@
                             <label class="form-label fw-medium">Açıklama</label>
                             <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description', $service->description) }}</textarea>
                             @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium">Hizmet Görseli</label>
+                            @if($service->image)
+                                <div class="mb-2 d-flex align-items-center gap-2">
+                                    <div class="position-relative">
+                                        <img src="{{ asset('storage/' . $service->image) }}" class="rounded shadow-sm" style="max-height: 80px; max-width: 120px; object-fit: cover;" alt="{{ $service->name }}">
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">Mevcut</span>
+                                    </div>
+                                </div>
+                            @endif
+                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                            <small class="text-muted">Mevcut görseli değiştirmek istemiyorsanız boş bırakın. (Önerilen: Kare veya 4:3 oran, maks. 2MB)</small>
+                            @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         
                         <div class="col-12 mt-3">

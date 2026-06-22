@@ -19,7 +19,7 @@
     <div class="col-xl-8 col-lg-10">
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-body p-4">
-                <form action="{{ route('employees.store') }}" method="POST">
+                <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <h5 class="mb-3 text-primary border-bottom pb-2">Kişisel Bilgiler</h5>
@@ -59,6 +59,12 @@
                                 @endforeach
                             </select>
                             @error('role_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-medium">Profil Fotoğrafı</label>
+                            <input type="file" name="profile_photo" class="form-control @error('profile_photo') is-invalid @enderror" accept="image/*">
+                            <small class="text-muted">Personel için bir profil fotoğrafı yükleyebilirsiniz. (Maks. 2MB)</small>
+                            @error('profile_photo')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
 

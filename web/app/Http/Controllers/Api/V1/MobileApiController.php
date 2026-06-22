@@ -202,6 +202,7 @@ class MobileApiController extends Controller
                         'discountedPrice' => $service->discounted_price ? (int)$service->discounted_price : null,
                         'imageUrl' => $service->image ? $request->schemeAndHttpHost() . '/storage/' . $service->image : '',
                         'isActive' => (bool)$service->is_active,
+                        'genderType' => $service->gender_type,
                     ];
                 });
                 return $this->success($services);

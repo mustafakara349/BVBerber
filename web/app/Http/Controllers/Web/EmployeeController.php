@@ -47,6 +47,7 @@ class EmployeeController extends Controller
             'salary_type' => 'required|in:fixed,commission,fixed_plus_commission,hourly',
             'salary_amount' => 'required|numeric',
             'commission_rate' => 'required|numeric',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $user = User::create([
@@ -58,6 +59,11 @@ class EmployeeController extends Controller
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        if ($request->hasFile('profile_photo')) {
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $user->update(['profile_photo' => $path]);
+        }
 
         Employee::create([
             'branch_id' => session('active_branch_id', 1),
@@ -116,6 +122,7 @@ class EmployeeController extends Controller
             'salary_type' => 'required|in:fixed,commission,fixed_plus_commission,hourly',
             'salary_amount' => 'required|numeric',
             'commission_rate' => 'required|numeric',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $employee->user->update([
@@ -128,6 +135,14 @@ class EmployeeController extends Controller
 
         if ($request->filled('password')) {
             $employee->user->update(['password' => Hash::make($request->password)]);
+        }
+
+        if ($request->hasFile('profile_photo')) {
+            if ($employee->user->profile_photo) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($employee->user->profile_photo);
+            }
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $employee->user->update(['profile_photo' => $path]);
         }
 
         $employee->update([

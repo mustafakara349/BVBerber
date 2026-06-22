@@ -35,6 +35,7 @@ class ServiceController extends Controller
             'description' => 'nullable|string',
             'is_popular' => 'boolean',
             'is_featured' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -43,6 +44,11 @@ class ServiceController extends Controller
         
         $validated['is_popular'] = $request->has('is_popular');
         $validated['is_featured'] = $request->has('is_featured');
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('services', 'public');
+            $validated['image'] = $path;
+        }
 
         Service::create($validated);
 
@@ -76,6 +82,7 @@ class ServiceController extends Controller
             'is_popular' => 'boolean',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -83,6 +90,14 @@ class ServiceController extends Controller
         $validated['is_popular'] = $request->has('is_popular');
         $validated['is_featured'] = $request->has('is_featured');
         $validated['is_active'] = $request->has('is_active');
+
+        if ($request->hasFile('image')) {
+            if ($service->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($service->image);
+            }
+            $path = $request->file('image')->store('services', 'public');
+            $validated['image'] = $path;
+        }
 
         $service->update($validated);
 

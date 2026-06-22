@@ -48,7 +48,7 @@
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
                                         @if($employee->user && $employee->user->profile_photo)
-                                            <img src="{{ asset($employee->user->profile_photo) }}" alt="{{ $employee->full_name }}" class="rounded-circle me-3 object-fit-cover shadow-sm" width="48" height="48">
+                                            <img src="{{ asset('storage/' . $employee->user->profile_photo) }}" alt="{{ $employee->full_name }}" class="rounded-circle me-3 object-fit-cover shadow-sm" width="48" height="48">
                                         @else
                                             <div class="avatar bg-primary-subtle text-primary me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold fs-5 shadow-sm" style="width: 48px; height: 48px;">
                                                 @if($employee->user)

@@ -19,7 +19,7 @@
     <div class="col-xl-8 col-lg-10">
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-body p-4">
-                <form action="{{ route('employees.update', $employee->id) }}" method="POST">
+                <form action="{{ route('employees.update', $employee->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -60,6 +60,17 @@
                                 @endforeach
                             </select>
                             @error('role_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-medium">Profil Fotoğrafı</label>
+                            @if($employee->user && $employee->user->profile_photo)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $employee->user->profile_photo) }}" class="rounded shadow-sm object-fit-cover" style="max-height: 100px; width: 100px; height: 100px;" alt="{{ $employee->user->full_name }}">
+                                </div>
+                            @endif
+                            <input type="file" name="profile_photo" class="form-control @error('profile_photo') is-invalid @enderror" accept="image/*">
+                            <small class="text-muted">Profil fotoğrafını değiştirmek istemiyorsanız boş bırakın. (Maks. 2MB)</small>
+                            @error('profile_photo')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
 
