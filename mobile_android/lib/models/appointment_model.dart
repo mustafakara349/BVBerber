@@ -65,19 +65,39 @@ class AppointmentModel {
 
     // Get serviceName and price
     String? serviceNameVal = map['serviceName'];
-    double? priceVal = map['price'] != null ? (double.tryParse(map['price'].toString()) ?? 0.0) : null;
     if (servicesList != null && servicesList.isNotEmpty) {
-      final firstServiceItem = servicesList.first;
-      if (firstServiceItem is Map) {
-        final serviceMap = firstServiceItem['service'] as Map?;
-        if (serviceMap != null) {
-          serviceNameVal = serviceMap['name']?.toString();
-          priceVal = double.tryParse(serviceMap['price']?.toString() ?? '') ?? 0.0;
-        } else {
-          serviceNameVal = firstServiceItem['service_name']?.toString();
-          priceVal = double.tryParse(firstServiceItem['unit_price']?.toString() ?? '') ?? 0.0;
+      final List<String> names = [];
+      for (final item in servicesList) {
+        if (item is Map) {
+          final serviceMap = item['service'] as Map?;
+          if (serviceMap != null) {
+            names.add(serviceMap['name']?.toString() ?? '');
+          } else if (item['service_name'] != null) {
+            names.add(item['service_name'].toString());
+          }
         }
       }
+      serviceNameVal = names.where((n) => n.isNotEmpty).join(', ');
+    }
+
+    double? priceVal = map['total_price'] != null
+        ? double.tryParse(map['total_price'].toString())
+        : (map['price'] != null ? double.tryParse(map['price'].toString()) : null);
+    if (priceVal == null && servicesList != null && servicesList.isNotEmpty) {
+      double total = 0.0;
+      for (final item in servicesList) {
+        if (item is Map) {
+          final serviceMap = item['service'] as Map?;
+          double itemPrice = 0.0;
+          if (serviceMap != null) {
+            itemPrice = double.tryParse(serviceMap['price']?.toString() ?? '') ?? 0.0;
+          } else {
+            itemPrice = double.tryParse(item['unit_price']?.toString() ?? '') ?? 0.0;
+          }
+          total += itemPrice;
+        }
+      }
+      priceVal = total;
     }
 
     // Get barberName

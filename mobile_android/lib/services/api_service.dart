@@ -7,6 +7,25 @@ class ApiService {
   // Yerel emülatör testi için varsayılan IP. Canlı ortam veya fiziksel cihaz testi için kendi IP'nizle değiştirilebilir.
   static const String baseUrl = 'http://10.0.2.2:8000/api/v1';
 
+  /// URL'deki localhost/127.0.0.1 adreslerini emülatörün erişebileceği IP/host ile değiştirir
+  static String? normalizeImageUrl(String? url) {
+    if (url == null || url.isEmpty) return null;
+    try {
+      final uri = Uri.parse(baseUrl);
+      final host = uri.host;
+      final port = uri.port;
+      final replacement = port != 0 && port != 80 && port != 443 ? '$host:$port' : host;
+      
+      return url
+          .replaceAll('127.0.0.1:8000', replacement)
+          .replaceAll('localhost:8000', replacement)
+          .replaceAll('127.0.0.1', host)
+          .replaceAll('localhost', host);
+    } catch (e) {
+      return url;
+    }
+  }
+
   // Ortak Header yapılandırması (Token ile yetkilendirme)
   static Future<Map<String, String>> _getHeaders() async {
     final prefs = await SharedPreferences.getInstance();
@@ -164,6 +183,29 @@ class ApiService {
     }
   }
 
+  // Belirli bir personel ve tarih için randevuları getir (meşgul saatleri hesaplamak için)
+  static Future<List<dynamic>> getEmployeeAppointments({
+    required int employeeId,
+    required String date,
+  }) async {
+    final headers = await _getHeaders();
+    final url = '$baseUrl/appointments?employee_id=$employeeId&date_from=$date%2000:00:00&date_to=$date%2023:59:59&per_page=100';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+    
+    final body = jsonDecode(response.body);
+    if (response.statusCode == 200 && body['success'] == true) {
+      if (body['data'] is Map && body['data']['data'] is List) {
+        return body['data']['data'] as List;
+      }
+      return body['data'] as List;
+    } else {
+      throw Exception(body['message'] ?? 'Randevu listesi alınamadı.');
+    }
+  }
+
   // Yeni Randevu oluştur
   static Future<Map<String, dynamic>> createAppointment({
     required String customerId,
@@ -219,6 +261,25 @@ class ApiService {
       return body['data'];
     } else {
       throw Exception(body['message'] ?? 'Randevu durumu güncellenemedi.');
+    }
+  }
+
+  // Bildirimleri getir
+  static Future<List<dynamic>> getNotifications() async {
+    final headers = await _getHeaders();
+    final response = await http.post(
+      Uri.parse('$baseUrl/mobile/query'),
+      headers: headers,
+      body: jsonEncode({
+        'collection': 'notifications',
+      }),
+    );
+    
+    final body = jsonDecode(response.body);
+    if (response.statusCode == 200 && body['success'] == true) {
+      return body['data'] as List;
+    } else {
+      throw Exception(body['message'] ?? 'Bildirimler alınamadı.');
     }
   }
 }

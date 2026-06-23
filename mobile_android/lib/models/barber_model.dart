@@ -1,3 +1,5 @@
+import 'package:mobile_android/services/api_service.dart';
+
 /// Berber veri modeli
 class BarberModel {
   final String id;
@@ -44,7 +46,7 @@ class BarberModel {
 
     final phone = userMap?['phone'] ?? map['phone'] ?? '';
     final bio = map['biography'] ?? map['bio'];
-    final profileImageUrl = userMap?['profile_photo'] ?? map['profileImageUrl'];
+    final profileImageUrl = ApiService.normalizeImageUrl(userMap?['profile_photo'] ?? map['profileImageUrl'] ?? map['profile_image_url']);
     
     final servicesList = map['services'] as List?;
     final serviceIds = servicesList != null

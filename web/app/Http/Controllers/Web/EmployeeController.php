@@ -162,7 +162,10 @@ class EmployeeController extends Controller
             abort(403, 'Yetkisiz işlem.');
         }
 
-        $employee->delete();
+        if ($employee->user) {
+            $employee->user->forceDelete();
+        }
+        $employee->forceDelete();
         return redirect()->route('employees.index')->with('success', 'Çalışan silindi.');
     }
 }

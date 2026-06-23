@@ -21,7 +21,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   List<BarberModel> _barbers = [];
   List<ServiceModel> _services = [];
   BarberModel? _selectedBarber;
-  ServiceModel? _selectedService;
+  final List<ServiceModel> _selectedServices = [];
   DateTime? _selectedDate;
   String? _selectedTime;
   List<String> _busyTimes = [];
@@ -65,22 +65,120 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
     if (mounted) setState(() => _isLoadingServices = false);
   }
 
+  DateTime _getTurkishLocalTime() {
+    return DateTime.now().toUtc().add(const Duration(hours: 3));
+  }
+
+  bool _isToday(DateTime date) {
+    final now = _getTurkishLocalTime();
+    return date.year == now.year && date.month == now.month && date.day == now.day;
+  }
+
+  bool _isTimeInPast(String timeStr) {
+    if (_selectedDate == null) return false;
+    if (!_isToday(_selectedDate!)) return false;
+    final now = _getTurkishLocalTime();
+    final parts = timeStr.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
+    
+    if (hour < now.hour) return true;
+    if (hour == now.hour && minute <= now.minute) return true;
+    return false;
+  }
+
+  int get _totalDuration {
+    return _selectedServices.fold(0, (sum, service) => sum + service.durationMinutes);
+  }
+
+  int get _slotsNeeded {
+    return (_totalDuration / 30).ceil();
+  }
+
+  bool _isSlotAvailable(String time) {
+    final index = _allTimes.indexOf(time);
+    if (index == -1) return false;
+    
+    final needed = _slotsNeeded;
+    if (needed <= 0) return true; // No services selected yet, allow selection
+    
+    // Check if there are enough consecutive slots
+    if (index + needed > _allTimes.length) return false;
+    
+    for (int k = 0; k < needed; k++) {
+      final slotTime = _allTimes[index + k];
+      if (_busyTimes.contains(slotTime) || _isTimeInPast(slotTime)) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
+  Map<String, List<ServiceModel>> get _groupedServices {
+    final map = <String, List<ServiceModel>>{};
+    for (final service in _services) {
+      map.putIfAbsent(service.categoryName, () => []).add(service);
+    }
+    return map;
+  }
+
   Future<void> _loadBusyTimes() async {
     if (_selectedBarber == null || _selectedDate == null) return;
     setState(() { _isLoadingTimes = true; _selectedTime = null; });
     try {
-      _busyTimes = [];
-    } catch (_) {}
+      final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate!);
+      final empId = int.tryParse(_selectedBarber!.id) ?? 1;
+      final appointmentsData = await ApiService.getEmployeeAppointments(
+        employeeId: empId,
+        date: dateStr,
+      );
+      
+      final busyList = <String>[];
+      for (final appMap in appointmentsData) {
+        final statusStr = appMap['status']?.toString();
+        if (statusStr == 'cancelled') continue;
+        
+        final startStr = appMap['start_at']?.toString();
+        final endStr = appMap['end_at']?.toString();
+        if (startStr == null || endStr == null) continue;
+        
+        final start = DateTime.parse(startStr);
+        final end = DateTime.parse(endStr);
+        
+        for (final time in _allTimes) {
+          final parts = time.split(':');
+          final hour = int.parse(parts[0]);
+          final minute = int.parse(parts[1]);
+          final slotDateTime = DateTime(_selectedDate!.year, _selectedDate!.month, _selectedDate!.day, hour, minute);
+          
+          if ((slotDateTime.isAfter(start) || slotDateTime.isAtSameMomentAs(start)) &&
+              slotDateTime.isBefore(end)) {
+            if (!busyList.contains(time)) {
+              busyList.add(time);
+            }
+          }
+        }
+      }
+      
+      if (mounted) {
+        setState(() {
+          _busyTimes = busyList;
+        });
+      }
+    } catch (e) {
+      debugPrint('Meşgul saatler yüklenirken hata: $e');
+    }
     if (mounted) setState(() => _isLoadingTimes = false);
   }
 
   List<DateTime> get _availableDates {
-    final now = DateTime.now();
-    return List.generate(30, (i) => DateTime(now.year, now.month, now.day + i + 1));
+    final now = _getTurkishLocalTime();
+    return List.generate(30, (i) => DateTime(now.year, now.month, now.day + i));
   }
 
   void _showConfirmationSheet() {
-    if (_selectedBarber == null || _selectedService == null ||
+    if (_selectedBarber == null || _selectedServices.isEmpty ||
         _selectedDate == null || _selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Lütfen tüm alanları seçin'), backgroundColor: Colors.orange));
@@ -88,6 +186,8 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
     }
 
     final dateStr = DateFormat('d MMMM EEEE', 'tr_TR').format(_selectedDate!);
+    final serviceNames = _selectedServices.map((s) => s.name).join(', ');
+    final totalPrice = _selectedServices.fold<double>(0, (sum, s) => sum + s.price);
 
     showModalBottomSheet(
       context: context,
@@ -110,9 +210,10 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           _summaryRow(Icons.access_time, 'Saat', _selectedTime!),
           _summaryRow(Icons.person, 'Personel',
             '${_selectedBarber!.name} ${_selectedBarber!.surname}'),
-          _summaryRow(Icons.content_cut, 'Hizmet', _selectedService!.name),
+          _summaryRow(Icons.content_cut, 'Hizmetler', serviceNames),
+          _summaryRow(Icons.access_time_filled, 'Toplam Süre', '$_totalDuration dk'),
           _summaryRow(Icons.monetization_on_outlined, 'Ücret',
-            '₺${_selectedService!.price.toStringAsFixed(0)}'),
+            '₺${totalPrice.toStringAsFixed(0)}'),
           const SizedBox(height: 24),
           SizedBox(width: double.infinity, height: 54, child: ElevatedButton.icon(
             onPressed: _isCreating ? null : _createAppointment,
@@ -150,8 +251,10 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         const SizedBox(width: 12),
         Text(label, style: const TextStyle(color: Colors.white54, fontSize: 14)),
         const Spacer(),
-        Text(value, style: const TextStyle(
-          color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+        Expanded(
+          child: Text(value, textAlign: TextAlign.end, style: const TextStyle(
+            color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+        ),
       ]),
     );
   }
@@ -169,14 +272,16 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         id: '',
         customerId: user.id,
         barberId: _selectedBarber!.id,
-        serviceId: _selectedService!.id,
+        serviceId: _selectedServices.isNotEmpty ? _selectedServices.first.id : '',
         dateTime: appointmentDT,
         status: AppointmentStatus.pending,
         createdAt: DateTime.now(),
       );
 
+      final serviceIds = _selectedServices.map((s) => int.parse(s.id)).toList();
+
       await Provider.of<AppointmentProvider>(context, listen: false)
-          .createAppointment(appointment);
+          .createAppointment(appointment, serviceIds: serviceIds);
 
       if (!mounted) return;
       Navigator.pop(context); // close bottom sheet
@@ -258,7 +363,29 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           const SizedBox(height: 16),
           _isLoadingServices
             ? const Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor))
-            : Column(children: _services.map((s) => _buildServiceCard(s)).toList()),
+            : Column(
+                children: _groupedServices.entries.map((entry) {
+                  final category = entry.key;
+                  final categoryServices = entry.value;
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2A2A2A),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFF3A3A3A)),
+                    ),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        title: Text(category, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                        iconColor: AppTheme.secondaryColor,
+                        collapsedIconColor: Colors.white70,
+                        children: categoryServices.map((s) => _buildServiceCard(s)).toList(),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
           const SizedBox(height: 28),
 
           // SAAT SEÇİN
@@ -330,7 +457,12 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         _selectedDate!.day == date.day && _selectedDate!.month == date.month;
     return GestureDetector(
       onTap: () {
-        setState(() => _selectedDate = date);
+        setState(() {
+          _selectedDate = date;
+          if (_selectedTime != null && _isTimeInPast(_selectedTime!)) {
+            _selectedTime = null;
+          }
+        });
         _loadBusyTimes();
       },
       child: Container(
@@ -352,73 +484,92 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   }
 
   Widget _buildServiceCard(ServiceModel service) {
-    final isSelected = _selectedService?.id == service.id;
+    final isSelected = _selectedServices.any((s) => s.id == service.id);
     return GestureDetector(
-      onTap: () => setState(() => _selectedService = service),
+      onTap: () {
+        setState(() {
+          if (isSelected) {
+            _selectedServices.removeWhere((s) => s.id == service.id);
+          } else {
+            _selectedServices.add(service);
+          }
+          if (_selectedTime != null && !_isSlotAvailable(_selectedTime!)) {
+            _selectedTime = null;
+          }
+        });
+      },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
+        margin: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2A2A),
-          borderRadius: BorderRadius.circular(14),
+          color: isSelected ? const Color(0xFF353535) : const Color(0xFF202020),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppTheme.secondaryColor : const Color(0xFF3A3A3A),
-            width: isSelected ? 2 : 1),
+            color: isSelected ? AppTheme.secondaryColor : const Color(0xFF2C2C2C),
+            width: isSelected ? 1.5 : 1),
         ),
         child: Row(children: [
-          ClipRRect(borderRadius: BorderRadius.circular(10),
+          ClipRRect(borderRadius: BorderRadius.circular(8),
             child: service.imageUrl != null
-              ? Image.network(service.imageUrl!, width: 50, height: 50, fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(width: 50, height: 50,
+              ? Image.network(service.imageUrl!, width: 44, height: 44, fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(width: 44, height: 44,
                     color: const Color(0xFF3A3A3A),
-                    child: const Icon(Icons.content_cut, color: Colors.white24)))
-              : Container(width: 50, height: 50, color: const Color(0xFF3A3A3A),
-                  child: const Icon(Icons.content_cut, color: Colors.white24))),
+                    child: const Icon(Icons.content_cut, color: Colors.white24, size: 20)))
+              : Container(width: 44, height: 44, color: const Color(0xFF3A3A3A),
+                  child: const Icon(Icons.content_cut, color: Colors.white24, size: 20))),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(service.name, style: const TextStyle(
-              color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
+              color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 4),
             Row(children: [
-              const Icon(Icons.access_time, color: Colors.white38, size: 13),
+              const Icon(Icons.access_time, color: Colors.white38, size: 12),
               const SizedBox(width: 4),
               Text('${service.durationMinutes} dk', style: const TextStyle(
-                color: Colors.white38, fontSize: 12)),
-              const SizedBox(width: 8),
-              const Text('·', style: TextStyle(color: Colors.white24)),
-              const SizedBox(width: 8),
-              const Text('Hair', style: TextStyle(color: Colors.white38, fontSize: 12)),
+                color: Colors.white38, fontSize: 11)),
             ]),
           ])),
           Text('₺${service.price.toStringAsFixed(0)}', style: TextStyle(
             color: isSelected ? AppTheme.secondaryColor : Colors.white,
-            fontSize: 16, fontWeight: FontWeight.bold)),
-          if (isSelected) ...[
-            const SizedBox(width: 8),
-            const Icon(Icons.check_circle, color: AppTheme.secondaryColor, size: 22),
-          ],
+            fontSize: 15, fontWeight: FontWeight.bold)),
+          const SizedBox(width: 8),
+          Icon(
+            isSelected ? Icons.check_box : Icons.check_box_outline_blank,
+            color: isSelected ? AppTheme.secondaryColor : Colors.white30,
+            size: 20,
+          ),
         ]),
       ),
     );
   }
 
   Widget _buildTimeChip(String time) {
-    final isBusy = _busyTimes.contains(time);
+    final isPast = _isTimeInPast(time);
+    final isBusy = _busyTimes.contains(time) || isPast;
+    final isAvailable = _isSlotAvailable(time);
     final isSelected = _selectedTime == time;
+    final bool disabled = isBusy || !isAvailable;
+
     return GestureDetector(
-      onTap: isBusy ? null : () => setState(() => _selectedTime = time),
+      onTap: disabled ? null : () => setState(() => _selectedTime = time),
       child: Container(
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.secondaryColor
-            : isBusy ? AppTheme.secondaryColor.withOpacity(0.15) : const Color(0xFF2A2A2A),
+            : disabled
+              ? (isPast ? Colors.white10 : AppTheme.secondaryColor.withOpacity(0.15))
+              : const Color(0xFF2A2A2A),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isSelected ? AppTheme.secondaryColor
-              : isBusy ? AppTheme.secondaryColor.withOpacity(0.3) : const Color(0xFF3A3A3A)),
+              : disabled
+                ? (isPast ? Colors.white10 : AppTheme.secondaryColor.withOpacity(0.3))
+                : const Color(0xFF3A3A3A)),
         ),
         child: Center(child: Text(time, style: TextStyle(
           color: isSelected ? Colors.black
-            : isBusy ? AppTheme.secondaryColor.withOpacity(0.5) : Colors.white70,
+            : disabled
+              ? (isPast ? Colors.white24 : AppTheme.secondaryColor.withOpacity(0.5))
+              : Colors.white70,
           fontSize: 13, fontWeight: FontWeight.w600))),
       ),
     );

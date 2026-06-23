@@ -1,4 +1,5 @@
 import 'package:mobile_android/core/enums.dart';
+import 'package:mobile_android/services/api_service.dart';
 
 /// Kullanıcı veri modeli
 class UserModel {
@@ -41,7 +42,7 @@ class UserModel {
       email: map['email'] ?? '',
       phone: map['phone'] ?? '',
       role: userRole,
-      profileImageUrl: map['profile_photo'] ?? map['profileImageUrl'],
+      profileImageUrl: ApiService.normalizeImageUrl(map['profile_photo'] ?? map['profileImageUrl'] ?? map['profile_image_url']),
       createdAt: DateTime.parse(map['created_at'] ?? map['createdAt'] ?? DateTime.now().toIso8601String()),
     );
   }

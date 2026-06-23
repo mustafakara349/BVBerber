@@ -10,6 +10,31 @@ class UnisexServicesSeeder extends Seeder
 {
     public function run(): void
     {
+        // Create missing categories if they don't exist
+        $categories = [
+            5 => ['name' => 'VIP Hizmetler', 'sort_order' => 5],
+            6 => ['name' => 'El & Ayak Bakımı', 'sort_order' => 6],
+            7 => ['name' => 'Kaş Tasarım', 'sort_order' => 7],
+            8 => ['name' => 'Cilt Bakımı', 'sort_order' => 8],
+            9 => ['name' => 'Lazer Epilasyon', 'sort_order' => 9],
+            10 => ['name' => 'Masaj', 'sort_order' => 10],
+        ];
+
+        foreach ($categories as $id => $cat) {
+            \Illuminate\Support\Facades\DB::table('service_categories')->updateOrInsert(
+                ['id' => $id],
+                [
+                    'branch_id' => 1,
+                    'name' => $cat['name'],
+                    'description' => $cat['name'] . ' Hizmetleri',
+                    'sort_order' => $cat['sort_order'],
+                    'is_active' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+
         $services = [
             ['name' => 'Manikür', 'category_id' => 6, 'price' => 1000.00, 'duration' => 40],
             ['name' => 'Pedikür', 'category_id' => 6, 'price' => 1000.00, 'duration' => 45],

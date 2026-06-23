@@ -107,7 +107,7 @@ class CustomerController extends Controller
             abort(404);
         }
 
-        $customer->delete();
+        $customer->forceDelete();
         return redirect()->route('customers.index')->with('success', 'Müşteri silindi.');
     }
 }

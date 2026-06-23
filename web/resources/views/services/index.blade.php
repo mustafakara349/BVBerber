@@ -37,9 +37,13 @@
                             <tr class="border-bottom">
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar bg-primary-subtle text-primary me-3 rounded p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                            <i class="ti ti-cut fs-4"></i>
-                                        </div>
+                                        @if($service->image)
+                                            <img src="{{ asset('storage/' . $service->image) }}" class="rounded me-3 object-fit-cover shadow-sm" style="width: 48px; height: 48px;" alt="{{ $service->name }}">
+                                        @else
+                                            <div class="avatar bg-primary-subtle text-primary me-3 rounded p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                                <i class="ti ti-cut fs-4"></i>
+                                            </div>
+                                        @endif
                                         <div>
                                             <h6 class="mb-0 fw-semibold text-dark">{{ $service->name }}</h6>
                                             <div class="d-flex gap-1 mt-1">

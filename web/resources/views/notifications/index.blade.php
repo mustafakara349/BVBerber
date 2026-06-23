@@ -91,7 +91,10 @@
                     @forelse($notifications as $notif)
                     <tr>
                         <td class="ps-4">
-                            @if($notif->user)
+                            @if(($notif->recipients_count ?? 1) > 1)
+                                <div class="fw-semibold text-primary"><i class="ti ti-users me-1"></i>{{ $notif->target_group }}</div>
+                                <div class="text-secondary small">{{ $notif->recipients_count }} Alıcı</div>
+                            @elseif($notif->user)
                                 <div class="fw-semibold text-dark">{{ $notif->user->full_name }}</div>
                                 <div class="text-secondary small">{{ $notif->user->email }}</div>
                             @else
@@ -125,9 +128,16 @@
                             <form method="POST" action="{{ route('notifications.toggle-read', $notif->id) }}">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="badge {{ $notif->is_read ? 'bg-success text-white border-0' : 'bg-warning-subtle text-warning border-0' }} px-2.5 py-1 rounded-pill">
-                                    {{ $notif->is_read ? 'Okundu' : 'Okunmadı' }}
-                                </button>
+                                @if(($notif->recipients_count ?? 1) > 1)
+                                    <input type="hidden" name="group_ids" value="{{ json_encode($notif->group_ids) }}">
+                                    <button type="submit" class="badge {{ $notif->read_count == $notif->recipients_count ? 'bg-success text-white border-0' : ($notif->read_count > 0 ? 'bg-info text-white border-0' : 'bg-warning-subtle text-warning border-0') }} px-2.5 py-1 rounded-pill">
+                                        {{ $notif->read_count }}/{{ $notif->recipients_count }} Okundu
+                                    </button>
+                                @else
+                                    <button type="submit" class="badge {{ $notif->is_read ? 'bg-success text-white border-0' : 'bg-warning-subtle text-warning border-0' }} px-2.5 py-1 rounded-pill">
+                                        {{ $notif->is_read ? 'Okundu' : 'Okunmadı' }}
+                                    </button>
+                                @endif
                             </form>
                         </td>
                         <td class="text-center text-secondary small">
@@ -137,6 +147,9 @@
                             <form method="POST" action="{{ route('notifications.destroy', $notif->id) }}" onsubmit="return confirm('Bu bildirim kaydını silmek istediğinize emin misiniz?');">
                                 @csrf
                                 @method('DELETE')
+                                @if(($notif->recipients_count ?? 1) > 1)
+                                    <input type="hidden" name="group_ids" value="{{ json_encode($notif->group_ids) }}">
+                                @endif
                                 <button type="submit" class="btn btn-outline-danger border-0 rounded-circle btn-sm" title="Bildirim Sil">
                                     <i class="ti ti-trash fs-5"></i>
                                 </button>

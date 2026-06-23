@@ -57,14 +57,14 @@ class AppointmentProvider extends ChangeNotifier {
   }
 
   /// Yeni randevu oluştur
-  Future<void> createAppointment(AppointmentModel appointment) async {
+  Future<void> createAppointment(AppointmentModel appointment, {List<int>? serviceIds}) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
       final empId = int.tryParse(appointment.barberId) ?? 1;
-      final svcId = int.tryParse(appointment.serviceId) ?? 1;
+      final svcIds = serviceIds ?? [int.tryParse(appointment.serviceId) ?? 1];
       
       // format YYYY-MM-DD HH:MM:SS
       final startAtStr = appointment.dateTime.toString().substring(0, 19);
@@ -72,7 +72,7 @@ class AppointmentProvider extends ChangeNotifier {
       final responseData = await ApiService.createAppointment(
         customerId: appointment.customerId,
         employeeId: empId,
-        serviceIds: [svcId],
+        serviceIds: svcIds,
         startAt: startAtStr,
         customerNote: appointment.note,
       );
