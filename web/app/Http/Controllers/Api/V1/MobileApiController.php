@@ -254,10 +254,10 @@ class MobileApiController extends Controller
                     if (!$user || (string)$user->id !== (string)$userId) {
                         return $this->error('Unauthorized', 403);
                     }
-                    $query = \App\Models\Appointment::with(['employee.user', 'appointmentServices.service'])
+                    $query = \App\Models\Appointment::with(['employee.user', 'appointmentServices.service', 'review'])
                         ->where('customer_id', $userId);
                 } else if ($barberId) {
-                    $query = \App\Models\Appointment::with(['employee.user', 'appointmentServices.service'])
+                    $query = \App\Models\Appointment::with(['employee.user', 'appointmentServices.service', 'review'])
                         ->where('employee_id', $barberId);
                 } else {
                     return $this->error('Invalid query params', 400);
@@ -294,6 +294,9 @@ class MobileApiController extends Controller
                         'time' => $appt->start_at->format('H:i'),
                         'price' => (int)$appt->total_price,
                         'status' => $appt->status->value,
+                        'isReviewed' => $appt->review !== null,
+                        'rating' => $appt->review ? (int)$appt->review->rating : null,
+                        'icalUrl' => $request->schemeAndHttpHost() . '/api/v1/mobile/appointments/' . $appt->id . '/ical?signature=' . hash_hmac('sha256', $appt->id, config('app.key')),
                         'createdAt' => $appt->created_at->toISOString(),
                         'updatedAt' => $appt->updated_at->toISOString(),
                     ];
@@ -529,5 +532,85 @@ class MobileApiController extends Controller
     public function deleteDocument(string $collection, string $id, Request $request): JsonResponse
     {
         return $this->error('Action not supported', 400);
+    }
+
+    /**
+     * Generate secure iCal (.ics) calendar file.
+     */
+    public function generateIcal(\App\Models\Appointment $appointment, Request $request)
+    {
+        // Simple security signature check to prevent ID enumeration
+        $signature = hash_hmac('sha256', $appointment->id, config('app.key'));
+        if ($request->query('signature') !== $signature) {
+            abort(403, 'Yetkisiz erişim. Geçersiz takvim imzası.');
+        }
+
+        $appointment->load(['employee.user', 'appointmentServices.service']);
+
+        $start = $appointment->start_at->utc()->format('Ymd\THis\Z');
+        $duration = $appointment->appointmentServices->sum(function($as) {
+            return $as->service->duration_minutes ?? 30;
+        }) ?: 30;
+        $end = $appointment->start_at->copy()->addMinutes($duration)->utc()->format('Ymd\THis\Z');
+        
+        $summary = "B&V Barber Randevusu - " . ($appointment->employee->full_name ?? 'Berber');
+        $description = "Hizmet: " . ($appointment->appointmentServices->first()?->service->name ?? 'Berberlik Hizmeti');
+        $location = "B&V Barber & Coffee";
+
+        $ical = "BEGIN:VCALENDAR\r\n" .
+                "VERSION:2.0\r\n" .
+                "PRODID:-//BVBarber//NONSGML Calendar//EN\r\n" .
+                "CALSCALE:GREGORIAN\r\n" .
+                "BEGIN:VEVENT\r\n" .
+                "UID:appointment-" . $appointment->id . "@bvbarber.com\r\n" .
+                "DTSTAMP:" . now()->utc()->format('Ymd\THis\Z') . "\r\n" .
+                "DTSTART:" . $start . "\r\n" .
+                "DTEND:" . $end . "\r\n" .
+                "SUMMARY:" . $summary . "\r\n" .
+                "DESCRIPTION:" . $description . "\r\n" .
+                "LOCATION:" . $location . "\r\n" .
+                "END:VEVENT\r\n" .
+                "END:VCALENDAR";
+
+        return response($ical)
+            ->header('Content-Type', 'text/calendar; charset=utf-8')
+            ->header('Content-Disposition', 'attachment; filename="randevu-' . $appointment->id . '.ics"');
+    }
+
+    /**
+     * Create review and rating for a completed appointment.
+     */
+    public function createReview(Request $request): JsonResponse
+    {
+        $request->validate([
+            'appointment_id' => 'required|exists:appointments,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        $user = $request->user();
+        $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
+
+        if ($appointment->customer_id != $user->id) {
+            return $this->error('Bu randevu size ait değil.', 403);
+        }
+
+        if ($appointment->status !== \App\Enums\AppointmentStatus::Completed) {
+            return $this->error('Sadece tamamlanmış randevular için yorum yapabilirsiniz.', 400);
+        }
+
+        if ($appointment->review()->exists()) {
+            return $this->error('Bu randevu için zaten yorum yapılmış.', 400);
+        }
+
+        $review = \App\Models\Review::create([
+            'appointment_id' => $appointment->id,
+            'customer_id' => $user->id,
+            'employee_id' => $appointment->employee_id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        return $this->success($review, 'Yorumunuz başarıyla kaydedildi.');
     }
 }

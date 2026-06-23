@@ -15,7 +15,7 @@ class ReviewController extends Controller
 
         $query = Review::whereHas('appointment', function ($q) use ($branchId) {
             $q->where('branch_id', $branchId);
-        })->with(['customer', 'employee.user', 'appointment']);
+        })->with(['customer', 'employee.user', 'appointment.appointmentServices.service']);
 
         if ($request->filled('rating')) {
             $query->where('rating', $request->get('rating'));

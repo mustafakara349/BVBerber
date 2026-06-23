@@ -11,6 +11,9 @@ enum AppointmentStatus {
   confirmed,
   cancelled,
   completed,
+  rejected,
+  noShow,
+  inProgress,
 }
 
 /// Cinsiyet

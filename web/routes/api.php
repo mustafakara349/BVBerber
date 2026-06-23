@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\V1\EmployeeApiController;
 use App\Http\Controllers\Api\V1\MobileApiController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('throttle:api')->group(function () {
     Route::post('/auth/login', [AuthController::class, 'login']);
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::get('/services', [ServiceApiController::class, 'index']);
@@ -23,6 +23,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/barber-availability', [MobileApiController::class, 'query'])->defaults('collection', 'barberAvailability');
         Route::get('/services', [MobileApiController::class, 'query'])->defaults('collection', 'services');
         Route::get('/barbers', [MobileApiController::class, 'query'])->defaults('collection', 'barbers');
+        Route::get('/appointments/{appointment}/ical', [MobileApiController::class, 'generateIcal']);
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/me', [MobileApiController::class, 'showDocument'])->defaults('collection', 'users')->defaults('id', 'me');
@@ -30,6 +31,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/me/update-password', [MobileApiController::class, 'updatePassword']);
             Route::post('/me/upload-photo', [MobileApiController::class, 'uploadPhoto']);
             Route::post('/save-token', [MobileApiController::class, 'saveToken']);
+            Route::post('/reviews', [MobileApiController::class, 'createReview']);
             
             Route::get('/document/{collection}/{id}', [MobileApiController::class, 'showDocument']);
             Route::post('/document/{collection}', [MobileApiController::class, 'addDocument']);

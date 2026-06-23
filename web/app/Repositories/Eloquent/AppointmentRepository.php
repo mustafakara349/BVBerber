@@ -15,7 +15,7 @@ class AppointmentRepository extends BaseRepository implements AppointmentReposit
 
     public function getForBranch(int $branchId, array $filters = [], int $perPage = 15)
     {
-        $query = $this->model->with(['customer', 'employee.user', 'appointmentServices.service'])
+        $query = $this->model->with(['customer', 'employee.user', 'appointmentServices.service', 'review'])
             ->forBranch($branchId)
             ->orderByRaw('CASE WHEN start_at >= CURRENT_DATE THEN 0 ELSE 1 END')
             ->orderByRaw('CASE WHEN start_at >= CURRENT_DATE THEN start_at END ASC')
@@ -23,6 +23,10 @@ class AppointmentRepository extends BaseRepository implements AppointmentReposit
 
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['customer_id'])) {
+            $query->where('customer_id', $filters['customer_id']);
         }
 
         if (!empty($filters['employee_id'])) {

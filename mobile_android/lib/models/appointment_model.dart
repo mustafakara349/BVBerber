@@ -13,6 +13,9 @@ class AppointmentModel {
   final String? serviceName;
   final String? barberName;
   final double? price;
+  final bool isReviewed;
+  final String? icalUrl;
+  final int? rating;
 
   const AppointmentModel({
     required this.id,
@@ -26,6 +29,9 @@ class AppointmentModel {
     this.serviceName,
     this.barberName,
     this.price,
+    this.isReviewed = false,
+    this.icalUrl,
+    this.rating,
   });
 
   factory AppointmentModel.fromMap(Map<String, dynamic> map, [String id = '']) {
@@ -57,10 +63,33 @@ class AppointmentModel {
     AppointmentStatus statusVal = AppointmentStatus.pending;
     final rawStatus = map['status']?.toString();
     if (rawStatus != null) {
-      statusVal = AppointmentStatus.values.firstWhere(
-        (e) => e.name == rawStatus,
-        orElse: () => AppointmentStatus.pending,
-      );
+      switch (rawStatus) {
+        case 'pending':
+          statusVal = AppointmentStatus.pending;
+          break;
+        case 'confirmed':
+          statusVal = AppointmentStatus.confirmed;
+          break;
+        case 'completed':
+          statusVal = AppointmentStatus.completed;
+          break;
+        case 'cancelled':
+          statusVal = AppointmentStatus.cancelled;
+          break;
+        case 'rejected':
+          statusVal = AppointmentStatus.rejected;
+          break;
+        case 'no_show':
+        case 'noShow':
+          statusVal = AppointmentStatus.noShow;
+          break;
+        case 'in_progress':
+        case 'inProgress':
+          statusVal = AppointmentStatus.inProgress;
+          break;
+        default:
+          statusVal = AppointmentStatus.pending;
+      }
     }
 
     // Get serviceName and price
@@ -123,6 +152,9 @@ class AppointmentModel {
       serviceName: serviceNameVal,
       barberName: barberNameVal,
       price: priceVal,
+      isReviewed: map['isReviewed'] == true || map['is_reviewed'] == true,
+      icalUrl: map['icalUrl'] ?? map['ical_url'],
+      rating: map['rating'] != null ? int.tryParse(map['rating'].toString()) : null,
     );
   }
 
@@ -136,7 +168,11 @@ class AppointmentModel {
       'serviceId': serviceId,
       'dateTime': dateTime.toIso8601String(),
       'start_at': dateTime.toIso8601String(),
-      'status': status.name,
+      'status': status == AppointmentStatus.noShow
+          ? 'no_show'
+          : (status == AppointmentStatus.inProgress
+              ? 'in_progress'
+              : status.name),
       'note': note,
       'customer_note': note,
       'createdAt': createdAt.toIso8601String(),
@@ -144,6 +180,9 @@ class AppointmentModel {
       'serviceName': serviceName,
       'barberName': barberName,
       'price': price,
+      'isReviewed': isReviewed,
+      'icalUrl': icalUrl,
+      'rating': rating,
     };
   }
 
@@ -159,6 +198,9 @@ class AppointmentModel {
     String? serviceName,
     String? barberName,
     double? price,
+    bool? isReviewed,
+    String? icalUrl,
+    int? rating,
   }) {
     return AppointmentModel(
       id: id ?? this.id,
@@ -172,6 +214,9 @@ class AppointmentModel {
       serviceName: serviceName ?? this.serviceName,
       barberName: barberName ?? this.barberName,
       price: price ?? this.price,
+      isReviewed: isReviewed ?? this.isReviewed,
+      icalUrl: icalUrl ?? this.icalUrl,
+      rating: rating ?? this.rating,
     );
   }
 }

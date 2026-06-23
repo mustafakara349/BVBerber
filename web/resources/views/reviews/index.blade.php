@@ -136,8 +136,8 @@
                             <div class="fw-semibold text-dark">{{ $rev->employee?->user?->full_name ?? 'Berber' }}</div>
                             <div class="text-secondary small text-truncate" style="max-width: 150px;">
                                 @if($rev->appointment)
-                                    @foreach($rev->appointment->services as $srv)
-                                        {{ $srv->name }},
+                                    @foreach($rev->appointment->appointmentServices as $srv)
+                                        {{ $srv->service->name ?? 'Hizmet' }},
                                     @endforeach
                                 @else
                                     Genel Hizmet

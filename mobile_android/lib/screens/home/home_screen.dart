@@ -6,6 +6,9 @@ import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/models/service_model.dart';
 import 'package:mobile_android/routes/app_routes.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mobile_android/services/api_service.dart';
 
 /// Ana sayfa ekranı
 class HomeScreen extends StatefulWidget {
@@ -25,11 +28,49 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _userData;
   List<ServiceModel> _services = [];
   bool _isLoading = true;
+  Timer? _notificationTimer;
+  bool _hasUnreadNotifications = false;
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    _startNotificationPolling();
+  }
+
+  @override
+  void dispose() {
+    _notificationTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startNotificationPolling() {
+    // İlk kontrolü 5 saniye sonra yap
+    Timer(const Duration(seconds: 5), _checkNotifications);
+    // Sonra her 30 saniyede bir sorgula
+    _notificationTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      _checkNotifications();
+    });
+  }
+
+  Future<void> _checkNotifications() async {
+    if (!mounted) return;
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.currentUser == null) return;
+
+      final notifications = await ApiService.getNotifications();
+      final prefs = await SharedPreferences.getInstance();
+      final lastReadCount = prefs.getInt('last_read_notification_count') ?? 0;
+      
+      if (mounted) {
+        setState(() {
+          _hasUnreadNotifications = notifications.length > lastReadCount;
+        });
+      }
+    } catch (e) {
+      debugPrint('Bildirim kontrolünde hata: $e');
+    }
   }
 
   Future<void> _loadData() async {
@@ -156,16 +197,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   // Bildirim ikonu
                   GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
-                    child: Container(
-                      width: 42,
-                      height: 42,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color(0xFF2A2A2A),
-                        border: Border.all(color: const Color(0xFF3A3A3A)),
-                      ),
-                      child: const Icon(Icons.notifications_outlined, color: Colors.white70, size: 22),
+                    onTap: () async {
+                      await Navigator.pushNamed(context, AppRoutes.notifications);
+                      try {
+                        final prefs = await SharedPreferences.getInstance();
+                        final notifications = await ApiService.getNotifications();
+                        await prefs.setInt('last_read_notification_count', notifications.length);
+                      } catch (_) {}
+                      if (mounted) {
+                        setState(() {
+                          _hasUnreadNotifications = false;
+                        });
+                      }
+                    },
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color(0xFF2A2A2A),
+                            border: Border.all(color: const Color(0xFF3A3A3A)),
+                          ),
+                          child: const Icon(Icons.notifications_outlined, color: Colors.white70, size: 22),
+                        ),
+                        if (_hasUnreadNotifications)
+                          Positioned(
+                            right: 2,
+                            top: 2,
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              decoration: const BoxDecoration(
+                                color: AppTheme.secondaryColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ],

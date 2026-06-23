@@ -7,6 +7,9 @@ import 'package:mobile_android/models/appointment_model.dart';
 import 'package:mobile_android/providers/appointment_provider.dart';
 import 'package:mobile_android/routes/app_routes.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile_android/services/api_service.dart';
+
 class AppointmentsScreen extends StatefulWidget {
   const AppointmentsScreen({super.key});
 
@@ -50,8 +53,11 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
                   const Text('Randevularım', style: TextStyle(
                     color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
                   InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.createAppointment);
+                    onTap: () async {
+                      final result = await Navigator.pushNamed(context, AppRoutes.createAppointment);
+                      if (result == true && mounted) {
+                        Provider.of<AppointmentProvider>(context, listen: false).loadAppointments();
+                      }
                     },
                     borderRadius: BorderRadius.circular(21),
                     child: Container(
@@ -109,10 +115,15 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
 
   Widget _buildList(List<AppointmentModel> items, String emptyTitle, String emptyDesc, bool isUpcoming) {
     if (items.isEmpty) return _buildEmpty(emptyTitle, emptyDesc);
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      itemCount: items.length,
-      itemBuilder: (_, i) => _AppointmentCard(appointment: items[i], isUpcoming: isUpcoming),
+    return RefreshIndicator(
+      onRefresh: () => Provider.of<AppointmentProvider>(context, listen: false).loadAppointments(),
+      color: AppTheme.secondaryColor,
+      backgroundColor: const Color(0xFF2A2A2A),
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        itemCount: items.length,
+        itemBuilder: (_, i) => _AppointmentCard(appointment: items[i], isUpcoming: isUpcoming),
+      ),
     );
   }
 
@@ -145,6 +156,224 @@ class _AppointmentCard extends StatelessWidget {
   final bool isUpcoming;
   const _AppointmentCard({required this.appointment, required this.isUpcoming});
 
+  void _showSnackBar(ScaffoldMessengerState messenger, String msg, Color color) {
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: color,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  Future<void> _addToGoogleCalendar(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final startUtc = appointment.dateTime.toUtc();
+    final duration = 30; // Varsayılan 30 dk
+    final endUtc = startUtc.add(Duration(minutes: duration));
+
+    final startStr = _formatGoogleDate(startUtc);
+    final endStr = _formatGoogleDate(endUtc);
+
+    final title = 'B&V Barber Randevusu - ${appointment.barberName ?? 'Usta'}';
+    final details = 'Alınan Hizmet: ${appointment.serviceName ?? 'Berberlik Hizmeti'}';
+    final location = 'B&V Barber & Coffee, Tarsus/Mersin';
+
+    final googleUrl = 'https://calendar.google.com/calendar/render'
+        '?action=TEMPLATE'
+        '&text=${Uri.encodeComponent(title)}'
+        '&dates=${startStr}/${endStr}'
+        '&details=${Uri.encodeComponent(details)}'
+        '&location=${Uri.encodeComponent(location)}';
+
+    final uri = Uri.parse(googleUrl);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        _showSnackBar(messenger, 'Google Takvim açılamadı.', AppTheme.errorColor);
+      }
+    } catch (e) {
+      _showSnackBar(messenger, 'Google Takvim açılamadı: $e', AppTheme.errorColor);
+    }
+  }
+
+  Future<void> _addToAppleCalendar(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    if (appointment.icalUrl == null || appointment.icalUrl!.isEmpty) {
+      _showSnackBar(messenger, 'Takvim indirme linki alınamadı.', AppTheme.errorColor);
+      return;
+    }
+
+    final uri = Uri.parse(appointment.icalUrl!);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        _showSnackBar(messenger, 'Cihaz takvimi başlatılamadı.', AppTheme.errorColor);
+      }
+    } catch (e) {
+      _showSnackBar(messenger, 'Cihaz takvimi başlatılamadı: $e', AppTheme.errorColor);
+    }
+  }
+
+  String _formatGoogleDate(DateTime dt) {
+    return '${dt.year.toString().padLeft(4, '0')}'
+        '${dt.month.toString().padLeft(2, '0')}'
+        '${dt.day.toString().padLeft(2, '0')}T'
+        '${dt.hour.toString().padLeft(2, '0')}'
+        '${dt.minute.toString().padLeft(2, '0')}'
+        '${dt.second.toString().padLeft(2, '0')}Z';
+  }
+
+  void _showCalendarOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF2A2A2A),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  'Takvime Ekle',
+                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.calendar_month, color: AppTheme.secondaryColor),
+                title: const Text('Google Takvim (Web/Uygulama)', style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  Navigator.pop(bc);
+                  _addToGoogleCalendar(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.download, color: AppTheme.secondaryColor),
+                title: const Text('Apple / Cihaz Takvimi (.ics Dosyası)', style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  Navigator.pop(bc);
+                  _addToAppleCalendar(context);
+                },
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showReviewDialog(BuildContext context) {
+    int selectedRating = 5;
+    final commentController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: const Color(0xFF2A2A2A),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: const Text(
+                'Randevuyu Değerlendir',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Hizmet kalitesini ve berberinizi puanlayın:',
+                      style: TextStyle(color: Colors.white70, fontSize: 13),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(5, (index) {
+                        final starValue = index + 1;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedRating = starValue;
+                            });
+                          },
+                          child: Icon(
+                            starValue <= selectedRating ? Icons.star : Icons.star_border,
+                            color: AppTheme.secondaryColor,
+                            size: 36,
+                          ),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: commentController,
+                      style: const TextStyle(color: Colors.white),
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        hintText: 'Yorumunuzu buraya yazabilirsiniz (isteğe bağlı)...',
+                        hintStyle: const TextStyle(color: Colors.white30),
+                        fillColor: const Color(0xFF1A1A1A),
+                        filled: true,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppTheme.secondaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Vazgeç', style: TextStyle(color: Colors.white54)),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final messenger = ScaffoldMessenger.of(context);
+                    final apptProvider = Provider.of<AppointmentProvider>(context, listen: false);
+                    try {
+                      final success = await ApiService.createReview(
+                        appointmentId: appointment.id,
+                        rating: selectedRating,
+                        comment: commentController.text.trim().isEmpty ? null : commentController.text.trim(),
+                      );
+                      if (success) {
+                        Navigator.pop(ctx);
+                        _showSnackBar(messenger, 'Değerlendirmeniz başarıyla gönderildi.', AppTheme.successColor);
+                        apptProvider.markAsReviewed(appointment.id, selectedRating);
+                        apptProvider.loadAppointments();
+                      }
+                    } catch (e) {
+                      _showSnackBar(messenger, e.toString().replaceAll('Exception: ', ''), AppTheme.errorColor);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.secondaryColor,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: const Text('Gönder', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final dateStr = DateFormat('d MMMM, EEEE · HH:mm', 'tr_TR').format(appointment.dateTime);
@@ -160,6 +389,12 @@ class _AppointmentCard extends StatelessWidget {
         statusColor = AppTheme.errorColor; statusText = 'İptal'; break;
       case AppointmentStatus.completed:
         statusColor = Colors.blueGrey; statusText = 'Tamamlandı'; break;
+      case AppointmentStatus.rejected:
+        statusColor = AppTheme.errorColor; statusText = 'Reddedildi'; break;
+      case AppointmentStatus.noShow:
+        statusColor = Colors.blueGrey; statusText = 'Gelmedi'; break;
+      case AppointmentStatus.inProgress:
+        statusColor = Colors.blue; statusText = 'Devam Ediyor'; break;
     }
 
     return Container(
@@ -213,9 +448,27 @@ class _AppointmentCard extends StatelessWidget {
           Text('B&V Coffee Barber – Tarsus/Mersin', style: TextStyle(color: Colors.white54, fontSize: 13)),
         ]),
 
+        // Takvime Ekle (Yaklaşan randevular için aktifse)
+        if (isUpcoming && appointment.status == AppointmentStatus.confirmed) ...[
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: OutlinedButton.icon(
+              onPressed: () => _showCalendarOptions(context),
+              icon: const Icon(Icons.calendar_today, size: 16, color: AppTheme.secondaryColor),
+              label: const Text('Takvime Ekle', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: AppTheme.secondaryColor),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ),
+        ],
+
         // Yaklaşan: İptal Et + Yol Tarifi
         if (isUpcoming && appointment.status != AppointmentStatus.cancelled) ...[
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Row(children: [
             Expanded(child: SizedBox(height: 42, child: OutlinedButton(
               onPressed: () => _showCancelDialog(context),
@@ -227,8 +480,15 @@ class _AppointmentCard extends StatelessWidget {
             ))),
             const SizedBox(width: 12),
             Expanded(child: SizedBox(height: 42, child: ElevatedButton(
-              onPressed: () {
-                // TODO: Harita yol tarifi
+              onPressed: () async {
+                const latitude = 36.923826;
+                const longitude = 34.903672;
+                final webUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
+                try {
+                  if (await canLaunchUrl(webUri)) {
+                    await launchUrl(webUri, mode: LaunchMode.externalApplication);
+                  }
+                } catch (_) {}
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.secondaryColor,
@@ -237,6 +497,60 @@ class _AppointmentCard extends StatelessWidget {
               child: const Text('Yol Tarifi', style: TextStyle(fontWeight: FontWeight.bold)),
             ))),
           ]),
+        ],
+
+        // Yorum & Değerlendirme (Geçmiş ve tamamlanmış randevular için henüz yorumlanmamışsa)
+        if (!isUpcoming && appointment.status == AppointmentStatus.completed && !appointment.isReviewed) ...[
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 46,
+            child: ElevatedButton.icon(
+              onPressed: () => _showReviewDialog(context),
+              icon: const Icon(Icons.star_rate_rounded, size: 20, color: Colors.black),
+              label: const Text('Hizmeti Değerlendir & Puanla', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.secondaryColor,
+                foregroundColor: Colors.black,
+                elevation: 0,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ),
+        ],
+
+        // Yorum & Değerlendirme yıldızları (Zaten değerlendirilmişse kart içinde göster)
+        if (!isUpcoming && appointment.status == AppointmentStatus.completed && appointment.isReviewed) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E1E1E),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white12),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle_outline_rounded, color: AppTheme.successColor, size: 18),
+                const SizedBox(width: 8),
+                const Text(
+                  'Değerlendirildi',
+                  style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+                const Spacer(),
+                Row(
+                  children: List.generate(5, (index) {
+                    final ratingVal = appointment.rating ?? 5;
+                    return Icon(
+                      index < ratingVal ? Icons.star_rounded : Icons.star_border_rounded,
+                      color: AppTheme.secondaryColor,
+                      size: 18,
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
         ],
       ]),
     );
@@ -251,10 +565,20 @@ class _AppointmentCard extends StatelessWidget {
       actions: [
         TextButton(onPressed: () => Navigator.pop(context),
           child: const Text('Vazgeç', style: TextStyle(color: Colors.white54))),
-        TextButton(onPressed: () {
-          Navigator.pop(context);
-          Provider.of<AppointmentProvider>(context, listen: false).cancelAppointment(appointment.id);
-        }, child: const Text('İptal Et', style: TextStyle(color: AppTheme.errorColor, fontWeight: FontWeight.bold))),
+        TextButton(
+          onPressed: () async {
+            final messenger = ScaffoldMessenger.of(context);
+            final apptProvider = Provider.of<AppointmentProvider>(context, listen: false);
+            Navigator.pop(context);
+            try {
+              await apptProvider.cancelAppointment(appointment.id);
+              _showSnackBar(messenger, 'Randevunuz başarıyla iptal edildi.', AppTheme.successColor);
+            } catch (e) {
+              _showSnackBar(messenger, 'İptal hatası: ${e.toString().replaceAll('Exception: ', '')}', AppTheme.errorColor);
+            }
+          },
+          child: const Text('İptal Et', style: TextStyle(color: AppTheme.errorColor, fontWeight: FontWeight.bold)),
+        ),
       ],
     ));
   }

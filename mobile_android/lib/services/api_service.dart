@@ -5,7 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   // Yerel emülatör testi için varsayılan IP. Canlı ortam veya fiziksel cihaz testi için kendi IP'nizle değiştirilebilir.
-  static const String baseUrl = 'http://10.0.2.2:8000/api/v1';
+  static const String baseUrl = 'http://10.0.2.2:8000/api/v1'; // PC İÇİN
+  // static const String baseUrl = 'http://127.0.0.1:8000/api/v1'; // Fiziksel Cihaz
+
 
   /// URL'deki localhost/127.0.0.1 adreslerini emülatörün erişebileceği IP/host ile değiştirir
   static String? normalizeImageUrl(String? url) {
@@ -171,7 +173,7 @@ class ApiService {
   static Future<List<dynamic>> getAppointments() async {
     final headers = await _getHeaders();
     final response = await http.get(
-      Uri.parse('$baseUrl/appointments'),
+      Uri.parse('$baseUrl/appointments?per_page=100'),
       headers: headers,
     );
     
@@ -250,15 +252,15 @@ class ApiService {
       bodyMap['note'] = note;
     }
 
-    final response = await http.patch(
-      Uri.parse('$baseUrl/appointments/$appointmentId/status'),
+    final response = await http.put(
+      Uri.parse('$baseUrl/mobile/document/appointments/$appointmentId'),
       headers: headers,
       body: jsonEncode(bodyMap),
     );
     
     final body = jsonDecode(response.body);
     if (response.statusCode == 200 && body['success'] == true) {
-      return body['data'];
+      return body['data'] != null ? Map<String, dynamic>.from(body['data']) : {};
     } else {
       throw Exception(body['message'] ?? 'Randevu durumu güncellenemedi.');
     }
@@ -280,6 +282,31 @@ class ApiService {
       return body['data'] as List;
     } else {
       throw Exception(body['message'] ?? 'Bildirimler alınamadı.');
+    }
+  }
+
+  // Yorum ve puanlama ekle
+  static Future<bool> createReview({
+    required String appointmentId,
+    required int rating,
+    String? comment,
+  }) async {
+    final headers = await _getHeaders();
+    final response = await http.post(
+      Uri.parse('$baseUrl/mobile/reviews'),
+      headers: headers,
+      body: jsonEncode({
+        'appointment_id': appointmentId,
+        'rating': rating,
+        'comment': comment,
+      }),
+    );
+    
+    final body = jsonDecode(response.body);
+    if (response.statusCode == 200 && body['success'] == true) {
+      return true;
+    } else {
+      throw Exception(body['message'] ?? 'Yorum kaydedilemedi.');
     }
   }
 }

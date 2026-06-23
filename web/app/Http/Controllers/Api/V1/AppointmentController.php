@@ -25,14 +25,21 @@ class AppointmentController extends Controller
     public function index(Request $request): JsonResponse
     {
         $branchId = $request->get('branch_id', 1);
+        $user = $request->user();
 
-        $appointments = $this->appointmentRepo->getForBranch($branchId, [
+        $filters = [
             'status' => $request->get('status'),
             'employee_id' => $request->get('employee_id'),
             'date_from' => $request->get('date_from'),
             'date_to' => $request->get('date_to'),
             'search' => $request->get('search'),
-        ], $request->get('per_page', 15));
+        ];
+
+        if ($user && $user->isCustomer()) {
+            $filters['customer_id'] = $user->id;
+        }
+
+        $appointments = $this->appointmentRepo->getForBranch($branchId, $filters, $request->get('per_page', 15));
 
         return $this->paginatedSuccess(
             $appointments->through(fn ($a) => new AppointmentResource($a)),
@@ -56,10 +63,14 @@ class AppointmentController extends Controller
 
     public function show(Appointment $appointment): JsonResponse
     {
+        if ($appointment->customer_id != request()->user()->id && request()->user()->isCustomer()) {
+            return $this->error('Bu randevu size ait değil.', 403);
+        }
+
         $appointment->load([
             'customer', 'employee.user', 'branch',
             'appointmentServices.service', 'payments',
-            'statusLogs.changedBy',
+            'statusLogs.changedBy', 'review',
         ]);
 
         return $this->success(
@@ -71,6 +82,10 @@ class AppointmentController extends Controller
     public function updateStatus(Request $request, Appointment $appointment): JsonResponse
     {
         $request->validate(['status' => 'required|string']);
+
+        if ($appointment->customer_id != $request->user()->id && $request->user()->isCustomer()) {
+            return $this->error('Bu randevu size ait değil.', 403);
+        }
 
         $status = AppointmentStatus::from($request->status);
 

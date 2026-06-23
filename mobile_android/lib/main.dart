@@ -7,12 +7,18 @@ import 'package:mobile_android/providers/service_provider.dart';
 import 'package:mobile_android/providers/appointment_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:mobile_android/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Türkçe tarih formatlaması için gerekli
   await initializeDateFormatting('tr_TR', null);
+
+  // Bildirim servisini başlat ve izin iste
+  final notificationService = NotificationService();
+  await notificationService.initialize();
+  await notificationService.requestPermission();
   
   final authProvider = AuthProvider();
   final isLoggedIn = await authProvider.tryAutoLogin();

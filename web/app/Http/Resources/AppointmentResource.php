@@ -13,8 +13,8 @@ class AppointmentResource extends JsonResource
             'id' => $this->id,
             'uuid' => $this->uuid,
             'appointment_code' => $this->appointment_code,
-            'start_at' => $this->start_at?->format('Y-m-d H:i:s'),
-            'end_at' => $this->end_at?->format('Y-m-d H:i:s'),
+            'start_at' => $this->start_at?->toIso8601String(),
+            'end_at' => $this->end_at?->toIso8601String(),
             'total_duration' => $this->total_duration,
             'subtotal' => $this->subtotal,
             'discount_amount' => $this->discount_amount,
@@ -30,11 +30,14 @@ class AppointmentResource extends JsonResource
             'customer_note' => $this->customer_note,
             'internal_note' => $this->internal_note,
             'no_show' => $this->no_show,
+            'is_reviewed' => $this->review()->exists(),
+            'rating' => $this->review?->rating,
+            'ical_url' => $request->schemeAndHttpHost() . '/api/v1/mobile/appointments/' . $this->id . '/ical?signature=' . hash_hmac('sha256', $this->id, config('app.key')),
             'customer' => new UserResource($this->whenLoaded('customer')),
             'employee' => new EmployeeResource($this->whenLoaded('employee')),
             'branch' => new BranchResource($this->whenLoaded('branch')),
             'services' => AppointmentServiceResource::collection($this->whenLoaded('appointmentServices')),
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }
