@@ -595,8 +595,17 @@ class MobileApiController extends Controller
             return $this->error('Bu randevu size ait değil.', 403);
         }
 
-        if ($appointment->status !== \App\Enums\AppointmentStatus::Completed) {
+        $allowedStatuses = [
+            \App\Enums\AppointmentStatus::Completed,
+            \App\Enums\AppointmentStatus::Confirmed,
+        ];
+
+        if (!in_array($appointment->status, $allowedStatuses)) {
             return $this->error('Sadece tamamlanmış randevular için yorum yapabilirsiniz.', 400);
+        }
+
+        if ($appointment->status === \App\Enums\AppointmentStatus::Confirmed && $appointment->start_at->isFuture()) {
+            return $this->error('Henüz gerçekleşmemiş randevular için yorum yapamazsınız.', 400);
         }
 
         if ($appointment->review()->exists()) {

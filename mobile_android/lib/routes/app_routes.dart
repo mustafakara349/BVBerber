@@ -5,6 +5,7 @@ import 'package:mobile_android/screens/auth/forgot_password_screen.dart';
 import 'package:mobile_android/screens/auth/welcome_screen.dart';
 import 'package:mobile_android/screens/auth/profile_photo_screen.dart';
 import 'package:mobile_android/screens/profile/security_screen.dart';
+import 'package:mobile_android/screens/profile/support_screen.dart';
 import 'package:mobile_android/screens/main_screen.dart';
 import 'package:mobile_android/screens/onboarding/onboarding_screen.dart';
 import 'package:mobile_android/screens/appointments/create_appointment_screen.dart';
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String forgotPassword = '/forgot-password';
   static const String profilePhoto = '/profile-photo';
   static const String security = '/security';
+  static const String support = '/support';
   static const String createAppointment = '/create-appointment';
   static const String notifications = '/notifications';
   static const String main = '/main';
@@ -59,6 +61,10 @@ class AppRoutes {
       case security:
         return MaterialPageRoute(
           builder: (_) => const SecurityScreen(),
+        );
+      case support:
+        return MaterialPageRoute(
+          builder: (_) => const SupportScreen(),
         );
       case createAppointment:
         return MaterialPageRoute(

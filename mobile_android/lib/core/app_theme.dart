@@ -8,14 +8,14 @@ class AppTheme {
   static const Color primaryColor = Color(0xFF1B1B2F);
   static const Color secondaryColor = Color(0xFFFACC15);
   static const Color accentColor = Color(0xFF6C63FF);
-  static const Color backgroundColor = Color(0xFFF5F5F5);
+  static const Color backgroundColor = Color(0xFFF9FAFB);
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color errorColor = Color(0xFFE53935);
   static const Color successColor = Color(0xFF43A047);
 
   // Metin renkleri
-  static const Color textPrimary = Color(0xFF1B1B2F);
-  static const Color textSecondary = Color(0xFF757575);
+  static const Color textPrimary = Color(0xFF1F2937);
+  static const Color textSecondary = Color(0xFF6B7280);
   static const Color textLight = Color(0xFFFFFFFF);
 
   // Light tema

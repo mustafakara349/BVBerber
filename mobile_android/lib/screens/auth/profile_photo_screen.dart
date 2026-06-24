@@ -69,9 +69,9 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
         return Container(
           margin: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF2A2A2A),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppTheme.secondaryColor.withOpacity(0.3)),
+            border: Border.all(color: Colors.grey.shade300),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -80,9 +80,9 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
               const Text(
                 'Fotoğraf Kaynağı',
                 style: TextStyle(
-                  color: Colors.white70,
+                  color: Colors.black87,
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 20),
@@ -94,8 +94,8 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                   child: OutlinedButton(
                     onPressed: () => _pickImage(ImageSource.gallery),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white24),
+                      foregroundColor: Colors.black87,
+                      side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -114,8 +114,8 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                   child: OutlinedButton(
                     onPressed: () => _pickImage(ImageSource.camera),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white24),
+                      foregroundColor: Colors.black87,
+                      side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -153,7 +153,7 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
     final bool hasPhoto = _croppedImage != null;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -238,7 +238,7 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
               const Text(
                 'Profil Fotoğrafı',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                 ),
@@ -251,7 +251,7 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                     ? 'Fotoğrafı kaydetmek için sağ üstteki ✓\nbutonuna bas.'
                     : 'Profil fotoğrafı ekleyebilirsin.\nBunu daha sonra da yapabilirsin.',
                 style: const TextStyle(
-                  color: Colors.white38,
+                  color: Colors.black54,
                   fontSize: 14,
                   height: 1.5,
                 ),
@@ -302,8 +302,8 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                 child: OutlinedButton(
                   onPressed: _isUploading ? null : _skipAndContinue,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white70,
-                    side: const BorderSide(color: Colors.white24, width: 1.5),
+                    foregroundColor: Colors.black54,
+                    side: BorderSide(color: Colors.grey.shade300, width: 1.5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -382,7 +382,7 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
     final circleSize = screenWidth * 0.7;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -397,7 +397,7 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
                     child: const Text(
                       'İptal',
                       style: TextStyle(
-                        color: Colors.white70,
+                        color: Colors.black54,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -406,7 +406,7 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
                   const Text(
                     'Fotoğrafı Ayarla',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
                     ),
@@ -473,7 +473,7 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
                   const Text(
                     'Fotoğrafı kaydırın ve yakınlaştırın',
                     style: TextStyle(
-                      color: Colors.white38,
+                      color: Colors.black54,
                       fontSize: 14,
                     ),
                   ),
@@ -481,18 +481,18 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.touch_app, color: Colors.white24, size: 18),
+                      Icon(Icons.touch_app, color: Colors.black38, size: 18),
                       const SizedBox(width: 6),
                       const Text(
                         'Kaydır',
-                        style: TextStyle(color: Colors.white24, fontSize: 13),
+                        style: TextStyle(color: Colors.black38, fontSize: 13),
                       ),
                       const SizedBox(width: 20),
-                      Icon(Icons.pinch, color: Colors.white24, size: 18),
+                      Icon(Icons.pinch, color: Colors.black38, size: 18),
                       const SizedBox(width: 6),
                       const Text(
                         'Yakınlaştır',
-                        style: TextStyle(color: Colors.white24, fontSize: 13),
+                        style: TextStyle(color: Colors.black38, fontSize: 13),
                       ),
                     ],
                   ),

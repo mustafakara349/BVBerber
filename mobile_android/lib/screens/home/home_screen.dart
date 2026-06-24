@@ -96,17 +96,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _launchNativeMap() async {
-    const latitude = 36.923826;
-    const longitude = 34.903672;
     final label = Uri.encodeComponent('B&V Coffee Barber');
     
     // Android: geo URI triggers the native app chooser list
-    final androidUri = Uri.parse('geo:$latitude,$longitude?q=$latitude,$longitude($label)');
+    final androidUri = Uri.parse('geo:0,0?q=$label');
     // iOS: maps URI
-    final iosUri = Uri.parse('maps://?q=$label&ll=$latitude,$longitude');
+    final iosUri = Uri.parse('maps://?q=$label');
     
     // Fallback web URL
-    final webUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
+    final webUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$label');
     
     final isAndroid = Theme.of(context).platform == TargetPlatform.android;
     final targetUri = isAndroid ? androidUri : iosUri;
@@ -145,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final profileUrl = _userData?['profileImageUrl'];
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -169,8 +167,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ClipOval(
                         child: profileUrl != null
                             ? Image.network(profileUrl, fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => const Icon(Icons.person, color: Colors.white38))
-                            : const Icon(Icons.person, color: Colors.white38),
+                                errorBuilder: (_, __, ___) => const Icon(Icons.person, color: Colors.black38))
+                            : const Icon(Icons.person, color: Colors.black38),
                       ),
                     ),
                   ),
@@ -182,12 +180,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         const Text(
                           'Hoş geldin,',
-                          style: TextStyle(color: Colors.white54, fontSize: 13),
+                          style: TextStyle(color: Colors.black54, fontSize: 13),
                         ),
                         Text(
                           userName,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: Colors.black87,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -217,10 +215,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 42,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color(0xFF2A2A2A),
-                            border: Border.all(color: const Color(0xFF3A3A3A)),
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey.shade300),
                           ),
-                          child: const Icon(Icons.notifications_outlined, color: Colors.white70, size: 22),
+                          child: const Icon(Icons.notifications_outlined, color: Colors.black87, size: 22),
                         ),
                         if (_hasUnreadNotifications)
                           Positioned(
@@ -247,9 +245,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2A2A2A),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFF3A3A3A)),
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1F1F1F), Color(0xFFE5B942)],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,28 +275,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       'Usta ellerden profesyonel tasarım ve bakım\nhizmeti alın.',
                       style: TextStyle(
-                        color: Colors.white54,
+                        color: Colors.white70,
                         fontSize: 13,
                         height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     Row(
                       children: [
-                        // VA badge
-                        Container(
-                          width: 36,
+                        // Faces placeholder - stack of circular images
+                        SizedBox(
+                          width: 80,
                           height: 36,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFF3A3A3A),
-                            border: Border.all(color: Colors.white24),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'VA',
-                              style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
-                            ),
+                          child: Stack(
+                            children: [
+                              Positioned(left: 0, child: Container(width: 36, height: 36, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.shade300, border: Border.all(color: const Color(0xFF1F1F1F), width: 2)), child: const Icon(Icons.person, size: 20, color: Colors.black54))),
+                              Positioned(left: 20, child: Container(width: 36, height: 36, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.shade400, border: Border.all(color: const Color(0xFF1F1F1F), width: 2)), child: const Icon(Icons.person, size: 20, color: Colors.black54))),
+                              Positioned(left: 40, child: Container(width: 36, height: 36, decoration: BoxDecoration(shape: BoxShape.circle, color: AppTheme.secondaryColor, border: Border.all(color: const Color(0xFF1F1F1F), width: 2)), child: const Center(child: Text('+1', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold))))),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -304,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 backgroundColor: AppTheme.secondaryColor,
                                 foregroundColor: Colors.black,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                                 textStyle: const TextStyle(
                                   fontSize: 14,
@@ -329,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Text(
                     'Hizmetlerimiz',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -357,13 +361,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(32),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF2A2A2A),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Center(
                     child: Text(
                       'Henüz hizmet eklenmemiş',
-                      style: TextStyle(color: Colors.white38, fontSize: 14),
+                      style: TextStyle(color: Colors.black54, fontSize: 14),
                     ),
                   ),
                 )
@@ -387,78 +391,86 @@ class _HomeScreenState extends State<HomeScreen> {
               // Konum kartı
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2A2A2A),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF3A3A3A)),
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(24),
                 ),
                 child: Row(
                   children: [
                     // Harita ön izleme
                     Container(
-                      width: 60,
-                      height: 60,
+                      width: 70,
+                      height: 70,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: const Color(0xFF3A3A3A),
+                        borderRadius: BorderRadius.circular(16),
+                        color: AppTheme.backgroundColor,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          'https://maps.googleapis.com/maps/api/staticmap?center=Tarsus,Mersin&zoom=15&size=120x120&maptype=roadmap',
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const Icon(
-                            Icons.location_on,
-                            color: AppTheme.secondaryColor,
-                            size: 28,
-                          ),
+                        borderRadius: BorderRadius.circular(16),
+                        child: Stack(
+                          children: [
+                            Image.network(
+                              'https://maps.googleapis.com/maps/api/staticmap?center=Tarsus,Mersin&zoom=15&size=140x140&maptype=roadmap',
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                              errorBuilder: (_, __, ___) => const Center(
+                                child: Icon(Icons.map_outlined, color: Colors.black26, size: 28),
+                              ),
+                            ),
+                            const Center(
+                              child: Icon(Icons.location_on, color: AppTheme.errorColor, size: 28),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 16),
                     // Adres bilgileri
                     const Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'B&V COFFEE BARBER',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Fatih Mah. Çağlayan\nCad. No:39D/B\nTarsus/Mersin',
-                            style: TextStyle(
-                              color: Colors.white38,
-                              fontSize: 12,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                         children: [
+                           Text(
+                             'B&V COFFEE...',
+                             style: TextStyle(
+                               color: Colors.black87,
+                               fontSize: 15,
+                               fontWeight: FontWeight.w900,
+                             ),
+                             maxLines: 1,
+                             overflow: TextOverflow.ellipsis,
+                           ),
+                           SizedBox(height: 6),
+                           Text(
+                             'Fatih Mah. Çağlayan\nCad. No:39D/B\nTarsus/Mersin',
+                             style: TextStyle(
+                               color: Colors.black54,
+                               fontSize: 12,
+                               height: 1.4,
+                             ),
+                           ),
+                         ],
                       ),
                     ),
                     // Yol tarifi butonu
                     GestureDetector(
                       onTap: _launchNativeMap,
                       child: Container(
-                        width: 44,
-                        height: 44,
+                        width: 48,
+                        height: 48,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppTheme.secondaryColor,
                         ),
-                        child: const Icon(Icons.directions, color: Colors.black, size: 22),
+                        child: const Icon(Icons.directions_outlined, color: Colors.white, size: 24),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 100), // Space for navbar
             ],
           ),
         ),
@@ -467,79 +479,73 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildServiceCard(ServiceModel service) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: const Color(0xFF2A2A2A),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Hizmet görseli + fiyat
-          Expanded(
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: service.imageUrl != null
-                      ? Image.network(
-                          service.imageUrl!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                          errorBuilder: (_, __, ___) => Container(
-                            color: const Color(0xFF3A3A3A),
-                            child: const Center(
-                              child: Icon(Icons.content_cut, color: Colors.white24, size: 32),
-                            ),
-                          ),
-                        )
-                      : Container(
-                          color: const Color(0xFF3A3A3A),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Hizmet görseli + fiyat
+        Expanded(
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: service.imageUrl != null
+                    ? Image.network(
+                        service.imageUrl!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: AppTheme.backgroundColor,
                           child: const Center(
-                            child: Icon(Icons.content_cut, color: Colors.white24, size: 32),
+                            child: Icon(Icons.content_cut, color: Colors.black12, size: 32),
                           ),
                         ),
-                ),
-                // Fiyat etiketi
-                Positioned(
-                  bottom: 10,
-                  left: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: AppTheme.secondaryColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      '₺${service.price.toStringAsFixed(0)}',
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
+                      )
+                    : Container(
+                        color: AppTheme.backgroundColor,
+                        child: const Center(
+                          child: Icon(Icons.content_cut, color: Colors.black12, size: 32),
+                        ),
                       ),
+              ),
+              // Fiyat etiketi
+              Positioned(
+                bottom: 8,
+                left: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '₺${service.price.toStringAsFixed(0)}',
+                    style: const TextStyle(
+                      color: AppTheme.secondaryColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          // Hizmet adı
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-            child: Text(
-              service.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+        // Hizmet adı
+        Padding(
+          padding: const EdgeInsets.only(top: 10, left: 4),
+          child: Text(
+            service.name,
+            style: const TextStyle(
+              color: Colors.black87,
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

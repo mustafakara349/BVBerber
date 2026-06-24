@@ -36,19 +36,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.white24, fontSize: 15),
-      prefixIcon: Icon(icon, color: Colors.white38, size: 20),
+      hintStyle: const TextStyle(color: Colors.black38, fontSize: 15),
+      prefixIcon: Icon(icon, color: Colors.black54, size: 20),
       suffixIcon: suffixIcon,
       filled: true,
-      fillColor: const Color(0xFF2A2A2A),
+      fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide.none,
+        borderSide: BorderSide(color: Colors.grey.shade300),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFF3A3A3A)),
+        borderSide: BorderSide(color: Colors.grey.shade300),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -113,11 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white24),
+                    border: Border.all(color: Colors.black12),
                   ),
                   child: IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                    icon: const Icon(Icons.arrow_back, color: Colors.black87, size: 20),
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                     'Hesabına Giriş Yap',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
@@ -177,12 +177,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 40),
                 // Email label
-                const Text('Email', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                const Text('Email', style: TextStyle(color: Colors.black54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black87),
                   validator: Validators.email,
                   decoration: _inputDecoration(
                     hint: 'example@email.com',
@@ -191,12 +191,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 24),
                 // Şifre label
-                const Text('Şifre', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                const Text('Şifre', style: TextStyle(color: Colors.black54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black87),
                   validator: Validators.password,
                   decoration: _inputDecoration(
                     hint: 'Şifre',
@@ -204,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                        color: Colors.white38,
+                        color: Colors.black38,
                         size: 20,
                       ),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
@@ -225,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             value: _rememberMe,
                             activeColor: AppTheme.secondaryColor,
                             checkColor: Colors.black,
-                            side: const BorderSide(color: Colors.white38, width: 1.5),
+                            side: const BorderSide(color: Colors.black38, width: 1.5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4),
                             ),
@@ -246,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: const Text(
                             'Beni Hatırla',
                             style: TextStyle(
-                              color: Colors.white70,
+                              color: Colors.black87,
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
@@ -262,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text(
                         'Şifremi Unuttum',
                         style: TextStyle(
-                          color: Colors.white54,
+                          color: Colors.black54,
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
@@ -311,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: RichText(
                     text: TextSpan(
-                      style: const TextStyle(color: Colors.white54, fontSize: 14),
+                      style: const TextStyle(color: Colors.black54, fontSize: 14),
                       children: [
                         const TextSpan(text: 'Hesabın yok mu?  '),
                         TextSpan(

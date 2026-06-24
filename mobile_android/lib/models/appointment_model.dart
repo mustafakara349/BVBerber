@@ -140,12 +140,16 @@ class AppointmentModel {
       }
     }
 
+    String rawDateStr = map['start_at'] ?? map['dateTime'] ?? DateTime.now().toIso8601String();
+    if (rawDateStr.contains('+')) rawDateStr = rawDateStr.split('+').first;
+    if (rawDateStr.endsWith('Z')) rawDateStr = rawDateStr.replaceAll('Z', '');
+    
     return AppointmentModel(
       id: rawId,
       customerId: rawCustomerId,
       barberId: rawBarberId,
       serviceId: rawServiceId,
-      dateTime: DateTime.parse(map['start_at'] ?? map['dateTime'] ?? DateTime.now().toIso8601String()),
+      dateTime: DateTime.parse(rawDateStr),
       status: statusVal,
       note: map['customer_note'] ?? map['note'],
       createdAt: DateTime.parse(map['created_at'] ?? map['createdAt'] ?? DateTime.now().toIso8601String()),

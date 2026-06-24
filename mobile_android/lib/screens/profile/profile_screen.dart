@@ -49,9 +49,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return Container(
           margin: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF2A2A2A),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppTheme.secondaryColor.withOpacity(0.3)),
+            border: Border.all(color: Colors.grey.shade300),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -59,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 20),
               const Text(
                 'Fotoğraf Kaynağı',
-                style: TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
               Padding(
@@ -73,8 +73,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _pickAndUploadPhoto(ImageSource.gallery);
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white24),
+                      foregroundColor: Colors.black87,
+                      side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
@@ -94,8 +94,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _pickAndUploadPhoto(ImageSource.camera);
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white24),
+                      foregroundColor: Colors.black87,
+                      side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
@@ -125,20 +125,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF2A2A2A),
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: const Text(
             'Oturumu Kapat',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
           ),
           content: const Text(
             'Çıkış yapmaya emin misiniz?',
-            style: TextStyle(color: Colors.white54),
+            style: TextStyle(color: Colors.black54),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('İptal', style: TextStyle(color: Colors.white54)),
+              child: const Text('İptal', style: TextStyle(color: Colors.black54)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
@@ -165,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        backgroundColor: Color(0xFF1A1A1A),
+        backgroundColor: AppTheme.backgroundColor,
         body: Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor)),
       );
     }
@@ -177,7 +177,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profileUrl = _userData?['profileImageUrl'];
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -206,13 +206,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: 120,
                                     height: 120,
                                     errorBuilder: (_, __, ___) => Container(
-                                      color: const Color(0xFF2A2A2A),
-                                      child: const Icon(Icons.person, color: Colors.white38, size: 50),
+                                      color: AppTheme.backgroundColor,
+                                      child: const Icon(Icons.person, color: Colors.black26, size: 50),
                                     ),
                                   )
                                 : Container(
-                                    color: const Color(0xFF2A2A2A),
-                                    child: const Icon(Icons.person, color: Colors.white38, size: 50),
+                                    color: AppTheme.backgroundColor,
+                                    child: const Icon(Icons.person, color: Colors.black26, size: 50),
                                   ),
                           ),
                   ),
@@ -228,7 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppTheme.secondaryColor,
-                          border: Border.all(color: const Color(0xFF1A1A1A), width: 3),
+                          border: Border.all(color: Colors.white, width: 3),
                         ),
                         child: const Icon(Icons.camera_alt, color: Colors.black, size: 18),
                       ),
@@ -241,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 displayName,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
@@ -250,7 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Email
               Text(
                 email,
-                style: const TextStyle(color: Colors.white38, fontSize: 14),
+                style: const TextStyle(color: Colors.black54, fontSize: 14),
               ),
               const SizedBox(height: 6),
               // Telefon
@@ -258,11 +258,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.phone, color: Colors.white38, size: 15),
+                    const Icon(Icons.phone, color: Colors.black54, size: 15),
                     const SizedBox(width: 6),
                     Text(
                       phone,
-                      style: const TextStyle(color: Colors.white38, fontSize: 14),
+                      style: const TextStyle(color: Colors.black54, fontSize: 14),
                     ),
                   ],
                 ),
@@ -287,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 iconBgColor: AppTheme.secondaryColor.withOpacity(0.15),
                 title: 'Destek ve Yardım',
                 onTap: () {
-                  // TODO: Destek sayfası
+                  Navigator.pushNamed(context, AppRoutes.support);
                 },
               ),
 
@@ -300,7 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: ElevatedButton(
                   onPressed: _handleSignOut,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF3A1A1A),
+                    backgroundColor: const Color(0xFFFFEAEA),
                     foregroundColor: const Color(0xFFE53935),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -334,9 +334,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2A2A),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFF3A3A3A)),
+          border: Border.all(color: Colors.grey.shade300),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -354,13 +361,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            const Icon(Icons.chevron_right, color: Colors.white38, size: 24),
+            const Icon(Icons.chevron_right, color: Colors.black38, size: 24),
           ],
         ),
       ),

@@ -24,7 +24,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -35,7 +35,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
               const Text(
                 'Hizmetlerimiz',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                 ),
@@ -55,7 +55,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                       return Center(
                         child: Text(
                           'Hata oluştu: ${snapshot.error}',
-                          style: const TextStyle(color: Colors.white38),
+                          style: const TextStyle(color: Colors.black54),
                         ),
                       );
                     }
@@ -79,11 +79,11 @@ class _ServicesScreenState extends State<ServicesScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.content_cut, color: Colors.white24, size: 64),
+                                Icon(Icons.content_cut, color: Colors.black12, size: 64),
                                 SizedBox(height: 16),
                                 Text(
                                   'Henüz hizmet eklenmemiş',
-                                  style: TextStyle(color: Colors.white38, fontSize: 16),
+                                  style: TextStyle(color: Colors.black54, fontSize: 16),
                                 ),
                               ],
                             ),
@@ -121,7 +121,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                                       Text(
                                         categoryName.toUpperCase(),
                                         style: const TextStyle(
-                                          color: Colors.white,
+                                          color: Colors.black87,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           letterSpacing: 1.0,
@@ -186,21 +186,21 @@ class _ServicesScreenState extends State<ServicesScreen> {
                         height: double.infinity,
                         errorBuilder: (_, __, ___) => Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2A2A2A),
+                            color: Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: const Center(
-                            child: Icon(Icons.content_cut, color: Colors.white24, size: 36),
+                            child: Icon(Icons.content_cut, color: Colors.black12, size: 36),
                           ),
                         ),
                       )
                     : Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2A2A2A),
+                          color: Colors.grey.shade200,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: const Center(
-                          child: Icon(Icons.content_cut, color: Colors.white24, size: 36),
+                          child: Icon(Icons.content_cut, color: Colors.black12, size: 36),
                         ),
                       ),
               ),
@@ -349,7 +349,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
         Text(
           service.name,
           style: const TextStyle(
-            color: Colors.white,
+            color: Colors.black87,
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
@@ -360,11 +360,11 @@ class _ServicesScreenState extends State<ServicesScreen> {
         // Süre
         Row(
           children: [
-            const Icon(Icons.access_time, color: Colors.white38, size: 14),
+            const Icon(Icons.access_time, color: Colors.black38, size: 14),
             const SizedBox(width: 4),
             Text(
               '${service.durationMinutes} dk',
-              style: const TextStyle(color: Colors.white38, fontSize: 13),
+              style: const TextStyle(color: Colors.black54, fontSize: 13),
             ),
           ],
         ),

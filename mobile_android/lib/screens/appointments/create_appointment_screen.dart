@@ -195,16 +195,23 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
       isScrollControlled: true,
       builder: (_) => Container(
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-        decoration: const BoxDecoration(
-          color: Color(0xFF2A2A2A),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
         ),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Container(width: 40, height: 4, decoration: BoxDecoration(
-            color: Colors.white24, borderRadius: BorderRadius.circular(2))),
+            color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2))),
           const SizedBox(height: 20),
           const Text('Randevu Özeti', style: TextStyle(
-            color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+            color: Colors.black87, fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 24),
           _summaryRow(Icons.calendar_today, 'Tarih', dateStr),
           _summaryRow(Icons.access_time, 'Saat', _selectedTime!),
@@ -232,9 +239,9 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           GestureDetector(
             onTap: () => Navigator.pop(context),
             child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(Icons.edit, color: Colors.white54, size: 16),
+              Icon(Icons.edit, color: Colors.black54, size: 16),
               SizedBox(width: 6),
-              Text('Düzenle', style: TextStyle(color: Colors.white54, fontSize: 15)),
+              Text('Düzenle', style: TextStyle(color: Colors.black54, fontSize: 15)),
             ]),
           ),
           const SizedBox(height: 8),
@@ -249,11 +256,11 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
       child: Row(children: [
         Icon(icon, color: AppTheme.secondaryColor, size: 20),
         const SizedBox(width: 12),
-        Text(label, style: const TextStyle(color: Colors.white54, fontSize: 14)),
+        Text(label, style: const TextStyle(color: Colors.black54, fontSize: 14)),
         const Spacer(),
         Expanded(
           child: Text(value, textAlign: TextAlign.end, style: const TextStyle(
-            color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+            color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold)),
         ),
       ]),
     );
@@ -298,17 +305,17 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1A1A), elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: Colors.white),
+        backgroundColor: AppTheme.backgroundColor, elevation: 0,
+        leading: IconButton(icon: const Icon(Icons.arrow_back, color: Colors.black87),
           onPressed: () => Navigator.pop(context)),
         centerTitle: true,
         title: const Text('Randevu Oluştur', style: TextStyle(
-          color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+          color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
       ),
       bottomNavigationBar: Container(
-        color: const Color(0xFF1A1A1A),
+        color: AppTheme.backgroundColor,
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -330,7 +337,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           const SizedBox(height: 8),
           // PERSONEL SEÇ
           const Text('Personel Seç', style: TextStyle(
-            color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+            color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           _isLoadingBarbers
             ? const Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor))
@@ -344,7 +351,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           // TARİH SEÇİN
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             const Text('Tarih Seçin', style: TextStyle(
-              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+              color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
             Text(DateFormat('MMMM yyyy', 'tr_TR').format(DateTime.now()),
               style: const TextStyle(color: AppTheme.secondaryColor, fontSize: 14,
                 fontWeight: FontWeight.w600)),
@@ -359,7 +366,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
 
           // HİZMET SEÇİN
           const Text('Hizmet Seçin', style: TextStyle(
-            color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+            color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           _isLoadingServices
             ? const Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor))
@@ -370,16 +377,16 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2A2A2A),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFF3A3A3A)),
+                      border: Border.all(color: Colors.grey.shade300),
                     ),
                     child: Theme(
                       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
-                        title: Text(category, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                        title: Text(category, style: const TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
                         iconColor: AppTheme.secondaryColor,
-                        collapsedIconColor: Colors.white70,
+                        collapsedIconColor: Colors.black54,
                         children: categoryServices.map((s) => _buildServiceCard(s)).toList(),
                       ),
                     ),
@@ -392,13 +399,13 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
           if (_selectedDate != null) ...[
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               const Text('Saat Seçin', style: TextStyle(
-                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
               Row(children: [
                 Container(width: 8, height: 8, decoration: BoxDecoration(
                   shape: BoxShape.circle, color: AppTheme.secondaryColor)),
                 const SizedBox(width: 6),
                 const Text('DOLU', style: TextStyle(
-                  color: Colors.white38, fontSize: 12, fontWeight: FontWeight.w600)),
+                  color: Colors.black38, fontSize: 12, fontWeight: FontWeight.w600)),
               ]),
             ]),
             const SizedBox(height: 16),
@@ -434,19 +441,19 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
             width: 56, height: 56,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isSelected ? AppTheme.secondaryColor.withOpacity(0.2) : const Color(0xFF2A2A2A),
+              color: isSelected ? AppTheme.secondaryColor.withOpacity(0.2) : Colors.white,
               border: Border.all(
-                color: isSelected ? AppTheme.secondaryColor : const Color(0xFF3A3A3A), width: 2),
+                color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade300, width: 2),
             ),
             child: barber.profileImageUrl != null
               ? ClipOval(child: Image.network(barber.profileImageUrl!, fit: BoxFit.cover))
               : Center(child: Text(initials, style: TextStyle(
-                  color: isSelected ? AppTheme.secondaryColor : Colors.white54,
+                  color: isSelected ? AppTheme.secondaryColor : Colors.black54,
                   fontSize: 16, fontWeight: FontWeight.bold))),
           ),
           const SizedBox(height: 6),
-          Text(barber.name, style: const TextStyle(color: Colors.white70, fontSize: 11)),
-          Text(barber.surname, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+          Text(barber.name, style: const TextStyle(color: Colors.black87, fontSize: 11)),
+          Text(barber.surname, style: const TextStyle(color: Colors.black54, fontSize: 10)),
         ]),
       ),
     );
@@ -468,16 +475,16 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
       child: Container(
         width: 52, margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.secondaryColor : const Color(0xFF2A2A2A),
+          color: isSelected ? AppTheme.secondaryColor : Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: isSelected ? AppTheme.secondaryColor : const Color(0xFF3A3A3A)),
+          border: Border.all(color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade300),
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text('${date.day}', style: TextStyle(
-            color: isSelected ? Colors.black : Colors.white,
+            color: isSelected ? Colors.black : Colors.black87,
             fontSize: 18, fontWeight: FontWeight.bold)),
           Text(DateFormat('E', 'tr_TR').format(date).substring(0, 2), style: TextStyle(
-            color: isSelected ? Colors.black54 : Colors.white38, fontSize: 11)),
+            color: isSelected ? Colors.black54 : Colors.black54, fontSize: 11)),
         ]),
       ),
     );
@@ -502,10 +509,10 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         margin: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF353535) : const Color(0xFF202020),
+          color: isSelected ? AppTheme.secondaryColor.withOpacity(0.05) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppTheme.secondaryColor : const Color(0xFF2C2C2C),
+            color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade300,
             width: isSelected ? 1.5 : 1),
         ),
         child: Row(children: [
@@ -513,29 +520,29 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
             child: service.imageUrl != null
               ? Image.network(service.imageUrl!, width: 44, height: 44, fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => Container(width: 44, height: 44,
-                    color: const Color(0xFF3A3A3A),
-                    child: const Icon(Icons.content_cut, color: Colors.white24, size: 20)))
-              : Container(width: 44, height: 44, color: const Color(0xFF3A3A3A),
-                  child: const Icon(Icons.content_cut, color: Colors.white24, size: 20))),
+                    color: AppTheme.backgroundColor,
+                    child: const Icon(Icons.content_cut, color: Colors.black12, size: 20)))
+              : Container(width: 44, height: 44, color: AppTheme.backgroundColor,
+                  child: const Icon(Icons.content_cut, color: Colors.black12, size: 20))),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(service.name, style: const TextStyle(
-              color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+              color: Colors.black87, fontSize: 14, fontWeight: FontWeight.w600)),
             const SizedBox(height: 4),
             Row(children: [
-              const Icon(Icons.access_time, color: Colors.white38, size: 12),
+              const Icon(Icons.access_time, color: Colors.black38, size: 12),
               const SizedBox(width: 4),
               Text('${service.durationMinutes} dk', style: const TextStyle(
-                color: Colors.white38, fontSize: 11)),
+                color: Colors.black54, fontSize: 11)),
             ]),
           ])),
           Text('₺${service.price.toStringAsFixed(0)}', style: TextStyle(
-            color: isSelected ? AppTheme.secondaryColor : Colors.white,
+            color: isSelected ? AppTheme.secondaryColor : Colors.black87,
             fontSize: 15, fontWeight: FontWeight.bold)),
           const SizedBox(width: 8),
           Icon(
             isSelected ? Icons.check_box : Icons.check_box_outline_blank,
-            color: isSelected ? AppTheme.secondaryColor : Colors.white30,
+            color: isSelected ? AppTheme.secondaryColor : Colors.black26,
             size: 20,
           ),
         ]),
@@ -556,20 +563,20 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.secondaryColor
             : disabled
-              ? (isPast ? Colors.white10 : AppTheme.secondaryColor.withOpacity(0.15))
-              : const Color(0xFF2A2A2A),
+              ? (isPast ? Colors.black12 : AppTheme.secondaryColor.withOpacity(0.15))
+              : Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isSelected ? AppTheme.secondaryColor
               : disabled
-                ? (isPast ? Colors.white10 : AppTheme.secondaryColor.withOpacity(0.3))
-                : const Color(0xFF3A3A3A)),
+                ? (isPast ? Colors.black12 : AppTheme.secondaryColor.withOpacity(0.3))
+                : Colors.grey.shade300),
         ),
         child: Center(child: Text(time, style: TextStyle(
           color: isSelected ? Colors.black
             : disabled
-              ? (isPast ? Colors.white24 : AppTheme.secondaryColor.withOpacity(0.5))
-              : Colors.white70,
+              ? (isPast ? Colors.black38 : AppTheme.secondaryColor.withOpacity(0.8))
+              : Colors.black87,
           fontSize: 13, fontWeight: FontWeight.w600))),
       ),
     );
