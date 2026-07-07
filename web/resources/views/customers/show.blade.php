@@ -19,8 +19,8 @@
     <div class="col-xl-4 col-lg-5">
         <div class="card shadow-sm border-0 rounded-3 h-100">
             <div class="card-body text-center p-4">
-                @if($customer->profile_photo)
-                    <img src="{{ asset($customer->profile_photo) }}" class="rounded-circle mb-3 object-fit-cover shadow-sm" width="120" height="120" alt="{{ $customer->full_name }}">
+                @if($customer->profile_photo_url)
+                    <img src="{{ $customer->profile_photo_url }}" class="rounded-circle mb-3 object-fit-cover shadow-sm" width="120" height="120" alt="{{ $customer->full_name }}">
                 @else
                     <div class="avatar bg-primary-subtle text-primary rounded-circle mb-3 d-flex align-items-center justify-content-center mx-auto fw-bold shadow-sm" style="width: 120px; height: 120px; font-size: 2.5rem;">
                         {{ mb_substr($customer->first_name, 0, 1) }}{{ mb_substr($customer->last_name, 0, 1) }}

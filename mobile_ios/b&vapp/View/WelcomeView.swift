@@ -34,7 +34,7 @@ struct WelcomeView: View {
                         .frame(width: 120, height: 120)
                         .clipShape(Circle())
                     
-                    Text("B&V COFFE BERBER")
+                    Text("B&V COFFEE BARBER")
                         .font(.system(size: 34, weight: .bold))
                         .foregroundColor(.white)
                         .padding(.top, 20)
@@ -62,10 +62,10 @@ struct WelcomeView: View {
                     } label: {
                         Text("Giriş Yap")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                             .frame(width: UIScreen.main.bounds.width * 0.8)
                             .padding()
-                            .background(Color.blue)
+                            .background(Color.yellow)
                             .cornerRadius(30)
                     }
                     .padding(.top, 30)
@@ -89,7 +89,7 @@ struct WelcomeView: View {
                     
                     // TERMS
                     
-                    Text("Devam ederek \(Text("Kullanım Koşullarını").foregroundColor(.blue)) kabul etmiş olursunuz.")
+                    Text("Devam ederek \(Text("Kullanım Koşullarını").foregroundColor(.yellow)) kabul etmiş olursunuz.")
                         .font(.footnote)
                         .foregroundColor(.white.opacity(0.6))
                         .multilineTextAlignment(.center)
@@ -112,7 +112,7 @@ struct FeatureButton: View {
         
         HStack {
             Image(systemName: icon)
-                .foregroundColor(.blue)
+                .foregroundColor(.yellow)
             
             Text(text)
                 .font(.system(size: 14, weight: .medium))

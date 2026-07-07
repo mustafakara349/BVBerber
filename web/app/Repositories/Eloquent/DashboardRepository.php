@@ -103,7 +103,7 @@ class DashboardRepository implements DashboardRepositoryInterface
                 'id' => $e->id,
                 'name' => $e->full_name,
                 'title' => $e->title,
-                'photo' => $e->user?->profile_photo,
+                'photo' => $e->user?->profile_photo_url,
                 'completed_appointments' => $e->completed_appointments_count ?? 0,
                 'revenue' => round($e->monthly_revenue ?? 0, 2),
                 'rating' => round($e->reviews_avg_rating ?? 0, 1),

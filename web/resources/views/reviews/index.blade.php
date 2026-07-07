@@ -119,8 +119,8 @@
                     <tr>
                         <td class="ps-4">
                             <div class="d-flex align-items-center">
-                                @if($rev->customer?->profile_photo)
-                                    <img src="{{ asset($rev->customer->profile_photo) }}" class="rounded-circle me-3 object-fit-cover shadow-sm" width="38" height="38" alt="{{ $rev->customer->full_name }}">
+                                @if($rev->customer?->profile_photo_url)
+                                    <img src="{{ $rev->customer->profile_photo_url }}" class="rounded-circle me-3 object-fit-cover shadow-sm" width="38" height="38" alt="{{ $rev->customer->full_name }}">
                                 @else
                                     <div class="avatar bg-primary-subtle text-primary me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 38px; height: 38px; font-size: 13px;">
                                         {{ mb_substr($rev->customer?->first_name ?? 'M', 0, 1) }}{{ mb_substr($rev->customer?->last_name ?? 'U', 0, 1) }}

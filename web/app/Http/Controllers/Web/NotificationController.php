@@ -96,6 +96,7 @@ class NotificationController extends Controller
         }
 
         $sentAt = now();
+        $userIds = [];
         foreach ($targetUsers as $user) {
             Notification::create([
                 'user_id' => $user->id,
@@ -105,6 +106,17 @@ class NotificationController extends Controller
                 'is_read' => false,
                 'sent_at' => $sentAt,
             ]);
+            $userIds[] = $user->id;
+        }
+
+        // Push Notification gönderimi
+        try {
+            $pushService = new \App\Services\FirebasePushService();
+            $pushService->sendToMultipleUsers($userIds, $title, $body, [
+                'type' => $type,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("[FCM] Panelden push gönderimi başarısız: " . $e->getMessage());
         }
 
         return redirect()->route('notifications.index')->with('success', 'Bildirim(ler) başarıyla gönderildi.');

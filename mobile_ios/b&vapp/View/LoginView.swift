@@ -9,10 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @State private var email = ""
-    @State private var password = ""
-    @State private var showPassword = false
-    @State private var goToMain = false
+    @StateObject private var viewModel = AuthViewModel()
     
     var body: some View {
         
@@ -44,12 +41,14 @@ struct LoginView: View {
                         .foregroundColor(.gray)
                         .font(.caption)
                     
-                    TextField("example@email.com", text: $email)
+                    TextField("example@email.com", text: $viewModel.loginEmail)
                         .padding()
                         .background(Color.white.opacity(0.1))
                         .cornerRadius(10)
                         .foregroundColor(.white)
                         .autocapitalization(.none)
+                        .keyboardType(.emailAddress)
+                        .textContentType(.emailAddress)
                 }
                 
                 
@@ -63,16 +62,16 @@ struct LoginView: View {
                     
                     HStack {
                         
-                        if showPassword {
-                            TextField("Şifre", text: $password)
+                        if viewModel.showLoginPassword {
+                            TextField("Şifre", text: $viewModel.loginPassword)
                         } else {
-                            SecureField("Şifre", text: $password)
+                            SecureField("Şifre", text: $viewModel.loginPassword)
                         }
                         
                         Button {
-                            showPassword.toggle()
+                            viewModel.showLoginPassword.toggle()
                         } label: {
-                            Image(systemName: showPassword ? "eye.slash" : "eye")
+                            Image(systemName: viewModel.showLoginPassword ? "eye.slash" : "eye")
                                 .foregroundColor(.gray)
                         }
                     }
@@ -80,6 +79,7 @@ struct LoginView: View {
                     .background(Color.white.opacity(0.1))
                     .cornerRadius(10)
                     .foregroundColor(.white)
+                    .textContentType(.password)
                 }
                 
                 
@@ -92,41 +92,34 @@ struct LoginView: View {
                         
                     }
                     .font(.footnote)
-                    .foregroundColor(.blue)
+                    .foregroundColor(.yellow)
                 }
                 
                 
                 // LOGIN BUTTON
                 
                 Button {
-                    
-                    // LOGIN ACTION
-                    AuthManager.shared.signIn(email: email, password: password) { result in
-
-                        switch result {
-
-                        case .success(let uid):
-                            print("Giriş başarılı: \(uid)")
-
-                            DispatchQueue.main.async {
-                                goToMain = true
-                            }
-
-                        case .failure(let error):
-                            print("Hata: \(error.localizedDescription)")
-                        }
-                    }
-                    
+                    viewModel.signIn()
                 } label: {
                     
-                    Text("Giriş Yap")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .tint(.black)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.yellow)
+                            .cornerRadius(12)
+                    } else {
+                        Text("Giriş Yap")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.yellow)
+                            .cornerRadius(12)
+                    }
                 }
+                .disabled(viewModel.isLoading)
                 .padding(.top, 10)
                 
                 
@@ -142,7 +135,7 @@ struct LoginView: View {
                     NavigationLink("Üye Ol") {
                         RegisterView()
                     }
-                    .foregroundColor(.blue)
+                    .foregroundColor(.yellow)
                 }
                 
                 Spacer()
@@ -150,7 +143,11 @@ struct LoginView: View {
             .padding(.horizontal, 30)
         }
         .navigationBarTitleDisplayMode(.inline)
-        
+        .alert(viewModel.alertTitle, isPresented: $viewModel.showAlert) {
+            Button("Tamam", role: .cancel) { }
+        } message: {
+            Text(viewModel.alertMessage)
+        }
     }
 }
 

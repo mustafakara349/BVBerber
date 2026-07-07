@@ -148,6 +148,11 @@ class User extends Authenticatable
         return $this->role?->slug === 'customer';
     }
 
+    public function getProfilePhotoUrlAttribute(): ?string
+    {
+        return $this->profile_photo ? asset('storage/' . $this->profile_photo) : null;
+    }
+
     public function hasPermission(string $permission): bool
     {
         if ($this->isSuperAdmin()) {

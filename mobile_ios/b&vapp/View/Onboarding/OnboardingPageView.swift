@@ -1,5 +1,5 @@
 //
-//  OnboardingViewModel.swift
+//  OnboardingPageView.swift
 //  b&vapp
 //
 //  Created by Mustafa KARA on 5.03.2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OnboardingViewModel: View {
+struct OnboardingPageView: View {
     
     var image : String
     var title : String
@@ -48,9 +48,9 @@ struct OnboardingViewModel: View {
                         logInAction()
                     }
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.yellow)
                     .cornerRadius(12)
                     .padding(.top, 20)
                     
@@ -64,7 +64,7 @@ struct OnboardingViewModel: View {
                         }) {
                             Text("kaydol.")
                                 .font(.subheadline)
-                                .foregroundColor(.blue)
+                                .foregroundColor(.yellow)
                                 .underline().padding(0)
                         }
                     }
@@ -79,6 +79,5 @@ struct OnboardingViewModel: View {
 }
 
 #Preview {
-    OnboardingViewModel(image: "barber1", title: "Title", description: "Description")
+    OnboardingPageView(image: "barber1", title: "Title", description: "Description")
 }
-

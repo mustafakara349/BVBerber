@@ -73,8 +73,8 @@
             {{-- User Dropdown --}}
             <li class="dropdown">
                 <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="d-flex align-items-center gap-2 p-1 rounded-pill hover-bg-light" style="transition: all 0.2s ease; text-decoration: none;">
-                    @if(auth()->user()?->profile_photo)
-                        <img src="{{ auth()->user()->profile_photo }}" alt="" class="avatar avatar-sm rounded-circle border border-2 border-primary-subtle shadow-sm" style="width: 38px; height: 38px; object-fit: cover;">
+                    @if(auth()->user()?->profile_photo_url)
+                        <img src="{{ auth()->user()->profile_photo_url }}" alt="" class="avatar avatar-sm rounded-circle border border-2 border-primary-subtle shadow-sm" style="width: 38px; height: 38px; object-fit: cover;">
                     @else
                         <div class="avatar avatar-sm rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 38px; height: 38px; font-size: 14px;">
                             {{ substr(auth()->user()?->first_name ?? 'A', 0, 1) }}{{ substr(auth()->user()?->last_name ?? 'A', 0, 1) }}
@@ -90,8 +90,8 @@
                 <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 p-0 overflow-hidden" style="min-width: 280px; margin-top: 15px; border: 1px solid rgba(0, 0, 0, 0.05) !important;">
                     <!-- Header with beautiful dark profile background or subtle gradient -->
                     <div class="px-4 py-4 bg-dark text-white d-flex align-items-center gap-3" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
-                        @if(auth()->user()?->profile_photo)
-                            <img src="{{ auth()->user()->profile_photo }}" alt="" class="avatar avatar-md rounded-circle border border-2 border-white border-opacity-25 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
+                        @if(auth()->user()?->profile_photo_url)
+                            <img src="{{ auth()->user()->profile_photo_url }}" alt="" class="avatar avatar-md rounded-circle border border-2 border-white border-opacity-25 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
                         @else
                             <div class="avatar avatar-md rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold border border-2 border-white border-opacity-25 shadow-sm" style="width: 50px; height: 50px; font-size: 18px;">
                                 {{ substr(auth()->user()?->first_name ?? 'A', 0, 1) }}{{ substr(auth()->user()?->last_name ?? 'A', 0, 1) }}

@@ -203,6 +203,8 @@ class MobileApiController extends Controller
                         'imageUrl' => $service->image ? $request->schemeAndHttpHost() . '/storage/' . $service->image : '',
                         'isActive' => (bool)$service->is_active,
                         'genderType' => $service->gender_type,
+                        'isPopular' => (bool)$service->is_popular,
+                        'isFeatured' => (bool)$service->is_featured,
                     ];
                 });
                 return $this->success($services);
@@ -280,7 +282,9 @@ class MobileApiController extends Controller
                 }
 
                 $appointments = $query->get()->map(function ($appt) use ($request) {
-                    $firstService = $appt->appointmentServices->first()?->service;
+                    $services = $appt->appointmentServices->map(fn($as) => $as->service)->filter();
+                    $serviceNames = $services->pluck('name')->join(' + ');
+                    $firstServiceId = $services->first()?->id ?? '';
                     
                     return [
                         'id' => (string)$appt->id,
@@ -288,8 +292,8 @@ class MobileApiController extends Controller
                         'barberId' => (string)$appt->employee_id,
                         'barberName' => $appt->employee->full_name ?? '',
                         'barberImageUrl' => ($appt->employee && $appt->employee->user && $appt->employee->user->profile_photo) ? $request->schemeAndHttpHost() . '/storage/' . $appt->employee->user->profile_photo : '',
-                        'serviceId' => $firstService ? (string)$firstService->id : '',
-                        'serviceName' => $firstService->name ?? '',
+                        'serviceId' => (string)$firstServiceId,
+                        'serviceName' => $serviceNames ?: 'Diğer',
                         'date' => $appt->start_at->format('Y-m-d'),
                         'time' => $appt->start_at->format('H:i'),
                         'price' => (int)$appt->total_price,
@@ -322,6 +326,22 @@ class MobileApiController extends Controller
                         ];
                     });
                 return $this->success($notifications);
+
+            case 'campaigns':
+                $query = \App\Models\Campaign::query()->active()->orderBy('end_date', 'asc');
+                $campaigns = $query->get()->map(function ($camp) {
+                    return [
+                        'id' => (string)$camp->id,
+                        'title' => $camp->title,
+                        'description' => $camp->description ?? '',
+                        'discountType' => $camp->discount_type->value,
+                        'discountValue' => (double)$camp->discount_value,
+                        'startDate' => $camp->start_date ? $camp->start_date->format('Y-m-d') : null,
+                        'endDate' => $camp->end_date ? $camp->end_date->format('Y-m-d') : null,
+                        'isActive' => (bool)$camp->is_active,
+                    ];
+                });
+                return $this->success($campaigns);
 
             case 'barberAvailability':
                 $barberId = null;
@@ -459,10 +479,28 @@ class MobileApiController extends Controller
         if ($collection === 'appointments') {
             $data = $request->validate([
                 'barberId' => 'required',
-                'serviceId' => 'required',
+                'serviceId' => 'nullable',
+                'serviceIds' => 'nullable|array',
                 'date' => 'required|date_format:Y-m-d',
                 'time' => 'required|date_format:H:i',
             ]);
+
+            $servicesData = [];
+            if (!empty($data['serviceIds'])) {
+                foreach ($data['serviceIds'] as $sId) {
+                    $servicesData[] = [
+                        'service_id' => (int)$sId,
+                        'quantity' => 1,
+                    ];
+                }
+            } elseif (!empty($data['serviceId'])) {
+                $servicesData[] = [
+                    'service_id' => (int)$data['serviceId'],
+                    'quantity' => 1,
+                ];
+            } else {
+                return $this->error('Service is required', 400);
+            }
 
             $appointmentData = [
                 'branch_id' => 1,
@@ -470,12 +508,7 @@ class MobileApiController extends Controller
                 'employee_id' => (int)$data['barberId'],
                 'start_at' => Carbon::parse($data['date'] . ' ' . $data['time']),
                 'source' => \App\Enums\AppointmentSource::MobileApp,
-                'services' => [
-                    [
-                        'service_id' => (int)$data['serviceId'],
-                        'quantity' => 1,
-                    ]
-                ],
+                'services' => $servicesData,
                 'discount_amount' => 0,
                 'tax_amount' => 0,
             ];

@@ -238,8 +238,8 @@
                             <td><span class="fw-semibold">{{ $apt->appointment_code }}</span></td>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    @if($apt->customer?->profile_photo)
-                                        <img src="{{ $apt->customer->profile_photo }}" class="avatar avatar-xs rounded-circle" alt="">
+                                    @if($apt->customer?->profile_photo_url)
+                                        <img src="{{ $apt->customer->profile_photo_url }}" class="avatar avatar-xs rounded-circle" alt="">
                                     @else
                                         <div class="avatar avatar-xs rounded-circle avatar-primary">
                                             <span class="avatar-initials small">{{ substr($apt->customer?->first_name ?? '?', 0, 1) }}</span>

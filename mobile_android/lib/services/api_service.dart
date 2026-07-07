@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiService {
   // Yerel emülatör testi için varsayılan IP. Canlı ortam veya fiziksel cihaz testi için kendi IP'nizle değiştirilebilir.
   // static const String baseUrl = 'http://10.0.2.2:8000/api/v1'; // PC İÇİN
-  static const String baseUrl = 'http://127.0.0.1:8000/api/v1'; // Fiziksel Cihaz
+  static const String baseUrl = 'http://192.168.0.8:8000/api/v1'; // Fiziksel Cihaz
 
 
   /// URL'deki localhost/127.0.0.1 adreslerini emülatörün erişebileceği IP/host ile değiştirir

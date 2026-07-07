@@ -36,8 +36,8 @@
                             <tr class="border-bottom">
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
-                                        @if($customer->profile_photo)
-                                            <img src="{{ asset($customer->profile_photo) }}" alt="{{ $customer->full_name }}" class="rounded-circle me-3 object-fit-cover" width="48" height="48">
+                                        @if($customer->profile_photo_url)
+                                            <img src="{{ $customer->profile_photo_url }}" alt="{{ $customer->full_name }}" class="rounded-circle me-3 object-fit-cover" width="48" height="48">
                                         @else
                                             <div class="avatar bg-primary-subtle text-primary me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold fs-5" style="width: 48px; height: 48px;">
                                                 {{ mb_substr($customer->first_name, 0, 1) }}{{ mb_substr($customer->last_name, 0, 1) }}

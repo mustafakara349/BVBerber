@@ -42,7 +42,7 @@ class Campaign extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now());
+            ->whereDate('start_date', '<=', today())
+            ->whereDate('end_date', '>=', today());
     }
 }

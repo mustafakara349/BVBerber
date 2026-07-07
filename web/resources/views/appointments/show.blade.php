@@ -147,8 +147,8 @@
             </div>
             <div class="card-body p-4">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                    @if($appointment->customer?->profile_photo)
-                        <img src="{{ $appointment->customer->profile_photo }}" class="avatar avatar-lg rounded-circle" alt="">
+                    @if($appointment->customer?->profile_photo_url)
+                        <img src="{{ $appointment->customer->profile_photo_url }}" class="avatar avatar-lg rounded-circle" alt="">
                     @else
                         <div class="avatar avatar-lg rounded-circle avatar-primary">
                             <span class="avatar-initials">{{ substr($appointment->customer?->first_name ?? '?', 0, 1) }}</span>

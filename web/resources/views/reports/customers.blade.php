@@ -158,8 +158,8 @@
                     <tr>
                         <td class="ps-4">
                             <div class="d-flex align-items-center">
-                                @if($customer->profile_photo)
-                                    <img src="{{ asset($customer->profile_photo) }}" class="rounded-circle me-3 object-fit-cover shadow-sm" width="40" height="40" alt="{{ $customer->full_name }}">
+                                @if($customer->profile_photo_url)
+                                    <img src="{{ $customer->profile_photo_url }}" class="rounded-circle me-3 object-fit-cover shadow-sm" width="40" height="40" alt="{{ $customer->full_name }}">
                                 @else
                                     <div class="avatar bg-primary-subtle text-primary me-3 rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 40px; height: 40px; font-size: 14px;">
                                         {{ mb_substr($customer->first_name, 0, 1) }}{{ mb_substr($customer->last_name, 0, 1) }}
