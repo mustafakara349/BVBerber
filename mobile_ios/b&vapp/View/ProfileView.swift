@@ -12,6 +12,7 @@ struct ProfileView: View {
 
     @EnvironmentObject var viewModel: ProfileViewModel
     @State private var showLogoutAlert = false
+    @State private var isShowingProfilePreview = false
 
     var body: some View {
 
@@ -56,6 +57,54 @@ struct ProfileView: View {
         .task {
             await viewModel.fetchProfile()
         }
+        .overlay {
+            if isShowingProfilePreview {
+                ZStack {
+                    Color.black.opacity(0.8)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                isShowingProfilePreview = false
+                            }
+                        }
+                    
+                    VStack {
+                        Spacer()
+                        Group {
+                            if let localImage = viewModel.profileImage {
+                                Image(uiImage: localImage)
+                                    .resizable()
+                                    .scaledToFill()
+                            } else if let url = URL(string: viewModel.profileImageUrl),
+                                      !viewModel.profileImageUrl.isEmpty {
+                                CachedAsyncImage(url: url) { phase in
+                                    switch phase {
+                                    case .success(let image):
+                                        image.resizable().scaledToFill()
+                                    default:
+                                        ProgressView().tint(.white)
+                                    }
+                                }
+                            } else {
+                                ZStack {
+                                    Circle().fill(Color.yellow.opacity(0.2))
+                                    Text(viewModel.user?.initials ?? "B")
+                                        .font(.system(size: 100, weight: .bold))
+                                        .foregroundColor(.yellow)
+                                }
+                            }
+                        }
+                        .frame(width: 300, height: 300)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.yellow.opacity(0.8), lineWidth: 4))
+                        .shadow(color: .black.opacity(0.5), radius: 20)
+                        Spacer()
+                    }
+                }
+                .transition(.opacity.combined(with: .scale(scale: 0.85)))
+                .zIndex(100)
+            }
+        }
     }
 }
 
@@ -99,6 +148,11 @@ extension ProfileView {
                 .frame(width: 120, height: 120)
                 .clipShape(Circle())
                 .overlay(Circle().stroke(Color.yellow.opacity(0.7), lineWidth: 4))
+                .onLongPressGesture(minimumDuration: 0.5) {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                        isShowingProfilePreview = true
+                    }
+                }
 
                 // Yükleniyor overlay
                 if viewModel.isUploadingPhoto {
@@ -195,6 +249,10 @@ extension ProfileView {
     var menuSection: some View {
 
         VStack(spacing: 16) {
+            
+            NavigationLink(destination: CouponsView()) {
+                ProfileMenuItemContent(icon: "ticket.fill", title: "Kuponlarım")
+            }
 
             NavigationLink(destination: SecuritySettingsView()) {
                 ProfileMenuItemContent(icon: "lock.fill", title: "Güvenlik ve Giriş")

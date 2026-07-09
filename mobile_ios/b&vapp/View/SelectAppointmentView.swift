@@ -1,4 +1,3 @@
-//
 //  SelectAppointmentView.swift
 //  b&vapp
 //
@@ -86,23 +85,26 @@ struct SelectAppointmentView: View {
         }
         // MARK: Özet Bottom Sheet
         .sheet(isPresented: $showBookingSummary) {
-            BookingSummarySheet(
-                viewModel: viewModel,
-                onConfirm: {
-                    showBookingSummary = false
-                    Task {
-                        let success = await viewModel.createAppointment()
-                        if success {
-                            viewModel.resetSelection()
-                            dismiss()
+            NavigationStack {
+                BookingSummarySheet(
+                    viewModel: viewModel,
+                    onConfirm: {
+                        showBookingSummary = false
+                        Task {
+                            let success = await viewModel.createAppointment()
+                            if success {
+                                viewModel.resetSelection()
+                                dismiss()
+                            }
                         }
+                    },
+                    onEdit: {
+                        showBookingSummary = false
                     }
-                },
-                onEdit: {
-                    showBookingSummary = false
-                }
-            )
-            .presentationDetents([.medium])
+                )
+                .toolbar(.hidden, for: .navigationBar)
+            }
+            .presentationDetents([.fraction(0.8), .large])
             .presentationCornerRadius(28)
             .presentationDragIndicator(.visible)
         }
@@ -626,11 +628,26 @@ struct SelectAppointmentView: View {
         var body: some View {
             VStack(spacing: 0) {
                 
-                // Başlık
-                Text("Randevu Özeti")
-                    .font(.title3.bold())
-                    .padding(.top, 90)
-                    .padding(.bottom, 20)
+                // Başlık ve Düzenle Butonu
+                HStack {
+                    Text("Randevu Özeti")
+                        .font(.title3.bold())
+                    
+                    Spacer()
+                    
+                    Button(action: onEdit) {
+                        Text("Randevuyu Düzenle")
+                            .font(.subheadline)
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.yellow.opacity(0.85))
+                            .cornerRadius(8)
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 16)
                 
                 Divider()
                 
@@ -660,22 +677,195 @@ struct SelectAppointmentView: View {
                     
                     summaryRow(
                         icon: "scissors",
-                        label: "Hizmetler",
+                        label: "Hizmet",
                         value: viewModel.selectedServices.isEmpty ? "-" : viewModel.selectedServices.map { $0.name }.joined(separator: " + ")
                     )
                     Divider().padding(.leading, 56)
                     
                     let totalPrice = viewModel.selectedServices.reduce(0) { $0 + $1.effectivePrice }
-                    summaryRow(
-                        icon: "turkishlirasign.circle.fill",
-                        label: "Toplam Ücret",
-                        value: "₺\(totalPrice)",
-                        valueColor: .yellow
-                    )
+                    let finalPrice = max(0, Double(totalPrice) - viewModel.validatedDiscountAmount)
+                    
+                    HStack {
+                        Image(systemName: "turkishlirasign.circle.fill")
+                            .foregroundColor(.yellow)
+                            .frame(width: 24, alignment: .center)
+                            .padding(.leading, 20)
+                        Text("Toplam Ücret")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        
+                        if viewModel.isCouponValid == true && viewModel.validatedDiscountAmount > 0 {
+                            Text("₺\(totalPrice)")
+                                .strikethrough()
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
+                            Text("₺\(finalPrice, specifier: "%.2f")")
+                                .fontWeight(.bold)
+                                .foregroundColor(.green)
+                        } else {
+                            Text("₺\(totalPrice)")
+                                .fontWeight(.bold)
+                                .foregroundColor(.yellow)
+                        }
+                    }
+                    .padding(.trailing, 20)
+                    .padding(.vertical, 12)
                 }
                 .padding(.vertical, 8)
                 
                 Divider()
+                    .padding(.bottom, 16)
+                
+                // Kupon / Kampanya Seçimi
+                VStack(alignment: .leading, spacing: 8) {
+                    Picker("İndirim Seçimi", selection: $viewModel.discountMode) {
+                        Text("Kampanya Kullan").tag(DiscountMode.campaign)
+                        Text("Kupon Kodu Gir").tag(DiscountMode.coupon)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.bottom, 8)
+                    .onChange(of: viewModel.discountMode) { _ in
+                        viewModel.isCouponValid = nil
+                        viewModel.couponMessage = ""
+                        viewModel.validatedDiscountAmount = 0.0
+                    }
+                    
+                    if viewModel.discountMode == .campaign {
+                        if viewModel.availableCampaigns.isEmpty {
+                            Text("Size özel aktif bir kampanya bulunmuyor.")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .padding(.vertical, 8)
+                        } else {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 12) {
+                                    ForEach(viewModel.availableCampaigns) { campaign in
+                                        let isSelected = viewModel.selectedCampaignId == campaign.id
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            HStack(alignment: .top) {
+                                                Text(campaign.title)
+                                                    .font(.subheadline.bold())
+                                                    .foregroundColor(isSelected ? .white : .primary)
+                                                
+                                                if isSelected {
+                                                    Spacer(minLength: 8)
+                                                    Button(action: {
+                                                        viewModel.selectedCampaignId = nil
+                                                        viewModel.isCouponValid = nil
+                                                        viewModel.couponMessage = ""
+                                                        viewModel.validatedDiscountAmount = 0.0
+                                                    }) {
+                                                        Image(systemName: "xmark.circle.fill")
+                                                            .foregroundColor(.white.opacity(0.8))
+                                                    }
+                                                }
+                                            }
+                                            
+                                            if !campaign.description.isEmpty {
+                                                Text(campaign.description)
+                                                    .font(.caption)
+                                                    .foregroundColor(isSelected ? .white.opacity(0.8) : .secondary)
+                                                    .lineLimit(1)
+                                            }
+                                        }
+                                        .padding(.vertical, 10)
+                                        .padding(.horizontal, 16)
+                                        .frame(minWidth: 140)
+                                        .background(isSelected ? Color.blue : Color.gray.opacity(0.15))
+                                        .cornerRadius(12)
+                                        .onTapGesture {
+                                            if !isSelected {
+                                                viewModel.selectedCampaignId = campaign.id
+                                                Task { await viewModel.validateDiscount() }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if viewModel.isValidatingCoupon {
+                                HStack {
+                                    Spacer()
+                                    ProgressView().padding()
+                                    Spacer()
+                                }
+                            }
+                        }
+                    } else {
+                        // Kupon Kodu
+                        HStack {
+                            Image(systemName: "ticket")
+                                .foregroundColor(.primary)
+                            TextField("Kupon Kodu", text: $viewModel.couponCode)
+                                .autocapitalization(.allCharacters)
+                                .disableAutocorrection(true)
+                                .onChange(of: viewModel.couponCode) { _ in
+                                    viewModel.isCouponValid = nil
+                                    viewModel.couponMessage = ""
+                                    viewModel.validatedDiscountAmount = 0.0
+                                }
+                            
+                            if viewModel.isCouponValid == true {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                            }
+                            
+                            Button(action: {
+                                Task { await viewModel.validateDiscount() }
+                            }) {
+                                if viewModel.isValidatingCoupon {
+                                    ProgressView().padding(.horizontal, 8)
+                                } else {
+                                    Text("Uygula")
+                                        .font(.subheadline)
+                                        .underline()
+                                        .foregroundColor(viewModel.couponCode.isEmpty ? .gray : .yellow)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                }
+                            }
+                            .disabled(viewModel.couponCode.isEmpty || viewModel.isValidatingCoupon)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(12)
+                        
+                        // Kuponlarım'a yönlendiren link
+                        NavigationLink(destination: CouponsView(onSelect: { code in
+                            viewModel.couponCode = code
+                            Task {
+                                await viewModel.validateDiscount()
+                            }
+                        })) {
+                            HStack {
+                                Image(systemName: "ticket.fill")
+                                Text("Kuponlarımı Gör")
+                                    .fontWeight(.medium)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(.yellow)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                            .background(Color.yellow.opacity(0.1))
+                            .cornerRadius(10)
+                        }
+                        .padding(.top, 4)
+                    }
+                    
+                    if !viewModel.couponMessage.isEmpty {
+                        Text(viewModel.couponMessage)
+                            .font(.caption)
+                            .foregroundColor(viewModel.isCouponValid == true ? .green : .red)
+                            .padding(.horizontal, 4)
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
                 
                 // Butonlar
                 VStack(spacing: 10) {
@@ -698,25 +888,13 @@ struct SelectAppointmentView: View {
                         .cornerRadius(16)
                     }
                     .disabled(viewModel.isLoading)
-                    
-                    // DÜZENLE — Sheet kapanır, seçimler korunur
-                    Button(action: onEdit) {
-                        HStack {
-                            Image(systemName: "pencil")
-                            Text("Düzenle")
-                                .fontWeight(.medium)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .foregroundColor(.primary)
-                        .cornerRadius(16)
-                    }
-                    .disabled(viewModel.isLoading)
                 }
                 .padding(.horizontal, 24)
                 .padding(.vertical, 20)
+                
+                Spacer()
             }
+            .background(Color(UIColor.systemBackground).ignoresSafeArea())
         }
         
         // MARK: - Helpers

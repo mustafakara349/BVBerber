@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: localhost
--- Üretim Zamanı: 21 Haz 2026, 18:03:56
+-- Üretim Zamanı: 07 Tem 2026, 21:56:41
 -- Sunucu sürümü: 10.4.28-MariaDB
 -- PHP Sürümü: 8.2.4
 
@@ -143,7 +143,22 @@ INSERT INTO `appointments` (`id`, `uuid`, `branch_id`, `customer_id`, `employee_
 (96, 'c94de0a1-3d61-4d34-9e6c-e248be7a145b', 1, 16, 2, 'APT-O1DFKQ', '2026-06-08 10:00:00', '2026-06-08 10:40:00', 40, 600.00, 0.00, 0.00, 600.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-08 17:06:15', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-08 17:06:15', NULL),
 (97, 'a943e909-e20b-4af1-b5d9-a19f8b1ce29e', 1, 17, 2, 'APT-EKCQ4B', '2026-06-08 14:00:00', '2026-06-08 14:30:00', 30, 500.00, 50.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-08 17:06:04', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-08 17:06:04', NULL),
 (98, 'b63c19c6-07a3-4f6e-87be-d254fcce6ba6', 1, 18, 3, 'APT-GVL3JZ', '2026-06-09 11:00:00', '2026-06-09 12:30:00', 90, 1200.00, 0.00, 0.00, 1200.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-20 12:22:53', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-20 12:22:53', NULL),
-(99, '1c848cf9-0480-4334-a2ea-a8ebd852a5a8', 1, 16, 2, 'APT-XV5VVP', '2026-06-09 16:00:00', '2026-06-09 16:30:00', 30, 500.00, 50.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-20 12:22:50', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-20 12:22:50', NULL);
+(99, '1c848cf9-0480-4334-a2ea-a8ebd852a5a8', 1, 16, 2, 'APT-XV5VVP', '2026-06-09 16:00:00', '2026-06-09 16:30:00', 30, 500.00, 50.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'website', NULL, NULL, NULL, NULL, NULL, '2026-06-20 12:22:50', 0, 0, NULL, 1, '2026-06-08 17:04:57', '2026-06-20 12:22:50', NULL),
+(100, '11e4dea6-65b3-4382-aa60-6023246b82ef', 1, 10, 1, 'BV-Z434XEZN', '2026-06-22 09:00:00', '2026-06-22 09:30:00', 30, 450.00, 0.00, 0.00, 450.00, 'cancelled', 'unpaid', NULL, 'mobile_app', NULL, NULL, NULL, 10, '2026-06-21 20:58:48', NULL, 0, 0, NULL, NULL, '2026-06-21 20:54:10', '2026-06-21 20:58:48', NULL),
+(101, '27cccb22-c45d-4ac1-ace2-168e9132d6d2', 1, 10, 1, 'BV-FZN9H4KM', '2026-06-22 09:00:00', '2026-06-22 09:30:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'mobile_app', NULL, NULL, NULL, NULL, NULL, '2026-06-22 10:14:08', 0, 0, NULL, NULL, '2026-06-21 20:59:25', '2026-06-22 10:14:08', NULL),
+(102, '0bc34c9f-5f1e-48a4-b15c-7829db531a77', 1, 10, 1, 'BV-GGPQV0M9', '2026-06-22 17:00:00', '2026-06-22 17:30:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'mobile_app', NULL, NULL, NULL, NULL, NULL, '2026-06-22 15:30:16', 0, 0, NULL, NULL, '2026-06-22 13:46:08', '2026-06-22 15:30:16', NULL),
+(103, 'ed04d2c1-448a-4e06-b733-fc0818f5a090', 1, 10, 2, 'BV-734IF1RU', '2026-06-22 22:00:00', '2026-06-22 22:30:00', 30, 450.00, 0.00, 0.00, 450.00, 'cancelled', 'unpaid', NULL, 'mobile_app', NULL, NULL, NULL, 10, '2026-06-22 13:53:05', NULL, 0, 0, NULL, NULL, '2026-06-22 13:52:28', '2026-06-22 13:53:05', NULL),
+(104, 'f6dd1385-43b5-425d-a071-2c8db73665b1', 1, 10, 1, 'BV-SUAEU3FB', '2026-06-23 10:00:00', '2026-06-23 10:30:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'mobile_app', NULL, NULL, NULL, NULL, NULL, '2026-06-23 11:33:18', 0, 0, NULL, NULL, '2026-06-22 15:28:37', '2026-06-23 11:33:18', NULL),
+(105, '7536f7af-04e3-4205-92fc-d581d45ea8c9', 1, 10, 2, 'BV-WBD4TOZL', '2026-06-24 10:30:00', '2026-06-24 11:00:00', 30, 450.00, 0.00, 0.00, 450.00, 'rejected', 'unpaid', NULL, 'admin_panel', NULL, NULL, 'Berber müsait değil.', 1, '2026-06-23 11:35:37', NULL, 0, 0, NULL, 1, '2026-06-23 11:31:26', '2026-06-23 11:35:37', NULL),
+(106, '4c257cee-4dc6-4088-b023-4c6e6dfb5707', 1, 13, 2, 'BV-J5IDOMSD', '2026-06-23 16:30:00', '2026-06-23 17:10:00', 40, 1000.00, 0.00, 0.00, 1000.00, 'completed', 'paid', 'cash', 'admin_panel', NULL, NULL, NULL, NULL, NULL, '2026-06-23 15:03:07', 0, 0, NULL, 1, '2026-06-23 11:32:16', '2026-06-23 15:03:07', NULL),
+(107, '0fb68802-e59d-454f-954d-9535555892aa', 1, 9, 3, 'BV-C4PEVWQX', '2026-06-23 17:00:00', '2026-06-23 17:30:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'admin_panel', NULL, NULL, NULL, NULL, NULL, '2026-06-23 15:03:03', 0, 0, NULL, 1, '2026-06-23 11:32:38', '2026-06-23 15:03:04', NULL),
+(108, '553199b3-9ce2-46fd-a016-e1ef978a87af', 1, 18, 3, 'BV-XNUUKKQX', '2026-06-23 17:30:00', '2026-06-23 18:00:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'admin_panel', NULL, NULL, NULL, NULL, NULL, '2026-06-23 15:03:00', 0, 0, NULL, 1, '2026-06-23 11:32:57', '2026-06-23 15:03:00', NULL),
+(109, '810008c6-c7e2-4a43-bb82-d50b053cb3c3', 1, 7, 1, 'BV-VHPNTEUC', '2026-06-23 15:30:00', '2026-06-23 16:00:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'admin_panel', NULL, NULL, NULL, NULL, NULL, '2026-06-23 15:03:11', 0, 0, NULL, 1, '2026-06-23 11:36:51', '2026-06-23 15:03:11', NULL),
+(110, '56d3c0c9-7ba4-4f72-90ba-774cfe283762', 1, 10, 2, 'BV-PBRRZWYZ', '2026-06-23 17:30:00', '2026-06-23 18:00:00', 30, 450.00, 0.00, 0.00, 450.00, 'pending', 'unpaid', NULL, 'mobile_app', NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, '2026-06-23 11:53:43', '2026-06-23 11:53:43', NULL),
+(111, 'e682c716-cfc1-4fae-bdae-41c06b6fe60d', 1, 10, 5, 'BV-YTQ3PW97', '2026-06-24 09:30:00', '2026-06-24 10:00:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'mobile_app', NULL, NULL, NULL, NULL, NULL, '2026-07-03 11:05:59', 0, 0, NULL, NULL, '2026-06-23 15:04:45', '2026-07-03 11:05:59', NULL),
+(112, '59762a1d-8442-4d6f-ae4f-b9eefee4b5cf', 1, 10, 3, 'BV-ANBP4WE0', '2026-06-23 19:30:00', '2026-06-23 20:00:00', 30, 450.00, 0.00, 0.00, 450.00, 'cancelled', 'unpaid', NULL, 'mobile_app', NULL, NULL, NULL, 10, '2026-06-23 15:08:43', NULL, 0, 0, NULL, NULL, '2026-06-23 15:08:36', '2026-06-23 15:08:43', NULL),
+(113, '515ef559-0fc3-4c31-9fe3-69a8b8333bee', 1, 10, 1, 'BV-CEK2QOZA', '2026-07-06 16:00:00', '2026-07-06 16:30:00', 30, 450.00, 0.00, 0.00, 450.00, 'completed', 'paid', 'cash', 'mobile_app', NULL, NULL, NULL, NULL, NULL, '2026-07-07 10:38:50', 0, 0, NULL, NULL, '2026-07-05 12:49:59', '2026-07-07 10:38:50', NULL),
+(114, '34e88d50-d52b-4aa0-802e-e80f7d412f1d', 1, 10, 1, 'BV-RUDGK3AU', '2026-07-07 18:00:00', '2026-07-07 19:10:00', 70, 850.00, 0.00, 0.00, 850.00, 'confirmed', 'unpaid', NULL, 'mobile_app', NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, '2026-07-07 14:20:16', '2026-07-07 14:28:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -224,7 +239,23 @@ INSERT INTO `appointment_services` (`id`, `appointment_id`, `service_id`, `emplo
 (58, 96, 4, 2, 1, 40, 600.00, 600.00, '2026-06-08 17:04:57'),
 (59, 97, 1, 2, 1, 30, 500.00, 450.00, '2026-06-08 17:04:57'),
 (60, 98, 3, 3, 1, 90, 1200.00, 1200.00, '2026-06-08 17:04:57'),
-(61, 99, 1, 2, 1, 30, 500.00, 450.00, '2026-06-08 17:04:57');
+(61, 99, 1, 2, 1, 30, 500.00, 450.00, '2026-06-08 17:04:57'),
+(62, 100, 1, 1, 1, 30, 450.00, 450.00, '2026-06-21 20:54:10'),
+(63, 101, 1, 1, 1, 30, 450.00, 450.00, '2026-06-21 20:59:25'),
+(64, 102, 1, 1, 1, 30, 450.00, 450.00, '2026-06-22 13:46:08'),
+(65, 103, 1, 2, 1, 30, 450.00, 450.00, '2026-06-22 13:52:28'),
+(66, 104, 1, 1, 1, 30, 450.00, 450.00, '2026-06-22 15:28:37'),
+(67, 105, 1, 2, 1, 30, 450.00, 450.00, '2026-06-23 11:31:26'),
+(68, 106, 113, 2, 1, 40, 1000.00, 1000.00, '2026-06-23 11:32:16'),
+(69, 107, 1, 3, 1, 30, 450.00, 450.00, '2026-06-23 11:32:38'),
+(70, 108, 1, 3, 1, 30, 450.00, 450.00, '2026-06-23 11:32:57'),
+(71, 109, 1, 1, 1, 30, 450.00, 450.00, '2026-06-23 11:36:51'),
+(72, 110, 1, 2, 1, 30, 450.00, 450.00, '2026-06-23 11:53:43'),
+(73, 111, 1, 5, 1, 30, 450.00, 450.00, '2026-06-23 15:04:45'),
+(74, 112, 1, 3, 1, 30, 450.00, 450.00, '2026-06-23 15:08:36'),
+(75, 113, 1, 1, 1, 30, 450.00, 450.00, '2026-07-05 12:49:59'),
+(76, 114, 4, 1, 1, 40, 600.00, 600.00, '2026-07-07 14:20:16'),
+(77, 114, 6, 1, 1, 30, 250.00, 250.00, '2026-07-07 14:20:16');
 
 -- --------------------------------------------------------
 
@@ -428,7 +459,47 @@ INSERT INTO `appointment_status_logs` (`id`, `appointment_id`, `changed_by`, `ol
 (186, 95, 1, 'confirmed', 'completed', NULL, '2026-06-08 17:06:09'),
 (187, 96, 1, 'confirmed', 'completed', NULL, '2026-06-08 17:06:15'),
 (188, 99, 1, 'confirmed', 'completed', NULL, '2026-06-20 12:22:50'),
-(189, 98, 1, 'confirmed', 'completed', NULL, '2026-06-20 12:22:53');
+(189, 98, 1, 'confirmed', 'completed', NULL, '2026-06-20 12:22:53'),
+(190, 100, NULL, NULL, 'pending', NULL, '2026-06-21 20:54:10'),
+(191, 100, 1, 'pending', 'confirmed', NULL, '2026-06-21 20:54:28'),
+(192, 100, 10, 'confirmed', 'cancelled', 'Cancelled via Mobile App', '2026-06-21 20:58:48'),
+(193, 101, NULL, NULL, 'pending', NULL, '2026-06-21 20:59:25'),
+(194, 101, 1, 'pending', 'confirmed', NULL, '2026-06-21 21:06:21'),
+(195, 101, 1, 'confirmed', 'completed', NULL, '2026-06-22 10:14:08'),
+(196, 102, NULL, NULL, 'pending', NULL, '2026-06-22 13:46:08'),
+(197, 102, 1, 'pending', 'confirmed', NULL, '2026-06-22 13:46:28'),
+(198, 103, NULL, NULL, 'pending', NULL, '2026-06-22 13:52:28'),
+(199, 103, 1, 'pending', 'confirmed', NULL, '2026-06-22 13:52:45'),
+(200, 103, 10, 'confirmed', 'cancelled', 'Cancelled via Mobile App', '2026-06-22 13:53:05'),
+(201, 104, NULL, NULL, 'pending', NULL, '2026-06-22 15:28:37'),
+(202, 104, 1, 'pending', 'confirmed', NULL, '2026-06-22 15:28:51'),
+(203, 102, 1, 'confirmed', 'completed', NULL, '2026-06-22 15:30:16'),
+(204, 105, NULL, NULL, 'pending', NULL, '2026-06-23 11:31:26'),
+(205, 106, NULL, NULL, 'pending', NULL, '2026-06-23 11:32:16'),
+(206, 107, NULL, NULL, 'pending', NULL, '2026-06-23 11:32:39'),
+(207, 108, NULL, NULL, 'pending', NULL, '2026-06-23 11:32:57'),
+(208, 104, 1, 'confirmed', 'completed', NULL, '2026-06-23 11:33:18'),
+(209, 106, 1, 'pending', 'confirmed', NULL, '2026-06-23 11:35:24'),
+(210, 107, 1, 'pending', 'confirmed', NULL, '2026-06-23 11:35:26'),
+(211, 108, 1, 'pending', 'confirmed', NULL, '2026-06-23 11:35:27'),
+(212, 105, 1, 'pending', 'rejected', NULL, '2026-06-23 11:35:37'),
+(213, 109, NULL, NULL, 'pending', NULL, '2026-06-23 11:36:51'),
+(214, 109, 1, 'pending', 'confirmed', NULL, '2026-06-23 11:36:56'),
+(215, 110, NULL, NULL, 'pending', NULL, '2026-06-23 11:53:43'),
+(216, 108, 1, 'confirmed', 'completed', NULL, '2026-06-23 15:03:00'),
+(217, 107, 1, 'confirmed', 'completed', NULL, '2026-06-23 15:03:03'),
+(218, 106, 1, 'confirmed', 'completed', NULL, '2026-06-23 15:03:07'),
+(219, 109, 1, 'confirmed', 'completed', NULL, '2026-06-23 15:03:11'),
+(220, 111, NULL, NULL, 'pending', NULL, '2026-06-23 15:04:45'),
+(221, 111, 1, 'pending', 'confirmed', NULL, '2026-06-23 15:04:52'),
+(222, 112, NULL, NULL, 'pending', NULL, '2026-06-23 15:08:36'),
+(223, 112, 10, 'pending', 'cancelled', 'Cancelled via Mobile App', '2026-06-23 15:08:43'),
+(224, 111, 1, 'confirmed', 'completed', NULL, '2026-07-03 11:05:59'),
+(225, 113, NULL, NULL, 'pending', NULL, '2026-07-05 12:49:59'),
+(226, 113, 1, 'pending', 'confirmed', NULL, '2026-07-05 13:40:55'),
+(227, 113, 1, 'confirmed', 'completed', NULL, '2026-07-07 10:38:50'),
+(228, 114, NULL, NULL, 'pending', NULL, '2026-07-07 14:20:16'),
+(229, 114, 1, 'pending', 'confirmed', NULL, '2026-07-07 14:28:47');
 
 -- --------------------------------------------------------
 
@@ -827,7 +898,299 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `model_type`, `model_id`, `
 (368, 1, 'updated', 'App\\Models\\Product', 2, '\"{\\\"stock_quantity\\\":3}\"', '\"{\\\"stock_quantity\\\":2}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:09:30'),
 (369, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T15:04:19.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T15:04:19.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 18:42:51\\\",\\\"updated_at\\\":\\\"2026-06-21 18:42:51\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:42:51'),
 (370, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T15:42:51.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T15:42:51.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 18:57:37\\\",\\\"updated_at\\\":\\\"2026-06-21 18:57:37\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:57:37'),
-(371, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T15:57:37.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T15:57:37.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 18:57:45\\\",\\\"updated_at\\\":\\\"2026-06-21 18:57:45\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:57:45');
+(371, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T15:57:37.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T15:57:37.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 18:57:45\\\",\\\"updated_at\\\":\\\"2026-06-21 18:57:45\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 15:57:45'),
+(372, 1, 'created', 'App\\Models\\Product', 3, NULL, '\"{\\\"name\\\":\\\"Deneme\\\",\\\"sku\\\":null,\\\"barcode\\\":\\\"45678765456\\\",\\\"description\\\":\\\"Deneme \\\\u00fcr\\\\u00fcn\\\\u00fcd\\\\u00fcr.\\\",\\\"purchase_price\\\":\\\"100\\\",\\\"sell_price\\\":\\\"200\\\",\\\"stock_quantity\\\":\\\"10\\\",\\\"critical_stock\\\":\\\"5\\\",\\\"branch_id\\\":1,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-21 20:56:19\\\",\\\"created_at\\\":\\\"2026-06-21 20:56:19\\\",\\\"id\\\":3}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 17:56:19'),
+(373, 1, 'updated', 'App\\Models\\Product', 3, '\"{\\\"stock_quantity\\\":10,\\\"updated_at\\\":\\\"2026-06-21T17:56:19.000000Z\\\"}\"', '\"{\\\"stock_quantity\\\":5,\\\"updated_at\\\":\\\"2026-06-21 20:56:44\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 17:56:44'),
+(374, NULL, 'created', 'App\\Models\\User', 19, NULL, '\"{\\\"role_id\\\":6,\\\"first_name\\\":\\\"Test\\\",\\\"last_name\\\":\\\"User\\\",\\\"email\\\":\\\"testuser@example.com\\\",\\\"phone\\\":\\\"5555555555\\\",\\\"password\\\":\\\"$2y$12$z1fJYFq3LwfiGiTVgyNE5.oxK5u11FItluejVNeSMWUhuQGWIr4na\\\",\\\"status\\\":\\\"active\\\",\\\"uuid\\\":\\\"4937392a-cff8-4d04-bce1-49e6a105c9c1\\\",\\\"updated_at\\\":\\\"2026-06-21 23:14:58\\\",\\\"created_at\\\":\\\"2026-06-21 23:14:58\\\",\\\"id\\\":19}\"', '127.0.0.1', 'curl/8.7.1', '2026-06-21 20:14:58'),
+(375, NULL, 'created', 'App\\Models\\User', 20, NULL, '\"{\\\"role_id\\\":6,\\\"first_name\\\":\\\"deneme\\\",\\\"last_name\\\":\\\"hesab\\\\u0131\\\",\\\"email\\\":\\\"dene@mail.com\\\",\\\"phone\\\":\\\"05551234567\\\",\\\"password\\\":\\\"$2y$12$U2f7PL2l\\\\\\/guJm2SP0at\\\\\\/yeeiyhaRyemUAnKDwqqOpVcGc4kuOypSe\\\",\\\"status\\\":\\\"active\\\",\\\"uuid\\\":\\\"91b4d96e-d3b1-4f56-8187-b588322581d3\\\",\\\"updated_at\\\":\\\"2026-06-21 23:28:11\\\",\\\"created_at\\\":\\\"2026-06-21 23:28:11\\\",\\\"id\\\":20}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:28:11'),
+(376, 20, 'updated', 'App\\Models\\User', 20, '\"{\\\"profile_photo\\\":null,\\\"updated_at\\\":\\\"2026-06-21T20:28:11.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/0RUmXgKNqS5FTbs5FjnxFiQXLKaaJOlS8II6euly.jpg\\\",\\\"updated_at\\\":\\\"2026-06-21 23:28:26\\\"}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:28:26'),
+(377, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T15:57:45.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T15:57:45.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 23:29:45\\\",\\\"updated_at\\\":\\\"2026-06-21 23:29:45\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 20:29:45'),
+(378, NULL, 'updated', 'App\\Models\\User', 10, '\"{\\\"password\\\":\\\"7c4a8d09ca3762af61e59520943dc26494f8941b\\\",\\\"updated_at\\\":\\\"2026-06-21T20:25:05.000000Z\\\"}\"', '\"{\\\"password\\\":\\\"$2y$12$Td9Vs2giF04MtlCl\\\\\\/ugyJuNRW11qK1t82oP2eb5ywvedmOV8FiUgK\\\",\\\"updated_at\\\":\\\"2026-06-21 23:30:34\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-21 20:30:34'),
+(379, NULL, 'updated', 'App\\Models\\User', 9, '\"{\\\"password\\\":\\\"$2y$12$ruWbuIK7clDcKiPQI6b24O1J2tDOvUfObY8vaOtr.Kp8VLnOWwHLG\\\",\\\"updated_at\\\":\\\"2026-05-14T17:32:59.000000Z\\\"}\"', '\"{\\\"password\\\":\\\"$2y$12$fBvCUHaEMnYySpUUvcVlwOHpZreeiMTROjIE4uGDkLcO1u73bqGma\\\",\\\"updated_at\\\":\\\"2026-06-21 23:30:44\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-21 20:30:44'),
+(380, NULL, 'updated', 'App\\Models\\User', 10, '\"{\\\"last_login_at\\\":null,\\\"updated_at\\\":\\\"2026-06-21T20:30:34.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 23:31:16\\\",\\\"updated_at\\\":\\\"2026-06-21 23:31:16\\\"}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:31:16'),
+(381, 1, 'updated', 'App\\Models\\Service', 6, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-21T15:06:55.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-21 23:31:38\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 20:31:38'),
+(382, 1, 'updated', 'App\\Models\\Service', 6, '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-21T20:31:38.000000Z\\\"}\"', '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-21 23:31:41\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 20:31:41'),
+(383, 1, 'updated', 'App\\Models\\Service', 6, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-21T20:31:41.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-21 23:31:56\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 20:31:56'),
+(384, 1, 'updated', 'App\\Models\\Service', 6, '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-21T20:31:56.000000Z\\\"}\"', '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-21 23:32:21\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 20:32:21'),
+(385, 10, 'updated', 'App\\Models\\User', 10, '\"{\\\"profile_photo\\\":null,\\\"updated_at\\\":\\\"2026-06-21T20:31:16.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/lwWWIGEHVXxUzxOYfiee678LDGaHz6R7FHf1F7A6.jpg\\\",\\\"updated_at\\\":\\\"2026-06-21 23:42:15\\\"}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:42:15'),
+(386, 10, 'created', 'App\\Models\\Appointment', 100, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":1,\\\"start_at\\\":\\\"2026-06-22 09:00:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"11e4dea6-65b3-4382-aa60-6023246b82ef\\\",\\\"appointment_code\\\":\\\"BV-Z434XEZN\\\",\\\"end_at\\\":\\\"2026-06-22 09:30:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-21 23:54:10\\\",\\\"created_at\\\":\\\"2026-06-21 23:54:10\\\",\\\"id\\\":100}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:54:10'),
+(387, 10, 'updated', 'App\\Models\\Appointment', 100, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:54:10'),
+(388, 1, 'updated', 'App\\Models\\Appointment', 100, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-21T20:54:10.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-21 23:54:28\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 20:54:28'),
+(389, NULL, 'updated', 'App\\Models\\User', 10, '\"{\\\"last_login_at\\\":\\\"2026-06-21T20:31:16.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T20:42:15.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-21 23:57:01\\\",\\\"updated_at\\\":\\\"2026-06-21 23:57:01\\\"}\"', '127.0.0.1', 'curl/8.7.1', '2026-06-21 20:57:01'),
+(390, 10, 'updated', 'App\\Models\\Appointment', 100, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"cancelled_by\\\":null,\\\"cancelled_at\\\":null,\\\"updated_at\\\":\\\"2026-06-21T20:54:28.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"cancelled\\\",\\\"cancelled_by\\\":10,\\\"cancelled_at\\\":\\\"2026-06-21 23:58:48\\\",\\\"updated_at\\\":\\\"2026-06-21 23:58:48\\\"}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:58:48'),
+(391, 10, 'created', 'App\\Models\\Appointment', 101, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":1,\\\"start_at\\\":\\\"2026-06-22 09:00:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"27cccb22-c45d-4ac1-ace2-168e9132d6d2\\\",\\\"appointment_code\\\":\\\"BV-FZN9H4KM\\\",\\\"end_at\\\":\\\"2026-06-22 09:30:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-21 23:59:25\\\",\\\"created_at\\\":\\\"2026-06-21 23:59:25\\\",\\\"id\\\":101}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:59:25'),
+(392, 10, 'updated', 'App\\Models\\Appointment', 101, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '192.168.0.6', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-21 20:59:25'),
+(393, 1, 'updated', 'App\\Models\\Appointment', 101, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-21T20:59:25.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-22 00:06:21\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 21:06:21'),
+(394, 1, 'updated', 'App\\Models\\Service', 1, '\"{\\\"discounted_price\\\":\\\"450.00\\\",\\\"updated_at\\\":\\\"2026-05-14T22:32:31.000000Z\\\"}\"', '\"{\\\"discounted_price\\\":\\\"400.00\\\",\\\"updated_at\\\":\\\"2026-06-22 00:06:50\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 21:06:50'),
+(395, 1, 'updated', 'App\\Models\\Service', 1, '\"{\\\"discounted_price\\\":\\\"400.00\\\",\\\"updated_at\\\":\\\"2026-06-21T21:06:50.000000Z\\\"}\"', '\"{\\\"discounted_price\\\":\\\"455.00\\\",\\\"updated_at\\\":\\\"2026-06-22 00:07:04\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 21:07:04'),
+(396, 1, 'updated', 'App\\Models\\Service', 1, '\"{\\\"discounted_price\\\":\\\"455.00\\\",\\\"updated_at\\\":\\\"2026-06-21T21:07:04.000000Z\\\"}\"', '\"{\\\"discounted_price\\\":\\\"450.00\\\",\\\"updated_at\\\":\\\"2026-06-22 00:07:14\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-21 21:07:14'),
+(397, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-21T20:29:45.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-21T20:29:45.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-22 13:05:21\\\",\\\"updated_at\\\":\\\"2026-06-22 13:05:21\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 10:05:21'),
+(398, 1, 'updated', 'App\\Models\\Appointment', 101, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-21T21:06:21.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-22 13:14:08\\\",\\\"updated_at\\\":\\\"2026-06-22 13:14:08\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 10:14:08'),
+(399, 1, 'updated', 'App\\Models\\Appointment', 101, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 10:14:08'),
+(400, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-22T10:05:21.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-22T10:05:21.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-22 15:48:21\\\",\\\"updated_at\\\":\\\"2026-06-22 15:48:21\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 12:48:21'),
+(401, 1, 'updated', 'App\\Models\\Service', 6, '\"{\\\"image\\\":null,\\\"updated_at\\\":\\\"2026-06-21T20:32:21.000000Z\\\"}\"', '\"{\\\"image\\\":\\\"services\\\\\\/ASMkqwYlldl6iSgCLVi6VUnSJn16y3GimKFhqOwq.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:34:47\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:34:47'),
+(402, 1, 'updated', 'App\\Models\\Service', 5, '\"{\\\"image\\\":\\\"child_1.png\\\",\\\"updated_at\\\":\\\"2026-05-14T13:44:44.000000Z\\\"}\"', '\"{\\\"image\\\":\\\"services\\\\\\/ID8vCHKgauQuJPrHOyp2cuVszY7N2we0ODyiEwNx.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:35:27\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:35:27'),
+(403, 1, 'updated', 'App\\Models\\Service', 4, '\"{\\\"image\\\":\\\"care_1.png\\\",\\\"updated_at\\\":\\\"2026-05-14T17:34:01.000000Z\\\"}\"', '\"{\\\"image\\\":\\\"services\\\\\\/D1Y0a6ZSPMFpq5vbGNK3G8MLBXCexOm5ejGg7XsV.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:35:57\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:35:57'),
+(404, 1, 'updated', 'App\\Models\\Service', 2, '\"{\\\"image\\\":\\\"beard_1.png\\\",\\\"updated_at\\\":\\\"2026-05-23T17:16:37.000000Z\\\"}\"', '\"{\\\"image\\\":\\\"services\\\\\\/1nEyhZZKoEANcuKlzdQIqDEkdNppOblgEmohvIWR.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:37:36\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:37:36'),
+(405, 1, 'updated', 'App\\Models\\Service', 1, '\"{\\\"image\\\":\\\"haircut_1.png\\\",\\\"updated_at\\\":\\\"2026-06-21T21:07:14.000000Z\\\"}\"', '\"{\\\"image\\\":\\\"services\\\\\\/wgxVWtP6cnf5gNrmnC3biyVAV7YWRIArfro7L0eB.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:38:07\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:38:07'),
+(406, 1, 'updated', 'App\\Models\\Service', 3, '\"{\\\"image\\\":\\\"vip_1.png\\\",\\\"updated_at\\\":\\\"2026-05-23T17:16:20.000000Z\\\"}\"', '\"{\\\"image\\\":\\\"services\\\\\\/Sq4IpB0AYBabmKzvphML9EMokBMcR1SKpLntdTS1.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:40:57\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:40:57'),
+(407, 10, 'updated', 'App\\Models\\User', 10, '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/lwWWIGEHVXxUzxOYfiee678LDGaHz6R7FHf1F7A6.jpg\\\",\\\"updated_at\\\":\\\"2026-06-21T20:57:01.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/pgLzjb2S2WaiwGg1AQqB11TP67NRL3KinJ53OBOa.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:44:02\\\"}\"', '192.168.0.2', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-22 13:44:02'),
+(408, 10, 'created', 'App\\Models\\Appointment', 102, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":1,\\\"start_at\\\":\\\"2026-06-22 17:00:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"0bc34c9f-5f1e-48a4-b15c-7829db531a77\\\",\\\"appointment_code\\\":\\\"BV-GGPQV0M9\\\",\\\"end_at\\\":\\\"2026-06-22 17:30:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-22 16:46:08\\\",\\\"created_at\\\":\\\"2026-06-22 16:46:08\\\",\\\"id\\\":102}\"', '192.168.0.2', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-22 13:46:08'),
+(409, 10, 'updated', 'App\\Models\\Appointment', 102, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '192.168.0.2', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-22 13:46:08'),
+(410, 1, 'updated', 'App\\Models\\Appointment', 102, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-22T13:46:08.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-22 16:46:28\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:46:28'),
+(411, 10, 'created', 'App\\Models\\Appointment', 103, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":2,\\\"start_at\\\":\\\"2026-06-22 22:00:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"ed04d2c1-448a-4e06-b733-fc0818f5a090\\\",\\\"appointment_code\\\":\\\"BV-734IF1RU\\\",\\\"end_at\\\":\\\"2026-06-22 22:30:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-22 16:52:28\\\",\\\"created_at\\\":\\\"2026-06-22 16:52:28\\\",\\\"id\\\":103}\"', '192.168.0.2', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-22 13:52:28'),
+(412, 10, 'updated', 'App\\Models\\Appointment', 103, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '192.168.0.2', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-22 13:52:28'),
+(413, 1, 'updated', 'App\\Models\\Appointment', 103, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-22T13:52:28.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-22 16:52:45\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:52:45'),
+(414, 10, 'updated', 'App\\Models\\Appointment', 103, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"cancelled_by\\\":null,\\\"cancelled_at\\\":null,\\\"updated_at\\\":\\\"2026-06-22T13:52:45.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"cancelled\\\",\\\"cancelled_by\\\":10,\\\"cancelled_at\\\":\\\"2026-06-22 16:53:05\\\",\\\"updated_at\\\":\\\"2026-06-22 16:53:05\\\"}\"', '192.168.0.2', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-22 13:53:05'),
+(415, 1, 'updated', 'App\\Models\\User', 2, '\"{\\\"profile_photo\\\":null,\\\"updated_at\\\":\\\"2026-06-22T13:41:47.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/eOiEG25nulwlDXgwPV3ofULK32cQaaOzcpped84E.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:56:45\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:56:45'),
+(416, 1, 'updated', 'App\\Models\\User', 3, '\"{\\\"profile_photo\\\":null,\\\"updated_at\\\":\\\"2026-06-22T13:41:54.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/URdAYCss4ATnVPPilloFvixLOdquPrRrYuuERC6f.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:56:53\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:56:53'),
+(417, 1, 'updated', 'App\\Models\\User', 4, '\"{\\\"profile_photo\\\":null,\\\"updated_at\\\":\\\"2026-06-22T13:41:58.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/MJSgRyBYjQCrYhIzI4ymmshNV8epxfEc5SV14G86.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:57:02\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:57:02'),
+(418, 1, 'updated', 'App\\Models\\User', 5, '\"{\\\"profile_photo\\\":null,\\\"updated_at\\\":\\\"2026-05-14T13:44:44.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/Oyp8vlis1urNwTADOBP2yFCXK9ceoDJabzj37LgT.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:57:29\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:57:29'),
+(419, 1, 'updated', 'App\\Models\\User', 11, '\"{\\\"profile_photo\\\":null,\\\"updated_at\\\":\\\"2026-06-22T13:42:28.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/DkOMbbumMLP1sOr1SHAofdffHEIiReQeO3ZNbOza.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:57:50\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:57:50'),
+(420, 1, 'updated', 'App\\Models\\User', 5, '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/Oyp8vlis1urNwTADOBP2yFCXK9ceoDJabzj37LgT.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22T13:57:29.000000Z\\\"}\"', '\"{\\\"profile_photo\\\":\\\"profile_photos\\\\\\/1Rs7LN3jMnSUBUi7Nqs8WZrieEGyJxXhDwNapjze.jpg\\\",\\\"updated_at\\\":\\\"2026-06-22 16:58:19\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 13:58:19'),
+(421, NULL, 'created', 'App\\Models\\Service', 7, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"pedikur-kadin\\\",\\\"category_id\\\":6,\\\"name\\\":\\\"Pedik\\\\u00fcr (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Pedik\\\\u00fcr (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":7}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(422, NULL, 'created', 'App\\Models\\Service', 8, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"manikur-kadin\\\",\\\"category_id\\\":6,\\\"name\\\":\\\"Manik\\\\u00fcr (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Manik\\\\u00fcr (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":900,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":8}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(423, NULL, 'created', 'App\\Models\\Service', 9, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kas-alma-kadin\\\",\\\"category_id\\\":7,\\\"name\\\":\\\"Ka\\\\u015f Alma (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Ka\\\\u015f Alma (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":150,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":9}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(424, NULL, 'created', 'App\\Models\\Service', 10, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"altin-oran-kas-tasarimi-kadin\\\",\\\"category_id\\\":7,\\\"name\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":10}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(425, NULL, 'created', 'App\\Models\\Service', 11, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"medikal-cilt-bakimi-kadin\\\",\\\"category_id\\\":8,\\\"name\\\":\\\"Medikal Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Medikal Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":11}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(426, NULL, 'created', 'App\\Models\\Service', 12, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"klasik-cilt-bakimi-kadin\\\",\\\"category_id\\\":8,\\\"name\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":12}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(427, NULL, 'created', 'App\\Models\\Service', 13, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tanura-c4-cilt-bakimi-kadin\\\",\\\"category_id\\\":8,\\\"name\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":75,\\\"buffer_time\\\":0,\\\"price\\\":5000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":13}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(428, NULL, 'created', 'App\\Models\\Service', 14, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"dudak-ustu-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Dudak \\\\u00dcst\\\\u00fc Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Dudak \\\\u00dcst\\\\u00fc Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":10,\\\"buffer_time\\\":0,\\\"price\\\":250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":14}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(429, NULL, 'created', 'App\\Models\\Service', 15, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"boyun-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Boyun Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Boyun Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":400,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":15}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56');
+INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `model_type`, `model_id`, `old_values`, `new_values`, `ip_address`, `user_agent`, `created_at`) VALUES
+(430, NULL, 'created', 'App\\Models\\Service', 16, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"ense-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Ense Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Ense Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":400,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":16}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(431, NULL, 'created', 'App\\Models\\Service', 17, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"cene-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"\\\\u00c7ene Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"\\\\u00c7ene Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":450,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":17}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(432, NULL, 'created', 'App\\Models\\Service', 18, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"koltuk-alti-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Koltuk Alt\\\\u0131 Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Koltuk Alt\\\\u0131 Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":18}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(433, NULL, 'created', 'App\\Models\\Service', 19, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"bikini-bolgesi-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Bikini B\\\\u00f6lgesi Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Bikini B\\\\u00f6lgesi Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":19}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(434, NULL, 'created', 'App\\Models\\Service', 20, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"yuz-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Y\\\\u00fcz Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Y\\\\u00fcz Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":20}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(435, NULL, 'created', 'App\\Models\\Service', 21, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sirt-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"S\\\\u0131rt Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"S\\\\u0131rt Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":21}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(436, NULL, 'created', 'App\\Models\\Service', 22, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"gogus-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":true,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":22}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(437, NULL, 'created', 'App\\Models\\Service', 23, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kol-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Kol Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Kol Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":23}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(438, NULL, 'created', 'App\\Models\\Service', 24, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"bacak-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Bacak Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Bacak Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":24}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(439, NULL, 'created', 'App\\Models\\Service', 25, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tum-vucut-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"T\\\\u00fcm V\\\\u00fccut Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"T\\\\u00fcm V\\\\u00fccut Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":90,\\\"buffer_time\\\":0,\\\"price\\\":2500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":25}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(440, NULL, 'created', 'App\\Models\\Service', 26, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kemer-ustu-lazer-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Kemer \\\\u00dcst\\\\u00fc Lazer (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Kemer \\\\u00dcst\\\\u00fc Lazer (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":2500,\\\"discounted_price\\\":2250,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":26}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(441, NULL, 'created', 'App\\Models\\Service', 27, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"vip-hizmeti-c-paketi-kadin\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Vip Hizmeti (C Paketi) (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Vip Hizmeti (C Paketi) (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":90,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":27}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(442, NULL, 'created', 'App\\Models\\Service', 28, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"masaj-kadin\\\",\\\"category_id\\\":10,\\\"name\\\":\\\"Masaj (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Masaj (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":900,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":28}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(443, NULL, 'created', 'App\\Models\\Service', 29, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kafa-masaji-kadin\\\",\\\"category_id\\\":10,\\\"name\\\":\\\"Kafa Masaj\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Kafa Masaj\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":29}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(444, NULL, 'created', 'App\\Models\\Service', 30, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"fon-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"F\\\\u00f6n (Erkek)\\\",\\\"description\\\":\\\"F\\\\u00f6n (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":200,\\\"discounted_price\\\":180,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":30}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(445, NULL, 'created', 'App\\Models\\Service', 31, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sakal-tirasi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Sakal T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Sakal T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":25,\\\"buffer_time\\\":0,\\\"price\\\":400,\\\"discounted_price\\\":360,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":31}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(446, NULL, 'created', 'App\\Models\\Service', 32, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"cocuk-tirasi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"\\\\u00c7ocuk T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"\\\\u00c7ocuk T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":400,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":32}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(447, NULL, 'created', 'App\\Models\\Service', 33, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sac-boyama-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Sa\\\\u00e7 Boyama (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Boyama (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":33}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(448, NULL, 'created', 'App\\Models\\Service', 34, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sac-bakimi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Sa\\\\u00e7 Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":34}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(449, NULL, 'created', 'App\\Models\\Service', 35, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sac-kesimi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Sa\\\\u00e7 Kesimi (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Kesimi (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":600,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":35}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(450, NULL, 'created', 'App\\Models\\Service', 36, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sac-ve-sakal-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Sa\\\\u00e7 ve Sakal (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 ve Sakal (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":700,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":36}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(451, NULL, 'created', 'App\\Models\\Service', 37, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"vip-hizmeti-a-paketi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Vip Hizmeti (A Paketi) (Erkek)\\\",\\\"description\\\":\\\"Vip Hizmeti (A Paketi) (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":75,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":900,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":37}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(452, NULL, 'created', 'App\\Models\\Service', 38, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"vip-hizmeti-b-paketi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Vip Hizmeti (B Paketi) (Erkek)\\\",\\\"description\\\":\\\"Vip Hizmeti (B Paketi) (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":75,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":38}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(453, NULL, 'created', 'App\\Models\\Service', 39, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"vip-hizmeti-c-paketi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Vip Hizmeti (C Paketi) (Erkek)\\\",\\\"description\\\":\\\"Vip Hizmeti (C Paketi) (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":90,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":1350,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":39}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(454, NULL, 'created', 'App\\Models\\Service', 40, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sac-kiran-tedavisi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Sa\\\\u00e7 K\\\\u0131ran Tedavisi (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 K\\\\u0131ran Tedavisi (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":40}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(455, NULL, 'created', 'App\\Models\\Service', 41, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"keratin-bakim-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Keratin Bak\\\\u0131m (Erkek)\\\",\\\"description\\\":\\\"Keratin Bak\\\\u0131m (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":600,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":true,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":41}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(456, NULL, 'created', 'App\\Models\\Service', 42, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"damat-tirasi-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Damat T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Damat T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":120,\\\"buffer_time\\\":0,\\\"price\\\":2000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":42}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(457, NULL, 'created', 'App\\Models\\Service', 43, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"manikur-erkek\\\",\\\"category_id\\\":6,\\\"name\\\":\\\"Manik\\\\u00fcr (Erkek)\\\",\\\"description\\\":\\\"Manik\\\\u00fcr (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":900,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":43}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(458, NULL, 'created', 'App\\Models\\Service', 44, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"pedikur-erkek\\\",\\\"category_id\\\":6,\\\"name\\\":\\\"Pedik\\\\u00fcr (Erkek)\\\",\\\"description\\\":\\\"Pedik\\\\u00fcr (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":44}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(459, NULL, 'created', 'App\\Models\\Service', 45, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kas-alma-erkek\\\",\\\"category_id\\\":7,\\\"name\\\":\\\"Ka\\\\u015f Alma (Erkek)\\\",\\\"description\\\":\\\"Ka\\\\u015f Alma (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":150,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":45}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(460, NULL, 'created', 'App\\Models\\Service', 46, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"altin-oran-kas-tasarimi-erkek\\\",\\\"category_id\\\":7,\\\"name\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":46}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(461, NULL, 'created', 'App\\Models\\Service', 47, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"klasik-cilt-bakimi-erkek\\\",\\\"category_id\\\":8,\\\"name\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":47}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(462, NULL, 'created', 'App\\Models\\Service', 48, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"cilt-bakimi-erkek\\\",\\\"category_id\\\":8,\\\"name\\\":\\\"Cilt Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Cilt Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":48}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(463, NULL, 'created', 'App\\Models\\Service', 49, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tanura-c4-cilt-bakimi-erkek\\\",\\\"category_id\\\":8,\\\"name\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":75,\\\"buffer_time\\\":0,\\\"price\\\":5000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":49}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(464, NULL, 'created', 'App\\Models\\Service', 50, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"hydrafacial-cilt-bakimi-erkek\\\",\\\"category_id\\\":8,\\\"name\\\":\\\"HydraFacial Cilt Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"HydraFacial Cilt Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":2000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":true,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":50}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(465, NULL, 'created', 'App\\Models\\Service', 51, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"dudak-ustu-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Dudak \\\\u00dcst\\\\u00fc Lazer (Erkek)\\\",\\\"description\\\":\\\"Dudak \\\\u00dcst\\\\u00fc Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":10,\\\"buffer_time\\\":0,\\\"price\\\":250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":51}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(466, NULL, 'created', 'App\\Models\\Service', 52, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"boyun-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Boyun Lazer (Erkek)\\\",\\\"description\\\":\\\"Boyun Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":400,\\\"discounted_price\\\":360,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":52}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(467, NULL, 'created', 'App\\Models\\Service', 53, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"ense-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Ense Lazer (Erkek)\\\",\\\"description\\\":\\\"Ense Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":400,\\\"discounted_price\\\":360,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":53}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(468, NULL, 'created', 'App\\Models\\Service', 54, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"cene-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"\\\\u00c7ene Lazer (Erkek)\\\",\\\"description\\\":\\\"\\\\u00c7ene Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":450,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":54}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(469, NULL, 'created', 'App\\Models\\Service', 55, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"koltuk-alti-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Koltuk Alt\\\\u0131 Lazer (Erkek)\\\",\\\"description\\\":\\\"Koltuk Alt\\\\u0131 Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":55}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(470, NULL, 'created', 'App\\Models\\Service', 56, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"bikini-bolgesi-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Bikini B\\\\u00f6lgesi Lazer (Erkek)\\\",\\\"description\\\":\\\"Bikini B\\\\u00f6lgesi Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":56}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(471, NULL, 'created', 'App\\Models\\Service', 57, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"yuz-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Y\\\\u00fcz Lazer (Erkek)\\\",\\\"description\\\":\\\"Y\\\\u00fcz Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":57}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(472, NULL, 'created', 'App\\Models\\Service', 58, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sirt-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"S\\\\u0131rt Lazer (Erkek)\\\",\\\"description\\\":\\\"S\\\\u0131rt Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":true,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":58}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(473, NULL, 'created', 'App\\Models\\Service', 59, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"gogus-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs Lazer (Erkek)\\\",\\\"description\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":59}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(474, NULL, 'created', 'App\\Models\\Service', 60, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kol-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Kol Lazer (Erkek)\\\",\\\"description\\\":\\\"Kol Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":true,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":60}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(475, NULL, 'created', 'App\\Models\\Service', 61, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"bacak-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Bacak Lazer (Erkek)\\\",\\\"description\\\":\\\"Bacak Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":61}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(476, NULL, 'created', 'App\\Models\\Service', 62, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tum-vucut-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"T\\\\u00fcm V\\\\u00fccut Lazer (Erkek)\\\",\\\"description\\\":\\\"T\\\\u00fcm V\\\\u00fccut Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":90,\\\"buffer_time\\\":0,\\\"price\\\":2500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":62}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(477, NULL, 'created', 'App\\Models\\Service', 63, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kemer-ustu-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Kemer \\\\u00dcst\\\\u00fc Lazer (Erkek)\\\",\\\"description\\\":\\\"Kemer \\\\u00dcst\\\\u00fc Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":2500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":63}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(478, NULL, 'created', 'App\\Models\\Service', 64, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tum-vucut-premium-lazer-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"T\\\\u00fcm V\\\\u00fccut Premium Lazer (Erkek)\\\",\\\"description\\\":\\\"T\\\\u00fcm V\\\\u00fccut Premium Lazer (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":120,\\\"buffer_time\\\":0,\\\"price\\\":3000,\\\"discounted_price\\\":2700,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":64}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(479, NULL, 'created', 'App\\Models\\Service', 65, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"lazer-epilasyon-detayli-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Lazer Epilasyon Detayl\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Lazer Epilasyon Detayl\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":1350,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":true,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":65}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(480, NULL, 'created', 'App\\Models\\Service', 66, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"masaj-erkek\\\",\\\"category_id\\\":10,\\\"name\\\":\\\"Masaj (Erkek)\\\",\\\"description\\\":\\\"Masaj (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":66}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(481, NULL, 'created', 'App\\Models\\Service', 67, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kafa-masaji-erkek\\\",\\\"category_id\\\":10,\\\"name\\\":\\\"Kafa Masaj\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Kafa Masaj\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"updated_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"created_at\\\":\\\"2026-06-22 17:35:56\\\",\\\"id\\\":67}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:35:56'),
+(482, NULL, 'updated', 'App\\Models\\Service', 7, '\"{\\\"name\\\":\\\"Pedik\\\\u00fcr (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Pedik\\\\u00fcr (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Pedik\\\\u00fcr\\\",\\\"description\\\":\\\"Pedik\\\\u00fcr Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(483, NULL, 'updated', 'App\\Models\\Service', 8, '\"{\\\"name\\\":\\\"Manik\\\\u00fcr (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Manik\\\\u00fcr (Kad\\\\u0131n) hizmeti.\\\",\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Manik\\\\u00fcr\\\",\\\"description\\\":\\\"Manik\\\\u00fcr Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(484, NULL, 'updated', 'App\\Models\\Service', 9, '\"{\\\"name\\\":\\\"Ka\\\\u015f Alma (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Ka\\\\u015f Alma (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Ka\\\\u015f Alma\\\",\\\"description\\\":\\\"Ka\\\\u015f Alma Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(485, NULL, 'updated', 'App\\Models\\Service', 10, '\"{\\\"name\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(486, NULL, 'updated', 'App\\Models\\Service', 11, '\"{\\\"name\\\":\\\"Medikal Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Medikal Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Medikal Cilt Bak\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"Medikal Cilt Bak\\\\u0131m\\\\u0131 Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(487, NULL, 'updated', 'App\\Models\\Service', 12, '\"{\\\"name\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(488, NULL, 'updated', 'App\\Models\\Service', 13, '\"{\\\"name\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":75,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(489, NULL, 'created', 'App\\Models\\Service', 68, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"dudak-ustu-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Dudak \\\\u00dcst\\\\u00fc\\\",\\\"description\\\":\\\"Dudak \\\\u00dcst\\\\u00fc Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":250,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":68}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(490, NULL, 'created', 'App\\Models\\Service', 69, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"boyun-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Boyun\\\",\\\"description\\\":\\\"Boyun Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":400,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":69}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(491, NULL, 'created', 'App\\Models\\Service', 70, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"ense-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Ense\\\",\\\"description\\\":\\\"Ense Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":400,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":70}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(492, NULL, 'created', 'App\\Models\\Service', 71, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"cene-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"\\\\u00c7ene\\\",\\\"description\\\":\\\"\\\\u00c7ene Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":500,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":71}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(493, NULL, 'created', 'App\\Models\\Service', 72, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"koltuk-alti-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Koltuk Alt\\\\u0131\\\",\\\"description\\\":\\\"Koltuk Alt\\\\u0131 Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":500,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":72}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(494, NULL, 'created', 'App\\Models\\Service', 73, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"bikini-bolgesi-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Bikini B\\\\u00f6lgesi\\\",\\\"description\\\":\\\"Bikini B\\\\u00f6lgesi Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":500,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":73}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(495, NULL, 'created', 'App\\Models\\Service', 74, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"yuz-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Y\\\\u00fcz\\\",\\\"description\\\":\\\"Y\\\\u00fcz Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":500,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":74}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(496, NULL, 'created', 'App\\Models\\Service', 75, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sirt-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"S\\\\u0131rt\\\",\\\"description\\\":\\\"S\\\\u0131rt Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":1250,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":75}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(497, NULL, 'created', 'App\\Models\\Service', 76, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"gogus-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs\\\",\\\"description\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":1250,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":76}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(498, NULL, 'created', 'App\\Models\\Service', 77, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kol-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Kol\\\",\\\"description\\\":\\\"Kol Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":1250,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":77}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(499, NULL, 'created', 'App\\Models\\Service', 78, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"bacak-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Bacak\\\",\\\"description\\\":\\\"Bacak Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":1500,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":78}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(500, NULL, 'created', 'App\\Models\\Service', 79, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tum-vucut-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"T\\\\u00fcm V\\\\u00fccut\\\",\\\"description\\\":\\\"T\\\\u00fcm V\\\\u00fccut Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":2500,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":79}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(501, NULL, 'created', 'App\\Models\\Service', 80, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kemer-ustu-kadin\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Kemer \\\\u00dcst\\\\u00fc\\\",\\\"description\\\":\\\"Kemer \\\\u00dcst\\\\u00fc Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":2500,\\\"gender_type\\\":\\\"female\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":80}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(502, NULL, 'updated', 'App\\Models\\Service', 27, '\"{\\\"name\\\":\\\"Vip Hizmeti (C Paketi) (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Vip Hizmeti (C Paketi) (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":90,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Vip Hizmeti (C Paketi)\\\",\\\"description\\\":\\\"Vip Hizmeti (C Paketi) Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(503, NULL, 'updated', 'App\\Models\\Service', 28, '\"{\\\"name\\\":\\\"Masaj (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Masaj (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Masaj\\\",\\\"description\\\":\\\"Masaj Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(504, NULL, 'updated', 'App\\Models\\Service', 29, '\"{\\\"name\\\":\\\"Kafa Masaj\\\\u0131 (Kad\\\\u0131n)\\\",\\\"description\\\":\\\"Kafa Masaj\\\\u0131 (Kad\\\\u0131n) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Kafa Masaj\\\\u0131\\\",\\\"description\\\":\\\"Kafa Masaj\\\\u0131 Kad\\\\u0131n Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(505, NULL, 'updated', 'App\\Models\\Service', 30, '\"{\\\"name\\\":\\\"F\\\\u00f6n (Erkek)\\\",\\\"description\\\":\\\"F\\\\u00f6n (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":20,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"F\\\\u00f6n\\\",\\\"description\\\":\\\"F\\\\u00f6n Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(506, NULL, 'updated', 'App\\Models\\Service', 31, '\"{\\\"name\\\":\\\"Sakal T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Sakal T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":25,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Sakal T\\\\u0131ra\\\\u015f\\\\u0131\\\",\\\"description\\\":\\\"Sakal T\\\\u0131ra\\\\u015f\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(507, NULL, 'updated', 'App\\Models\\Service', 32, '\"{\\\"name\\\":\\\"\\\\u00c7ocuk T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"\\\\u00c7ocuk T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek) hizmeti.\\\",\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"\\\\u00c7ocuk T\\\\u0131ra\\\\u015f\\\\u0131\\\",\\\"description\\\":\\\"\\\\u00c7ocuk T\\\\u0131ra\\\\u015f\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(508, NULL, 'updated', 'App\\Models\\Service', 33, '\"{\\\"name\\\":\\\"Sa\\\\u00e7 Boyama (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Boyama (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Sa\\\\u00e7 Boyama\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Boyama Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(509, NULL, 'updated', 'App\\Models\\Service', 34, '\"{\\\"name\\\":\\\"Sa\\\\u00e7 Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Sa\\\\u00e7 Bak\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Bak\\\\u0131m\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(510, NULL, 'updated', 'App\\Models\\Service', 35, '\"{\\\"name\\\":\\\"Sa\\\\u00e7 Kesimi (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Kesimi (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Sa\\\\u00e7 Kesimi\\\",\\\"description\\\":\\\"Sa\\\\u00e7 Kesimi Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(511, NULL, 'updated', 'App\\Models\\Service', 36, '\"{\\\"name\\\":\\\"Sa\\\\u00e7 ve Sakal (Erkek)\\\",\\\"description\\\":\\\"Sa\\\\u00e7 ve Sakal (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Sa\\\\u00e7 ve Sakal\\\",\\\"description\\\":\\\"Sa\\\\u00e7 ve Sakal Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(512, NULL, 'updated', 'App\\Models\\Service', 37, '\"{\\\"name\\\":\\\"Vip Hizmeti (A Paketi) (Erkek)\\\",\\\"description\\\":\\\"Vip Hizmeti (A Paketi) (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":75,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Vip Hizmeti (A Paketi)\\\",\\\"description\\\":\\\"Vip Hizmeti (A Paketi) Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31');
+INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `model_type`, `model_id`, `old_values`, `new_values`, `ip_address`, `user_agent`, `created_at`) VALUES
+(513, NULL, 'updated', 'App\\Models\\Service', 38, '\"{\\\"name\\\":\\\"Vip Hizmeti (B Paketi) (Erkek)\\\",\\\"description\\\":\\\"Vip Hizmeti (B Paketi) (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":75,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Vip Hizmeti (B Paketi)\\\",\\\"description\\\":\\\"Vip Hizmeti (B Paketi) Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(514, NULL, 'updated', 'App\\Models\\Service', 39, '\"{\\\"name\\\":\\\"Vip Hizmeti (C Paketi) (Erkek)\\\",\\\"description\\\":\\\"Vip Hizmeti (C Paketi) (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":90,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Vip Hizmeti (C Paketi)\\\",\\\"description\\\":\\\"Vip Hizmeti (C Paketi) Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(515, NULL, 'created', 'App\\Models\\Service', 81, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sac-kiran-erkek\\\",\\\"category_id\\\":5,\\\"name\\\":\\\"Sa\\\\u00e7 K\\\\u0131ran\\\",\\\"description\\\":\\\"Sa\\\\u00e7 K\\\\u0131ran Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":0,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":81}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(516, NULL, 'updated', 'App\\Models\\Service', 41, '\"{\\\"name\\\":\\\"Keratin Bak\\\\u0131m (Erkek)\\\",\\\"description\\\":\\\"Keratin Bak\\\\u0131m (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"price\\\":\\\"600.00\\\",\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Keratin Bak\\\\u0131m\\\",\\\"description\\\":\\\"Keratin Bak\\\\u0131m Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":0,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(517, NULL, 'updated', 'App\\Models\\Service', 42, '\"{\\\"name\\\":\\\"Damat T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Damat T\\\\u0131ra\\\\u015f\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":120,\\\"price\\\":\\\"2000.00\\\",\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Damat T\\\\u0131ra\\\\u015f\\\\u0131\\\",\\\"description\\\":\\\"Damat T\\\\u0131ra\\\\u015f\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":0,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(518, NULL, 'updated', 'App\\Models\\Service', 43, '\"{\\\"name\\\":\\\"Manik\\\\u00fcr (Erkek)\\\",\\\"description\\\":\\\"Manik\\\\u00fcr (Erkek) hizmeti.\\\",\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Manik\\\\u00fcr\\\",\\\"description\\\":\\\"Manik\\\\u00fcr Erkek Bak\\\\u0131m Hizmeti\\\",\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(519, NULL, 'updated', 'App\\Models\\Service', 44, '\"{\\\"name\\\":\\\"Pedik\\\\u00fcr (Erkek)\\\",\\\"description\\\":\\\"Pedik\\\\u00fcr (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Pedik\\\\u00fcr\\\",\\\"description\\\":\\\"Pedik\\\\u00fcr Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(520, NULL, 'updated', 'App\\Models\\Service', 45, '\"{\\\"name\\\":\\\"Ka\\\\u015f Alma (Erkek)\\\",\\\"description\\\":\\\"Ka\\\\u015f Alma (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":15,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Ka\\\\u015f Alma\\\",\\\"description\\\":\\\"Ka\\\\u015f Alma Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(521, NULL, 'updated', 'App\\Models\\Service', 46, '\"{\\\"name\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(522, NULL, 'updated', 'App\\Models\\Service', 47, '\"{\\\"name\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(523, NULL, 'updated', 'App\\Models\\Service', 48, '\"{\\\"name\\\":\\\"Cilt Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Cilt Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Cilt Bak\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"Cilt Bak\\\\u0131m\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(524, NULL, 'updated', 'App\\Models\\Service', 49, '\"{\\\"name\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":75,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131\\\",\\\"description\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(525, NULL, 'created', 'App\\Models\\Service', 82, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"hydrafacial-erkek\\\",\\\"category_id\\\":8,\\\"name\\\":\\\"HydraFacial\\\",\\\"description\\\":\\\"HydraFacial Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":0,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":82}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(526, NULL, 'created', 'App\\Models\\Service', 83, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"dudak-ustu-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Dudak \\\\u00dcst\\\\u00fc\\\",\\\"description\\\":\\\"Dudak \\\\u00dcst\\\\u00fc Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":250,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":83}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(527, NULL, 'created', 'App\\Models\\Service', 84, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"boyun-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Boyun\\\",\\\"description\\\":\\\"Boyun Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":400,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":84}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(528, NULL, 'created', 'App\\Models\\Service', 85, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"ense-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Ense\\\",\\\"description\\\":\\\"Ense Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":400,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":85}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(529, NULL, 'created', 'App\\Models\\Service', 86, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"cene-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"\\\\u00c7ene\\\",\\\"description\\\":\\\"\\\\u00c7ene Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":500,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":86}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(530, NULL, 'created', 'App\\Models\\Service', 87, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"koltuk-alti-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Koltuk Alt\\\\u0131\\\",\\\"description\\\":\\\"Koltuk Alt\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":500,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":87}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(531, NULL, 'created', 'App\\Models\\Service', 88, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"bikini-bolgesi-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Bikini B\\\\u00f6lgesi\\\",\\\"description\\\":\\\"Bikini B\\\\u00f6lgesi Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":500,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":88}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(532, NULL, 'created', 'App\\Models\\Service', 89, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"yuz-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Y\\\\u00fcz\\\",\\\"description\\\":\\\"Y\\\\u00fcz Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":500,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":89}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(533, NULL, 'created', 'App\\Models\\Service', 90, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"sirt-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"S\\\\u0131rt\\\",\\\"description\\\":\\\"S\\\\u0131rt Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":1250,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":90}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(534, NULL, 'created', 'App\\Models\\Service', 91, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"gogus-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs\\\",\\\"description\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":1250,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":91}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(535, NULL, 'created', 'App\\Models\\Service', 92, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kol-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Kol\\\",\\\"description\\\":\\\"Kol Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":1250,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":92}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(536, NULL, 'created', 'App\\Models\\Service', 93, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"bacak-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Bacak\\\",\\\"description\\\":\\\"Bacak Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":1500,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":93}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(537, NULL, 'created', 'App\\Models\\Service', 94, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tum-vucut-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"T\\\\u00fcm V\\\\u00fccut\\\",\\\"description\\\":\\\"T\\\\u00fcm V\\\\u00fccut Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":2500,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":94}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(538, NULL, 'created', 'App\\Models\\Service', 95, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kemer-ustu-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Kemer \\\\u00dcst\\\\u00fc\\\",\\\"description\\\":\\\"Kemer \\\\u00dcst\\\\u00fc Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":2500,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":95}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(539, NULL, 'created', 'App\\Models\\Service', 96, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tum-vucut-premium-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"T\\\\u00fcm V\\\\u00fccut Premium\\\",\\\"description\\\":\\\"T\\\\u00fcm V\\\\u00fccut Premium Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":3000,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":96}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(540, NULL, 'created', 'App\\Models\\Service', 97, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"lazer-epilasyon-erkek\\\",\\\"category_id\\\":9,\\\"name\\\":\\\"Lazer Epilasyon\\\",\\\"description\\\":\\\"Lazer Epilasyon Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"price\\\":0,\\\"gender_type\\\":\\\"male\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":97}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(541, NULL, 'updated', 'App\\Models\\Service', 66, '\"{\\\"name\\\":\\\"Masaj (Erkek)\\\",\\\"description\\\":\\\"Masaj (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":60,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Masaj\\\",\\\"description\\\":\\\"Masaj Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(542, NULL, 'updated', 'App\\Models\\Service', 67, '\"{\\\"name\\\":\\\"Kafa Masaj\\\\u0131 (Erkek)\\\",\\\"description\\\":\\\"Kafa Masaj\\\\u0131 (Erkek) hizmeti.\\\",\\\"duration_minutes\\\":45,\\\"updated_at\\\":\\\"2026-06-22T14:35:56.000000Z\\\"}\"', '\"{\\\"name\\\":\\\"Kafa Masaj\\\\u0131\\\",\\\"description\\\":\\\"Kafa Masaj\\\\u0131 Erkek Bak\\\\u0131m Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\"}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(543, NULL, 'created', 'App\\Models\\Service', 98, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"espresso\\\",\\\"category_id\\\":11,\\\"name\\\":\\\"Espresso\\\",\\\"description\\\":\\\"Espresso Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":80,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":98}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(544, NULL, 'created', 'App\\Models\\Service', 99, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"americano\\\",\\\"category_id\\\":11,\\\"name\\\":\\\"Americano\\\",\\\"description\\\":\\\"Americano Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":90,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":99}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(545, NULL, 'created', 'App\\Models\\Service', 100, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"latte\\\",\\\"category_id\\\":11,\\\"name\\\":\\\"Latte\\\",\\\"description\\\":\\\"Latte Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":100,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":100}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(546, NULL, 'created', 'App\\Models\\Service', 101, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"cappuccino\\\",\\\"category_id\\\":11,\\\"name\\\":\\\"Cappuccino\\\",\\\"description\\\":\\\"Cappuccino Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":100,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":101}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(547, NULL, 'created', 'App\\Models\\Service', 102, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"turk-kahvesi\\\",\\\"category_id\\\":11,\\\"name\\\":\\\"T\\\\u00fcrk Kahvesi\\\",\\\"description\\\":\\\"T\\\\u00fcrk Kahvesi Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":75,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":102}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(548, NULL, 'created', 'App\\Models\\Service', 103, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"cay\\\",\\\"category_id\\\":11,\\\"name\\\":\\\"\\\\u00c7ay\\\",\\\"description\\\":\\\"\\\\u00c7ay Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":40,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":103}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(549, NULL, 'created', 'App\\Models\\Service', 104, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"iced-latte\\\",\\\"category_id\\\":12,\\\"name\\\":\\\"Iced Latte\\\",\\\"description\\\":\\\"Iced Latte Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":110,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":104}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(550, NULL, 'created', 'App\\Models\\Service', 105, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"iced-americano\\\",\\\"category_id\\\":12,\\\"name\\\":\\\"Iced Americano\\\",\\\"description\\\":\\\"Iced Americano Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":100,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":105}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(551, NULL, 'created', 'App\\Models\\Service', 106, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"limonata\\\",\\\"category_id\\\":12,\\\"name\\\":\\\"Limonata\\\",\\\"description\\\":\\\"Limonata Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":95,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":106}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(552, NULL, 'created', 'App\\Models\\Service', 107, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"taze-portakal-suyu\\\",\\\"category_id\\\":12,\\\"name\\\":\\\"Taze Portakal Suyu\\\",\\\"description\\\":\\\"Taze Portakal Suyu Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":110,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":107}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(553, NULL, 'created', 'App\\Models\\Service', 108, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"su\\\",\\\"category_id\\\":12,\\\"name\\\":\\\"Su\\\",\\\"description\\\":\\\"Su Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":25,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":108}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(554, NULL, 'created', 'App\\Models\\Service', 109, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kruvasan\\\",\\\"category_id\\\":13,\\\"name\\\":\\\"Kruvasan\\\",\\\"description\\\":\\\"Kruvasan Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":90,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":109}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(555, NULL, 'created', 'App\\Models\\Service', 110, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"mozaik-pasta\\\",\\\"category_id\\\":13,\\\"name\\\":\\\"Mozaik Pasta\\\",\\\"description\\\":\\\"Mozaik Pasta Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":85,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":110}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(556, NULL, 'created', 'App\\Models\\Service', 111, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"kurabiye\\\",\\\"category_id\\\":13,\\\"name\\\":\\\"Kurabiye\\\",\\\"description\\\":\\\"Kurabiye Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":70,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":111}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(557, NULL, 'created', 'App\\Models\\Service', 112, NULL, '\"{\\\"branch_id\\\":1,\\\"slug\\\":\\\"tost\\\",\\\"category_id\\\":13,\\\"name\\\":\\\"Tost\\\",\\\"description\\\":\\\"Tost Taze Kafe \\\\u00dcr\\\\u00fcn\\\\u00fc\\\",\\\"duration_minutes\\\":5,\\\"price\\\":110,\\\"gender_type\\\":\\\"unisex\\\",\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"created_at\\\":\\\"2026-06-22 17:45:31\\\",\\\"id\\\":112}\"', '127.0.0.1', 'Symfony', '2026-06-22 14:45:31'),
+(558, NULL, 'created', 'App\\Models\\Service', 113, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":6,\\\"name\\\":\\\"Manik\\\\u00fcr\\\",\\\"slug\\\":\\\"manikur\\\",\\\"description\\\":\\\"Manik\\\\u00fcr Hizmeti\\\",\\\"duration_minutes\\\":40,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:47\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:47\\\",\\\"id\\\":113}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(559, NULL, 'created', 'App\\Models\\Service', 114, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":6,\\\"name\\\":\\\"Pedik\\\\u00fcr\\\",\\\"slug\\\":\\\"pedikur\\\",\\\"description\\\":\\\"Pedik\\\\u00fcr Hizmeti\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":114}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(560, NULL, 'created', 'App\\Models\\Service', 115, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":7,\\\"name\\\":\\\"Ka\\\\u015f Alma\\\",\\\"slug\\\":\\\"kas-alma\\\",\\\"description\\\":\\\"Ka\\\\u015f Alma Hizmeti\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":150,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":115}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(561, NULL, 'created', 'App\\Models\\Service', 116, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":7,\\\"name\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131\\\",\\\"slug\\\":\\\"altin-oran-kas-tasarimi\\\",\\\"description\\\":\\\"Alt\\\\u0131n Oran Ka\\\\u015f Tasar\\\\u0131m\\\\u0131 Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":116}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(562, NULL, 'created', 'App\\Models\\Service', 117, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":8,\\\"name\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131\\\",\\\"slug\\\":\\\"klasik-cilt-bakimi\\\",\\\"description\\\":\\\"Klasik Cilt Bak\\\\u0131m\\\\u0131 Hizmeti\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":117}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(563, NULL, 'created', 'App\\Models\\Service', 118, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":8,\\\"name\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131\\\",\\\"slug\\\":\\\"tanura-c4-cilt-bakimi\\\",\\\"description\\\":\\\"TANURA C4 Cilt Bak\\\\u0131m\\\\u0131 Hizmeti\\\",\\\"duration_minutes\\\":90,\\\"buffer_time\\\":0,\\\"price\\\":5000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":118}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(564, NULL, 'created', 'App\\Models\\Service', 119, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Dudak \\\\u00dcst\\\\u00fc\\\",\\\"slug\\\":\\\"dudak-ustu\\\",\\\"description\\\":\\\"Dudak \\\\u00dcst\\\\u00fc Hizmeti\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":119}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(565, NULL, 'created', 'App\\Models\\Service', 120, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Boyun\\\",\\\"slug\\\":\\\"boyun\\\",\\\"description\\\":\\\"Boyun Hizmeti\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":400,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":120}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(566, NULL, 'created', 'App\\Models\\Service', 121, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Ense\\\",\\\"slug\\\":\\\"ense\\\",\\\"description\\\":\\\"Ense Hizmeti\\\",\\\"duration_minutes\\\":15,\\\"buffer_time\\\":0,\\\"price\\\":400,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":121}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(567, NULL, 'created', 'App\\Models\\Service', 122, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"\\\\u00c7ene\\\",\\\"slug\\\":\\\"cene\\\",\\\"description\\\":\\\"\\\\u00c7ene Hizmeti\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":122}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(568, NULL, 'created', 'App\\Models\\Service', 123, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Koltuk Alt\\\\u0131\\\",\\\"slug\\\":\\\"koltuk-alti\\\",\\\"description\\\":\\\"Koltuk Alt\\\\u0131 Hizmeti\\\",\\\"duration_minutes\\\":20,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":123}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(569, NULL, 'created', 'App\\Models\\Service', 124, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Bikini B\\\\u00f6lgesi\\\",\\\"slug\\\":\\\"bikini-bolgesi\\\",\\\"description\\\":\\\"Bikini B\\\\u00f6lgesi Hizmeti\\\",\\\"duration_minutes\\\":25,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":124}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(570, NULL, 'created', 'App\\Models\\Service', 125, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Y\\\\u00fcz\\\",\\\"slug\\\":\\\"yuz\\\",\\\"description\\\":\\\"Y\\\\u00fcz Hizmeti\\\",\\\"duration_minutes\\\":30,\\\"buffer_time\\\":0,\\\"price\\\":500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":125}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(571, NULL, 'created', 'App\\Models\\Service', 126, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"S\\\\u0131rt\\\",\\\"slug\\\":\\\"sirt\\\",\\\"description\\\":\\\"S\\\\u0131rt Hizmeti\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":126}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(572, NULL, 'created', 'App\\Models\\Service', 127, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs\\\",\\\"slug\\\":\\\"gogus\\\",\\\"description\\\":\\\"G\\\\u00f6\\\\u011f\\\\u00fcs Hizmeti\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":127}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(573, NULL, 'created', 'App\\Models\\Service', 128, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Kol\\\",\\\"slug\\\":\\\"kol\\\",\\\"description\\\":\\\"Kol Hizmeti\\\",\\\"duration_minutes\\\":40,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":128}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(574, NULL, 'created', 'App\\Models\\Service', 129, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Bacak\\\",\\\"slug\\\":\\\"bacak\\\",\\\"description\\\":\\\"Bacak Hizmeti\\\",\\\"duration_minutes\\\":50,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":129}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(575, NULL, 'created', 'App\\Models\\Service', 130, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"T\\\\u00fcm V\\\\u00fccut\\\",\\\"slug\\\":\\\"tum-vucut\\\",\\\"description\\\":\\\"T\\\\u00fcm V\\\\u00fccut Hizmeti\\\",\\\"duration_minutes\\\":120,\\\"buffer_time\\\":0,\\\"price\\\":2500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":130}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(576, NULL, 'created', 'App\\Models\\Service', 131, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":9,\\\"name\\\":\\\"Kemer \\\\u00dcst\\\\u00fc\\\",\\\"slug\\\":\\\"kemer-ustu\\\",\\\"description\\\":\\\"Kemer \\\\u00dcst\\\\u00fc Hizmeti\\\",\\\"duration_minutes\\\":90,\\\"buffer_time\\\":0,\\\"price\\\":2500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":131}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(577, NULL, 'created', 'App\\Models\\Service', 132, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":5,\\\"name\\\":\\\"Vip Hizmeti (C Paketi)\\\",\\\"slug\\\":\\\"vip-hizmeti-c-paketi\\\",\\\"description\\\":\\\"Vip Hizmeti (C Paketi) Hizmeti\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":1500,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":132}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(578, NULL, 'created', 'App\\Models\\Service', 133, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":10,\\\"name\\\":\\\"Masaj\\\",\\\"slug\\\":\\\"masaj\\\",\\\"description\\\":\\\"Masaj Hizmeti\\\",\\\"duration_minutes\\\":60,\\\"buffer_time\\\":0,\\\"price\\\":1000,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":133}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(579, NULL, 'created', 'App\\Models\\Service', 134, NULL, '\"{\\\"branch_id\\\":1,\\\"category_id\\\":10,\\\"name\\\":\\\"Kafa Masaj\\\\u0131\\\",\\\"slug\\\":\\\"kafa-masaji\\\",\\\"description\\\":\\\"Kafa Masaj\\\\u0131 Hizmeti\\\",\\\"duration_minutes\\\":45,\\\"buffer_time\\\":0,\\\"price\\\":1250,\\\"discounted_price\\\":null,\\\"gender_type\\\":\\\"unisex\\\",\\\"image\\\":null,\\\"is_popular\\\":false,\\\"is_featured\\\":false,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"created_at\\\":\\\"2026-06-22 18:02:48\\\",\\\"id\\\":134}\"', '127.0.0.1', 'Symfony', '2026-06-22 15:02:48'),
+(580, 10, 'created', 'App\\Models\\Appointment', 104, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":1,\\\"start_at\\\":\\\"2026-06-23 10:00:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"f6dd1385-43b5-425d-a071-2c8db73665b1\\\",\\\"appointment_code\\\":\\\"BV-SUAEU3FB\\\",\\\"end_at\\\":\\\"2026-06-23 10:30:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-22 18:28:37\\\",\\\"created_at\\\":\\\"2026-06-22 18:28:37\\\",\\\"id\\\":104}\"', '192.168.0.2', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-22 15:28:37'),
+(581, 10, 'updated', 'App\\Models\\Appointment', 104, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '192.168.0.2', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-22 15:28:37'),
+(582, 1, 'updated', 'App\\Models\\Appointment', 104, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-22T15:28:37.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-22 18:28:51\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 15:28:51'),
+(583, 1, 'updated', 'App\\Models\\Appointment', 102, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-22T13:46:28.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-22 18:30:16\\\",\\\"updated_at\\\":\\\"2026-06-22 18:30:16\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 15:30:16'),
+(584, 1, 'updated', 'App\\Models\\Appointment', 102, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-22 15:30:16'),
+(585, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-22T12:48:21.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-22T12:48:21.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-23 14:25:52\\\",\\\"updated_at\\\":\\\"2026-06-23 14:25:52\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:25:52'),
+(586, 1, 'created', 'App\\Models\\Appointment', 105, NULL, '\"{\\\"branch_id\\\":\\\"1\\\",\\\"customer_id\\\":\\\"10\\\",\\\"employee_id\\\":\\\"2\\\",\\\"start_at\\\":\\\"2026-06-24 10:30:00\\\",\\\"source\\\":\\\"admin_panel\\\",\\\"customer_note\\\":null,\\\"internal_note\\\":null,\\\"created_by\\\":1,\\\"uuid\\\":\\\"7536f7af-04e3-4205-92fc-d581d45ea8c9\\\",\\\"appointment_code\\\":\\\"BV-WBD4TOZL\\\",\\\"end_at\\\":\\\"2026-06-24 11:00:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-23 14:31:26\\\",\\\"created_at\\\":\\\"2026-06-23 14:31:26\\\",\\\"id\\\":105}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:31:26'),
+(587, 1, 'updated', 'App\\Models\\Appointment', 105, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:31:26'),
+(588, 1, 'created', 'App\\Models\\Appointment', 106, NULL, '\"{\\\"branch_id\\\":\\\"1\\\",\\\"customer_id\\\":\\\"13\\\",\\\"employee_id\\\":\\\"2\\\",\\\"start_at\\\":\\\"2026-06-23 16:30:00\\\",\\\"source\\\":\\\"admin_panel\\\",\\\"customer_note\\\":null,\\\"internal_note\\\":null,\\\"created_by\\\":1,\\\"uuid\\\":\\\"4c257cee-4dc6-4088-b023-4c6e6dfb5707\\\",\\\"appointment_code\\\":\\\"BV-J5IDOMSD\\\",\\\"end_at\\\":\\\"2026-06-23 17:10:00\\\",\\\"total_duration\\\":40,\\\"updated_at\\\":\\\"2026-06-23 14:32:16\\\",\\\"created_at\\\":\\\"2026-06-23 14:32:16\\\",\\\"id\\\":106}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:32:16'),
+(589, 1, 'updated', 'App\\Models\\Appointment', 106, NULL, '\"{\\\"subtotal\\\":1000,\\\"total_price\\\":1000}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:32:16'),
+(590, 1, 'created', 'App\\Models\\Appointment', 107, NULL, '\"{\\\"branch_id\\\":\\\"1\\\",\\\"customer_id\\\":\\\"9\\\",\\\"employee_id\\\":\\\"3\\\",\\\"start_at\\\":\\\"2026-06-23 17:00:00\\\",\\\"source\\\":\\\"admin_panel\\\",\\\"customer_note\\\":null,\\\"internal_note\\\":null,\\\"created_by\\\":1,\\\"uuid\\\":\\\"0fb68802-e59d-454f-954d-9535555892aa\\\",\\\"appointment_code\\\":\\\"BV-C4PEVWQX\\\",\\\"end_at\\\":\\\"2026-06-23 17:30:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-23 14:32:38\\\",\\\"created_at\\\":\\\"2026-06-23 14:32:38\\\",\\\"id\\\":107}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:32:38'),
+(591, 1, 'updated', 'App\\Models\\Appointment', 107, '\"{\\\"updated_at\\\":\\\"2026-06-23T11:32:38.000000Z\\\"}\"', '\"{\\\"updated_at\\\":\\\"2026-06-23 14:32:39\\\",\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:32:39'),
+(592, 1, 'created', 'App\\Models\\Appointment', 108, NULL, '\"{\\\"branch_id\\\":\\\"1\\\",\\\"customer_id\\\":\\\"18\\\",\\\"employee_id\\\":\\\"3\\\",\\\"start_at\\\":\\\"2026-06-23 17:30:00\\\",\\\"source\\\":\\\"admin_panel\\\",\\\"customer_note\\\":null,\\\"internal_note\\\":null,\\\"created_by\\\":1,\\\"uuid\\\":\\\"553199b3-9ce2-46fd-a016-e1ef978a87af\\\",\\\"appointment_code\\\":\\\"BV-XNUUKKQX\\\",\\\"end_at\\\":\\\"2026-06-23 18:00:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-23 14:32:57\\\",\\\"created_at\\\":\\\"2026-06-23 14:32:57\\\",\\\"id\\\":108}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:32:57'),
+(593, 1, 'updated', 'App\\Models\\Appointment', 108, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:32:57'),
+(594, 1, 'updated', 'App\\Models\\Appointment', 104, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-22T15:28:51.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-23 14:33:18\\\",\\\"updated_at\\\":\\\"2026-06-23 14:33:18\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:33:18'),
+(595, 1, 'updated', 'App\\Models\\Appointment', 104, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:33:18'),
+(596, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-23T11:25:52.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-23T11:25:52.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-23 14:35:20\\\",\\\"updated_at\\\":\\\"2026-06-23 14:35:20\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:35:20'),
+(597, 1, 'updated', 'App\\Models\\Appointment', 106, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-23T11:32:16.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-23 14:35:24\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:35:24'),
+(598, 1, 'updated', 'App\\Models\\Appointment', 107, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-23T11:32:39.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-23 14:35:26\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:35:26'),
+(599, 1, 'updated', 'App\\Models\\Appointment', 108, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-23T11:32:57.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-23 14:35:27\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:35:27'),
+(600, 1, 'updated', 'App\\Models\\Appointment', 105, '\"{\\\"status\\\":\\\"pending\\\",\\\"cancellation_reason\\\":null,\\\"cancelled_by\\\":null,\\\"cancelled_at\\\":null,\\\"updated_at\\\":\\\"2026-06-23T11:31:26.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"rejected\\\",\\\"cancellation_reason\\\":\\\"Berber m\\\\u00fcsait de\\\\u011fil.\\\",\\\"cancelled_by\\\":1,\\\"cancelled_at\\\":\\\"2026-06-23 14:35:37\\\",\\\"updated_at\\\":\\\"2026-06-23 14:35:37\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:35:37'),
+(601, 1, 'created', 'App\\Models\\Appointment', 109, NULL, '\"{\\\"branch_id\\\":\\\"1\\\",\\\"customer_id\\\":\\\"7\\\",\\\"employee_id\\\":\\\"1\\\",\\\"start_at\\\":\\\"2026-06-23 15:30:00\\\",\\\"source\\\":\\\"admin_panel\\\",\\\"customer_note\\\":null,\\\"internal_note\\\":null,\\\"created_by\\\":1,\\\"uuid\\\":\\\"810008c6-c7e2-4a43-bb82-d50b053cb3c3\\\",\\\"appointment_code\\\":\\\"BV-VHPNTEUC\\\",\\\"end_at\\\":\\\"2026-06-23 16:00:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-23 14:36:51\\\",\\\"created_at\\\":\\\"2026-06-23 14:36:51\\\",\\\"id\\\":109}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:36:51'),
+(602, 1, 'updated', 'App\\Models\\Appointment', 109, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:36:51'),
+(603, 1, 'updated', 'App\\Models\\Appointment', 109, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-23T11:36:51.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-23 14:36:56\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:36:56'),
+(604, 1, 'updated', 'App\\Models\\Service', 1, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22T13:38:07.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-23 14:37:41\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:37:41'),
+(605, 1, 'updated', 'App\\Models\\Service', 1, '\"{\\\"is_active\\\":false}\"', '\"{\\\"is_active\\\":true}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:37:41'),
+(606, 1, 'updated', 'App\\Models\\Service', 2, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-22T13:37:36.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-23 14:37:42\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:37:42'),
+(607, 1, 'updated', 'App\\Models\\Service', 2, '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-23T11:37:42.000000Z\\\"}\"', '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-06-23 14:37:43\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:37:43'),
+(608, 1, 'updated', 'App\\Models\\Product', 1, '\"{\\\"stock_quantity\\\":8,\\\"updated_at\\\":\\\"2026-06-08T16:48:25.000000Z\\\"}\"', '\"{\\\"stock_quantity\\\":7,\\\"updated_at\\\":\\\"2026-06-23 14:38:22\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:38:22');
+INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `model_type`, `model_id`, `old_values`, `new_values`, `ip_address`, `user_agent`, `created_at`) VALUES
+(609, 1, 'updated', 'App\\Models\\Campaign', 1, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-05-23T15:20:47.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-23 14:39:20\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 11:39:20'),
+(610, NULL, 'updated', 'App\\Models\\User', 10, '\"{\\\"last_login_at\\\":\\\"2026-06-21T20:57:01.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-22T13:44:02.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-23 14:52:31\\\",\\\"updated_at\\\":\\\"2026-06-23 14:52:31\\\"}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 11:52:31'),
+(611, NULL, 'updated', 'App\\Models\\User', 10, '\"{\\\"last_login_at\\\":\\\"2026-06-23T11:52:31.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-23T11:52:31.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-23 14:53:06\\\",\\\"updated_at\\\":\\\"2026-06-23 14:53:06\\\"}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 11:53:06'),
+(612, 10, 'created', 'App\\Models\\Appointment', 110, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":2,\\\"start_at\\\":\\\"2026-06-23 17:30:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"56d3c0c9-7ba4-4f72-90ba-774cfe283762\\\",\\\"appointment_code\\\":\\\"BV-PBRRZWYZ\\\",\\\"end_at\\\":\\\"2026-06-23 18:00:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-23 14:53:43\\\",\\\"created_at\\\":\\\"2026-06-23 14:53:43\\\",\\\"id\\\":110}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 11:53:43'),
+(613, 10, 'updated', 'App\\Models\\Appointment', 110, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 11:53:43'),
+(614, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-23T11:35:20.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-23T11:35:20.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-23 18:02:47\\\",\\\"updated_at\\\":\\\"2026-06-23 18:02:47\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:02:47'),
+(615, 1, 'updated', 'App\\Models\\Appointment', 108, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-23T11:35:27.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-23 18:03:00\\\",\\\"updated_at\\\":\\\"2026-06-23 18:03:00\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:03:00'),
+(616, 1, 'updated', 'App\\Models\\Appointment', 108, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:03:00'),
+(617, 1, 'updated', 'App\\Models\\Appointment', 107, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-23T11:35:26.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-23 18:03:03\\\",\\\"updated_at\\\":\\\"2026-06-23 18:03:03\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:03:03'),
+(618, 1, 'updated', 'App\\Models\\Appointment', 107, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null,\\\"updated_at\\\":\\\"2026-06-23T15:03:03.000000Z\\\"}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\",\\\"updated_at\\\":\\\"2026-06-23 18:03:04\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:03:04'),
+(619, 1, 'updated', 'App\\Models\\Appointment', 106, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-23T11:35:24.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-23 18:03:07\\\",\\\"updated_at\\\":\\\"2026-06-23 18:03:07\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:03:07'),
+(620, 1, 'updated', 'App\\Models\\Appointment', 106, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:03:07'),
+(621, 1, 'updated', 'App\\Models\\Appointment', 109, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-23T11:36:56.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-06-23 18:03:11\\\",\\\"updated_at\\\":\\\"2026-06-23 18:03:11\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:03:11'),
+(622, 1, 'updated', 'App\\Models\\Appointment', 109, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:03:11'),
+(623, NULL, 'updated', 'App\\Models\\User', 10, '\"{\\\"last_login_at\\\":\\\"2026-06-23T11:53:06.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-23T11:53:06.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-23 18:03:51\\\",\\\"updated_at\\\":\\\"2026-06-23 18:03:51\\\"}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 15:03:51'),
+(624, 10, 'created', 'App\\Models\\Appointment', 111, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":5,\\\"start_at\\\":\\\"2026-06-24 09:30:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"e682c716-cfc1-4fae-bdae-41c06b6fe60d\\\",\\\"appointment_code\\\":\\\"BV-YTQ3PW97\\\",\\\"end_at\\\":\\\"2026-06-24 10:00:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-23 18:04:45\\\",\\\"created_at\\\":\\\"2026-06-23 18:04:45\\\",\\\"id\\\":111}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 15:04:45'),
+(625, 10, 'updated', 'App\\Models\\Appointment', 111, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 15:04:45'),
+(626, 1, 'updated', 'App\\Models\\Appointment', 111, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-06-23T15:04:45.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-06-23 18:04:52\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-06-23 15:04:52'),
+(627, NULL, 'updated', 'App\\Models\\User', 10, '\"{\\\"last_login_at\\\":\\\"2026-06-23T15:03:51.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-23T15:03:51.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-06-23 18:07:31\\\",\\\"updated_at\\\":\\\"2026-06-23 18:07:31\\\"}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 15:07:31'),
+(628, 10, 'created', 'App\\Models\\Appointment', 112, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":3,\\\"start_at\\\":\\\"2026-06-23 19:30:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"59762a1d-8442-4d6f-ae4f-b9eefee4b5cf\\\",\\\"appointment_code\\\":\\\"BV-ANBP4WE0\\\",\\\"end_at\\\":\\\"2026-06-23 20:00:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-06-23 18:08:36\\\",\\\"created_at\\\":\\\"2026-06-23 18:08:36\\\",\\\"id\\\":112}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 15:08:36'),
+(629, 10, 'updated', 'App\\Models\\Appointment', 112, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 15:08:36'),
+(630, 10, 'updated', 'App\\Models\\Appointment', 112, '\"{\\\"status\\\":\\\"pending\\\",\\\"cancelled_by\\\":null,\\\"cancelled_at\\\":null,\\\"updated_at\\\":\\\"2026-06-23T15:08:36.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"cancelled\\\",\\\"cancelled_by\\\":10,\\\"cancelled_at\\\":\\\"2026-06-23 18:08:43\\\",\\\"updated_at\\\":\\\"2026-06-23 18:08:43\\\"}\"', '172.20.10.1', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-06-23 15:08:43'),
+(631, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-06-23T15:02:47.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-23T15:02:47.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-07-02 19:19:09\\\",\\\"updated_at\\\":\\\"2026-07-02 19:19:09\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-02 16:19:09'),
+(632, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-07-02T16:19:09.000000Z\\\",\\\"updated_at\\\":\\\"2026-07-02T16:19:09.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-07-03 13:52:01\\\",\\\"updated_at\\\":\\\"2026-07-03 13:52:01\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-03 10:52:01'),
+(633, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"remember_token\\\":null}\"', '\"{\\\"remember_token\\\":\\\"HSb4jcP5XgoaTD8wm77ohMtnL48Zr79NBDwYSCfUQyJCThYvYhLQRZCY32gJ\\\"}\"', '127.0.0.1', 'Symfony', '2026-07-03 10:57:08'),
+(634, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"remember_token\\\":\\\"HSb4jcP5XgoaTD8wm77ohMtnL48Zr79NBDwYSCfUQyJCThYvYhLQRZCY32gJ\\\"}\"', '\"{\\\"remember_token\\\":\\\"W8S4ze6ca4L4pQbGBwCXgZO7O3NtqCrKOpzswPJVjy6tyhHElSTzmHYbk51U\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-03 11:01:03'),
+(635, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-07-03T10:52:01.000000Z\\\",\\\"updated_at\\\":\\\"2026-07-03T11:01:03.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-07-03 14:01:10\\\",\\\"updated_at\\\":\\\"2026-07-03 14:01:10\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-03 11:01:10'),
+(636, 1, 'updated', 'App\\Models\\User', 20, '\"{\\\"gender\\\":null,\\\"updated_at\\\":\\\"2026-06-21T20:28:26.000000Z\\\"}\"', '\"{\\\"gender\\\":\\\"female\\\",\\\"updated_at\\\":\\\"2026-07-03 14:04:58\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-03 11:04:58'),
+(637, 1, 'updated', 'App\\Models\\Appointment', 111, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-06-23T15:04:52.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-07-03 14:05:59\\\",\\\"updated_at\\\":\\\"2026-07-03 14:05:59\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-03 11:05:59'),
+(638, 1, 'updated', 'App\\Models\\Appointment', 111, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-03 11:05:59'),
+(639, NULL, 'updated', 'App\\Models\\User', 10, '\"{\\\"last_login_at\\\":\\\"2026-06-23T15:07:31.000000Z\\\",\\\"updated_at\\\":\\\"2026-06-23T15:07:31.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-07-03 15:28:57\\\",\\\"updated_at\\\":\\\"2026-07-03 15:28:57\\\"}\"', '192.168.0.4', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-07-03 12:28:58'),
+(640, 10, 'created', 'App\\Models\\Appointment', 113, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":1,\\\"start_at\\\":\\\"2026-07-06 16:00:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"515ef559-0fc3-4c31-9fe3-69a8b8333bee\\\",\\\"appointment_code\\\":\\\"BV-CEK2QOZA\\\",\\\"end_at\\\":\\\"2026-07-06 16:30:00\\\",\\\"total_duration\\\":30,\\\"updated_at\\\":\\\"2026-07-05 15:49:59\\\",\\\"created_at\\\":\\\"2026-07-05 15:49:59\\\",\\\"id\\\":113}\"', '192.168.0.14', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-07-05 12:49:59'),
+(641, 10, 'updated', 'App\\Models\\Appointment', 113, NULL, '\"{\\\"subtotal\\\":450,\\\"total_price\\\":450}\"', '192.168.0.14', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-07-05 12:49:59'),
+(642, 1, 'updated', 'App\\Models\\Appointment', 113, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-07-05T12:49:59.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-07-05 16:40:55\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-05 13:40:55'),
+(643, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-07-03T11:01:10.000000Z\\\",\\\"updated_at\\\":\\\"2026-07-03T11:01:10.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-07-07 13:38:28\\\",\\\"updated_at\\\":\\\"2026-07-07 13:38:28\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 10:38:28'),
+(644, 1, 'updated', 'App\\Models\\Appointment', 113, '\"{\\\"status\\\":\\\"confirmed\\\",\\\"completed_at\\\":null,\\\"updated_at\\\":\\\"2026-07-05T13:40:55.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"completed\\\",\\\"completed_at\\\":\\\"2026-07-07 13:38:50\\\",\\\"updated_at\\\":\\\"2026-07-07 13:38:50\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 10:38:50'),
+(645, 1, 'updated', 'App\\Models\\Appointment', 113, '\"{\\\"payment_status\\\":\\\"unpaid\\\",\\\"payment_method\\\":null}\"', '\"{\\\"payment_status\\\":\\\"paid\\\",\\\"payment_method\\\":\\\"cash\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 10:38:50'),
+(646, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-07-07T10:38:28.000000Z\\\",\\\"updated_at\\\":\\\"2026-07-07T10:38:28.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-07-07 16:42:10\\\",\\\"updated_at\\\":\\\"2026-07-07 16:42:10\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 13:42:10'),
+(647, 10, 'created', 'App\\Models\\Appointment', 114, NULL, '\"{\\\"branch_id\\\":1,\\\"customer_id\\\":10,\\\"employee_id\\\":1,\\\"start_at\\\":\\\"2026-07-07 18:00:00\\\",\\\"source\\\":\\\"mobile_app\\\",\\\"discount_amount\\\":0,\\\"tax_amount\\\":0,\\\"uuid\\\":\\\"34e88d50-d52b-4aa0-802e-e80f7d412f1d\\\",\\\"appointment_code\\\":\\\"BV-RUDGK3AU\\\",\\\"end_at\\\":\\\"2026-07-07 19:10:00\\\",\\\"total_duration\\\":70,\\\"updated_at\\\":\\\"2026-07-07 17:20:16\\\",\\\"created_at\\\":\\\"2026-07-07 17:20:16\\\",\\\"id\\\":114}\"', '192.168.0.4', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-07-07 14:20:16'),
+(648, 10, 'updated', 'App\\Models\\Appointment', 114, NULL, '\"{\\\"subtotal\\\":850,\\\"total_price\\\":850}\"', '192.168.0.4', 'b&vapp/1 CFNetwork/3860.700.1 Darwin/25.6.0', '2026-07-07 14:20:16'),
+(649, 1, 'updated', 'App\\Models\\Appointment', 114, '\"{\\\"status\\\":\\\"pending\\\",\\\"updated_at\\\":\\\"2026-07-07T14:20:16.000000Z\\\"}\"', '\"{\\\"status\\\":\\\"confirmed\\\",\\\"updated_at\\\":\\\"2026-07-07 17:28:47\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 14:28:47'),
+(650, 1, 'updated', 'App\\Models\\Campaign', 1, '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-06-23T11:39:20.000000Z\\\"}\"', '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-07-07 17:45:30\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 14:45:30'),
+(651, 1, 'updated', 'App\\Models\\Campaign', 2, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-05-23T11:56:43.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-07-07 17:45:45\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 14:45:45'),
+(652, 1, 'updated', 'App\\Models\\Campaign', 2, '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-07-07T14:45:45.000000Z\\\"}\"', '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-07-07 17:45:47\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 14:45:47'),
+(653, 1, 'created', 'App\\Models\\Campaign', 3, NULL, '\"{\\\"title\\\":\\\"Uygulamaya \\\\u00d6zel \\\\u0130ndirim\\\",\\\"description\\\":\\\"Uygulamay\\\\u0131 indirmeye \\\\u00f6zel %25 indirim\\\",\\\"discount_type\\\":\\\"percentage\\\",\\\"discount_value\\\":\\\"25\\\",\\\"start_date\\\":\\\"2026-07-07 00:00:00\\\",\\\"end_date\\\":\\\"2026-08-09 00:00:00\\\",\\\"branch_id\\\":1,\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-07-07 17:47:08\\\",\\\"created_at\\\":\\\"2026-07-07 17:47:08\\\",\\\"id\\\":3}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 14:47:08'),
+(654, 1, 'updated', 'App\\Models\\User', 1, '\"{\\\"last_login_at\\\":\\\"2026-07-07T13:42:10.000000Z\\\",\\\"updated_at\\\":\\\"2026-07-07T13:42:10.000000Z\\\"}\"', '\"{\\\"last_login_at\\\":\\\"2026-07-07 22:04:52\\\",\\\"updated_at\\\":\\\"2026-07-07 22:04:52\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 19:04:52'),
+(655, 1, 'updated', 'App\\Models\\Campaign', 3, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-07-07T14:47:08.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-07-07 22:04:58\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 19:04:58'),
+(656, 1, 'updated', 'App\\Models\\Campaign', 1, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-07-07T14:45:30.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-07-07 22:04:59\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 19:04:59'),
+(657, 1, 'updated', 'App\\Models\\Campaign', 2, '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-07-07T14:45:47.000000Z\\\"}\"', '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-07-07 22:05:00\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 19:05:00'),
+(658, 1, 'updated', 'App\\Models\\Campaign', 3, '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-07-07T19:04:58.000000Z\\\"}\"', '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-07-07 22:08:12\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 19:08:12'),
+(659, 1, 'updated', 'App\\Models\\Campaign', 2, '\"{\\\"is_active\\\":false,\\\"updated_at\\\":\\\"2026-07-07T19:05:00.000000Z\\\"}\"', '\"{\\\"is_active\\\":true,\\\"updated_at\\\":\\\"2026-07-07 22:09:07\\\"}\"', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 19:09:07'),
+(660, 1, 'deleted', 'App\\Models\\Campaign', 2, '\"{\\\"id\\\":2,\\\"branch_id\\\":1,\\\"title\\\":\\\"VIP \\\\u0130ndirimi\\\",\\\"description\\\":\\\"VIP paketlerde \\\\u00f6zel indirim.\\\",\\\"discount_type\\\":\\\"fixed\\\",\\\"discount_value\\\":\\\"200.00\\\",\\\"start_date\\\":\\\"2026-04-30T21:00:00.000000Z\\\",\\\"end_date\\\":\\\"2026-06-29T21:00:00.000000Z\\\",\\\"is_active\\\":true,\\\"created_at\\\":\\\"2026-05-14T13:44:51.000000Z\\\",\\\"updated_at\\\":\\\"2026-07-07T19:09:07.000000Z\\\"}\"', NULL, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', '2026-07-07 19:09:15');
 
 -- --------------------------------------------------------
 
@@ -908,10 +1271,19 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('bv-barber-cache-dashboard.barbers.1', 'a:4:{i:0;a:8:{s:2:\"id\";i:2;s:4:\"name\";s:10:\"Emre Demir\";s:5:\"title\";s:13:\"Senior Barber\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:4;s:7:\"revenue\";d:2100;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"35.00\";}i:1;a:8:{s:2:\"id\";i:3;s:4:\"name\";s:10:\"Burak Kaya\";s:5:\"title\";s:10:\"VIP Barber\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:1;s:7:\"revenue\";d:1200;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"20.00\";}i:2;a:8:{s:2:\"id\";i:1;s:4:\"name\";s:13:\"Ahmet Yılmaz\";s:5:\"title\";s:11:\"Salon Owner\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"15.00\";}i:3;a:8:{s:2:\"id\";i:5;s:4:\"name\";s:19:\"Deneme Çalışanı\";s:5:\"title\";s:6:\"Berber\";s:5:\"photo\";N;s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:4:\"0.00\";}}', 1782057808),
-('bv-barber-cache-dashboard.chart.1.all_periods', 'a:3:{s:4:\"year\";a:12:{i:0;a:3:{s:5:\"month\";i:1;s:5:\"label\";s:3:\"Oca\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";i:2;s:5:\"label\";s:4:\"Şub\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";i:3;s:5:\"label\";s:3:\"Mar\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";i:4;s:5:\"label\";s:3:\"Nis\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";i:5;s:5:\"label\";s:3:\"May\";s:7:\"revenue\";d:24050;}i:5;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:3:\"Haz\";s:7:\"revenue\";d:5149;}i:6;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:3:\"Tem\";s:7:\"revenue\";d:0;}i:7;a:3:{s:5:\"month\";i:8;s:5:\"label\";s:4:\"Ağu\";s:7:\"revenue\";d:0;}i:8;a:3:{s:5:\"month\";i:9;s:5:\"label\";s:3:\"Eyl\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";i:10;s:5:\"label\";s:3:\"Eki\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";i:11;s:5:\"label\";s:3:\"Kas\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";i:12;s:5:\"label\";s:3:\"Ara\";s:7:\"revenue\";d:0;}}s:5:\"month\";a:30:{i:0;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"1 Haz\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"2 Haz\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"3 Haz\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"4 Haz\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"5 Haz\";s:7:\"revenue\";d:0;}i:5;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"6 Haz\";s:7:\"revenue\";d:0;}i:6;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"7 Haz\";s:7:\"revenue\";d:0;}i:7;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"8 Haz\";s:7:\"revenue\";d:3249;}i:8;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:5:\"9 Haz\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"10 Haz\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"11 Haz\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"12 Haz\";s:7:\"revenue\";d:0;}i:12;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"13 Haz\";s:7:\"revenue\";d:0;}i:13;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"14 Haz\";s:7:\"revenue\";d:0;}i:14;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"15 Haz\";s:7:\"revenue\";d:0;}i:15;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"16 Haz\";s:7:\"revenue\";d:0;}i:16;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"17 Haz\";s:7:\"revenue\";d:0;}i:17;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"18 Haz\";s:7:\"revenue\";d:0;}i:18;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"19 Haz\";s:7:\"revenue\";d:0;}i:19;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"20 Haz\";s:7:\"revenue\";d:1650;}i:20;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"21 Haz\";s:7:\"revenue\";d:250;}i:21;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"22 Haz\";s:7:\"revenue\";d:0;}i:22;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"23 Haz\";s:7:\"revenue\";d:0;}i:23;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"24 Haz\";s:7:\"revenue\";d:0;}i:24;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"25 Haz\";s:7:\"revenue\";d:0;}i:25;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"26 Haz\";s:7:\"revenue\";d:0;}i:26;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"27 Haz\";s:7:\"revenue\";d:0;}i:27;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"28 Haz\";s:7:\"revenue\";d:0;}i:28;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"29 Haz\";s:7:\"revenue\";d:0;}i:29;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:6:\"30 Haz\";s:7:\"revenue\";d:0;}}s:3:\"day\";a:24:{i:0;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"00:00\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"01:00\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"02:00\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"03:00\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"04:00\";s:7:\"revenue\";d:0;}i:5;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"05:00\";s:7:\"revenue\";d:0;}i:6;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"06:00\";s:7:\"revenue\";d:0;}i:7;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"07:00\";s:7:\"revenue\";d:0;}i:8;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"08:00\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"09:00\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"10:00\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"11:00\";s:7:\"revenue\";d:0;}i:12;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"12:00\";s:7:\"revenue\";d:0;}i:13;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"13:00\";s:7:\"revenue\";d:0;}i:14;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"14:00\";s:7:\"revenue\";d:0;}i:15;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"15:00\";s:7:\"revenue\";d:0;}i:16;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"16:00\";s:7:\"revenue\";d:0;}i:17;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"17:00\";s:7:\"revenue\";d:0;}i:18;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"18:00\";s:7:\"revenue\";d:250;}i:19;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"19:00\";s:7:\"revenue\";d:0;}i:20;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"20:00\";s:7:\"revenue\";d:0;}i:21;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"21:00\";s:7:\"revenue\";d:0;}i:22;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"22:00\";s:7:\"revenue\";d:0;}i:23;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"23:00\";s:7:\"revenue\";d:0;}}}', 1782057808),
-('bv-barber-cache-dashboard.services.1', 'a:2:{i:0;a:4:{s:2:\"id\";i:1;s:4:\"name\";s:18:\"Modern Saç Kesimi\";s:11:\"usage_count\";i:15;s:13:\"total_revenue\";s:8:\"13050.00\";}i:1;a:4:{s:2:\"id\";i:3;s:4:\"name\";s:14:\"VIP Full Paket\";s:11:\"usage_count\";i:6;s:13:\"total_revenue\";s:7:\"7998.00\";}}', 1782057808),
-('bv-barber-cache-dashboard.widgets.1', 'a:4:{s:7:\"revenue\";a:5:{s:5:\"daily\";d:250;s:13:\"daily_expense\";d:0;s:6:\"weekly\";d:1900;s:7:\"monthly\";d:5149;s:6:\"yearly\";d:29199;}s:12:\"appointments\";a:7:{s:11:\"today_total\";i:0;s:15:\"today_completed\";i:0;s:13:\"today_pending\";i:0;s:11:\"month_total\";i:5;s:15:\"month_cancelled\";i:0;s:13:\"month_no_show\";i:0;s:17:\"cancellation_rate\";d:0;}s:9:\"financial\";a:3:{s:6:\"income\";d:5149;s:7:\"expense\";d:0;s:6:\"profit\";d:5149;}s:9:\"customers\";a:5:{s:5:\"total\";i:11;s:14:\"new_this_month\";i:5;s:5:\"loyal\";i:6;s:12:\"avg_spending\";d:660;s:7:\"genders\";a:3:{s:4:\"male\";i:8;s:6:\"female\";i:3;s:5:\"other\";i:0;}}}', 1782057808);
+('bv-barber-cache-15e2b66726ddd76f1a4a19558f031728', 'i:5;', 1783451559),
+('bv-barber-cache-15e2b66726ddd76f1a4a19558f031728:timer', 'i:1783451559;', 1783451559),
+('bv-barber-cache-21c7ea48997eeecf541f9afb4a8bfc81', 'i:2;', 1783451551),
+('bv-barber-cache-21c7ea48997eeecf541f9afb4a8bfc81:timer', 'i:1783451551;', 1783451551),
+('bv-barber-cache-67811f05819e3284235c187a062c8f60', 'i:1;', 1783258665),
+('bv-barber-cache-67811f05819e3284235c187a062c8f60:timer', 'i:1783258665;', 1783258665),
+('bv-barber-cache-a75f3f172bfb296f2e10cbfc6dfc1883', 'i:1;', 1783433555),
+('bv-barber-cache-a75f3f172bfb296f2e10cbfc6dfc1883:timer', 'i:1783433555;', 1783433555),
+('bv-barber-cache-dashboard.appointments.1.year', 'a:5:{s:5:\"total\";i:92;s:9:\"cancelled\";i:30;s:7:\"no_show\";i:3;s:17:\"cancellation_rate\";d:32.6;s:12:\"avg_spending\";d:507.67;}', 1783076787),
+('bv-barber-cache-dashboard.barbers.1', 'a:4:{i:0;a:8:{s:2:\"id\";i:1;s:4:\"name\";s:9:\"Ahmet Ata\";s:5:\"title\";s:11:\"Salon Owner\";s:5:\"photo\";s:87:\"http://0.0.0.0:8000/storage/profile_photos/eOiEG25nulwlDXgwPV3ofULK32cQaaOzcpped84E.jpg\";s:22:\"completed_appointments\";i:1;s:7:\"revenue\";d:450;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"15.00\";}i:1;a:8:{s:2:\"id\";i:2;s:4:\"name\";s:10:\"Emre Demir\";s:5:\"title\";s:13:\"Senior Barber\";s:5:\"photo\";s:87:\"http://0.0.0.0:8000/storage/profile_photos/URdAYCss4ATnVPPilloFvixLOdquPrRrYuuERC6f.jpg\";s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"35.00\";}i:2;a:8:{s:2:\"id\";i:3;s:4:\"name\";s:10:\"Burak Kaya\";s:5:\"title\";s:10:\"VIP Barber\";s:5:\"photo\";s:87:\"http://0.0.0.0:8000/storage/profile_photos/MJSgRyBYjQCrYhIzI4ymmshNV8epxfEc5SV14G86.jpg\";s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:5:\"20.00\";}i:3;a:8:{s:2:\"id\";i:5;s:4:\"name\";s:9:\"Dene Veri\";s:5:\"title\";s:6:\"Berber\";s:5:\"photo\";s:87:\"http://0.0.0.0:8000/storage/profile_photos/DkOMbbumMLP1sOr1SHAofdffHEIiReQeO3ZNbOza.jpg\";s:22:\"completed_appointments\";i:0;s:7:\"revenue\";d:0;s:6:\"rating\";d:0;s:15:\"commission_rate\";s:4:\"0.00\";}}', 1783435202),
+('bv-barber-cache-dashboard.chart.1.all_periods', 'a:3:{s:4:\"year\";a:12:{i:0;a:3:{s:5:\"month\";i:1;s:5:\"label\";s:3:\"Oca\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";i:2;s:5:\"label\";s:4:\"Şub\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";i:3;s:5:\"label\";s:3:\"Mar\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";i:4;s:5:\"label\";s:3:\"Nis\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";i:5;s:5:\"label\";s:3:\"May\";s:7:\"revenue\";d:24050;}i:5;a:3:{s:5:\"month\";i:6;s:5:\"label\";s:3:\"Haz\";s:7:\"revenue\";d:10149;}i:6;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:3:\"Tem\";s:7:\"revenue\";d:900;}i:7;a:3:{s:5:\"month\";i:8;s:5:\"label\";s:4:\"Ağu\";s:7:\"revenue\";d:0;}i:8;a:3:{s:5:\"month\";i:9;s:5:\"label\";s:3:\"Eyl\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";i:10;s:5:\"label\";s:3:\"Eki\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";i:11;s:5:\"label\";s:3:\"Kas\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";i:12;s:5:\"label\";s:3:\"Ara\";s:7:\"revenue\";d:0;}}s:5:\"month\";a:31:{i:0;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"1 Tem\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"2 Tem\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"3 Tem\";s:7:\"revenue\";d:450;}i:3;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"4 Tem\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"5 Tem\";s:7:\"revenue\";d:0;}i:5;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"6 Tem\";s:7:\"revenue\";d:0;}i:6;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"7 Tem\";s:7:\"revenue\";d:450;}i:7;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"8 Tem\";s:7:\"revenue\";d:0;}i:8;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:5:\"9 Tem\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"10 Tem\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"11 Tem\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"12 Tem\";s:7:\"revenue\";d:0;}i:12;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"13 Tem\";s:7:\"revenue\";d:0;}i:13;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"14 Tem\";s:7:\"revenue\";d:0;}i:14;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"15 Tem\";s:7:\"revenue\";d:0;}i:15;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"16 Tem\";s:7:\"revenue\";d:0;}i:16;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"17 Tem\";s:7:\"revenue\";d:0;}i:17;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"18 Tem\";s:7:\"revenue\";d:0;}i:18;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"19 Tem\";s:7:\"revenue\";d:0;}i:19;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"20 Tem\";s:7:\"revenue\";d:0;}i:20;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"21 Tem\";s:7:\"revenue\";d:0;}i:21;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"22 Tem\";s:7:\"revenue\";d:0;}i:22;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"23 Tem\";s:7:\"revenue\";d:0;}i:23;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"24 Tem\";s:7:\"revenue\";d:0;}i:24;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"25 Tem\";s:7:\"revenue\";d:0;}i:25;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"26 Tem\";s:7:\"revenue\";d:0;}i:26;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"27 Tem\";s:7:\"revenue\";d:0;}i:27;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"28 Tem\";s:7:\"revenue\";d:0;}i:28;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"29 Tem\";s:7:\"revenue\";d:0;}i:29;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"30 Tem\";s:7:\"revenue\";d:0;}i:30;a:3:{s:5:\"month\";i:7;s:5:\"label\";s:6:\"31 Tem\";s:7:\"revenue\";d:0;}}s:3:\"day\";a:24:{i:0;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"00:00\";s:7:\"revenue\";d:0;}i:1;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"01:00\";s:7:\"revenue\";d:0;}i:2;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"02:00\";s:7:\"revenue\";d:0;}i:3;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"03:00\";s:7:\"revenue\";d:0;}i:4;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"04:00\";s:7:\"revenue\";d:0;}i:5;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"05:00\";s:7:\"revenue\";d:0;}i:6;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"06:00\";s:7:\"revenue\";d:0;}i:7;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"07:00\";s:7:\"revenue\";d:0;}i:8;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"08:00\";s:7:\"revenue\";d:0;}i:9;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"09:00\";s:7:\"revenue\";d:0;}i:10;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"10:00\";s:7:\"revenue\";d:0;}i:11;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"11:00\";s:7:\"revenue\";d:0;}i:12;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"12:00\";s:7:\"revenue\";d:0;}i:13;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"13:00\";s:7:\"revenue\";d:450;}i:14;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"14:00\";s:7:\"revenue\";d:0;}i:15;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"15:00\";s:7:\"revenue\";d:0;}i:16;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"16:00\";s:7:\"revenue\";d:0;}i:17;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"17:00\";s:7:\"revenue\";d:0;}i:18;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"18:00\";s:7:\"revenue\";d:0;}i:19;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"19:00\";s:7:\"revenue\";d:0;}i:20;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"20:00\";s:7:\"revenue\";d:0;}i:21;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"21:00\";s:7:\"revenue\";d:0;}i:22;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"22:00\";s:7:\"revenue\";d:0;}i:23;a:3:{s:5:\"month\";N;s:5:\"label\";s:5:\"23:00\";s:7:\"revenue\";d:0;}}}', 1783435202),
+('bv-barber-cache-dashboard.services.1', 'a:2:{i:0;a:4:{s:2:\"id\";i:1;s:4:\"name\";s:18:\"Modern Saç Kesimi\";s:11:\"usage_count\";i:23;s:13:\"total_revenue\";s:8:\"18900.00\";}i:1;a:4:{s:2:\"id\";i:3;s:4:\"name\";s:14:\"VIP Full Paket\";s:11:\"usage_count\";i:6;s:13:\"total_revenue\";s:7:\"7998.00\";}}', 1783435202),
+('bv-barber-cache-dashboard.widgets.1', 'a:4:{s:7:\"revenue\";a:5:{s:5:\"daily\";d:450;s:13:\"daily_expense\";d:0;s:6:\"weekly\";d:450;s:7:\"monthly\";d:900;s:6:\"yearly\";d:35099;}s:12:\"appointments\";a:7:{s:11:\"today_total\";i:1;s:15:\"today_completed\";i:0;s:13:\"today_pending\";i:1;s:11:\"month_total\";i:2;s:15:\"month_cancelled\";i:0;s:13:\"month_no_show\";i:0;s:17:\"cancellation_rate\";d:0;}s:9:\"financial\";a:3:{s:6:\"income\";d:900;s:7:\"expense\";d:0;s:6:\"profit\";d:900;}s:9:\"customers\";a:5:{s:5:\"total\";i:12;s:14:\"new_this_month\";i:0;s:5:\"loyal\";i:6;s:12:\"avg_spending\";d:450;s:7:\"genders\";a:3:{s:4:\"male\";i:8;s:6:\"female\";i:4;s:5:\"other\";i:0;}}}', 1783435202);
 
 -- --------------------------------------------------------
 
@@ -950,8 +1322,8 @@ CREATE TABLE `campaigns` (
 --
 
 INSERT INTO `campaigns` (`id`, `branch_id`, `title`, `description`, `discount_type`, `discount_value`, `start_date`, `end_date`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Yaz Kampanyası', 'Tüm saç kesimlerinde indirim.', 'percentage', 10.00, '2026-06-01', '2026-08-31', 1, '2026-05-14 13:44:51', '2026-05-23 15:20:47'),
-(2, 1, 'VIP İndirimi', 'VIP paketlerde özel indirim.', 'fixed', 200.00, '2026-05-01', '2026-06-30', 1, '2026-05-14 13:44:51', '2026-05-23 11:56:43');
+(1, 1, 'Yaz Kampanyası', 'Tüm saç kesimlerinde indirim.', 'percentage', 10.00, '2026-06-01', '2026-08-31', 0, '2026-05-14 13:44:51', '2026-07-07 19:04:59'),
+(3, 1, 'Uygulamaya Özel İndirim', 'Uygulamayı indirmeye özel %25 indirim', 'percentage', 25.00, '2026-07-07', '2026-08-09', 1, '2026-07-07 14:47:08', '2026-07-07 19:08:12');
 
 -- --------------------------------------------------------
 
@@ -975,8 +1347,7 @@ CREATE TABLE `coupons` (
 --
 
 INSERT INTO `coupons` (`id`, `campaign_id`, `code`, `usage_limit`, `used_count`, `expires_at`, `created_at`, `updated_at`) VALUES
-(1, 1, 'SUMMER10', 100, 12, '2026-08-31 23:59:59', '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
-(2, 2, 'VIP200', 50, 4, '2026-06-30 23:59:59', '2026-05-14 13:44:51', '2026-05-14 13:44:51');
+(1, 1, 'SUMMER10', 100, 12, '2026-08-31 23:59:59', '2026-05-14 13:44:51', '2026-05-14 13:44:51');
 
 -- --------------------------------------------------------
 
@@ -1174,7 +1545,21 @@ INSERT INTO `employee_services` (`id`, `employee_id`, `service_id`, `created_at`
 (8, 3, 1, '2026-05-14 13:44:51'),
 (9, 3, 2, '2026-05-14 13:44:51'),
 (10, 3, 3, '2026-05-14 13:44:51'),
-(11, 3, 4, '2026-05-14 13:44:51');
+(11, 3, 4, '2026-05-14 13:44:51'),
+(12, 5, 1, '2026-06-22 14:50:42'),
+(13, 5, 2, '2026-06-22 14:50:42'),
+(14, 2, 3, '2026-06-22 14:50:42'),
+(15, 5, 3, '2026-06-22 14:50:42'),
+(16, 2, 4, '2026-06-22 14:50:42'),
+(17, 4, 4, '2026-06-22 14:50:42'),
+(18, 5, 4, '2026-06-22 14:50:42'),
+(19, 1, 5, '2026-06-22 14:50:42'),
+(20, 3, 5, '2026-06-22 14:50:42'),
+(21, 5, 5, '2026-06-22 14:50:42'),
+(22, 1, 6, '2026-06-22 14:50:42'),
+(23, 2, 6, '2026-06-22 14:50:42'),
+(24, 3, 6, '2026-06-22 14:50:42'),
+(25, 5, 6, '2026-06-22 14:50:42');
 
 -- --------------------------------------------------------
 
@@ -1306,12 +1691,14 @@ CREATE TABLE `loyalty_accounts` (
 
 INSERT INTO `loyalty_accounts` (`id`, `customer_id`, `points_balance`, `total_earned`, `total_spent`, `created_at`, `updated_at`) VALUES
 (1, 6, 120, 300, 180, '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
-(2, 7, 500, 700, 200, '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
+(2, 7, 950, 1150, 200, '2026-05-14 13:44:51', '2026-06-23 15:03:11'),
 (3, 8, 50, 50, 0, '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
 (4, 17, 450, 450, 0, '2026-06-08 17:06:04', '2026-06-08 17:06:04'),
-(5, 13, 600, 600, 0, '2026-06-08 17:06:09', '2026-06-08 17:06:09'),
+(5, 13, 1600, 1600, 0, '2026-06-08 17:06:09', '2026-06-23 15:03:07'),
 (6, 16, 1050, 1050, 0, '2026-06-08 17:06:15', '2026-06-20 12:22:50'),
-(7, 18, 1200, 1200, 0, '2026-06-20 12:22:53', '2026-06-20 12:22:53');
+(7, 18, 1650, 1650, 0, '2026-06-20 12:22:53', '2026-06-23 15:03:00'),
+(8, 10, 2250, 2250, 0, '2026-06-22 10:14:08', '2026-07-07 10:38:50'),
+(9, 9, 450, 450, 0, '2026-06-23 15:03:03', '2026-06-23 15:03:03');
 
 -- --------------------------------------------------------
 
@@ -1340,7 +1727,16 @@ INSERT INTO `loyalty_transactions` (`id`, `loyalty_account_id`, `type`, `points`
 (5, 5, 'earn', 600, 'Randevu Tamamlandı (#APT-SSTPC4)', '2026-06-08 17:06:09'),
 (6, 6, 'earn', 600, 'Randevu Tamamlandı (#APT-O1DFKQ)', '2026-06-08 17:06:15'),
 (7, 6, 'earn', 450, 'Randevu Tamamlandı (#APT-XV5VVP)', '2026-06-20 12:22:50'),
-(8, 7, 'earn', 1200, 'Randevu Tamamlandı (#APT-GVL3JZ)', '2026-06-20 12:22:53');
+(8, 7, 'earn', 1200, 'Randevu Tamamlandı (#APT-GVL3JZ)', '2026-06-20 12:22:53'),
+(9, 8, 'earn', 450, 'Randevu Tamamlandı (#BV-FZN9H4KM)', '2026-06-22 10:14:08'),
+(10, 8, 'earn', 450, 'Randevu Tamamlandı (#BV-GGPQV0M9)', '2026-06-22 15:30:16'),
+(11, 8, 'earn', 450, 'Randevu Tamamlandı (#BV-SUAEU3FB)', '2026-06-23 11:33:18'),
+(12, 7, 'earn', 450, 'Randevu Tamamlandı (#BV-XNUUKKQX)', '2026-06-23 15:03:00'),
+(13, 9, 'earn', 450, 'Randevu Tamamlandı (#BV-C4PEVWQX)', '2026-06-23 15:03:03'),
+(14, 5, 'earn', 1000, 'Randevu Tamamlandı (#BV-J5IDOMSD)', '2026-06-23 15:03:07'),
+(15, 2, 'earn', 450, 'Randevu Tamamlandı (#BV-VHPNTEUC)', '2026-06-23 15:03:11'),
+(16, 8, 'earn', 450, 'Randevu Tamamlandı (#BV-YTQ3PW97)', '2026-07-03 11:05:59'),
+(17, 8, 'earn', 450, 'Randevu Tamamlandı (#BV-CEK2QOZA)', '2026-07-07 10:38:50');
 
 -- --------------------------------------------------------
 
@@ -1394,7 +1790,17 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (33, '2026_06_08_000028_create_settings_table', 1),
 (34, '2026_06_08_000029_fix_debts_foreign_keys', 1),
 (35, '2026_06_08_000030_create_debts_table', 1),
-(36, '2026_06_08_000031_add_missing_indexes', 1);
+(36, '2026_06_08_000031_add_missing_indexes', 1),
+(37, '2026_06_21_201854_add_extra_fields_to_product_sales_table', 3),
+(38, '2026_06_21_201854_add_stock_fields_to_products_table', 3),
+(39, '2026_06_21_201855_a_create_suppliers_table', 4),
+(40, '2026_06_21_201855_b_create_purchase_orders_table', 4),
+(41, '2026_06_21_201855_c_create_purchase_order_items_table', 5),
+(42, '2026_06_21_201855_d_create_stock_counts_table', 5),
+(43, '2026_06_21_201855_e_create_stock_count_items_table', 5),
+(44, '2026_06_21_201855_f_create_service_products_table', 5),
+(45, '2026_06_21_201855_g_create_stock_movements_table', 5),
+(46, '2026_06_23_000000_add_type_to_services_table', 6);
 
 -- --------------------------------------------------------
 
@@ -1420,7 +1826,25 @@ CREATE TABLE `notifications` (
 
 INSERT INTO `notifications` (`id`, `user_id`, `title`, `body`, `type`, `data`, `is_read`, `sent_at`, `created_at`) VALUES
 (1, 6, 'Randevunuz Onaylandı', '15 Mayıs tarihli randevunuz onaylandı.', 'appointment', '{\"appointment_id\": 1}', 1, '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
-(2, 7, 'Kampanya Başladı', 'Yeni yaz kampanyasını kaçırmayın.', 'campaign', '{\"campaign_id\": 1}', 1, '2026-05-14 13:44:51', '2026-05-14 13:44:51');
+(2, 7, 'Kampanya Başladı', 'Yeni yaz kampanyasını kaçırmayın.', 'campaign', '{\"campaign_id\": 1}', 1, '2026-05-14 13:44:51', '2026-05-14 13:44:51'),
+(70, 1, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(71, 2, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(72, 3, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(73, 4, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(74, 5, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(75, 6, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(76, 7, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(77, 8, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(78, 9, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(79, 10, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(80, 11, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(81, 12, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(82, 13, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(83, 14, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(84, 15, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(85, 16, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(86, 18, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47'),
+(87, 20, 'Deneme', 'Deneme', 'general', NULL, 0, '2026-07-07 13:43:47', '2026-07-07 13:43:47');
 
 -- --------------------------------------------------------
 
@@ -1497,7 +1921,16 @@ INSERT INTO `payments` (`id`, `appointment_id`, `amount`, `payment_method`, `tra
 (43, 95, 600.00, 'cash', NULL, '2026-06-08 20:06:09', '2026-06-08 17:06:09'),
 (44, 96, 600.00, 'cash', NULL, '2026-06-08 20:06:15', '2026-06-08 17:06:15'),
 (45, 99, 450.00, 'cash', NULL, '2026-06-20 15:22:50', '2026-06-20 12:22:50'),
-(46, 98, 1200.00, 'cash', NULL, '2026-06-20 15:22:53', '2026-06-20 12:22:53');
+(46, 98, 1200.00, 'cash', NULL, '2026-06-20 15:22:53', '2026-06-20 12:22:53'),
+(47, 101, 450.00, 'cash', NULL, '2026-06-22 13:14:08', '2026-06-22 10:14:08'),
+(48, 102, 450.00, 'cash', NULL, '2026-06-22 18:30:16', '2026-06-22 15:30:16'),
+(49, 104, 450.00, 'cash', NULL, '2026-06-23 14:33:18', '2026-06-23 11:33:18'),
+(50, 108, 450.00, 'cash', NULL, '2026-06-23 18:03:00', '2026-06-23 15:03:00'),
+(51, 107, 450.00, 'cash', NULL, '2026-06-23 18:03:03', '2026-06-23 15:03:04'),
+(52, 106, 1000.00, 'cash', NULL, '2026-06-23 18:03:07', '2026-06-23 15:03:07'),
+(53, 109, 450.00, 'cash', NULL, '2026-06-23 18:03:11', '2026-06-23 15:03:11'),
+(54, 111, 450.00, 'cash', NULL, '2026-07-03 14:05:59', '2026-07-03 11:05:59'),
+(55, 113, 450.00, 'cash', NULL, '2026-07-07 13:38:50', '2026-07-07 10:38:50');
 
 -- --------------------------------------------------------
 
@@ -1532,6 +1965,21 @@ CREATE TABLE `personal_access_tokens` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Tablo döküm verisi `personal_access_tokens`
+--
+
+INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
+(1, 'App\\Models\\User', 19, 'api-token', '9657b5cfa5422373c93dce61b682a8d41e3e6e38c65d0bc5c285c6cba5dc64d0', '[\"*\"]', NULL, NULL, '2026-06-21 20:14:58', '2026-06-21 20:14:58'),
+(2, 'App\\Models\\User', 20, 'api-token', 'b029cdb601bb93d98f2da56849a6e5ea3fb1a76de323d1b3f6968f5fdc99193b', '[\"*\"]', '2026-06-21 20:31:02', NULL, '2026-06-21 20:28:11', '2026-06-21 20:31:02'),
+(3, 'App\\Models\\User', 10, 'api-token', 'c33a1841f3c3c7b82f06e6ad0383a212c7ac22e2bd911272000deec3498085a0', '[\"*\"]', '2026-06-23 11:52:05', NULL, '2026-06-21 20:31:16', '2026-06-23 11:52:05'),
+(4, 'App\\Models\\User', 10, 'api-token', 'a105befa3e878ea954d06d306f7612cecaca4267ecef6eb7cc455c8cf9b463b0', '[\"*\"]', '2026-06-21 21:05:08', NULL, '2026-06-21 20:57:01', '2026-06-21 21:05:08'),
+(5, 'App\\Models\\User', 10, 'api-token', '8a7248b56982e56126aa80f0ff3f18bbcf0c27359797958160fb07b5571d1465', '[\"*\"]', '2026-06-23 11:52:32', NULL, '2026-06-23 11:52:31', '2026-06-23 11:52:32'),
+(6, 'App\\Models\\User', 10, 'api-token', 'b90a326d3bbcffcc21984bcce5781f3ec494b61c82fad78163b7dc29733979ad', '[\"*\"]', '2026-06-23 11:54:41', NULL, '2026-06-23 11:53:06', '2026-06-23 11:54:41'),
+(7, 'App\\Models\\User', 10, 'api-token', '582044936bf67e91fe4eb1f1680ef93a3c7558803f498dfa2c0a8a58aa514f37', '[\"*\"]', '2026-06-23 15:05:14', NULL, '2026-06-23 15:03:51', '2026-06-23 15:05:14'),
+(8, 'App\\Models\\User', 10, 'api-token', 'd7b25da1c34a91cd629e62fd1e3480de84ef29f596c70d5834e2a0436c3b143d', '[\"*\"]', '2026-06-23 15:08:46', NULL, '2026-06-23 15:07:31', '2026-06-23 15:08:46'),
+(9, 'App\\Models\\User', 10, 'api-token', 'c2ec30bd8685c4bfefd9b29f9d499ba352a282ec9e4f076ea7da592db98b9c2a', '[\"*\"]', '2026-07-07 19:11:40', NULL, '2026-07-03 12:29:00', '2026-07-07 19:11:40');
+
 -- --------------------------------------------------------
 
 --
@@ -1548,7 +1996,12 @@ CREATE TABLE `products` (
   `purchase_price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `sell_price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `stock_quantity` int(11) NOT NULL DEFAULT 0,
+  `critical_stock` int(11) DEFAULT NULL,
+  `average_cost_price` decimal(10,2) DEFAULT NULL,
+  `last_purchase_price` decimal(10,2) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -1558,9 +2011,10 @@ CREATE TABLE `products` (
 -- Tablo döküm verisi `products`
 --
 
-INSERT INTO `products` (`id`, `branch_id`, `name`, `sku`, `barcode`, `description`, `purchase_price`, `sell_price`, `stock_quantity`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 'Tarak', NULL, NULL, 'Ergonomik tarak.', 50.00, 300.00, 8, 1, '2026-06-08 16:48:11', '2026-06-08 16:48:25', NULL),
-(2, 1, 'Saç Spreyii', NULL, '38219141294\"', 'Saçınızı sabitlemek için en iyisi.', 125.00, 250.00, 2, 1, '2026-06-21 15:08:16', '2026-06-21 15:09:30', NULL);
+INSERT INTO `products` (`id`, `branch_id`, `name`, `sku`, `barcode`, `description`, `purchase_price`, `sell_price`, `stock_quantity`, `critical_stock`, `average_cost_price`, `last_purchase_price`, `is_active`, `created_by`, `updated_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 1, 'Tarak', NULL, NULL, 'Ergonomik tarak.', 50.00, 300.00, 7, NULL, NULL, NULL, 1, NULL, NULL, '2026-06-08 16:48:11', '2026-06-23 11:38:22', NULL),
+(2, 1, 'Saç Spreyii', NULL, '38219141294\"', 'Saçınızı sabitlemek için en iyisi.', 125.00, 250.00, 2, NULL, NULL, NULL, 1, NULL, NULL, '2026-06-21 15:08:16', '2026-06-21 15:09:30', NULL),
+(3, 1, 'Deneme', NULL, '45678765456', 'Deneme ürünüdür.', 100.00, 200.00, 5, 5, NULL, NULL, 1, NULL, NULL, '2026-06-21 17:56:19', '2026-06-21 17:56:44', NULL);
 
 -- --------------------------------------------------------
 
@@ -1574,9 +2028,13 @@ CREATE TABLE `product_sales` (
   `product_id` bigint(20) UNSIGNED NOT NULL,
   `customer_id` bigint(20) UNSIGNED DEFAULT NULL,
   `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `sale_code` varchar(50) DEFAULT NULL,
+  `payment_method` varchar(50) DEFAULT NULL,
+  `discount_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
   `quantity` int(11) NOT NULL,
   `unit_price` decimal(10,2) NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
+  `notes` text DEFAULT NULL,
   `sold_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -1586,9 +2044,49 @@ CREATE TABLE `product_sales` (
 -- Tablo döküm verisi `product_sales`
 --
 
-INSERT INTO `product_sales` (`id`, `branch_id`, `product_id`, `customer_id`, `created_by`, `quantity`, `unit_price`, `total_price`, `sold_at`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 10, 1, 2, 300.00, 600.00, '2026-06-08 16:48:25', '2026-06-08 16:48:25', '2026-06-08 16:48:25'),
-(2, 1, 2, 8, 1, 1, 250.00, 250.00, '2026-06-21 15:09:30', '2026-06-21 15:09:30', '2026-06-21 15:09:30');
+INSERT INTO `product_sales` (`id`, `branch_id`, `product_id`, `customer_id`, `created_by`, `sale_code`, `payment_method`, `discount_amount`, `quantity`, `unit_price`, `total_price`, `notes`, `sold_at`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 10, 1, NULL, NULL, 0.00, 2, 300.00, 600.00, NULL, '2026-06-08 16:48:25', '2026-06-08 16:48:25', '2026-06-08 16:48:25'),
+(2, 1, 2, 8, 1, NULL, NULL, 0.00, 1, 250.00, 250.00, NULL, '2026-06-21 15:09:30', '2026-06-21 15:09:30', '2026-06-21 15:09:30'),
+(3, 1, 3, 9, 1, 'SALE-1782064604-769', 'cash', 0.00, 5, 200.00, 1000.00, NULL, '2026-06-21 17:56:44', '2026-06-21 17:56:44', '2026-06-21 17:56:44'),
+(4, 1, 1, 14, 1, 'SALE-1782214702-222', 'cash', 0.00, 1, 300.00, 300.00, NULL, '2026-06-23 11:38:22', '2026-06-23 11:38:22', '2026-06-23 11:38:22');
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `purchase_orders`
+--
+
+CREATE TABLE `purchase_orders` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `branch_id` bigint(20) UNSIGNED NOT NULL,
+  `supplier_id` bigint(20) UNSIGNED NOT NULL,
+  `invoice_number` varchar(100) DEFAULT NULL,
+  `subtotal` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `purchase_date` date NOT NULL,
+  `notes` text DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `purchase_order_items`
+--
+
+CREATE TABLE `purchase_order_items` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `purchase_order_id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `unit_price` decimal(10,2) NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1663,6 +2161,7 @@ CREATE TABLE `services` (
   `price` decimal(10,2) NOT NULL,
   `discounted_price` decimal(10,2) DEFAULT NULL,
   `gender_type` enum('male','female','unisex') DEFAULT 'unisex',
+  `type` varchar(50) NOT NULL DEFAULT 'barber',
   `image` varchar(255) DEFAULT NULL,
   `is_popular` tinyint(1) DEFAULT 0,
   `is_featured` tinyint(1) DEFAULT 0,
@@ -1676,13 +2175,35 @@ CREATE TABLE `services` (
 -- Tablo döküm verisi `services`
 --
 
-INSERT INTO `services` (`id`, `branch_id`, `category_id`, `name`, `slug`, `description`, `duration_minutes`, `buffer_time`, `price`, `discounted_price`, `gender_type`, `image`, `is_popular`, `is_featured`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 1, 'Modern Saç Kesimi', 'modern-sac-kesimi', 'Modern fade ve profesyonel saç kesimi.', 30, 10, 500.00, 450.00, 'male', 'haircut_1.png', 1, 1, 1, '2026-05-14 13:44:44', '2026-05-14 22:32:31', NULL),
-(2, 1, 2, 'Sakal Tasarımı', 'sakal-tasarimi', 'Profesyonel sakal şekillendirme.', 30, 5, 300.00, NULL, 'male', 'beard_1.png', 0, 0, 1, '2026-05-14 13:44:44', '2026-05-23 17:16:37', NULL),
-(3, 1, 3, 'VIP Full Paket', 'vip-full-paket', 'Saç + sakal + bakım + maske.', 90, 15, 1200.00, NULL, 'male', 'vip_1.png', 1, 1, 1, '2026-05-14 13:44:44', '2026-05-23 17:16:20', NULL),
-(4, 1, 4, 'Yüz Bakımı', 'yuz-bakimi', 'Derin cilt temizliği.', 40, 10, 600.00, NULL, 'unisex', 'care_1.png', 0, 0, 1, '2026-05-14 13:44:44', '2026-05-14 17:34:01', NULL),
-(5, 1, 1, 'Çocuk Saç Kesimi', 'cocuk-sac-kesimi', 'Çocuk müşteriler için saç kesimi.', 30, 5, 350.00, NULL, 'male', 'child_1.png', 0, 0, 1, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
-(6, 1, 4, 'Fön Çekimi', 'fon-cekimi', 'Saça şekil vermek bizim işimiz. Sizi biz FÖNleyelim.', 30, 0, 250.00, NULL, 'male', NULL, 0, 0, 1, '2026-05-18 13:28:28', '2026-06-21 15:06:55', NULL);
+INSERT INTO `services` (`id`, `branch_id`, `category_id`, `name`, `slug`, `description`, `duration_minutes`, `buffer_time`, `price`, `discounted_price`, `gender_type`, `type`, `image`, `is_popular`, `is_featured`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 1, 1, 'Modern Saç Kesimi', 'modern-sac-kesimi', 'Modern fade ve profesyonel saç kesimi.', 30, 10, 500.00, 450.00, 'male', 'barber', 'services/wgxVWtP6cnf5gNrmnC3biyVAV7YWRIArfro7L0eB.jpg', 1, 1, 1, '2026-05-14 13:44:44', '2026-06-23 11:37:41', NULL),
+(2, 1, 2, 'Sakal Tasarımı', 'sakal-tasarimi', 'Profesyonel sakal şekillendirme.', 30, 5, 300.00, NULL, 'male', 'barber', 'services/1nEyhZZKoEANcuKlzdQIqDEkdNppOblgEmohvIWR.jpg', 0, 0, 1, '2026-05-14 13:44:44', '2026-06-23 11:37:43', NULL),
+(3, 1, 3, 'VIP Full Paket', 'vip-full-paket', 'Saç + sakal + bakım + maske.', 90, 15, 1200.00, NULL, 'male', 'barber', 'services/Sq4IpB0AYBabmKzvphML9EMokBMcR1SKpLntdTS1.jpg', 1, 1, 1, '2026-05-14 13:44:44', '2026-06-22 13:40:57', NULL),
+(4, 1, 4, 'Yüz Bakımı', 'yuz-bakimi', 'Derin cilt temizliği.', 40, 10, 600.00, NULL, 'unisex', 'barber', 'services/D1Y0a6ZSPMFpq5vbGNK3G8MLBXCexOm5ejGg7XsV.jpg', 0, 0, 1, '2026-05-14 13:44:44', '2026-06-22 13:35:57', NULL),
+(5, 1, 1, 'Çocuk Saç Kesimi', 'cocuk-sac-kesimi', 'Çocuk müşteriler için saç kesimi.', 30, 5, 350.00, NULL, 'male', 'barber', 'services/ID8vCHKgauQuJPrHOyp2cuVszY7N2we0ODyiEwNx.jpg', 0, 0, 1, '2026-05-14 13:44:44', '2026-06-22 13:35:27', NULL),
+(6, 1, 4, 'Fön Çekimi', 'fon-cekimi', 'Saça şekil vermek bizim işimiz. Sizi biz FÖNleyelim.', 30, 0, 250.00, NULL, 'male', 'barber', 'services/ASMkqwYlldl6iSgCLVi6VUnSJn16y3GimKFhqOwq.jpg', 0, 0, 1, '2026-05-18 13:28:28', '2026-06-22 13:34:47', NULL),
+(113, 1, 6, 'Manikür', 'manikur', 'Manikür Hizmeti', 40, 0, 1000.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:47', '2026-06-22 15:02:47', NULL),
+(114, 1, 6, 'Pedikür', 'pedikur', 'Pedikür Hizmeti', 45, 0, 1000.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(115, 1, 7, 'Kaş Alma', 'kas-alma', 'Kaş Alma Hizmeti', 15, 0, 150.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(116, 1, 7, 'Altın Oran Kaş Tasarımı', 'altin-oran-kas-tasarimi', 'Altın Oran Kaş Tasarımı Hizmeti', 30, 0, 250.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(117, 1, 8, 'Klasik Cilt Bakımı', 'klasik-cilt-bakimi', 'Klasik Cilt Bakımı Hizmeti', 60, 0, 1500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(118, 1, 8, 'TANURA C4 Cilt Bakımı', 'tanura-c4-cilt-bakimi', 'TANURA C4 Cilt Bakımı Hizmeti', 90, 0, 5000.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(119, 1, 9, 'Dudak Üstü', 'dudak-ustu', 'Dudak Üstü Hizmeti', 15, 0, 250.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(120, 1, 9, 'Boyun', 'boyun', 'Boyun Hizmeti', 15, 0, 400.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(121, 1, 9, 'Ense', 'ense', 'Ense Hizmeti', 15, 0, 400.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(122, 1, 9, 'Çene', 'cene', 'Çene Hizmeti', 20, 0, 500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(123, 1, 9, 'Koltuk Altı', 'koltuk-alti', 'Koltuk Altı Hizmeti', 20, 0, 500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(124, 1, 9, 'Bikini Bölgesi', 'bikini-bolgesi', 'Bikini Bölgesi Hizmeti', 25, 0, 500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(125, 1, 9, 'Yüz', 'yuz', 'Yüz Hizmeti', 30, 0, 500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(126, 1, 9, 'Sırt', 'sirt', 'Sırt Hizmeti', 45, 0, 1250.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(127, 1, 9, 'Göğüs', 'gogus', 'Göğüs Hizmeti', 45, 0, 1250.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(128, 1, 9, 'Kol', 'kol', 'Kol Hizmeti', 40, 0, 1250.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(129, 1, 9, 'Bacak', 'bacak', 'Bacak Hizmeti', 50, 0, 1500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(130, 1, 9, 'Tüm Vücut', 'tum-vucut', 'Tüm Vücut Hizmeti', 120, 0, 2500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(131, 1, 9, 'Kemer Üstü', 'kemer-ustu', 'Kemer Üstü Hizmeti', 90, 0, 2500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(132, 1, 5, 'Vip Hizmeti (C Paketi)', 'vip-hizmeti-c-paketi', 'Vip Hizmeti (C Paketi) Hizmeti', 60, 0, 1500.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(133, 1, 10, 'Masaj', 'masaj', 'Masaj Hizmeti', 60, 0, 1000.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL),
+(134, 1, 10, 'Kafa Masajı', 'kafa-masaji', 'Kafa Masajı Hizmeti', 45, 0, 1250.00, NULL, 'unisex', 'barber', NULL, 0, 0, 1, '2026-06-22 15:02:48', '2026-06-22 15:02:48', NULL);
 
 -- --------------------------------------------------------
 
@@ -1709,7 +2230,31 @@ INSERT INTO `service_categories` (`id`, `branch_id`, `name`, `description`, `sor
 (1, 1, 'Saç', 'Profesyonel saç hizmetleri', 1, 1, '2026-05-14 13:44:44', '2026-05-18 13:29:36'),
 (2, 1, 'Sakal', 'Sakal tasarım ve bakım hizmetleri', 2, 1, '2026-05-14 13:44:44', '2026-05-14 13:44:44'),
 (3, 1, 'VIP Paketler', 'Premium bakım paketleri', 3, 1, '2026-05-14 13:44:44', '2026-05-14 13:44:44'),
-(4, 1, 'Bakım', 'Cilt ve saç bakım hizmetleri', 4, 1, '2026-05-14 13:44:44', '2026-05-14 13:44:44');
+(4, 1, 'Bakım', 'Cilt ve saç bakım hizmetleri', 4, 1, '2026-05-14 13:44:44', '2026-05-14 13:44:44'),
+(5, 1, 'Saç Hizmetleri', 'Saç tasarım ve kesim hizmetleri', 1, 1, '2026-06-22 14:35:56', '2026-06-22 14:45:31'),
+(6, 1, 'Tırnak Hizmetleri', 'El ve ayak bakım hizmetleri', 2, 1, '2026-06-22 14:35:56', '2026-06-22 14:45:31'),
+(7, 1, 'Makyaj Hizmetleri', 'Kaş tasarım ve profesyonel makyaj', 3, 1, '2026-06-22 14:35:56', '2026-06-22 14:45:31'),
+(8, 1, 'Cilt Bakımı Hizmetleri', 'Cilt temizleme ve bakım seansları', 4, 1, '2026-06-22 14:35:56', '2026-06-22 14:45:31'),
+(9, 1, 'Lazer Epilasyon Hizmetleri', 'Lazer epilasyon uygulamaları', 5, 1, '2026-06-22 14:35:56', '2026-06-22 14:45:31'),
+(10, 1, 'Masaj Hizmetleri', 'Rahatlatıcı masaj terapileri', 6, 1, '2026-06-22 14:35:56', '2026-06-22 14:45:31'),
+(11, 1, 'Sıcak İçecekler', 'Kafe sıcak içecekleri', 0, 1, '2026-06-22 14:45:31', '2026-06-22 14:45:31'),
+(12, 1, 'Soğuk İçecekler', 'Kafe soğuk içecekleri', 0, 1, '2026-06-22 14:45:31', '2026-06-22 14:45:31'),
+(13, 1, 'Atıştırmalıklar', 'Kafe atıştırmalıkları', 0, 1, '2026-06-22 14:45:31', '2026-06-22 14:45:31');
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `service_products`
+--
+
+CREATE TABLE `service_products` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `service_id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `quantity` decimal(8,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1731,8 +2276,11 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('ElW5PP2TAN1YG7kaaiitu264MEwWw8IjASRr55ip', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJ0TFY0RjlBbU8yMXhKTHZ5eHpDVUNDOVM5dFhoeVRRSVE1Tm05MFRqIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzEyNy4wLjAuMTo4MDAwXC9hcHBvaW50bWVudHMiLCJyb3V0ZSI6ImFwcG9pbnRtZW50cy5pbmRleCJ9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX0sInVybCI6W10sImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjoxfQ==', 1782057199),
-('wU2c0AyY7xvW2iqf7E9qJNXmbGQkQT55dSwn72WW', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiI5R0ZmSkNoZ0ZIYjlVWHNVODFWMVY5UEM3Y2dDdmdUdGUwS3ZKSkpKIiwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119LCJfcHJldmlvdXMiOnsidXJsIjoiaHR0cDpcL1wvMTI3LjAuMC4xOjgwMDBcL3Byb2R1Y3RzLXNhbGVzIiwicm91dGUiOiJwcm9kdWN0cy5zYWxlcy5pbmRleCJ9LCJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI6MX0=', 1782057809);
+('7J8UxyxqJGBDLLLsmsVpKfa2s79sZPl0PUfEc2Oj', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJ0djZxdHVOYldwRVBFSkV1V09mWVlrTUpFd016MER5NzVRcU1TWFZJIiwidXJsIjpbXSwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzAuMC4wLjA6ODAwMFwvY2FtcGFpZ25zIiwicm91dGUiOiJjYW1wYWlnbnMuaW5kZXgifSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119LCJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI6MX0=', 1783451355),
+('d3k8mF9kBCirGIPYU0X9MhdezW6CRgB0GEzISBQH', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJVY1pUQlN3UTJwZEJ3QVdXUVFyQzhGSmdjWHJ6OXR3RmRpenJrTUc3IiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzAuMC4wLjA6ODAwMFwvZGFzaGJvYXJkIiwicm91dGUiOiJkYXNoYm9hcmQifSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119LCJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI6MX0=', 1783420730),
+('RIOqRXM8WBlSUuoFyToTn9Ztn9zEGXTgYAxKKgNX', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJBNXg3SUJzeG0yTThpTldIbGFDSHBya0JvSEdLT3hNN2Z2S2RZa2x1IiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzEyNy4wLjAuMTo4MDAyXC9jYW1wYWlnbnMiLCJyb3V0ZSI6ImNhbXBhaWducy5pbmRleCJ9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX0sImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjoxfQ==', 1783325279),
+('U3G8NwlcJ720Vw8ZnXlD3ruHHzLrdViXK4zGBViY', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJRdTh5cWlTdGhMWVQ5NGJYbmxma1BiQlU3MUx0Q1dYQzRFMmZoUHlXIiwibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiOjEsIl9wcmV2aW91cyI6eyJ1cmwiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMlwvZGFzaGJvYXJkIiwicm91dGUiOiJkYXNoYm9hcmQifSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119fQ==', 1783337495),
+('Za9NYaHdfBM8Vx8zdcF75m8PWgck2Yoge7tXuRbs', 1, '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJoZFcwc2Y2UmlKWmVNV0pvRXQzR3FWUEIxWDhwTDdxM0VrTHMza0E4IiwidXJsIjpbXSwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cLzAuMC4wLjA6ODAwMFwvY2FtcGFpZ25zIiwicm91dGUiOiJjYW1wYWlnbnMuaW5kZXgifSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119LCJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI6MX0=', 1783435628);
 
 -- --------------------------------------------------------
 
@@ -1759,6 +2307,105 @@ INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `description`, `cr
 (3, 'tax_rate', '20', 'Default tax rate', '2026-05-14 13:39:07', '2026-05-14 13:39:07'),
 (4, 'appointment_interval', '30', 'Default appointment interval', '2026-05-14 13:39:07', '2026-05-14 13:39:07'),
 (5, 'loyalty_enabled', '1', 'Loyalty system enabled', '2026-05-14 13:39:07', '2026-05-14 13:39:07');
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `stock_counts`
+--
+
+CREATE TABLE `stock_counts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `branch_id` bigint(20) UNSIGNED NOT NULL,
+  `count_date` date NOT NULL,
+  `notes` text DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Tablo döküm verisi `stock_counts`
+--
+
+INSERT INTO `stock_counts` (`id`, `branch_id`, `count_date`, `notes`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 1, '2026-06-21', 'Deneme sayımı.', 1, '2026-06-21 17:57:34', '2026-06-21 17:57:34');
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `stock_count_items`
+--
+
+CREATE TABLE `stock_count_items` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `stock_count_id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `system_quantity` int(11) NOT NULL,
+  `counted_quantity` int(11) NOT NULL,
+  `difference` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Tablo döküm verisi `stock_count_items`
+--
+
+INSERT INTO `stock_count_items` (`id`, `stock_count_id`, `product_id`, `system_quantity`, `counted_quantity`, `difference`, `created_at`, `updated_at`) VALUES
+(1, 1, 3, 5, 5, 0, '2026-06-21 17:57:34', '2026-06-21 17:57:34'),
+(2, 1, 2, 2, 2, 0, '2026-06-21 17:57:34', '2026-06-21 17:57:34'),
+(3, 1, 1, 8, 8, 0, '2026-06-21 17:57:34', '2026-06-21 17:57:34');
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `stock_movements`
+--
+
+CREATE TABLE `stock_movements` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `branch_id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED NOT NULL,
+  `movement_type` enum('purchase','sale','adjustment','damage','consumption','opening_balance') NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `before_stock` int(11) NOT NULL,
+  `after_stock` int(11) NOT NULL,
+  `unit_cost` decimal(10,2) DEFAULT NULL,
+  `reference_type` varchar(100) DEFAULT NULL,
+  `reference_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Tablo döküm verisi `stock_movements`
+--
+
+INSERT INTO `stock_movements` (`id`, `branch_id`, `product_id`, `movement_type`, `quantity`, `before_stock`, `after_stock`, `unit_cost`, `reference_type`, `reference_id`, `notes`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 1, 3, 'sale', -5, 10, 5, 200.00, 'product_sales', 3, 'Satış İşlemi', 1, '2026-06-21 17:56:44', '2026-06-21 17:56:44'),
+(2, 1, 1, 'sale', -1, 8, 7, 300.00, 'product_sales', 4, 'Satış İşlemi', 1, '2026-06-23 11:38:22', '2026-06-23 11:38:22');
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `suppliers`
+--
+
+CREATE TABLE `suppliers` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `tax_number` varchar(50) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1842,7 +2489,18 @@ INSERT INTO `transactions` (`id`, `branch_id`, `appointment_id`, `expense_id`, `
 (54, 1, 96, NULL, 1, 'income', 600.00, 'TRY', 'cash', 'Randevu Ödemesi - #APT-O1DFKQ (Aylin Yılmaz)', '2026-06-08 20:06:15', '2026-06-08 17:06:15', '2026-06-08 17:06:15'),
 (55, 1, 99, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #APT-XV5VVP (Aylin Yılmaz)', '2026-06-20 15:22:50', '2026-06-20 12:22:50', '2026-06-20 12:22:50'),
 (56, 1, 98, NULL, 1, 'income', 1200.00, 'TRY', 'cash', 'Randevu Ödemesi - #APT-GVL3JZ (Cem Arslan)', '2026-06-20 15:22:53', '2026-06-20 12:22:53', '2026-06-20 12:22:53'),
-(57, 1, NULL, NULL, 1, 'income', 250.00, 'TRY', 'cash', 'Ürün Satışı - Saç Spreyii (1 adet)', '2026-06-21 18:09:30', '2026-06-21 15:09:30', '2026-06-21 15:09:30');
+(57, 1, NULL, NULL, 1, 'income', 250.00, 'TRY', 'cash', 'Ürün Satışı - Saç Spreyii (1 adet)', '2026-06-21 18:09:30', '2026-06-21 15:09:30', '2026-06-21 15:09:30'),
+(58, 1, NULL, NULL, 1, 'income', 1000.00, 'TRY', 'cash', 'Ürün Satışı - Deneme (5 adet)', '2026-06-21 20:56:44', '2026-06-21 17:56:44', '2026-06-21 17:56:44'),
+(59, 1, 101, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-FZN9H4KM (MUSTAFA KARA)', '2026-06-22 13:14:08', '2026-06-22 10:14:08', '2026-06-22 10:14:08'),
+(60, 1, 102, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-GGPQV0M9 (MUSTAFA KARA)', '2026-06-22 18:30:16', '2026-06-22 15:30:16', '2026-06-22 15:30:16'),
+(61, 1, 104, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-SUAEU3FB (MUSTAFA KARA)', '2026-06-23 14:33:18', '2026-06-23 11:33:18', '2026-06-23 11:33:18'),
+(62, 1, NULL, NULL, 1, 'income', 300.00, 'TRY', 'cash', 'Ürün Satışı - Tarak (1 adet)', '2026-06-23 14:38:22', '2026-06-23 11:38:22', '2026-06-23 11:38:22'),
+(63, 1, 108, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-XNUUKKQX (Cem Arslan)', '2026-06-23 18:03:00', '2026-06-23 15:03:00', '2026-06-23 15:03:00'),
+(64, 1, 107, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-C4PEVWQX (Görkem FİDAN)', '2026-06-23 18:03:03', '2026-06-23 15:03:04', '2026-06-23 15:03:04'),
+(65, 1, 106, NULL, 1, 'income', 1000.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-J5IDOMSD (Aylin Yılmaz)', '2026-06-23 18:03:07', '2026-06-23 15:03:07', '2026-06-23 15:03:07'),
+(66, 1, 109, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-VHPNTEUC (Mert Şahin)', '2026-06-23 18:03:11', '2026-06-23 15:03:11', '2026-06-23 15:03:11'),
+(67, 1, 111, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-YTQ3PW97 (MUSTAFA KARA)', '2026-07-03 14:05:59', '2026-07-03 11:05:59', '2026-07-03 11:05:59'),
+(68, 1, 113, NULL, 1, 'income', 450.00, 'TRY', 'cash', 'Randevu Ödemesi - #BV-CEK2QOZA (MUSTAFA KARA)', '2026-07-07 13:38:50', '2026-07-07 10:38:50', '2026-07-07 10:38:50');
 
 -- --------------------------------------------------------
 
@@ -1877,24 +2535,25 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `uuid`, `role_id`, `first_name`, `last_name`, `email`, `phone`, `password`, `gender`, `birth_date`, `profile_photo`, `email_verified_at`, `phone_verified_at`, `last_login_at`, `status`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '107e093a-4f9b-11f1-98d5-2e5e95d91c8b', 1, 'Mustafa', 'Kara', 'admin@bvbarber.com', '05554443322', '$2y$12$fEkyZNWK6pFExjKlPWpgtu21TtVSe7qDGzBIAH9EnrtHG6pCL.2Zi', 'male', '2000-01-01', NULL, NULL, NULL, '2026-06-21 15:57:45', 'active', NULL, '2026-05-14 13:44:44', '2026-06-21 15:57:45', NULL),
-(2, '107e6100-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Ahmet', 'Yılmaz', 'owner@bvbarber.com', '+905552222222', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1990-03-12', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-19 13:00:57', NULL),
-(3, '107e7186-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Emre', 'Demir', 'emre@bvbarber.com', '+905553333333', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1995-06-15', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
-(4, '107e7208-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Burak', 'Kaya', 'burak@bvbarber.com', '+905554444444', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1993-08-22', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
-(5, '107e726c-4f9b-11f1-98d5-2e5e95d91c8b', 4, 'Selin', 'Aydın', 'selin@bvbarber.com', '+905555555555', '$2y$10$abcdefghijklmnopqrstuv', 'female', '1997-04-11', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
+(1, '107e093a-4f9b-11f1-98d5-2e5e95d91c8b', 1, 'Mustafa', 'Kara', 'admin@bvbarber.com', '05554443322', '$2y$12$fEkyZNWK6pFExjKlPWpgtu21TtVSe7qDGzBIAH9EnrtHG6pCL.2Zi', 'male', '2000-01-01', NULL, NULL, NULL, '2026-07-07 19:04:52', 'active', 'W8S4ze6ca4L4pQbGBwCXgZO7O3NtqCrKOpzswPJVjy6tyhHElSTzmHYbk51U', '2026-05-14 13:44:44', '2026-07-07 19:04:52', NULL),
+(2, '107e6100-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Ahmet', 'Ata', 'owner@bvbarber.com', '+905552222222', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1990-03-12', 'profile_photos/eOiEG25nulwlDXgwPV3ofULK32cQaaOzcpped84E.jpg', NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-07-05 12:48:53', NULL),
+(3, '107e7186-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Emre', 'Demir', 'emre@bvbarber.com', '+905553333333', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1995-06-15', 'profile_photos/URdAYCss4ATnVPPilloFvixLOdquPrRrYuuERC6f.jpg', NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-06-22 13:56:53', NULL),
+(4, '107e7208-4f9b-11f1-98d5-2e5e95d91c8b', 5, 'Burak', 'Kaya', 'burak@bvbarber.com', '+905554444444', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1993-08-22', 'profile_photos/MJSgRyBYjQCrYhIzI4ymmshNV8epxfEc5SV14G86.jpg', NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-06-22 13:57:02', NULL),
+(5, '107e726c-4f9b-11f1-98d5-2e5e95d91c8b', 4, 'Selin', 'Aydın', 'selin@bvbarber.com', '+905555555555', '$2y$10$abcdefghijklmnopqrstuv', 'female', '1997-04-11', 'profile_photos/1Rs7LN3jMnSUBUi7Nqs8WZrieEGyJxXhDwNapjze.jpg', NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-06-22 13:58:19', NULL),
 (6, '107e72c6-4f9b-11f1-98d5-2e5e95d91c8b', 6, 'Can', 'Öztürk', 'can@example.com', '+905556666666', '$2y$10$abcdefghijklmnopqrstuv', 'male', '2001-05-20', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
 (7, '107e7316-4f9b-11f1-98d5-2e5e95d91c8b', 6, 'Mert', 'Şahin', 'mert@example.com', '+905557777777', '$2y$10$abcdefghijklmnopqrstuv', 'male', '1998-11-18', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
 (8, '107e7366-4f9b-11f1-98d5-2e5e95d91c8b', 6, 'Ali', 'Koç', 'ali@example.com', '+905558888888', '$2y$10$abcdefghijklmnopqrstuv', 'male', '2002-07-09', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 13:44:44', '2026-05-14 13:44:44', NULL),
-(9, 'ad3f020b-1a57-434d-8672-d5cd49c81950', 6, 'Görkem', 'FİDAN', 'grkmfdn55@gmail.com', '05555555555', '$2y$12$ruWbuIK7clDcKiPQI6b24O1J2tDOvUfObY8vaOtr.Kp8VLnOWwHLG', 'male', '2000-01-01', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 17:32:59', '2026-05-14 17:32:59', NULL),
-(10, '27e96822-8cb0-4b7a-b4e1-083f4f05d36f', 6, 'MUSTAFA', 'KARA', 'mustafakara200533@gmail.com', '5528120412', '$2y$12$ezy9r0EIgMECj4BxSEPWDOg2oR0BjexJWGvNNtk8nGD.9dpL.7UwS', 'male', '2005-12-04', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-18 13:26:34', '2026-05-18 13:26:34', NULL),
-(11, '0688d9ee-eb10-43cf-8348-4a76908e380b', 5, 'Deneme', 'Çalışanı', 'deneme@mail.com', '05525525252', '$2y$12$x1z6BHucOz4VL.DyyYrHFObTWuxE1Dtq7yIDNbfZacaTAkOO0Jx3a', NULL, NULL, NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-18 13:36:45', '2026-05-18 13:36:45', NULL),
+(9, 'ad3f020b-1a57-434d-8672-d5cd49c81950', 6, 'Görkem', 'FİDAN', 'grkmfdn55@gmail.com', '05555555555', '$2y$12$fBvCUHaEMnYySpUUvcVlwOHpZreeiMTROjIE4uGDkLcO1u73bqGma', 'male', '2000-01-01', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-14 17:32:59', '2026-06-21 20:30:44', NULL),
+(10, '27e96822-8cb0-4b7a-b4e1-083f4f05d36f', 6, 'MUSTAFA', 'KARA', 'mustafakara200533@gmail.com', '5528120412', '$2y$12$Td9Vs2giF04MtlCl/ugyJuNRW11qK1t82oP2eb5ywvedmOV8FiUgK', 'male', '2005-12-04', 'profile_photos/pgLzjb2S2WaiwGg1AQqB11TP67NRL3KinJ53OBOa.jpg', NULL, NULL, '2026-07-03 12:28:57', 'active', NULL, '2026-05-18 13:26:34', '2026-07-03 12:28:57', NULL),
+(11, '0688d9ee-eb10-43cf-8348-4a76908e380b', 5, 'Dene', 'Veri', 'deneme@mail.com', '05525525252', '$2y$12$x1z6BHucOz4VL.DyyYrHFObTWuxE1Dtq7yIDNbfZacaTAkOO0Jx3a', 'male', '2000-04-12', 'profile_photos/DkOMbbumMLP1sOr1SHAofdffHEIiReQeO3ZNbOza.jpg', NULL, NULL, NULL, 'active', NULL, '2026-05-18 13:36:45', '2026-07-05 12:49:23', NULL),
 (12, '17366b11-e10f-4566-875d-2892a3fb7344', 6, 'Sinem', 'DURMAZ', 'sinem@mail.com', '05555555123', '$2y$12$J/Hk26PFda6oy9CAEtbo0OA9elHtZa86z3V8yO5HzkmH5m778hVz2', 'female', '2005-01-17', NULL, NULL, NULL, NULL, 'active', NULL, '2026-05-18 15:09:30', '2026-05-18 15:09:30', NULL),
 (13, '6afdc9d7-0c0f-4c79-8ead-074901add972', 6, 'Aylin', 'Yılmaz', 'aylin.yilmaz.1780938267@example.com', '+905326374005', '$2y$12$RPuMNI515FeG4sfAR0kYi.eY2y1jmbfOBk4lrlx6nHhmtUU38v0Ie', 'female', '1995-08-15', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:28', '2026-06-08 17:04:28', NULL),
 (14, '77039879-5aa5-4a54-91d6-e6284794f1c2', 6, 'Burak', 'Kaya', 'burak.kaya.1780938267@example.com', '+905423344241', '$2y$12$ZihS4FFqWLRYFHerwp2mP.NeJoKh6twXl45cIbNDmbzV5YE6v12J6', 'male', '1990-03-22', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:28', '2026-06-08 17:04:28', NULL),
 (15, 'fd435eb2-4a57-44c7-a6d0-61940dbe227c', 6, 'Cem', 'Arslan', 'cem.arslan.1780938267@example.com', '+905525934387', '$2y$12$NK.kbIA7L1QvMWHM45cLD..AaW5sqZrDPZtcqkiTJcwBwYGTvHimO', 'male', '1988-11-05', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:28', '2026-06-08 17:04:28', NULL),
 (16, 'bb973654-e0f8-46dc-a685-045147c813eb', 6, 'Aylin', 'Yılmaz', 'aylin.yilmaz.1780938296@example.com', '+905322449560', '$2y$12$OxswNlu/x2UiVArFvj4NB.44tUXRcTdy014IOQCToestNEqaVR2i6', 'female', '1995-08-15', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:57', '2026-06-08 17:04:57', NULL),
 (17, 'dab4504a-ed4e-46af-842e-f2516da37fee', 6, 'Burak', 'Kaya', 'burak.kaya.1780938296@example.com', '+905424104886', '$2y$12$6kMscjvKl8NrOc5/B/Lp7e5Yd/zkVJ96MWCMsBNdUilreTV9UKymC', 'male', '1990-03-22', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:57', '2026-06-08 17:06:36', '2026-06-08 17:06:36'),
-(18, 'a2094963-570f-4119-b3c7-6a112f3c2738', 6, 'Cem', 'Arslan', 'cem.arslan.1780938296@example.com', '+905529794637', '$2y$12$EmTmBke7QlgisjVg6pX9ze459MyemtStWv2jZR0VMIN3aaqx6alty', 'male', '1988-11-05', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:57', '2026-06-08 17:04:57', NULL);
+(18, 'a2094963-570f-4119-b3c7-6a112f3c2738', 6, 'Cem', 'Arslan', 'cem.arslan.1780938296@example.com', '+905529794637', '$2y$12$EmTmBke7QlgisjVg6pX9ze459MyemtStWv2jZR0VMIN3aaqx6alty', 'male', '1988-11-05', NULL, NULL, NULL, NULL, 'active', NULL, '2026-06-08 17:04:57', '2026-06-08 17:04:57', NULL),
+(20, '91b4d96e-d3b1-4f56-8187-b588322581d3', 6, 'deneme', 'hesabı', 'dene@mail.com', '05551234567', '$2y$12$U2f7PL2l/guJm2SP0at/yeeiyhaRyemUAnKDwqqOpVcGc4kuOypSe', 'female', NULL, 'profile_photos/0RUmXgKNqS5FTbs5FjnxFiQXLKaaJOlS8II6euly.jpg', NULL, NULL, NULL, 'active', NULL, '2026-06-21 20:28:11', '2026-07-03 11:04:58', NULL);
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -2136,7 +2795,9 @@ ALTER TABLE `personal_access_tokens`
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `products_branch_id_barcode_unique` (`branch_id`,`barcode`),
-  ADD KEY `products_branch_id_is_active_index` (`branch_id`,`is_active`);
+  ADD KEY `products_branch_id_is_active_index` (`branch_id`,`is_active`),
+  ADD KEY `products_created_by_foreign` (`created_by`),
+  ADD KEY `products_updated_by_foreign` (`updated_by`);
 
 --
 -- Tablo için indeksler `product_sales`
@@ -2148,6 +2809,23 @@ ALTER TABLE `product_sales`
   ADD KEY `product_sales_customer_id_foreign` (`customer_id`),
   ADD KEY `product_sales_created_by_foreign` (`created_by`),
   ADD KEY `product_sales_sold_at_index` (`sold_at`);
+
+--
+-- Tablo için indeksler `purchase_orders`
+--
+ALTER TABLE `purchase_orders`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `purchase_orders_branch_id_foreign` (`branch_id`),
+  ADD KEY `purchase_orders_supplier_id_foreign` (`supplier_id`),
+  ADD KEY `purchase_orders_created_by_foreign` (`created_by`);
+
+--
+-- Tablo için indeksler `purchase_order_items`
+--
+ALTER TABLE `purchase_order_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `purchase_order_items_purchase_order_id_foreign` (`purchase_order_id`),
+  ADD KEY `purchase_order_items_product_id_foreign` (`product_id`);
 
 --
 -- Tablo için indeksler `reviews`
@@ -2191,6 +2869,14 @@ ALTER TABLE `service_categories`
   ADD KEY `fk_service_categories_branch` (`branch_id`);
 
 --
+-- Tablo için indeksler `service_products`
+--
+ALTER TABLE `service_products`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `service_products_service_id_foreign` (`service_id`),
+  ADD KEY `service_products_product_id_foreign` (`product_id`);
+
+--
 -- Tablo için indeksler `sessions`
 --
 ALTER TABLE `sessions`
@@ -2204,6 +2890,38 @@ ALTER TABLE `sessions`
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `setting_key` (`setting_key`);
+
+--
+-- Tablo için indeksler `stock_counts`
+--
+ALTER TABLE `stock_counts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `stock_counts_branch_id_foreign` (`branch_id`),
+  ADD KEY `stock_counts_created_by_foreign` (`created_by`);
+
+--
+-- Tablo için indeksler `stock_count_items`
+--
+ALTER TABLE `stock_count_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `stock_count_items_stock_count_id_foreign` (`stock_count_id`),
+  ADD KEY `stock_count_items_product_id_foreign` (`product_id`);
+
+--
+-- Tablo için indeksler `stock_movements`
+--
+ALTER TABLE `stock_movements`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `stock_movements_product_id_foreign` (`product_id`),
+  ADD KEY `stock_movements_created_by_foreign` (`created_by`),
+  ADD KEY `stock_movements_branch_id_product_id_movement_type_index` (`branch_id`,`product_id`,`movement_type`),
+  ADD KEY `stock_movements_created_at_index` (`created_at`);
+
+--
+-- Tablo için indeksler `suppliers`
+--
+ALTER TABLE `suppliers`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Tablo için indeksler `transactions`
@@ -2237,25 +2955,25 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `appointment_services`
 --
 ALTER TABLE `appointment_services`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `appointment_status_logs`
 --
 ALTER TABLE `appointment_status_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=190;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=230;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=372;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=661;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `branches`
@@ -2273,7 +2991,7 @@ ALTER TABLE `branch_settings`
 -- Tablo için AUTO_INCREMENT değeri `campaigns`
 --
 ALTER TABLE `campaigns`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `coupons`
@@ -2321,7 +3039,7 @@ ALTER TABLE `employee_schedules`
 -- Tablo için AUTO_INCREMENT değeri `employee_services`
 --
 ALTER TABLE `employee_services`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=354;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `expenses`
@@ -2351,31 +3069,31 @@ ALTER TABLE `jobs`
 -- Tablo için AUTO_INCREMENT değeri `loyalty_accounts`
 --
 ALTER TABLE `loyalty_accounts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `loyalty_transactions`
 --
 ALTER TABLE `loyalty_transactions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `permissions`
@@ -2387,19 +3105,31 @@ ALTER TABLE `permissions`
 -- Tablo için AUTO_INCREMENT değeri `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `product_sales`
 --
 ALTER TABLE `product_sales`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `purchase_orders`
+--
+ALTER TABLE `purchase_orders`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `purchase_order_items`
+--
+ALTER TABLE `purchase_order_items`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `reviews`
@@ -2423,13 +3153,19 @@ ALTER TABLE `role_permissions`
 -- Tablo için AUTO_INCREMENT değeri `services`
 --
 ALTER TABLE `services`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=135;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `service_categories`
 --
 ALTER TABLE `service_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `service_products`
+--
+ALTER TABLE `service_products`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `settings`
@@ -2438,16 +3174,40 @@ ALTER TABLE `settings`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- Tablo için AUTO_INCREMENT değeri `stock_counts`
+--
+ALTER TABLE `stock_counts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `stock_count_items`
+--
+ALTER TABLE `stock_count_items`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `stock_movements`
+--
+ALTER TABLE `stock_movements`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `suppliers`
+--
+ALTER TABLE `suppliers`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- Tablo için AUTO_INCREMENT değeri `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
@@ -2592,7 +3352,9 @@ ALTER TABLE `payments`
 -- Tablo kısıtlamaları `products`
 --
 ALTER TABLE `products`
-  ADD CONSTRAINT `products_branch_id_foreign` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `products_branch_id_foreign` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `products_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `products_updated_by_foreign` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Tablo kısıtlamaları `product_sales`
@@ -2602,6 +3364,21 @@ ALTER TABLE `product_sales`
   ADD CONSTRAINT `product_sales_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `product_sales_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `product_sales_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+--
+-- Tablo kısıtlamaları `purchase_orders`
+--
+ALTER TABLE `purchase_orders`
+  ADD CONSTRAINT `purchase_orders_branch_id_foreign` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `purchase_orders_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `purchase_orders_supplier_id_foreign` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`) ON DELETE CASCADE;
+
+--
+-- Tablo kısıtlamaları `purchase_order_items`
+--
+ALTER TABLE `purchase_order_items`
+  ADD CONSTRAINT `purchase_order_items_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `purchase_order_items_purchase_order_id_foreign` FOREIGN KEY (`purchase_order_id`) REFERENCES `purchase_orders` (`id`) ON DELETE CASCADE;
 
 --
 -- Tablo kısıtlamaları `reviews`
@@ -2630,6 +3407,35 @@ ALTER TABLE `services`
 --
 ALTER TABLE `service_categories`
   ADD CONSTRAINT `fk_service_categories_branch` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE;
+
+--
+-- Tablo kısıtlamaları `service_products`
+--
+ALTER TABLE `service_products`
+  ADD CONSTRAINT `service_products_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `service_products_service_id_foreign` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE;
+
+--
+-- Tablo kısıtlamaları `stock_counts`
+--
+ALTER TABLE `stock_counts`
+  ADD CONSTRAINT `stock_counts_branch_id_foreign` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `stock_counts_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Tablo kısıtlamaları `stock_count_items`
+--
+ALTER TABLE `stock_count_items`
+  ADD CONSTRAINT `stock_count_items_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `stock_count_items_stock_count_id_foreign` FOREIGN KEY (`stock_count_id`) REFERENCES `stock_counts` (`id`) ON DELETE CASCADE;
+
+--
+-- Tablo kısıtlamaları `stock_movements`
+--
+ALTER TABLE `stock_movements`
+  ADD CONSTRAINT `stock_movements_branch_id_foreign` FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `stock_movements_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `stock_movements_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
 -- Tablo kısıtlamaları `transactions`

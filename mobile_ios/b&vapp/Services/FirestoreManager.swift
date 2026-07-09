@@ -237,4 +237,28 @@ class FirestoreManager {
         let jsonData = try JSONSerialization.data(withJSONObject: cleanData)
         let _: EmptyResponse = try await sendRequest(path: "/document/\(collection)/\(documentId)", method: "PUT", body: jsonData)
     }
+
+    // MARK: - Validate Coupon
+    
+    struct CouponValidationResponse: Codable {
+        let isValid: Bool
+        let discountAmount: Double
+        let message: String
+    }
+    
+    func validateCoupon(code: String?, campaignId: String?, subtotal: Double, serviceIds: [Int]) async throws -> CouponValidationResponse {
+        var data: [String: Any] = [
+            "subtotal": subtotal,
+            "serviceIds": serviceIds
+        ]
+        if let code = code, !code.isEmpty {
+            data["couponCode"] = code
+        }
+        if let cid = campaignId, !cid.isEmpty {
+            data["campaignId"] = cid
+        }
+        
+        let jsonData = try JSONSerialization.data(withJSONObject: data)
+        return try await sendRequest(path: "/validate-coupon", method: "POST", body: jsonData)
+    }
 }

@@ -328,20 +328,61 @@ class MobileApiController extends Controller
                 return $this->success($notifications);
 
             case 'campaigns':
-                $query = \App\Models\Campaign::query()->active()->orderBy('end_date', 'asc');
+                $query = \App\Models\Campaign::query()->with('categories')->active()->orderBy('end_date', 'asc');
                 $campaigns = $query->get()->map(function ($camp) {
                     return [
                         'id' => (string)$camp->id,
                         'title' => $camp->title,
                         'description' => $camp->description ?? '',
+                        'type' => $camp->type ?? 'auto_apply',
+                        'minOrderAmount' => (double)($camp->min_order_amount ?? 0),
+                        'maxDiscountAmount' => $camp->max_discount_amount ? (double)$camp->max_discount_amount : null,
+                        'targetAudience' => $camp->target_audience ?? 'all',
+                        'imagePath' => $camp->image_path ? request()->schemeAndHttpHost() . '/storage/' . $camp->image_path : null,
+                        'priority' => (int)($camp->priority ?? 0),
                         'discountType' => $camp->discount_type->value,
                         'discountValue' => (double)$camp->discount_value,
                         'startDate' => $camp->start_date ? $camp->start_date->format('Y-m-d') : null,
                         'endDate' => $camp->end_date ? $camp->end_date->format('Y-m-d') : null,
                         'isActive' => (bool)$camp->is_active,
+                        'perCustomerLimit' => $camp->per_customer_limit ? (int)$camp->per_customer_limit : null,
+                        'categories' => $camp->categories->pluck('name')->toArray(),
                     ];
                 });
                 return $this->success($campaigns);
+
+            case 'coupons':
+                if (!$user) {
+                    return $this->error('Unauthenticated', 401);
+                }
+                
+                $query = \App\Models\Coupon::query()
+                    ->where(function($q) use ($user) {
+                        $q->whereNull('user_id')
+                          ->orWhere('user_id', $user->id);
+                    })
+                    ->orderBy('created_at', 'desc');
+                
+                $coupons = $query->get()->map(function ($coupon) use ($user) {
+                    return [
+                        'id' => (string)$coupon->id,
+                        'title' => $coupon->title ?? 'İndirim Kuponu',
+                        'description' => $coupon->description ?? '',
+                        'code' => $coupon->code,
+                        'discountType' => $coupon->discount_type,
+                        'discountValue' => (double)$coupon->discount_value,
+                        'expiresAt' => $coupon->expires_at ? $coupon->expires_at->format('Y-m-d') : null,
+                        'usageLimit' => (int)$coupon->usage_limit,
+                        'usedCount' => (int)$coupon->used_count,
+                        'perCustomerLimit' => (int)$coupon->per_customer_limit,
+                        'remainingUsage' => (int)min(
+                            max(0, (int)$coupon->usage_limit - (int)$coupon->used_count),
+                            max(0, (int)$coupon->per_customer_limit - $coupon->usages()->where('customer_id', $user->id)->count())
+                        ),
+                        'isValid' => $coupon->isValid($user),
+                    ];
+                });
+                return $this->success($coupons);
 
             case 'barberAvailability':
                 $barberId = null;
@@ -483,6 +524,8 @@ class MobileApiController extends Controller
                 'serviceIds' => 'nullable|array',
                 'date' => 'required|date_format:Y-m-d',
                 'time' => 'required|date_format:H:i',
+                'couponCode' => 'nullable|string',
+                'campaignId' => 'nullable|string'
             ]);
 
             $servicesData = [];
@@ -509,6 +552,8 @@ class MobileApiController extends Controller
                 'start_at' => Carbon::parse($data['date'] . ' ' . $data['time']),
                 'source' => \App\Enums\AppointmentSource::MobileApp,
                 'services' => $servicesData,
+                'coupon_code' => $data['couponCode'] ?? null,
+                'campaign_id' => $data['campaignId'] ?? null,
                 'discount_amount' => 0,
                 'tax_amount' => 0,
             ];
@@ -557,6 +602,54 @@ class MobileApiController extends Controller
         }
 
         return $this->error('Action not supported', 400);
+    }
+
+    public function validateCoupon(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if (!$user) {
+            return $this->error('Unauthenticated', 401);
+        }
+
+        $data = $request->validate([
+            'couponCode' => 'nullable|string',
+            'campaignId' => 'nullable|string',
+            'serviceIds' => 'required|array',
+            'subtotal'   => 'required|numeric'
+        ]);
+
+        if (empty($data['couponCode']) && empty($data['campaignId'])) {
+            return $this->error('Kupon kodu veya kampanya seçimi gerekli.', 400);
+        }
+
+        try {
+            $campaignService = app(\App\Services\CampaignService::class);
+            
+            if (!empty($data['couponCode'])) {
+                $result = $campaignService->validateCoupon($user, 1, $data['couponCode'], $data['subtotal'], $data['serviceIds']);
+                $successMessage = 'Kupon başarıyla uygulandı.';
+                $errorMessage = 'Geçersiz kupon.';
+            } else {
+                $result = $campaignService->validateCampaign($user, 1, $data['campaignId'], $data['subtotal'], $data['serviceIds']);
+                $successMessage = 'Kampanya başarıyla uygulandı.';
+                $errorMessage = 'Geçersiz kampanya.';
+            }
+
+            if ($result['valid']) {
+                return $this->success([
+                    'isValid' => true,
+                    'discountAmount' => $result['discount_amount'],
+                    'message' => $successMessage
+                ]);
+            }
+
+            return $this->error($result['message'] ?? $errorMessage, 400);
+
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 400);
+        } catch (\Exception $e) {
+            return $this->error('Doğrulama sırasında bir hata oluştu.', 500);
+        }
     }
 
     /**

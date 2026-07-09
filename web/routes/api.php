@@ -32,6 +32,7 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
             Route::post('/me/upload-photo', [MobileApiController::class, 'uploadPhoto']);
             Route::post('/save-token', [MobileApiController::class, 'saveToken']);
             Route::post('/reviews', [MobileApiController::class, 'createReview']);
+            Route::post('/validate-coupon', [MobileApiController::class, 'validateCoupon']);
             
             Route::get('/document/{collection}/{id}', [MobileApiController::class, 'showDocument']);
             Route::post('/document/{collection}', [MobileApiController::class, 'addDocument']);

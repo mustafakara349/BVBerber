@@ -104,8 +104,9 @@ class AppointmentController extends Controller
         $employees = Employee::forBranch($branchId)->active()->visible()->with('user')->get();
         $services = Service::forBranch($branchId)->active()->get();
         $customers = \App\Models\User::customers()->active()->get();
+        $coupons = \App\Models\Coupon::with('user')->get();
 
-        return view('appointments.create', compact('employees', 'services', 'customers'));
+        return view('appointments.create', compact('employees', 'services', 'customers', 'coupons'));
     }
 
     public function edit(Appointment $appointment): View
@@ -118,11 +119,12 @@ class AppointmentController extends Controller
         $employees = Employee::forBranch($branchId)->active()->visible()->with('user')->get();
         $services = Service::forBranch($branchId)->active()->get();
         $customers = \App\Models\User::customers()->active()->get();
+        $coupons = \App\Models\Coupon::with('user')->get();
 
         $appointment->load(['appointmentServices.service']);
 
         // Düzenleme için create view'ını kullan (appointment verisi ile)
-        return view('appointments.create', compact('employees', 'services', 'customers', 'appointment'));
+        return view('appointments.create', compact('employees', 'services', 'customers', 'coupons', 'appointment'));
     }
 
     public function store(StoreAppointmentRequest $request): RedirectResponse

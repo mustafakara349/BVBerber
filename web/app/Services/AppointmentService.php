@@ -13,7 +13,8 @@ use Illuminate\Support\Str;
 class AppointmentService
 {
     public function __construct(
-        private AppointmentRepositoryInterface $appointmentRepo
+        private AppointmentRepositoryInterface $appointmentRepo,
+        private CampaignService $campaignService
     ) {}
 
     public function createAppointment(array $data): Appointment
@@ -24,6 +25,9 @@ class AppointmentService
 
             $requestedServices = $data['services'] ?? [];
             unset($data['services']);
+            
+            $couponCode = $data['coupon_code'] ?? null;
+            unset($data['coupon_code']);
 
             // Fiyat ve süreyi veritabanından çek; client değerlerini yoksay.
             $serviceIds = collect($requestedServices)->pluck('service_id')->unique()->toArray();
@@ -62,8 +66,49 @@ class AppointmentService
                 ];
             }
 
+            // Kampanya ve İndirim Hesaplama
+            $customer = \App\Models\User::find($data['customer_id']);
+            $discountAmount = 0;
+            $campaignId = null;
+            $couponId = null;
+            $appliedCoupon = null;
+
+            if ($customer) {
+                if ($couponCode) {
+                    $couponResult = $this->campaignService->validateCoupon($customer, $data['branch_id'], $couponCode, $subtotal, $serviceIds);
+                    if ($couponResult['valid']) {
+                        $discountAmount = $couponResult['discount_amount'];
+                        $campaignId = $couponResult['campaign']?->id;
+                        $couponId = $couponResult['coupon']->id;
+                        $appliedCoupon = $couponResult['coupon'];
+                    } else {
+                        throw new \InvalidArgumentException($couponResult['message']);
+                    }
+                } elseif (!empty($data['campaign_id'])) {
+                    $campaignResult = $this->campaignService->validateCampaign($customer, $data['branch_id'], $data['campaign_id'], $subtotal, $serviceIds);
+                    if ($campaignResult['valid']) {
+                        $discountAmount = $campaignResult['discount_amount'];
+                        $campaignId = $campaignResult['campaign']->id;
+                    } else {
+                        throw new \InvalidArgumentException($campaignResult['message']);
+                    }
+                } else {
+                    $autoCampaignResult = $this->campaignService->evaluateCart($customer, $data['branch_id'], $subtotal, $serviceIds);
+                    if ($autoCampaignResult) {
+                        $discountAmount = $autoCampaignResult['discount_amount'];
+                        $campaignId = $autoCampaignResult['campaign']->id;
+                    }
+                }
+            }
+
             $data['end_at']         = \Carbon\Carbon::parse($data['start_at'])->addMinutes($totalDuration);
             $data['total_duration'] = $totalDuration;
+            $data['subtotal']       = $subtotal;
+            $data['discount_amount']= $discountAmount;
+            $data['tax_amount']     = $data['tax_amount'] ?? 0;
+            $data['total_price']    = max(0, $subtotal - $discountAmount + $data['tax_amount']);
+            $data['campaign_id']    = $campaignId;
+            $data['coupon_id']      = $couponId;
 
             $appointment = $this->appointmentRepo->create($data);
 
@@ -79,10 +124,18 @@ class AppointmentService
                 ]);
             }
 
-            $appointment->update([
-                'subtotal'    => $subtotal,
-                'total_price' => $subtotal - ($data['discount_amount'] ?? 0) + ($data['tax_amount'] ?? 0),
-            ]);
+            // Kupon kullanıldıysa kaydını düş
+            if ($appliedCoupon && $customer) {
+                $this->campaignService->recordCouponUsage($appliedCoupon, $customer, $appointment->id);
+            }
+
+            // Kampanya kullanıldıysa kaydını düş
+            if ($campaignId && $customer) {
+                $campaign = \App\Models\Campaign::find($campaignId);
+                if ($campaign) {
+                    $this->campaignService->recordCampaignUsage($campaign, $customer, $appointment->id);
+                }
+            }
 
             $this->logStatusChange($appointment, null, AppointmentStatus::Pending->value);
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Service: Identifiable, Codable, Equatable {
+struct Service: Identifiable, Codable, Equatable, Hashable {
 
     var id: String?
 

@@ -9,6 +9,11 @@ import Foundation
 import MapKit
 import Combine
 
+enum DiscountMode {
+    case campaign
+    case coupon
+}
+
 @MainActor
 class AppointmentsViewModel: ObservableObject {
 
@@ -27,6 +32,15 @@ class AppointmentsViewModel: ObservableObject {
     @Published var selectedServices: Set<Service> = []
     @Published var selectedDate: Date = Date()
     @Published var selectedTime: String? = nil
+    @Published var couponCode: String = ""
+    @Published var validatedDiscountAmount: Double = 0.0
+    @Published var isCouponValid: Bool? = nil
+    @Published var couponMessage: String = ""
+    @Published var isValidatingCoupon: Bool = false
+    
+    @Published var discountMode: DiscountMode = .campaign
+    @Published var availableCampaigns: [Campaign] = []
+    @Published var selectedCampaignId: String? = nil
 
     @Published var availableDates: [Date] = []
     @Published var blockedSlots: [String] = []      // barberAvailability.blockedSlots + aktif randevular
@@ -51,7 +65,16 @@ class AppointmentsViewModel: ObservableObject {
         DateManager.toString(selectedDate)
     }
 
-    /// Seçili tarih için mağaza çalışma saatlerine göre slot listesi
+    private func fetchCampaigns() async {
+        do {
+            let all: [Campaign] = try await db.fetchCollection("campaigns")
+            self.availableCampaigns = all.filter { $0.type == "auto_apply" && $0.isActive }
+        } catch {
+            print("Kampanyalar yüklenemedi: \(error.localizedDescription)")
+        }
+    }
+
+    /// Seçili berberin çalışma saatleri ve uygunluk durumue slot listesi
     var currentTimeSlots: [String] {
         let dayName = DateManager.weekdayName(from: selectedDate)
         return TimeManager.generateSlots(for: store?.workingHours?[dayName])
@@ -98,8 +121,9 @@ class AppointmentsViewModel: ObservableObject {
     func fetchBookingData() async {
         await withTaskGroup(of: Void.self) { group in
             group.addTask { await self.fetchStore() }
-            group.addTask { await self.fetchBarbers() }
             group.addTask { await self.fetchServicesForBooking() }
+            group.addTask { await self.fetchBarbers() }
+            group.addTask { await self.fetchCampaigns() }
         }
     }
 
@@ -148,8 +172,14 @@ class AppointmentsViewModel: ObservableObject {
 
     /// Berber değiştiğinde çağrılır
     func onBarberChanged() {
+        selectedServices.removeAll()
         selectedDate = Date()
         selectedTime = nil
+        couponCode = ""
+        validatedDiscountAmount = 0.0
+        isCouponValid = nil
+        couponMessage = ""
+        selectedCampaignId = nil
         availableDates = []
         blockedSlots = []
         barberAvailabilityMap = [:]
@@ -312,7 +342,7 @@ class AppointmentsViewModel: ObservableObject {
         let serviceNames = selectedServices.map { $0.name }.joined(separator: " + ")
         let totalPrice = selectedServices.reduce(0) { $0 + $1.effectivePrice }
 
-        let data: [String: Any] = [
+        var data: [String: Any] = [
             "userId": userId,
             "barberId": barberId,
             "barberName": barber.fullName,
@@ -325,6 +355,12 @@ class AppointmentsViewModel: ObservableObject {
             "status": "active"
         ]
 
+        if discountMode == .coupon && !couponCode.isEmpty {
+            data["couponCode"] = couponCode
+        } else if discountMode == .campaign, let cid = selectedCampaignId {
+            data["campaignId"] = cid
+        }
+
         do {
             _ = try await db.addDocument("appointments", data: data)
             await fetchAppointments()
@@ -333,6 +369,50 @@ class AppointmentsViewModel: ObservableObject {
             showError(title: "Hata", message: "Randevu oluşturulamadı: \(error.localizedDescription)")
             return false
         }
+    }
+
+    // MARK: - İndirim Doğrulama
+
+    func validateDiscount() async {
+        let isUsingCoupon = discountMode == .coupon
+        let codeToValidate = isUsingCoupon ? couponCode : nil
+        let campaignToValidate = isUsingCoupon ? nil : selectedCampaignId
+        
+        if isUsingCoupon && (codeToValidate ?? "").isEmpty {
+            isCouponValid = nil
+            couponMessage = "Lütfen bir kupon kodu girin."
+            validatedDiscountAmount = 0.0
+            return
+        }
+        
+        if !isUsingCoupon && (campaignToValidate ?? "").isEmpty {
+            isCouponValid = nil
+            couponMessage = "Lütfen bir kampanya seçin."
+            validatedDiscountAmount = 0.0
+            return
+        }
+
+        isValidatingCoupon = true
+        isCouponValid = nil
+        couponMessage = ""
+        validatedDiscountAmount = 0.0
+
+        let subtotal = Double(selectedServices.reduce(0) { $0 + $1.effectivePrice })
+        let serviceIds = Array(selectedServices.compactMap { Int($0.id ?? "0") ?? 0 })
+
+        do {
+            let response = try await db.validateCoupon(code: codeToValidate, campaignId: campaignToValidate, subtotal: subtotal, serviceIds: serviceIds)
+            isCouponValid = response.isValid
+            validatedDiscountAmount = response.discountAmount
+            couponMessage = response.message
+        } catch {
+            isCouponValid = false
+            let nsError = error as NSError
+            couponMessage = nsError.userInfo[NSLocalizedDescriptionKey] as? String ?? "Kupon doğrulanamadı."
+            validatedDiscountAmount = 0.0
+        }
+
+        isValidatingCoupon = false
     }
 
     // MARK: - Randevu İptal
@@ -376,6 +456,11 @@ class AppointmentsViewModel: ObservableObject {
         }
         selectedDate = availableDates.first ?? Date()
         selectedTime = nil
+        couponCode = ""
+        validatedDiscountAmount = 0.0
+        isCouponValid = nil
+        couponMessage = ""
+        selectedCampaignId = nil
         blockedSlots = []
         Task { await fetchBlockedSlots() }
     }

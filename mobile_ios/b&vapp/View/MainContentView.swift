@@ -14,6 +14,8 @@ struct MainContentView: View {
     @EnvironmentObject var viewModel: HomeViewModel
     @State private var goToAppointment: Bool = false
     @State private var showNotificationView: Bool = false
+    @State private var showCampaignsView: Bool = false
+    @State private var selectedCampaign: Campaign? = nil
 
     var body: some View {
 
@@ -62,6 +64,9 @@ struct MainContentView: View {
         }
         .navigationDestination(isPresented: $showNotificationView) {
             NotificationView()
+        }
+        .navigationDestination(isPresented: $showCampaignsView) {
+            CampaignsView(initialSelectedCampaign: selectedCampaign)
         }
         .onReceive(NotificationCenter.default.publisher(for: .navigateToNotifications)) { _ in
             showNotificationView = true
@@ -400,7 +405,7 @@ extension MainContentView {
                         )
                     )
                 )) {
-                    Marker("B&V Co...", coordinate: location)
+                    Marker("B&V", coordinate: location)
                 }
                 .mapStyle(.hybrid)
                 .frame(width: 100, height: 80)
@@ -445,22 +450,37 @@ extension MainContentView {
             if !viewModel.campaigns.isEmpty {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
-                        Text("Aktif Kampanyalar")
+                        Image(systemName: "tag.fill")
+                            .foregroundColor(.yellow)
+                        Text("Kampanyalar")
                             .foregroundColor(.primary)
                             .font(.title3)
                             .fontWeight(.bold)
-                        
+
                         Spacer()
-                        
-                        Image(systemName: "tag.fill")
-                            .foregroundColor(.yellow)
+
+                Button {
+                    selectedCampaign = nil
+                    showCampaignsView = true
+                } label: {
+                    Text("Tümünü Gör")
+                        .foregroundColor(.yellow)
+                        .fontWeight(.medium)
+                }
+
                     }
                     .padding(.horizontal, 20)
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 16) {
                             ForEach(viewModel.campaigns) { campaign in
-                                campaignCard(campaign: campaign)
+                                Button {
+                                    selectedCampaign = campaign
+                                    showCampaignsView = true
+                                } label: {
+                                    campaignCard(campaign: campaign)
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
                         .padding(.horizontal, 20)

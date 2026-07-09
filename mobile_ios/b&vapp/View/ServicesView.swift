@@ -6,8 +6,190 @@
 //
 
 import SwiftUI
+import SwiftUI
 
 struct ServicesView: View {
+    var body: some View {
+        NavigationStack {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 24) {
+                    
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("HİZMETLERİMİZ")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.yellow)
+                                .textCase(.uppercase)
+                            
+                            Text("Sizin İçin Neler\nYapabiliriz?")
+                                .font(.system(size: 30, weight: .bold))
+                                .foregroundColor(.primary)
+                                .lineSpacing(4)
+                        }
+                        
+                        Spacer()
+                        
+                        NavigationLink(destination: CampaignsView()) {
+                            HStack(spacing: 6) {
+                                Text("Kampanyalar")
+                                    .font(.subheadline.bold())
+                            }
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Color.yellow)
+                            .cornerRadius(20)
+                            .shadow(color: Color.yellow.opacity(0.4), radius: 5, x: 0, y: 3)
+                        }
+                        .padding(.top, 8)
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 16)
+                    
+                    VStack(spacing: 20) {
+                        // 1. Berber & Bakım Kartı
+                        NavigationLink(destination: BarberServicesView()) {
+                            PremiumCategoryCard(
+                                title: "Berber & Bakım",
+                                subtitle: "Saç kesimi, sakal tıraşı ve cilt bakımı ile kendinizi yenileyin.",
+                                imageUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=600&auto=format&fit=crop",
+                                iconName: "scissors"
+                            )
+                        }
+                        
+                        // 2. Kafe Kartı
+                        NavigationLink(destination: CafeServicesView()) {
+                            PremiumCategoryCard(
+                                title: "Kafe",
+                                subtitle: "Sıcak & soğuk içeceklerimiz ve özel atıştırmalıklarımızla mola verin.",
+                                imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=600&auto=format&fit=crop",
+                                iconName: "cup.and.saucer.fill"
+                            )
+                        }
+                        
+                        // 3. Ürünlerimiz Kartı
+                        NavigationLink(destination: ProductsServicesView()) {
+                            PremiumCategoryCard(
+                                title: "Ürünlerimiz",
+                                subtitle: "Kullandığımız premium saç ve sakal bakım ürünlerini keşfedin.",
+                                imageUrl: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop",
+                                iconName: "bag.fill"
+                            )
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 32)
+                }
+            }
+            .navigationBarHidden(true)
+        }
+    }
+}
+
+struct PremiumCategoryCard: View {
+    let title: String
+    let subtitle: String
+    let imageUrl: String
+    let iconName: String
+    
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            // Arka Plan Resmi
+            AsyncImage(url: URL(string: imageUrl)) { phase in
+                switch phase {
+                case .empty:
+                    Rectangle()
+                        .fill(Color(.systemGray5))
+                        .overlay(ProgressView())
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                case .failure:
+                    Rectangle()
+                        .fill(Color(.systemGray4))
+                        .overlay(Image(systemName: "photo").foregroundColor(.gray))
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            .frame(height: 220)
+            .frame(maxWidth: .infinity)
+            .clipped()
+            
+            // Koyu Gradyan (Yazıların okunabilmesi için)
+            LinearGradient(
+                gradient: Gradient(colors: [Color.black.opacity(0.8), Color.black.opacity(0.1), Color.clear]),
+                startPoint: .bottom,
+                endPoint: .top
+            )
+            
+            // İçerik
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: iconName)
+                        .font(.title3)
+                        .foregroundColor(.yellow)
+                    Text(title)
+                        .font(.title2.bold())
+                        .foregroundColor(.white)
+                }
+                
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.9))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+            .padding(20)
+        }
+        .frame(height: 220)
+        .cornerRadius(20)
+        .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
+    }
+}
+
+struct CafeServicesView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "cup.and.saucer.fill")
+                .font(.system(size: 64))
+                .foregroundColor(.brown)
+            Text("Kafe Hizmetleri")
+                .font(.title2.bold())
+            Text("Çok yakında burada sıcak ve soğuk içeceklerimiz, tatlılarımız ve atıştırmalıklarımız yer alacak.")
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+            Spacer()
+        }
+        .padding(.top, 60)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct ProductsServicesView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "bag.fill")
+                .font(.system(size: 64))
+                .foregroundColor(.blue)
+            Text("Ürünlerimiz")
+                .font(.title2.bold())
+            Text("Çok yakında salonumuzda kullandığımız premium saç ve cilt bakım ürünlerini buradan inceleyip satın alabileceksiniz.")
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+            Spacer()
+        }
+        .padding(.top, 60)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - Eski Hizmetler Sayfası
+struct BarberServicesView: View {
     
     @EnvironmentObject var viewModel: ServicesViewModel
     
@@ -21,11 +203,20 @@ struct ServicesView: View {
     ]
     
     var categories: [String] {
-        if selectedGenderSegment == 0 {
-            return ["Tümü", "Saç Hizmetleri", "Tırnak Hizmetleri", "Makyaj Hizmetleri", "Cilt Bakımı Hizmetleri", "Lazer Epilasyon Hizmetleri", "Masaj Hizmetleri"]
-        } else {
-            return ["Tümü", "Tırnak Hizmetleri", "Makyaj Hizmetleri", "Cilt Bakımı Hizmetleri", "Lazer Epilasyon Hizmetleri", "Saç Hizmetleri", "Masaj Hizmetleri"]
+        let matchedServices = viewModel.services.filter { service in
+            let serviceGender = service.genderType ?? "unisex"
+            if selectedGenderSegment == 0 {
+                return serviceGender == "male" || serviceGender == "unisex"
+            } else {
+                return serviceGender == "female" || serviceGender == "unisex"
+            }
         }
+        
+        let uniqueCategories = Array(Set(matchedServices.map { $0.category }))
+            .sorted()
+            .filter { !$0.isEmpty }
+            
+        return ["Tümü"] + uniqueCategories
     }
     
     var filteredServices: [Service] {
@@ -56,19 +247,19 @@ struct ServicesView: View {
         }
     }
     
+    
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                // HEADER
-                HStack {
-                    Text("Hizmetler")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primary)
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.top, 10)
+        VStack(spacing: 0) {
+            // HEADER - (Optional, can rely on NavigationTitle, but keeping it for UI consistency)
+            HStack {
+                Text("Berber & Bakım")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.top, 10)
                 
                 // SEARCH FIELD
                 HStack {
@@ -181,9 +372,9 @@ struct ServicesView: View {
                         .padding(.bottom, 20)
                     }
                 }
-            }
-            .toolbar(.visible, for: .tabBar)
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .task {
             await viewModel.fetchServices()
         }
@@ -192,20 +383,8 @@ struct ServicesView: View {
     // Normalize and map database categories to UI category chips
     private func categoryMatches(serviceCategory: String, selectedCategory: String) -> Bool {
         if selectedCategory == "Tümü" { return true }
-        
-        let normalizedService = serviceCategory.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        let normalizedSelected = selectedCategory.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        if normalizedService == normalizedSelected { return true }
-        
-        switch normalizedSelected {
-        case "saç hizmetleri":
-            return normalizedService == "saç" || normalizedService == "sakal" || normalizedService == "vip paketler" || normalizedService == "saç hizmetleri"
-        case "cilt bakımı hizmetleri":
-            return normalizedService == "bakım" || normalizedService == "cilt bakımı hizmetleri"
-        default:
-            return normalizedService == normalizedSelected
-        }
+        return serviceCategory.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) == 
+               selectedCategory.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

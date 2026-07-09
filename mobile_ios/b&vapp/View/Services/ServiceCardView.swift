@@ -14,13 +14,15 @@ struct ServiceCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             ZStack(alignment: .topTrailing) {
-                // Remote image (imageUrl)
                 CachedAsyncImage(url: URL(string: service.imageUrl)) { phase in
                     switch phase {
                     case .success(let image):
                         image
                             .resizable()
                             .scaledToFill()
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .frame(height: 130)
+                            .clipped()
                     case .failure:
                         placeholderImage
                     case .empty:
@@ -31,6 +33,7 @@ struct ServiceCardView: View {
                     }
                 }
                 .frame(height: 130)
+                .frame(maxWidth: .infinity)
                 .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 
@@ -80,6 +83,7 @@ private extension ServiceCardView {
                 .foregroundColor(.gray)
         }
         .frame(height: 130)
+        .frame(maxWidth: .infinity)
     }
 
     var priceView: some View {

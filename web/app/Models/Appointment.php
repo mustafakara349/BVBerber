@@ -25,6 +25,7 @@ class Appointment extends Model
         'customer_note', 'internal_note', 'cancellation_reason',
         'cancelled_by', 'cancelled_at', 'completed_at',
         'no_show', 'reminder_sent', 'checked_in_at', 'created_by',
+        'campaign_id', 'coupon_id'
     ];
 
     protected function casts(): array
@@ -56,6 +57,16 @@ class Appointment extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function campaign(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class);
+    }
+
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
     }
 
     public function employee(): BelongsTo

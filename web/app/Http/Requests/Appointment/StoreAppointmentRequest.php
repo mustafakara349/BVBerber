@@ -26,6 +26,7 @@ class StoreAppointmentRequest extends FormRequest
             'customer_note'           => ['nullable', 'string', 'max:1000'],
             'internal_note'           => ['nullable', 'string', 'max:1000'],
             'discount_amount'         => ['nullable', 'numeric', 'min:0'],
+            'coupon_code'             => ['nullable', 'string', 'exists:coupons,code'],
             'services'                => ['required', 'array', 'min:1'],
             'services.*.service_id'   => ['required', 'exists:services,id'],
             'services.*.quantity'     => ['sometimes', 'integer', 'min:1'],

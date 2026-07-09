@@ -71,6 +71,15 @@
                             </select>
                         </div>
 
+                        <div class="col-md-6">
+                            <label class="form-label">Kupon Kodu <span class="text-muted small">(Opsiyonel)</span></label>
+                            <select name="coupon_code" id="couponCodeSelect" class="form-select @error('coupon_code') is-invalid @enderror">
+                                <option value="">Kupon uygulanmasın</option>
+                            </select>
+                            @error('coupon_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="form-text text-success d-none" id="couponMessage"></div>
+                        </div>
+
                         <div class="col-12">
                             <label class="form-label">Hizmetler <span class="text-danger">*</span></label>
                             <div id="servicesContainer">
@@ -190,8 +199,50 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
+    const customerSelect = document.querySelector('select[name="customer_id"]');
+
     employeeSelect.addEventListener('change', fetchAvailableSlots);
     dateInput.addEventListener('change', fetchAvailableSlots);
+
+    // Kupon filtreleme mantığı
+    const allCoupons = @json($coupons);
+    const couponSelect = document.getElementById('couponCodeSelect');
+
+    function updateAvailableCoupons() {
+        const customerId = parseInt(customerSelect.value);
+        couponSelect.innerHTML = '<option value="">Kupon uygulanmasın</option>';
+        
+        if (!customerId) return;
+        
+        const eligibleCoupons = allCoupons.filter(coupon => {
+            if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
+                return false;
+            }
+            if (coupon.used_count >= coupon.usage_limit) {
+                return false;
+            }
+            return !coupon.user_id || coupon.user_id === customerId;
+        });
+        
+        eligibleCoupons.forEach(coupon => {
+            const option = document.createElement('option');
+            option.value = coupon.code;
+            
+            let typeStr = coupon.discount_type === 'percentage' ? '%' : '₺';
+            let discountValFormatted = parseFloat(coupon.discount_value).toFixed(0);
+            let detail = `${coupon.code} - ${coupon.title || 'Kupon'} (${typeStr}${discountValFormatted} İndirim)`;
+            if (coupon.user_id) {
+                detail += ' [Müşteriye Özel]';
+            }
+            option.textContent = detail;
+            couponSelect.appendChild(option);
+        });
+    }
+
+    customerSelect.addEventListener('change', updateAvailableCoupons);
+    if (customerSelect.value) {
+        updateAvailableCoupons();
+    }
 });
 </script>
 @endpush
