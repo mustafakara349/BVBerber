@@ -109,10 +109,10 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="d-inline-flex gap-2">
-                                        <a href="{{ route('services.edit', $service->id) }}" class="btn btn-outline-primary btn-sm rounded-circle p-2 border-0" title="Düzenle">
+                                        <a href="{{ route('services.edit', $service) }}" class="btn btn-outline-primary btn-sm rounded-circle p-2 border-0" title="Düzenle">
                                             <i class="ti ti-pencil fs-5"></i>
                                         </a>
-                                        <form action="{{ route('services.destroy', $service->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu hizmeti silmek istediğinize emin misiniz?');">
+                                        <form action="{{ route('services.destroy', $service) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu hizmeti silmek istediğinize emin misiniz?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-2 border-0" title="Sil">

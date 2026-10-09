@@ -34,6 +34,7 @@ class User extends Authenticatable
         'phone_verified_at',
         'last_login_at',
         'status',
+        'is_guest',
     ];
 
     protected $hidden = [
@@ -51,6 +52,7 @@ class User extends Authenticatable
             'gender' => Gender::class,
             'status' => UserStatus::class,
             'password' => 'hashed',
+            'is_guest' => 'boolean',
         ];
     }
 

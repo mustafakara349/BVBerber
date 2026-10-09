@@ -156,7 +156,7 @@
                             {{ $rev->created_at ? $rev->created_at->format('d.m.Y H:i') : '-' }}
                         </td>
                         <td class="text-end pe-4">
-                            <form method="POST" action="{{ route('reviews.destroy', $rev->id) }}" onsubmit="return confirm('Bu değerlendirmeyi silmek istediğinize emin misiniz? (Yorum silinecek fakat ortalama puanı etkilemeye devam edecektir)');">
+                            <form method="POST" action="{{ route('reviews.destroy', $rev) }}" onsubmit="return confirm('Bu değerlendirmeyi silmek istediğinize emin misiniz? (Yorum silinecek fakat ortalama puanı etkilemeye devam edecektir)');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-outline-danger border-0 rounded-circle btn-sm" title="Yorumu Kaldır (Modere Et)">

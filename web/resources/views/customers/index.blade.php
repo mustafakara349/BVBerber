@@ -33,7 +33,7 @@
                         </thead>
                         <tbody>
                             @forelse($customers as $customer)
-                            <tr class="border-bottom">
+                            <tr class="border-bottom" style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form')){window.location='{{ route('customers.show', $customer) }}'}" title="Müşteri Detayını Gör">
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
                                         @if($customer->profile_photo_url)
@@ -90,13 +90,10 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="d-inline-flex gap-2">
-                                        <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-outline-info btn-sm rounded-circle p-2 border-0" title="Görüntüle">
-                                            <i class="ti ti-eye fs-5"></i>
-                                        </a>
-                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-outline-primary btn-sm rounded-circle p-2 border-0" title="Düzenle">
+                                        <a href="{{ route('customers.edit', $customer) }}" class="btn btn-outline-primary btn-sm rounded-circle p-2 border-0" title="Düzenle">
                                             <i class="ti ti-pencil fs-5"></i>
                                         </a>
-                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu müşteriyi silmek istediğinize emin misiniz?');">
+                                        <form action="{{ route('customers.destroy', $customer) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu müşteriyi silmek istediğinize emin misiniz?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-2 border-0" title="Sil">

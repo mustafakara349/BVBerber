@@ -7,7 +7,7 @@ class CouponsViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     
-    private let db = FirestoreManager.shared
+    private let db = APIClient.shared
     
     func fetchCoupons() async {
         isLoading = true

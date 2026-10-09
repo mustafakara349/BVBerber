@@ -65,13 +65,12 @@
                                 <th class="py-3 border-0">Fatura No</th>
                                 <th class="py-3 border-0">Tedarikçi</th>
                                 <th class="py-3 border-0 text-end">Toplam Tutar</th>
-                                <th class="py-3 border-0 text-center">İşleyen</th>
-                                <th class="pe-4 py-3 border-0 text-end">İşlemler</th>
+                                <th class="py-3 border-0 text-center pe-4">İşleyen</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($orders as $order)
-                            <tr class="border-bottom border-light">
+                            <tr class="border-bottom border-light" style="cursor:pointer;" onclick="window.location='{{ route('purchase-orders.show', $order) }}'" title="Detayı Görüntüle">
                                 <td class="ps-4 py-3">
                                     <div class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($order->purchase_date)->format('d.m.Y') }}</div>
                                 </td>
@@ -88,18 +87,13 @@
                                 <td class="text-end fw-bold text-success">
                                     {{ number_format($order->total_amount, 2, ',', '.') }} ₺
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center pe-4">
                                     <div class="small fw-semibold">{{ $order->creator ? $order->creator->first_name : 'Sistem' }}</div>
-                                </td>
-                                <td class="pe-4 text-end">
-                                    <a href="{{ route('purchase-orders.show', $order) }}" class="btn btn-outline-info btn-sm rounded-circle p-2 border-0" title="Detayları Gör">
-                                        <i class="ti ti-eye fs-5"></i>
-                                    </a>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
+                                <td colspan="5" class="text-center py-5 text-muted">
                                     <i class="ti ti-file-invoice fs-1 mb-2 d-block text-secondary opacity-50"></i>
                                     <h5>Kayıt bulunamadı.</h5>
                                     <p class="small text-secondary mb-0">Mal alımı yapabilmek için "Yeni Mal Alımı" butonuna tıklayın.</p>

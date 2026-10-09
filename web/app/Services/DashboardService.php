@@ -45,10 +45,10 @@ class DashboardService
         );
     }
 
-    public function getTopServices(int $branchId, int $limit = 5): array
+    public function getTopServices(int $branchId, string $period = 'month', int $limit = 5): array
     {
-        return Cache::remember("dashboard.services.{$branchId}", $this->getCacheTtl(600), fn () =>
-            $this->dashboardRepo->getTopServices($branchId, $limit)
+        return Cache::remember("dashboard.services.{$branchId}.{$period}", $this->getCacheTtl(600), fn () =>
+            $this->dashboardRepo->getTopServices($branchId, $period, $limit)
         );
     }
 
@@ -109,7 +109,9 @@ class DashboardService
         $keys = [
             "dashboard.widgets.{$branchId}",
             "dashboard.barbers.{$branchId}",
-            "dashboard.services.{$branchId}",
+            "dashboard.services.{$branchId}.day",
+            "dashboard.services.{$branchId}.month",
+            "dashboard.services.{$branchId}.year",
             "dashboard.chart.{$branchId}.all_periods",
         ];
 

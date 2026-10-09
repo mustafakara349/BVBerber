@@ -54,17 +54,36 @@ class CustomerController extends Controller
 
     public function show(User $customer)
     {
-        // Sadece müşteri rolündeki kullanıcıları göster
         if ($customer->role?->slug !== 'customer') {
             abort(404);
         }
 
-        $customer->load(['appointments.employee.user', 'appointments.appointmentServices.service']);
-
         $totalSpent = $customer->appointments()->where('status', 'completed')->sum('total_price');
         $completedAppointments = $customer->appointments()->where('status', 'completed')->count();
+        
+        $thisMonthAppointments = $customer->appointments()
+            ->where('status', 'completed')
+            ->whereMonth('start_at', now()->month)
+            ->whereYear('start_at', now()->year)
+            ->count();
+        
+        $thisMonthSpent = $customer->appointments()
+            ->where('status', 'completed')
+            ->whereMonth('start_at', now()->month)
+            ->whereYear('start_at', now()->year)
+            ->sum('total_price');
+            
+        $thisYearSpent = $customer->appointments()
+            ->where('status', 'completed')
+            ->whereYear('start_at', now()->year)
+            ->sum('total_price');
 
-        return view('customers.show', compact('customer', 'totalSpent', 'completedAppointments'));
+        $appointments = $customer->appointments()
+            ->with(['employee.user', 'appointmentServices.service'])
+            ->orderBy('start_at', 'desc')
+            ->paginate(10);
+
+        return view('customers.show', compact('customer', 'totalSpent', 'completedAppointments', 'thisMonthAppointments', 'thisMonthSpent', 'thisYearSpent', 'appointments'));
     }
 
     public function edit(User $customer)

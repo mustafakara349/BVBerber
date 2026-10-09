@@ -118,7 +118,7 @@
                     <i class="ti ti-filter text-danger fs-4"></i>
                     <h5 class="card-title fw-bold text-dark mb-0 fs-6">Giderleri Filtrele</h5>
                 </div>
-                @if(request()->anyFilled(['category_id', 'start_date', 'end_date']))
+                @if(request()->anyFilled(['category_name', 'start_date', 'end_date']))
                     <a href="{{ route('finance.expenses') }}" class="btn btn-light rounded-pill btn-sm text-secondary d-flex align-items-center gap-1">
                         <i class="ti ti-rotate"></i> Filtreleri Temizle
                     </a>
@@ -129,10 +129,10 @@
                     <!-- Category Filter -->
                     <div class="col-12 col-md-4">
                         <label class="form-label text-secondary fw-semibold small">Gider Kategorisi</label>
-                        <select name="category_id" class="form-select border-0 shadow-sm rounded-3">
+                        <select name="category_name" class="form-select border-0 shadow-sm rounded-3">
                             <option value="">Tüm Gider Kategorileri</option>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <option value="{{ $category->name }}" {{ request('category_name') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -184,7 +184,7 @@
                             <tr class="border-bottom border-light">
                                 <td class="ps-4 py-3">
                                     <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold">
-                                        <i class="ti ti-tag me-1"></i> {{ $expense->category->name ?? 'Belirtilmemiş' }}
+                                        <i class="ti ti-tag me-1"></i> {{ $expense->category ?? 'Belirtilmemiş' }}
                                     </span>
                                 </td>
                                 <td>
@@ -193,7 +193,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="fw-semibold">{{ $expense->expense_date->format('d.m.Y') }}</span>
+                                    <span class="fw-semibold">{{ \Carbon\Carbon::parse($expense->transaction_date)->format('d.m.Y') }}</span>
                                 </td>
                                 <td>
                                     <span class="text-secondary text-wrap" style="max-width: 300px; display: inline-block;">
@@ -206,8 +206,8 @@
                                     </span>
                                 </td>
                                 <td>
-                                    @if($expense->receipt_file)
-                                        <a href="{{ asset('storage/' . $expense->receipt_file) }}" target="_blank" class="btn btn-light btn-sm rounded-pill border d-inline-flex align-items-center gap-1 text-primary">
+                                    @if($expense->document_path)
+                                        <a href="{{ asset('storage/' . $expense->document_path) }}" target="_blank" class="btn btn-light btn-sm rounded-pill border d-inline-flex align-items-center gap-1 text-primary">
                                             <i class="ti ti-file-text"></i> Belgeyi Gör
                                         </a>
                                     @else
@@ -260,10 +260,10 @@
                     <!-- Category selection -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold text-secondary">Gider Kategorisi</label>
-                        <select name="category_id" class="form-select border-0 bg-light" required>
+                        <select name="category_name" class="form-select border-0 bg-light" required>
                             <option value="">Kategori Seçin</option>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <option value="{{ $category->name }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
                         <span class="small text-muted mt-1 d-block">Aradığınız kategori yoksa, arkadaki "Yeni Kategori Ekle" butonundan oluşturabilirsiniz.</span>

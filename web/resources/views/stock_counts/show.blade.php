@@ -69,7 +69,17 @@
                             @foreach($stockCount->items as $item)
                             <tr class="border-bottom border-light">
                                 <td class="ps-4 py-3">
-                                    <div class="fw-semibold text-dark">{{ $item->product ? $item->product->name : 'Silinmiş Ürün' }}</div>
+                                    @if($item->product)
+                                        <div class="fw-semibold text-dark">{{ $item->product->name }}</div>
+                                        @if($item->product->sku)
+                                            <small class="text-muted"><i class="ti ti-barcode me-1"></i>SKU: {{ $item->product->sku }}</small>
+                                        @endif
+                                        @if($item->product->barcode)
+                                            <small class="text-muted d-block"><i class="ti ti-scan me-1"></i>Barkod: {{ $item->product->barcode }}</small>
+                                        @endif
+                                    @else
+                                        <span class="text-danger small">Silinmiş Ürün</span>
+                                    @endif
                                 </td>
                                 <td class="text-center text-secondary">
                                     {{ $item->system_quantity }}
@@ -88,6 +98,7 @@
                                 </td>
                             </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>

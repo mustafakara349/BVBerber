@@ -19,7 +19,7 @@
     <div class="col-xl-8 col-lg-10">
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-body p-4">
-                <form action="{{ route('services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('services.update', $service) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     

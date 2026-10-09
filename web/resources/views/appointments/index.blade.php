@@ -218,50 +218,73 @@
     <div class="col-12">
         <div class="card">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover align-middle mb-0">
                     <thead>
                         <tr>
-                            <th>Kod</th>
-                            <th>Müşteri</th>
-                            <th>Berber</th>
-                            <th>Tarih / Saat</th>
-                            <th>Hizmetler</th>
-                            <th>Tutar</th>
-                            <th>Durum</th>
-                            <th>Ödeme</th>
-                            <th class="pe-4 text-end">İşlemler</th>
+                            <th style="min-width: 80px;">Kod</th>
+                            <th style="min-width: 200px;">Müşteri</th>
+                            <th style="min-width: 150px;">Berber</th>
+                            <th style="min-width: 130px;">Tarih / Saat</th>
+                            <th style="min-width: 200px;">Hizmetler</th>
+                            <th style="min-width: 100px;">Tutar</th>
+                            <th style="min-width: 110px;">Durum</th>
+                            <th style="min-width: 110px;">Ödeme</th>
+                            <th class="pe-4 text-end" style="min-width: 100px;">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($appointments as $apt)
-                        <tr>
-                            <td><span class="fw-semibold">{{ $apt->appointment_code }}</span></td>
+                        <tr style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form')){window.location='{{ route('appointments.show', $apt) }}'}" title="Randevu Detayını Gör">
+                            <td class="text-secondary fw-bold">#{{ $apt->appointment_code }}</td>
                             <td>
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-3">
                                     @if($apt->customer?->profile_photo_url)
-                                        <img src="{{ $apt->customer->profile_photo_url }}" class="avatar avatar-xs rounded-circle" alt="">
+                                        <img src="{{ $apt->customer->profile_photo_url }}" class="avatar avatar-sm rounded-circle shadow-sm" alt="">
                                     @else
-                                        <div class="avatar avatar-xs rounded-circle avatar-primary">
-                                            <span class="avatar-initials small">{{ substr($apt->customer?->first_name ?? '?', 0, 1) }}</span>
+                                        <div class="avatar avatar-sm rounded-circle bg-primary-subtle text-primary shadow-sm d-flex align-items-center justify-content-center fw-bold">
+                                            <span>{{ substr($apt->customer?->first_name ?? '?', 0, 1) }}</span>
                                         </div>
                                     @endif
                                     <div>
-                                        <p class="mb-0 small">{{ $apt->customer?->full_name }}</p>
-                                        <small class="text-muted">{{ $apt->customer?->phone }}</small>
+                                        <p class="mb-0 fw-bold text-dark">{{ $apt->customer?->full_name }}</p>
+                                        <small class="text-muted"><i class="ti ti-phone me-1"></i>{{ $apt->customer?->phone }}</small>
                                     </div>
                                 </div>
                             </td>
-                            <td>{{ $apt->employee?->user?->full_name }}</td>
                             <td>
-                                <div>{{ $apt->start_at->format('d.m.Y') }}</div>
-                                <small class="text-muted">{{ $apt->start_at->format('H:i') }} - {{ $apt->end_at->format('H:i') }}</small>
+                                <span class="fw-medium text-dark">{{ $apt->employee?->user?->full_name }}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold text-dark"><i class="ti ti-calendar me-1 text-primary"></i>{{ $apt->start_at->format('d.m.Y') }}</span>
+                                    <small class="text-muted"><i class="ti ti-clock me-1 text-primary"></i>{{ $apt->start_at->format('H:i') }} - {{ $apt->end_at->format('H:i') }}</small>
+                                </div>
                             </td>
                             <td>
                                 @foreach($apt->appointmentServices as $as)
                                     <span class="badge bg-light text-dark border mb-1">{{ $as->service?->name }}</span>
                                 @endforeach
                             </td>
-                            <td class="fw-semibold">₺{{ number_format($apt->total_price, 0, ',', '.') }}</td>
+                            <td class="fw-semibold">
+                                @if($apt->discount_amount > 0)
+                                    <span class="text-muted text-decoration-line-through me-1" style="font-size: 0.85em;">₺{{ number_format($apt->subtotal, 0, ',', '.') }}</span>
+                                @endif
+                                <span class="fs-6 text-dark">₺{{ number_format($apt->total_price, 0, ',', '.') }}</span>
+                                @if($apt->coupon_id || $apt->campaign_id)
+                                    <div class="mt-1 d-flex flex-column gap-1 align-items-start">
+                                        @if($apt->coupon)
+                                            <a href="{{ route('campaigns.index') }}" class="badge bg-warning-subtle text-warning-emphasis border border-warning text-decoration-none shadow-sm" style="font-size: 10px;" title="Kupon Kullanıldı">
+                                                <i class="ti ti-ticket me-1"></i> {{ $apt->coupon->code }}
+                                            </a>
+                                        @endif
+                                        @if($apt->campaign)
+                                            <a href="{{ route('campaigns.index') }}" class="badge bg-warning-subtle text-warning-emphasis border border-warning text-decoration-none shadow-sm" style="font-size: 10px;" title="Kampanya Uygulandı">
+                                                <i class="ti ti-gift me-1"></i> {{ $apt->campaign->title }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                @endif
+                            </td>
                             <td>
                                 <span class="badge bg-{{ $apt->status->color() }}-subtle text-{{ $apt->status->color() }} border border-{{ $apt->status->color() }}">
                                     {{ $apt->status->label() }}
@@ -274,9 +297,6 @@
                             </td>
                             <td class="pe-4 text-end">
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ route('appointments.show', $apt) }}" class="btn btn-outline-primary btn-sm rounded-circle p-2 border-0" title="Görüntüle">
-                                        <i class="ti ti-eye fs-5"></i>
-                                    </a>
                                     @if($apt->status->value != 'cancelled' && $apt->status->value != 'completed')
                                     <form action="{{ route('appointments.update-status', $apt) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?');">
                                         @csrf

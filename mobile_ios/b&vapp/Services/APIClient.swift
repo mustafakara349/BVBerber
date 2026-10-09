@@ -1,5 +1,5 @@
 //
-//  FirestoreManager.swift
+//  APIClient.swift
 //  b&vapp
 //
 //  Created by Mustafa KARA on 29.03.2026.
@@ -23,14 +23,14 @@ struct APIResponseError: Codable {
 
 struct EmptyResponse: Codable {}
 
-// MARK: - FirestoreManager
+// MARK: - APIClient
 
-class FirestoreManager {
+class APIClient {
 
-    static let shared = FirestoreManager()
+    static let shared = APIClient()
     
-    // Base URL configuration - change this to production API URL if needed
-    let baseURL = "http://192.168.0.2:8000/api/v1/mobile"
+    // Base URL configuration
+    var baseURL: String { AppConfig.apiBaseURL }
 
     private init() {}
 
@@ -141,6 +141,12 @@ class FirestoreManager {
         return try await sendRequest(path: "/query", method: "POST", body: jsonData)
     }
 
+    // MARK: - Fetch Public List
+    
+    func fetchPublicList<T: Codable>(_ endpoint: String) async throws -> [T] {
+        return try await sendRequest(path: "/\(endpoint)", method: "GET")
+    }
+
     // MARK: - Fetch Single Document
 
     func fetchDocument<T: Codable>(
@@ -244,6 +250,10 @@ class FirestoreManager {
         let isValid: Bool
         let discountAmount: Double
         let message: String
+        let rewardType: String?
+        let rewardProductId: String?
+        let rewardCafeProductId: String?
+        let rewardProductName: String?
     }
     
     func validateCoupon(code: String?, campaignId: String?, subtotal: Double, serviceIds: [Int]) async throws -> CouponValidationResponse {
@@ -260,5 +270,12 @@ class FirestoreManager {
         
         let jsonData = try JSONSerialization.data(withJSONObject: data)
         return try await sendRequest(path: "/validate-coupon", method: "POST", body: jsonData)
+    }
+
+    // MARK: - Generic POST Data
+    
+    func postData(to endpoint: String, data: [String: Any]) async throws -> EmptyResponse {
+        let jsonData = try JSONSerialization.data(withJSONObject: data)
+        return try await sendRequest(path: "/\(endpoint)", method: "POST", body: jsonData)
     }
 }

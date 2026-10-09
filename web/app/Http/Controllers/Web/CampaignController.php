@@ -17,17 +17,20 @@ class CampaignController extends Controller
         $branchId = session('active_branch_id', 1);
 
         $campaigns = Campaign::where('branch_id', $branchId)
-            ->with(['categories', 'usages.customer', 'usages.appointment.employee'])
+            ->with(['categories', 'services', 'usages.customer', 'usages.appointment.employee'])
             ->latest()
             ->get();
             
         // Since coupons are independent, we just fetch all coupons for now. 
         // Or if we want branch specific coupons, we'd need branch_id on coupons, but we didn't add it.
-        $coupons = Coupon::with(['user', 'usages.customer', 'usages.appointment.employee'])
+        $coupons = Coupon::with(['users', 'usages.customer', 'usages.appointment.employee'])
             ->latest()
             ->get();
 
         $categories = ServiceCategory::where('branch_id', $branchId)->get();
+        $services = \App\Models\Service::where('branch_id', $branchId)->get();
+        $products = \App\Models\Product::where('branch_id', $branchId)->get();
+        $cafeProducts = \App\Models\CafeProduct::where('branch_id', $branchId)->get();
         $users = User::all();
 
         $stats = [
@@ -37,7 +40,7 @@ class CampaignController extends Controller
             'active_coupons'   => $coupons->filter(fn($c) => $c->isValid())->count(),
         ];
 
-        return view('campaigns.index', compact('campaigns', 'coupons', 'stats', 'categories', 'users'));
+        return view('campaigns.index', compact('campaigns', 'coupons', 'stats', 'categories', 'services', 'products', 'cafeProducts', 'users'));
     }
 
     public function store(Request $request)
@@ -53,13 +56,20 @@ class CampaignController extends Controller
             'target_audience' => 'required|string|in:all,new_customers,loyalty_members',
             'priority'       => 'nullable|integer|min:0',
             'per_customer_limit' => 'nullable|integer|min:1',
-            'discount_type'  => 'required|string|in:percentage,fixed',
-            'discount_value' => 'required|numeric|min:0',
+            'discount_type'  => 'nullable|string|in:percentage,fixed',
+            'discount_value' => 'nullable|numeric|min:0',
             'start_date'     => 'required|date',
             'end_date'       => 'required|date|after_or_equal:start_date',
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'terms'          => 'nullable|string',
+            'trigger_type'   => 'required|in:all,categories,services',
+            'reward_type'    => 'required|in:discount,gift_product,gift_cafe',
+            'reward_product_id' => 'nullable|exists:products,id',
+            'reward_cafe_product_id' => 'nullable|exists:cafe_products,id',
             'categories'     => 'nullable|array',
             'categories.*'   => 'exists:service_categories,id',
+            'services'       => 'nullable|array',
+            'services.*'     => 'exists:services,id',
         ]);
 
         if ($request->hasFile('image')) {
@@ -70,11 +80,21 @@ class CampaignController extends Controller
         $validated['is_active'] = $request->has('is_active');
         $validated['min_order_amount'] = $validated['min_order_amount'] ?? 0;
         $validated['priority'] = $validated['priority'] ?? 0;
+        $validated['discount_value'] = $validated['discount_value'] ?? 0;
+        $validated['discount_type'] = $validated['discount_type'] ?? 'percentage';
 
         $campaign = Campaign::create($validated);
 
-        if ($request->has('categories')) {
+        if ($request->has('categories') && $validated['trigger_type'] === 'categories') {
             $campaign->categories()->sync($request->categories);
+        } else {
+            $campaign->categories()->detach();
+        }
+
+        if ($request->has('services') && $validated['trigger_type'] === 'services') {
+            $campaign->services()->sync($request->services);
+        } else {
+            $campaign->services()->detach();
         }
 
         return redirect()->route('campaigns.index')->with('success', 'Kampanya başarıyla oluşturuldu.');
@@ -93,13 +113,20 @@ class CampaignController extends Controller
             'target_audience' => 'required|string|in:all,new_customers,loyalty_members',
             'priority'       => 'nullable|integer|min:0',
             'per_customer_limit' => 'nullable|integer|min:1',
-            'discount_type'  => 'required|string|in:percentage,fixed',
-            'discount_value' => 'required|numeric|min:0',
+            'discount_type'  => 'nullable|string|in:percentage,fixed',
+            'discount_value' => 'nullable|numeric|min:0',
             'start_date'     => 'required|date',
             'end_date'       => 'required|date|after_or_equal:start_date',
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'terms'          => 'nullable|string',
+            'trigger_type'   => 'required|in:all,categories,services',
+            'reward_type'    => 'required|in:discount,gift_product,gift_cafe',
+            'reward_product_id' => 'nullable|exists:products,id',
+            'reward_cafe_product_id' => 'nullable|exists:cafe_products,id',
             'categories'     => 'nullable|array',
             'categories.*'   => 'exists:service_categories,id',
+            'services'       => 'nullable|array',
+            'services.*'     => 'exists:services,id',
         ]);
 
         if ($request->hasFile('image')) {
@@ -109,13 +136,21 @@ class CampaignController extends Controller
         $validated['is_active'] = $request->has('is_active');
         $validated['min_order_amount'] = $validated['min_order_amount'] ?? 0;
         $validated['priority'] = $validated['priority'] ?? 0;
+        $validated['discount_value'] = $validated['discount_value'] ?? 0;
+        $validated['discount_type'] = $validated['discount_type'] ?? 'percentage';
 
         $campaign->update($validated);
 
-        if ($request->has('categories')) {
+        if ($request->has('categories') && $validated['trigger_type'] === 'categories') {
             $campaign->categories()->sync($request->categories);
         } else {
             $campaign->categories()->detach();
+        }
+
+        if ($request->has('services') && $validated['trigger_type'] === 'services') {
+            $campaign->services()->sync($request->services);
+        } else {
+            $campaign->services()->detach();
         }
 
         return redirect()->route('campaigns.index')->with('success', 'Kampanya başarıyla güncellendi.');
@@ -148,10 +183,15 @@ class CampaignController extends Controller
             'usage_limit' => 'required|integer|min:1',
             'per_customer_limit' => 'required|integer|min:1',
             'expires_at'  => 'required|date|after:today',
-            'user_id'     => 'nullable|exists:users,id',
+            'user_ids'    => 'nullable|array',
+            'user_ids.*'  => 'exists:users,id',
         ]);
 
-        Coupon::create($validated);
+        $coupon = Coupon::create($validated);
+
+        if ($request->has('user_ids')) {
+            $coupon->users()->sync($request->user_ids);
+        }
 
         return redirect()->route('campaigns.index')->with('success', 'Kupon kodu başarıyla oluşturuldu.');
     }
@@ -167,10 +207,17 @@ class CampaignController extends Controller
             'usage_limit' => 'required|integer|min:1',
             'per_customer_limit' => 'required|integer|min:1',
             'expires_at'  => 'required|date',
-            'user_id'     => 'nullable|exists:users,id',
+            'user_ids'    => 'nullable|array',
+            'user_ids.*'  => 'exists:users,id',
         ]);
 
         $coupon->update($validated);
+
+        if ($request->has('user_ids')) {
+            $coupon->users()->sync($request->user_ids);
+        } else {
+            $coupon->users()->detach();
+        }
 
         return redirect()->route('campaigns.index')->with('success', 'Kupon kodu başarıyla güncellendi.');
     }
@@ -179,6 +226,22 @@ class CampaignController extends Controller
     {
         $coupon->delete();
         return redirect()->route('campaigns.index')->with('success', 'Kupon kodu silindi.');
+    }
+
+    public function usages(Campaign $campaign)
+    {
+        $this->authorizeBranchAccess($campaign->branch_id);
+        
+        $usages = $campaign->usages()->with(['customer', 'appointment.employee'])->latest('used_at')->paginate(20);
+        
+        return view('campaigns.usages', compact('campaign', 'usages'));
+    }
+
+    public function couponUsages(Coupon $coupon)
+    {
+        $usages = $coupon->usages()->with(['customer', 'appointment.employee'])->latest('used_at')->paginate(20);
+        
+        return view('campaigns.coupon_usages', compact('coupon', 'usages'));
     }
 
     /**

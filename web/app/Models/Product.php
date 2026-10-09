@@ -13,9 +13,9 @@ class Product extends Model
     use SoftDeletes, Auditable;
 
     protected $fillable = [
-        'branch_id', 'name', 'sku', 'barcode', 'description',
+        'branch_id', 'name', 'product_category_id', 'sku', 'barcode', 'description',
         'purchase_price', 'sell_price', 'stock_quantity', 'is_active',
-        'critical_stock', 'average_cost_price', 'last_purchase_price'
+        'critical_stock', 'average_cost_price', 'last_purchase_price', 'image'
     ];
 
     protected $casts = [
@@ -30,6 +30,11 @@ class Product extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function productCategory(): BelongsTo
+    {
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
     public function sales(): HasMany

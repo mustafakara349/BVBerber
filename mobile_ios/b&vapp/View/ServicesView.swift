@@ -6,9 +6,18 @@
 //
 
 import SwiftUI
-import SwiftUI
 
 struct ServicesView: View {
+    @EnvironmentObject var homeVM: HomeViewModel
+    
+    @State private var showBarber = false
+    @State private var showCafe = false
+    @State private var showProduct = false
+    
+    @State private var initialService: Service? = nil
+    @State private var initialCafeProduct: CafeProduct? = nil
+    @State private var initialSaleProduct: SaleProduct? = nil
+
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
@@ -83,6 +92,33 @@ struct ServicesView: View {
                 }
             }
             .navigationBarHidden(true)
+            .navigationDestination(isPresented: $showBarber) {
+                BarberServicesView(initialService: initialService)
+            }
+            .navigationDestination(isPresented: $showCafe) {
+                CafeServicesView(initialProduct: initialCafeProduct)
+            }
+            .navigationDestination(isPresented: $showProduct) {
+                ProductsServicesView(initialProduct: initialSaleProduct)
+            }
+        }
+        .onReceive(homeVM.$pendingNavigationAction) { action in
+            if let action = action {
+                homeVM.pendingNavigationAction = nil
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    switch action {
+                    case .barber(let s):
+                        self.initialService = s
+                        self.showBarber = true
+                    case .cafe(let c):
+                        self.initialCafeProduct = c
+                        self.showCafe = true
+                    case .product(let p):
+                        self.initialSaleProduct = p
+                        self.showProduct = true
+                    }
+                }
+            }
         }
     }
 }
@@ -151,51 +187,29 @@ struct PremiumCategoryCard: View {
 }
 
 struct CafeServicesView: View {
+    var initialProduct: CafeProduct? = nil
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "cup.and.saucer.fill")
-                .font(.system(size: 64))
-                .foregroundColor(.brown)
-            Text("Kafe Hizmetleri")
-                .font(.title2.bold())
-            Text("Çok yakında burada sıcak ve soğuk içeceklerimiz, tatlılarımız ve atıştırmalıklarımız yer alacak.")
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
-            Spacer()
-        }
-        .padding(.top, 60)
-        .navigationBarTitleDisplayMode(.inline)
+        CafeMenuView(initialProduct: initialProduct)
     }
 }
 
 struct ProductsServicesView: View {
+    var initialProduct: SaleProduct? = nil
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "bag.fill")
-                .font(.system(size: 64))
-                .foregroundColor(.blue)
-            Text("Ürünlerimiz")
-                .font(.title2.bold())
-            Text("Çok yakında salonumuzda kullandığımız premium saç ve cilt bakım ürünlerini buradan inceleyip satın alabileceksiniz.")
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
-            Spacer()
-        }
-        .padding(.top, 60)
-        .navigationBarTitleDisplayMode(.inline)
+        SaleProductsView(initialProduct: initialProduct)
     }
 }
 
 // MARK: - Eski Hizmetler Sayfası
 struct BarberServicesView: View {
+    var initialService: Service? = nil
     
     @EnvironmentObject var viewModel: ServicesViewModel
     
     @State private var searchText = ""
     @State private var selectedGenderSegment = 0 // 0 = Erkek, 1 = Kadın
     @State private var selectedCategory = "Tümü"
+    @State private var animateSearchBar = false
     
     private let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -280,6 +294,13 @@ struct BarberServicesView: View {
                 .padding(12)
                 .background(Color(.systemGray6))
                 .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.yellow, lineWidth: 3)
+                        .scaleEffect(animateSearchBar ? 1.02 : 1)
+                        .opacity(animateSearchBar ? 1 : 0)
+                )
+                .animation(.easeInOut(duration: 0.6).repeatCount(2, autoreverses: true), value: animateSearchBar)
                 .padding(.horizontal)
                 .padding(.top, 8)
                 
@@ -377,6 +398,20 @@ struct BarberServicesView: View {
         .toolbar(.hidden, for: .tabBar)
         .task {
             await viewModel.fetchServices()
+            if let service = initialService {
+                searchText = service.name
+                if let gender = service.genderType {
+                    selectedGenderSegment = gender == "female" ? 1 : 0
+                }
+                
+                // Animasyonu tetikle (arama barını vurgula)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    animateSearchBar = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                        animateSearchBar = false
+                    }
+                }
+            }
         }
     }
     

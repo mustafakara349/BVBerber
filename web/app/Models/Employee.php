@@ -16,7 +16,7 @@ class Employee extends Model
 
     protected $fillable = [
         'branch_id', 'user_id', 'employee_code',
-        'title', 'biography',
+        'employee_title_id', 'biography',
         'hire_date', 'leave_date',
         'salary_type', 'salary_amount', 'commission_rate',
         'daily_work_limit', 'appointment_color',
@@ -82,9 +82,25 @@ class Employee extends Model
         return $this->user?->full_name ?? '';
     }
 
+    public function getTitleAttribute(): ?string
+    {
+        return $this->employeeTitle?->name;
+    }
+
+    public function employeeTitle(): BelongsTo
+    {
+        return $this->belongsTo(EmployeeTitle::class);
+    }
+
     public function getAverageRatingAttribute(): float
     {
         return round($this->reviews()->avg('rating') ?? 0, 1);
+    }
+
+    // Route Binding
+    public function getRouteKeyName(): string
+    {
+        return 'employee_code';
     }
 
     // Scopes

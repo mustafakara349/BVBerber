@@ -8,7 +8,7 @@ interface DashboardRepositoryInterface
     public function getAppointmentStats(int $branchId, string $period = 'month'): array;
     public function getFilteredAppointmentStats(int $branchId, string $period, ?string $startDate = null, ?string $endDate = null): array;
     public function getBarberPerformance(int $branchId): array;
-    public function getTopServices(int $branchId, int $limit = 5): array;
+    public function getTopServices(int $branchId, string $period = 'month', int $limit = 5): array;
     public function getCustomerStats(int $branchId): array;
     public function getFinancialOverview(int $branchId): array;
     public function getRevenueChart(int $branchId, string $period = 'year'): array;

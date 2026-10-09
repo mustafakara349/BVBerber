@@ -16,7 +16,7 @@ class DashboardController extends Controller
 
         $widgets = $this->dashboardService->getWidgetData($branchId);
         $barbers = $this->dashboardService->getBarberPerformance($branchId);
-        $topServices = $this->dashboardService->getTopServices($branchId);
+        $topServices = $this->dashboardService->getTopServices($branchId, 'month');
         $revenueChart = $this->dashboardService->getRevenueChart($branchId);
         $todayAppointments = $this->dashboardService->getTodayAppointments($branchId);
         $pendingAppointments = $this->dashboardService->getPendingAppointments($branchId);
@@ -35,6 +35,16 @@ class DashboardController extends Controller
         $stats = $this->dashboardService->getFilteredAppointmentStats($branchId, $period, $startDate, $endDate);
 
         return response()->json($stats);
+    }
+
+    public function topServices(\Illuminate\Http\Request $request): \Illuminate\Http\JsonResponse
+    {
+        $branchId = $this->getActiveBranchId();
+        $period = $request->input('period', 'month');
+
+        $topServices = $this->dashboardService->getTopServices($branchId, $period);
+
+        return response()->json($topServices);
     }
 
     private function getActiveBranchId(): int

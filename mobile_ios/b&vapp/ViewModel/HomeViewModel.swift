@@ -9,8 +9,16 @@ import Foundation
 import MapKit
 import Combine
 
+enum ServicesNavigationAction {
+    case barber(Service)
+    case cafe(CafeProduct)
+    case product(SaleProduct)
+}
+
 @MainActor
 class HomeViewModel: ObservableObject {
+
+    @Published var pendingNavigationAction: ServicesNavigationAction? = nil
 
     @Published var services: [Service] = []
     @Published var barbers: [Barber] = []
@@ -18,7 +26,10 @@ class HomeViewModel: ObservableObject {
     @Published var user: UserModel? = nil
     @Published var isLoading = false
 
-    private let db = FirestoreManager.shared
+    private let db = APIClient.shared
+
+    @Published var cafeProducts: [CafeProduct] = []
+    @Published var saleProducts: [SaleProduct] = []
 
     // MARK: - Computed
 
@@ -43,12 +54,16 @@ class HomeViewModel: ObservableObject {
             async let campaignsTask: [Campaign] = db.fetchCollection(
                 "campaigns"
             )
+            async let cafeProductsTask: [CafeProduct] = db.fetchPublicList("cafe-products")
+            async let saleProductsTask: [SaleProduct] = db.fetchPublicList("sale-products")
 
-            let (fetchedServices, fetchedBarbers, fetchedCampaigns) = try await (servicesTask, barbersTask, campaignsTask)
+            let (fetchedServices, fetchedBarbers, fetchedCampaigns, fetchedCafe, fetchedSale) = try await (servicesTask, barbersTask, campaignsTask, cafeProductsTask, saleProductsTask)
 
             services = fetchedServices
             barbers = fetchedBarbers.filter { $0.isAvailable }
             campaigns = fetchedCampaigns
+            cafeProducts = fetchedCafe
+            saleProducts = fetchedSale
 
             if let userId = AuthManager.shared.currentUserId {
                 user = try await db.fetchDocument("users", documentId: userId)

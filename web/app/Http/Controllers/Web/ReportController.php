@@ -22,7 +22,7 @@ class ReportController extends Controller
             'total_appointments' => Appointment::forBranch($branchId)->count(),
             'total_customers'    => User::customers()->count(),
             'total_income'       => Transaction::forBranch($branchId)->income()->sum('amount'),
-            'total_expense'      => Expense::forBranch($branchId)->sum('amount'),
+            'total_expense'      => Transaction::expense()->forBranch($branchId)->sum('amount'),
         ];
 
         return view('reports.index', compact('generalStats'));

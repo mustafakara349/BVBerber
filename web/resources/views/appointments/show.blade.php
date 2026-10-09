@@ -173,6 +173,39 @@
             </div>
         </div>
 
+        {{-- Campaign / Coupon Info --}}
+        @if($appointment->coupon_id || $appointment->campaign_id)
+        <div class="card mb-3 shadow-sm border-0 rounded-3 border-start border-4 border-warning">
+            <div class="card-header bg-warning bg-opacity-10 px-4 py-3 border-0">
+                <h4 class="mb-0 h6 text-warning-emphasis fw-bold"><i class="ti ti-gift me-2"></i>Kampanya / Kupon Kullanımı</h4>
+            </div>
+            <div class="card-body p-4 bg-light">
+                @if($appointment->coupon)
+                    <p class="mb-0 text-dark small">
+                        @if($appointment->coupon->users()->exists()) Kullanıcıya özel tanımlı olan @endif
+                        <strong class="text-primary font-monospace">{{ $appointment->coupon->code }}</strong> kodu ile randevu alındı.
+                        @if($appointment->subtotal > $appointment->total_price)
+                            Fiyat <strong>₺{{ number_format($appointment->subtotal, 2, ',', '.') }}</strong>'den <strong>₺{{ number_format($appointment->total_price, 2, ',', '.') }}</strong>'a düştü.
+                        @endif
+                    </p>
+                @endif
+                
+                @if($appointment->campaign)
+                    <p class="mb-0 text-dark small mt-{{ $appointment->coupon ? '2' : '0' }}">
+                        <strong>{{ $appointment->campaign->title }}</strong> kampanyası uygulandı.
+                        @if($appointment->campaign->rewardProduct)
+                            <strong class="text-success">{{ $appointment->campaign->rewardProduct->name }}</strong> kazandı.
+                        @elseif($appointment->campaign->rewardCafeProduct)
+                            <strong class="text-success">{{ $appointment->campaign->rewardCafeProduct->name }}</strong> kazandı.
+                        @elseif($appointment->subtotal > $appointment->total_price)
+                            Fiyat <strong>₺{{ number_format($appointment->subtotal, 2, ',', '.') }}</strong>'den <strong>₺{{ number_format($appointment->total_price, 2, ',', '.') }}</strong>'a düştü.
+                        @endif
+                    </p>
+                @endif
+            </div>
+        </div>
+        @endif
+
         {{-- Payment Info & History --}}
         <div class="card mb-3 shadow-sm border-0 rounded-3">
             <div class="card-header bg-transparent px-4 py-3 d-flex justify-content-between align-items-center">

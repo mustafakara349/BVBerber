@@ -90,7 +90,7 @@
                         </thead>
                         <tbody>
                             @forelse($movements as $movement)
-                            <tr class="border-bottom border-light">
+                            <tr class="border-bottom border-light" style="cursor:pointer;" onclick="window.location='{{ route('stock-movements.show', $movement) }}'" title="Detayı Görüntüle">
                                 <td class="ps-4 py-3">
                                     <div class="fw-semibold text-dark">{{ $movement->created_at->format('d.m.Y') }}</div>
                                     <small class="text-secondary">{{ $movement->created_at->format('H:i') }}</small>

@@ -15,6 +15,18 @@ class AuthViewModel: ObservableObject {
     @Published var loginPassword = ""
     @Published var showLoginPassword = false
 
+    // MARK: - Forgot Password State
+    @Published var forgotPasswordEmail = ""
+    @Published var forgotPasswordOtp = ""
+    @Published var forgotPasswordNewPassword = ""
+    @Published var forgotPasswordConfirmPassword = ""
+    @Published var showForgotPasswordNewPassword = false
+    @Published var showForgotPasswordConfirmPassword = false
+    @Published var navigateToForgotPassword = false
+    @Published var navigateToOtp = false
+    @Published var navigateToReset = false
+    @Published var resetPasswordSuccess = false
+
     // MARK: - Register State
     @Published var registerName = ""
     @Published var registerSurname = ""
@@ -53,16 +65,98 @@ class AuthViewModel: ObservableObject {
 
         isLoading = true
 
-        AuthManager.shared.signIn(email: loginEmail, password: loginPassword) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                if case .failure(let error) = result {
-                    self?.showError(title: "Giriş Hatası", message: error.localizedDescription)
+        Task {
+            do {
+                _ = try await AuthManager.shared.signIn(email: loginEmail, password: loginPassword)
+                await MainActor.run {
+                    self.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.isLoading = false
+                    self.showError(title: "Giriş Hatası", message: error.localizedDescription)
                 }
             }
         }
     }
 
+    // MARK: - Forgot Password
+
+    func sendOtp() {
+        guard !forgotPasswordEmail.isEmpty else {
+            showError(title: "Hata", message: "Email alanını doldurun.")
+            return
+        }
+        isLoading = true
+        Task {
+            do {
+                try await AuthManager.shared.forgotPassword(email: forgotPasswordEmail)
+                await MainActor.run {
+                    self.isLoading = false
+                    self.navigateToOtp = true
+                }
+            } catch {
+                await MainActor.run {
+                    self.isLoading = false
+                    self.showError(title: "Hata", message: error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    func verifyOtp() {
+        guard forgotPasswordOtp.count == 6 else {
+            showError(title: "Hata", message: "Lütfen 6 haneli kodu girin.")
+            return
+        }
+        isLoading = true
+        Task {
+            do {
+                try await AuthManager.shared.verifyOtp(email: forgotPasswordEmail, otp: forgotPasswordOtp)
+                await MainActor.run {
+                    self.isLoading = false
+                    self.navigateToReset = true
+                }
+            } catch {
+                await MainActor.run {
+                    self.isLoading = false
+                    self.showError(title: "Hata", message: error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    func resetForgotPassword() {
+        guard forgotPasswordNewPassword.count >= 6 else {
+            showError(title: "Hata", message: "Şifre en az 6 karakter olmalıdır.")
+            return
+        }
+        guard forgotPasswordNewPassword == forgotPasswordConfirmPassword else {
+            showError(title: "Hata", message: "Şifreler eşleşmiyor.")
+            return
+        }
+        isLoading = true
+        Task {
+            do {
+                try await AuthManager.shared.resetPassword(
+                    email: forgotPasswordEmail, 
+                    otp: forgotPasswordOtp, 
+                    password: forgotPasswordNewPassword, 
+                    passwordConfirmation: forgotPasswordConfirmPassword
+                )
+                await MainActor.run {
+                    self.isLoading = false
+                    self.resetPasswordSuccess = true
+                    self.showError(title: "Başarılı", message: "Şifreniz başarıyla yenilendi.")
+                }
+            } catch {
+                await MainActor.run {
+                    self.isLoading = false
+                    self.showError(title: "Hata", message: error.localizedDescription)
+                }
+            }
+        }
+    }
 
     // MARK: - Register
 
@@ -101,21 +195,23 @@ class AuthViewModel: ObservableObject {
 
         isLoading = true
 
-        AuthManager.shared.signUp(
-            email: registerEmail,
-            password: registerPassword,
-            name: registerName,
-            surname: registerSurname,
-            phone: cleanPhone
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                switch result {
-                case .success:
-                    // Onboarding: profil fotoğrafı ekranına yönlendir
-                    self?.signUpSucceeded = true
-                case .failure(let error):
-                    self?.showError(title: "Kayıt Hatası", message: error.localizedDescription)
+        Task {
+            do {
+                _ = try await AuthManager.shared.signUp(
+                    email: registerEmail,
+                    password: registerPassword,
+                    name: registerName,
+                    surname: registerSurname,
+                    phone: cleanPhone
+                )
+                await MainActor.run {
+                    self.isLoading = false
+                    self.signUpSucceeded = true
+                }
+            } catch {
+                await MainActor.run {
+                    self.isLoading = false
+                    self.showError(title: "Kayıt Hatası", message: error.localizedDescription)
                 }
             }
         }
@@ -135,6 +231,11 @@ class AuthViewModel: ObservableObject {
             return
         }
 
+        guard newPassword != currentPassword else {
+            showError(title: "Hata", message: "Yeni şifreniz son şifrenizden farklı olmalı.")
+            return
+        }
+
         guard newPassword == confirmNewPassword else {
             showError(title: "Hata", message: "Yeni şifreler eşleşmiyor.")
             return
@@ -142,20 +243,23 @@ class AuthViewModel: ObservableObject {
 
         isLoading = true
 
-        AuthManager.shared.updatePassword(
-            currentPassword: currentPassword,
-            newPassword: newPassword
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                switch result {
-                case .success:
-                    self?.showError(title: "Başarılı", message: "Şifreniz başarıyla güncellendi.")
-                    self?.currentPassword = ""
-                    self?.newPassword = ""
-                    self?.confirmNewPassword = ""
-                case .failure(let error):
-                    self?.showError(title: "Hata", message: error.localizedDescription)
+        Task {
+            do {
+                try await AuthManager.shared.updatePassword(
+                    currentPassword: currentPassword,
+                    newPassword: newPassword
+                )
+                await MainActor.run {
+                    self.isLoading = false
+                    self.showError(title: "Başarılı", message: "Şifreniz başarıyla güncellendi.")
+                    self.currentPassword = ""
+                    self.newPassword = ""
+                    self.confirmNewPassword = ""
+                }
+            } catch {
+                await MainActor.run {
+                    self.isLoading = false
+                    self.showError(title: "Hata", message: error.localizedDescription)
                 }
             }
         }
@@ -165,10 +269,8 @@ class AuthViewModel: ObservableObject {
     // MARK: - Logout
 
     func signOut() {
-        do {
-            try AuthManager.shared.signOut()
-        } catch {
-            showError(title: "Hata", message: "Çıkış yapılamadı: \(error.localizedDescription)")
+        Task {
+            await AuthManager.shared.signOut()
         }
     }
 

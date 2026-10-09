@@ -10,7 +10,22 @@
                 <h1 class="fs-3 fw-bold mb-1 text-dark">Finansal İşlemler</h1>
                 <p class="text-muted mb-0">İşletmenizin gelir, gider ve genel kasa hareketlerini tek bir yerden yönetin.</p>
             </div>
-            <div>
+            <div class="d-flex gap-2 align-items-center">
+                <form action="{{ route('finance.transactions') }}" method="GET" id="dateFilterForm">
+                    <!-- Preserve existing query strings except date_filter -->
+                    @foreach(request()->except('date_filter', 'page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <select name="date_filter" class="form-select rounded-pill border-0 shadow-sm" onchange="document.getElementById('dateFilterForm').submit()">
+                        <option value="daily" {{ $dateFilter === 'daily' ? 'selected' : '' }}>Bugün</option>
+                        <option value="monthly" {{ $dateFilter === 'monthly' ? 'selected' : '' }}>Bu Ay</option>
+                        <option value="yearly" {{ $dateFilter === 'yearly' ? 'selected' : '' }}>Bu Yıl</option>
+                        <option value="all" {{ $dateFilter === 'all' ? 'selected' : '' }}>Tüm Zamanlar</option>
+                        @if($dateFilter === 'custom')
+                            <option value="custom" selected>Özel Aralık</option>
+                        @endif
+                    </select>
+                </form>
                 <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
                     <i class="ti ti-plus fs-5"></i> Yeni Kasa İşlemi Ekle
                 </button>
@@ -178,7 +193,7 @@
                         </thead>
                         <tbody>
                             @forelse($transactions as $transaction)
-                            <tr class="border-bottom border-light">
+                            <tr class="border-bottom border-light hover-bg-light transition-all" style="cursor: pointer;" onclick="window.location.href='{{ route('finance.transactions.show', $transaction) }}'">
                                 <td class="ps-4 py-3 fw-semibold">
                                     #TXN-{{ str_pad($transaction->id, 5, '0', STR_PAD_LEFT) }}
                                 </td>
@@ -214,22 +229,17 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="text-secondary text-wrap" style="max-width: 250px; display: inline-block;">
-                                        {{ $transaction->description ?? 'Açıklama bulunmuyor.' }}
-                                    </span>
+                                    <div class="d-flex flex-column">
+                                        <span class="text-dark fw-medium">{{ $transaction->category ?? '-' }}</span>
+                                        <span class="text-secondary text-truncate small" style="max-width: 150px;" title="{{ $transaction->description }}">
+                                            {{ $transaction->description ?? 'Açıklama yok' }}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td>
-                                    <div class="d-flex flex-column">
-                                        @if($transaction->appointment)
-                                            <a href="{{ route('appointments.index') }}?search={{ $transaction->appointment->id }}" class="text-primary fw-semibold small text-decoration-none d-flex align-items-center gap-1">
-                                                <i class="ti ti-calendar-event"></i> Randevu #{{ $transaction->appointment->id }}
-                                            </a>
-                                        @else
-                                            <span class="text-secondary small d-flex align-items-center gap-1">
-                                                <i class="ti ti-user-circle"></i> {{ $transaction->createdBy->full_name ?? 'Sistem' }}
-                                            </span>
-                                        @endif
-                                    </div>
+                                    <span class="text-secondary small d-flex align-items-center gap-1">
+                                        <i class="ti ti-user-circle"></i> {{ $transaction->createdBy->full_name ?? 'Sistem' }}
+                                    </span>
                                 </td>
                                 <td class="pe-4 text-end">
                                     <form action="{{ route('finance.transactions.destroy', $transaction) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Bu işlemi silmek istediğinize emin misiniz? Bu işlem kasa bakiyenizi doğrudan etkileyecektir.')">
@@ -271,27 +281,56 @@
                 <h5 class="modal-title fw-bold" id="addTransactionModalLabel">Yeni Kasa İşlemi Ekle</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
             </div>
-            <form action="{{ route('finance.transactions.store') }}" method="POST">
+            <form action="{{ route('finance.transactions.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body p-4">
                     <!-- Type Selection -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold text-secondary">İşlem Tipi</label>
                         <div class="d-flex gap-3">
-                            <input type="radio" class="btn-check" name="transaction_type" id="type_income" value="income" checked>
+                            <input type="radio" class="btn-check" name="transaction_type" id="type_income" value="income" checked onchange="toggleDebtDropdown()">
                             <label class="btn btn-outline-success rounded-pill px-4 flex-fill" for="type_income">
                                 <i class="ti ti-arrow-up-right me-1"></i> Gelir
                             </label>
                             
-                            <input type="radio" class="btn-check" name="transaction_type" id="type_expense" value="expense">
+                            <input type="radio" class="btn-check" name="transaction_type" id="type_expense" value="expense" onchange="toggleDebtDropdown()">
                             <label class="btn btn-outline-danger rounded-pill px-4 flex-fill" for="type_expense">
                                 <i class="ti ti-arrow-down-left me-1"></i> Gider
                             </label>
                         </div>
                     </div>
+                    
+                    <!-- Dynamic Debt Integration -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">İlişkili Borç / Tahsilat (Opsiyonel)</label>
+                        <select name="debt_id" id="debt_select" class="form-select border-0 bg-light">
+                            <option value="">Seçilmedi (Serbest İşlem)</option>
+                            <!-- Incomes: Receivables -->
+                            <optgroup label="Alacak Tahsilatı (Müşteri Borçları)" id="optgroup_income">
+                                @foreach($receivables as $receivable)
+                                    <option value="{{ $receivable->id }}">
+                                        {{ $receivable->counterparty_name ?? ($receivable->customer->full_name ?? 'Bilinmeyen') }} - Kalan: ₺{{ number_format($receivable->amount - $receivable->paid_amount, 2) }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                            <!-- Expenses: Payables -->
+                            <optgroup label="Borç Ödemesi" id="optgroup_expense" style="display:none;">
+                                @foreach($payables as $payable)
+                                    <option value="{{ $payable->id }}">
+                                        {{ $payable->counterparty_name ?? 'Bilinmeyen' }} - Kalan: ₺{{ number_format($payable->amount - $payable->paid_amount, 2) }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        </select>
+                        <div class="form-text">Açık bir borcu veya alacağı tahsil ediyorsanız/ödüyorsanız buradan seçin.</div>
+                    </div>
 
-                    <!-- Amount & Date Row -->
+                    <!-- Category & Amount Row -->
                     <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold text-secondary">Kategori</label>
+                            <input type="text" name="category" class="form-control border-0 bg-light rounded-3" placeholder="Örn: Maaş, Fatura, Satış" required>
+                        </div>
                         <div class="col-6">
                             <label class="form-label fw-semibold text-secondary">Tutar (₺)</label>
                             <div class="input-group">
@@ -299,27 +338,35 @@
                                 <input type="number" step="0.01" min="0.01" name="amount" class="form-control border-0 bg-light rounded-end-3" placeholder="0,00" required>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Date & Payment Method Row -->
+                    <div class="row g-3 mb-3">
                         <div class="col-6">
                             <label class="form-label fw-semibold text-secondary">İşlem Tarihi</label>
                             <input type="datetime-local" name="transaction_date" class="form-control border-0 bg-light" value="{{ now()->format('Y-m-d\TH:i') }}" required>
                         </div>
-                    </div>
-
-                    <!-- Payment Method -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold text-secondary">Ödeme Yöntemi</label>
-                        <select name="payment_method" class="form-select border-0 bg-light" required>
-                            <option value="cash">Nakit</option>
-                            <option value="credit_card">Kredi Kartı</option>
-                            <option value="bank_transfer">Banka Transferi</option>
-                            <option value="online">Online</option>
-                        </select>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold text-secondary">Ödeme Yöntemi</label>
+                            <select name="payment_method" class="form-select border-0 bg-light" required>
+                                <option value="cash">Nakit</option>
+                                <option value="credit_card">Kredi Kartı</option>
+                                <option value="bank_transfer">Banka Transferi</option>
+                                <option value="online">Online</option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Description -->
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label class="form-label fw-semibold text-secondary">Açıklama</label>
-                        <textarea name="description" rows="3" class="form-control border-0 bg-light" placeholder="İşlem açıklaması yazın (örn: Şampuan satışı, Ofis mutfak masrafları)..."></textarea>
+                        <textarea name="description" rows="2" class="form-control border-0 bg-light" placeholder="İşlem açıklaması yazın..."></textarea>
+                    </div>
+
+                    <!-- Document Upload -->
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold text-secondary">Belge / Fiş Görseli</label>
+                        <input type="file" name="document_path" class="form-control border-0 bg-light" accept=".jpg,.jpeg,.png,.pdf">
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
@@ -332,3 +379,22 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    function toggleDebtDropdown() {
+        const typeIncome = document.getElementById('type_income').checked;
+        const optgroupIncome = document.getElementById('optgroup_income');
+        const optgroupExpense = document.getElementById('optgroup_expense');
+        
+        if (typeIncome) {
+            optgroupIncome.style.display = 'block';
+            optgroupExpense.style.display = 'none';
+        } else {
+            optgroupIncome.style.display = 'none';
+            optgroupExpense.style.display = 'block';
+        }
+        document.getElementById('debt_select').value = '';
+    }
+</script>
+@endpush

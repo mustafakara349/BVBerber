@@ -8,20 +8,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Debt extends Model
 {
     protected $fillable = [
+        'type',
         'branch_id',
         'customer_id',
+        'counterparty_name',
         'appointment_id',
         'amount',
         'paid_amount',
         'description',
         'due_date',
         'status',
+        'is_installment',
+        'parent_debt_id',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'paid_amount' => 'decimal:2',
         'due_date' => 'date',
+        'is_installment' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -48,7 +53,31 @@ class Debt extends Model
         return $this->belongsTo(Appointment::class);
     }
 
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Debt::class, 'parent_debt_id');
+    }
+
+    public function installments()
+    {
+        return $this->hasMany(Debt::class, 'parent_debt_id');
+    }
+
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'reference');
+    }
+
     // Scopes
+    public function scopeReceivable($query)
+    {
+        return $query->where('type', 'receivable');
+    }
+
+    public function scopePayable($query)
+    {
+        return $query->where('type', 'payable');
+    }
     public function scopeForBranch($query, int $branchId)
     {
         return $query->where('branch_id', $branchId);

@@ -9,7 +9,7 @@ use App\Enums\DiscountType;
 class Coupon extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'description', 'code', 
+        'title', 'description', 'code', 
         'discount_type', 'discount_value',
         'usage_limit', 'used_count', 'expires_at', 'per_customer_limit'
     ];
@@ -23,9 +23,9 @@ class Coupon extends Model
         ];
     }
 
-    public function user(): BelongsTo
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class);
     }
 
     public function usages(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -44,6 +44,13 @@ class Coupon extends Model
         }
         
         if ($user) {
+            // Check if coupon is restricted to specific users
+            if ($this->users()->exists()) {
+                if (!$this->users()->where('users.id', $user->id)->exists()) {
+                    return false; // User is not in the allowed list
+                }
+            }
+
             $usageCount = $this->usages()->where('customer_id', $user->id)->count();
             if ($usageCount >= $this->per_customer_limit) {
                 return false;

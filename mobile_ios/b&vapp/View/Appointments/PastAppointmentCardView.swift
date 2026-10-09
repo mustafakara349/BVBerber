@@ -56,6 +56,12 @@ struct PastAppointmentCardView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 6) {
+                if let originalPrice = appointment.originalPrice, originalPrice > appointment.price {
+                    Text("₺\(originalPrice)")
+                        .font(.caption)
+                        .strikethrough()
+                        .foregroundColor(.secondary)
+                }
                 Text("₺\(appointment.price)")
                     .fontWeight(.bold)
                     .foregroundColor(.yellow)

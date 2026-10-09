@@ -54,8 +54,8 @@ class ReportService
             ->whereBetween('transaction_date', [$startDate, $endDate])
             ->sum('amount');
 
-        $totalExpense = Expense::forBranch($branchId)
-            ->whereBetween('expense_date', [$startDate, $endDate])
+        $totalExpense = Transaction::expense()->forBranch($branchId)
+            ->whereBetween('transaction_date', [$startDate, $endDate])
             ->sum('amount');
 
         $netProfit  = $totalIncome - $totalExpense;
@@ -76,11 +76,11 @@ class ReportService
                 'total' => round($t->total, 2),
             ])->toArray();
 
-        $expenseByCategory = Expense::where('expenses.branch_id', $branchId)
-            ->whereBetween('expense_date', [$startDate, $endDate])
-            ->join('expense_categories', 'expenses.category_id', '=', 'expense_categories.id')
-            ->select('expense_categories.name as category_name', DB::raw('SUM(expenses.amount) as total'))
-            ->groupBy('expense_categories.name')
+        $expenseByCategory = Transaction::expense()->forBranch($branchId)
+            ->whereBetween('transaction_date', [$startDate, $endDate])
+            ->whereNotNull('category')
+            ->select('category as category_name', DB::raw('SUM(amount) as total'))
+            ->groupBy('category')
             ->orderByDesc('total')
             ->get()
             ->map(fn($e) => [
@@ -92,9 +92,9 @@ class ReportService
             ->whereBetween('transaction_date', [$startDate, $endDate])
             ->latest('transaction_date')->take(50)->get();
 
-        $expenses = Expense::forBranch($branchId)
-            ->whereBetween('expense_date', [$startDate, $endDate])
-            ->latest('expense_date')->take(50)->get();
+        $expenses = Transaction::expense()->forBranch($branchId)
+            ->whereBetween('transaction_date', [$startDate, $endDate])
+            ->latest('transaction_date')->take(50)->get();
 
         return compact(
             'totalIncome', 'totalExpense', 'netProfit',
@@ -114,9 +114,9 @@ class ReportService
                 ->select(DB::raw("DATE_FORMAT(transaction_date, '%Y-%m') as month_key"), DB::raw('SUM(amount) as total'))
                 ->groupBy('month_key')->pluck('total', 'month_key')->toArray();
 
-            $expenseHistory = Expense::forBranch($branchId)
-                ->whereBetween('expense_date', [$startDate, $endDate])
-                ->select(DB::raw("DATE_FORMAT(expense_date, '%Y-%m') as month_key"), DB::raw('SUM(amount) as total'))
+            $expenseHistory = Transaction::expense()->forBranch($branchId)
+                ->whereBetween('transaction_date', [$startDate, $endDate])
+                ->select(DB::raw("DATE_FORMAT(transaction_date, '%Y-%m') as month_key"), DB::raw('SUM(amount) as total'))
                 ->groupBy('month_key')->pluck('total', 'month_key')->toArray();
 
             $current = clone $startDate;
@@ -133,9 +133,9 @@ class ReportService
                 ->select(DB::raw('DATE(transaction_date) as date'), DB::raw('SUM(amount) as total'))
                 ->groupBy('date')->pluck('total', 'date')->toArray();
 
-            $expenseHistory = Expense::forBranch($branchId)
-                ->whereBetween('expense_date', [$startDate, $endDate])
-                ->select(DB::raw('DATE(expense_date) as date'), DB::raw('SUM(amount) as total'))
+            $expenseHistory = Transaction::expense()->forBranch($branchId)
+                ->whereBetween('transaction_date', [$startDate, $endDate])
+                ->select(DB::raw('DATE(transaction_date) as date'), DB::raw('SUM(amount) as total'))
                 ->groupBy('date')->pluck('total', 'date')->toArray();
 
             $current = clone $startDate;
@@ -172,22 +172,27 @@ class ReportService
 
         $barberStats = DB::table('employees')
             ->join('users', 'employees.user_id', '=', 'users.id')
+            ->leftJoin('employee_titles', 'employees.employee_title_id', '=', 'employee_titles.id')
             ->leftJoin('appointments', function ($join) use ($startDate, $endDate) {
                 $join->on('employees.id', '=', 'appointments.employee_id')
                      ->whereBetween('appointments.start_at', [$startDate, $endDate]);
             })
             ->where('employees.branch_id', $branchId)
             ->where('employees.is_active', true)
+            ->where(function ($q) use ($endDate) {
+                $q->whereNull('employees.hire_date')
+                  ->orWhere('employees.hire_date', '<=', $endDate);
+            })
             ->select(
                 'employees.id',
                 'users.first_name',
                 'users.last_name',
-                'employees.title',
+                'employee_titles.name as title',
                 DB::raw("COUNT(CASE WHEN appointments.status = 'completed' THEN 1 END) as completed_count"),
                 DB::raw("COUNT(CASE WHEN appointments.status IN ('cancelled', 'rejected', 'no_show') THEN 1 END) as cancelled_count"),
                 DB::raw("COALESCE(SUM(CASE WHEN appointments.status = 'completed' THEN appointments.total_price ELSE 0 END), 0) as total_revenue")
             )
-            ->groupBy('employees.id', 'users.first_name', 'users.last_name', 'employees.title')
+            ->groupBy('employees.id', 'users.first_name', 'users.last_name', 'employee_titles.name')
             ->orderByDesc('total_revenue')
             ->get();
 

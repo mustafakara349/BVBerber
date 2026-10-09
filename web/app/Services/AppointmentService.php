@@ -109,6 +109,23 @@ class AppointmentService
             $data['total_price']    = max(0, $subtotal - $discountAmount + $data['tax_amount']);
             $data['campaign_id']    = $campaignId;
             $data['coupon_id']      = $couponId;
+            $data['status']         = $data['status'] ?? AppointmentStatus::Pending;
+
+            // --- ÇAKIŞMA KORUMASI ---
+            $conflict = Appointment::where('employee_id', $data['employee_id'])
+                ->where('start_at', $data['start_at'])
+                ->whereIn('status', [
+                    AppointmentStatus::Pending->value,
+                    AppointmentStatus::Confirmed->value,
+                    AppointmentStatus::InProgress->value,
+                ])
+                ->lockForUpdate() // Pessimistic lock: aynı anda gelen diğer istek bekler
+                ->exists();
+
+            if ($conflict) {
+                throw new \RuntimeException('Bu saat dolu. Lütfen farklı bir saat veya berber seçiniz.');
+            }
+            // --- ÇAKIŞMA KORUMASI SONU ---
 
             $appointment = $this->appointmentRepo->create($data);
 
@@ -137,7 +154,7 @@ class AppointmentService
                 }
             }
 
-            $this->logStatusChange($appointment, null, AppointmentStatus::Pending->value);
+            $this->logStatusChange($appointment, null, $appointment->status->value);
 
             return $appointment->load(['customer', 'employee.user', 'appointmentServices.service']);
         });
@@ -174,6 +191,22 @@ class AppointmentService
             $updateData['cancelled_by'] = $userId;
             if ($cancellationReason) {
                 $updateData['cancellation_reason'] = $cancellationReason;
+            }
+
+            // Tamamlanmış bir randevu iptal ediliyorsa kazanılan puanları geri al
+            if ($oldStatus === AppointmentStatus::Completed->value && $appointment->customer_id) {
+                try {
+                    $pointsToRevoke = (int) $appointment->total_price;
+                    if ($pointsToRevoke > 0) {
+                        app(\App\Services\LoyaltyService::class)->revokePoints(
+                            $appointment->customer_id,
+                            $pointsToRevoke,
+                            "Randevu İptal Edildi (#{$appointment->appointment_code})"
+                        );
+                    }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::warning('Sadakat puanı geri alınamadı: ' . $e->getMessage());
+                }
             }
         }
 

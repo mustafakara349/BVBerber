@@ -39,7 +39,7 @@ class ProfileViewModel: ObservableObject {
         guard let userId = AuthManager.shared.currentUserId else { return }
 
         do {
-            user = try await FirestoreManager.shared.fetchDocument("users", documentId: userId)
+            user = try await APIClient.shared.fetchDocument("users", documentId: userId)
         } catch {
             print("Profil yüklenemedi: \(error.localizedDescription)")
         }
@@ -150,10 +150,8 @@ class ProfileViewModel: ObservableObject {
     // MARK: - Logout
 
     func signOut() {
-        do {
-            try AuthManager.shared.signOut()
-        } catch {
-            print("Çıkış yapılamadı: \(error.localizedDescription)")
+        Task {
+            await AuthManager.shared.signOut()
         }
     }
 }

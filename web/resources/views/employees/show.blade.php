@@ -65,7 +65,7 @@
                 </div>
             </div>
             <div class="card-footer bg-white border-top p-3 text-center">
-                <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-primary rounded-pill px-4 w-100">
+                <a href="{{ route('employees.edit', $employee) }}" class="btn btn-primary rounded-pill px-4 w-100">
                     <i class="ti ti-pencil me-1"></i> Profili Düzenle
                 </a>
             </div>

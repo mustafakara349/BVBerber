@@ -66,4 +66,34 @@ class LoyaltyService
             return $this->spendPoints($customerId, abs($points), $description);
         }
     }
+
+    /**
+     * Randevu iptali gibi durumlarda kazanılan puanı geri alır
+     */
+    public function revokePoints(int $customerId, int $points, string $description = 'Puan geri alındı'): ?LoyaltyTransaction
+    {
+        return DB::transaction(function () use ($customerId, $points, $description) {
+            $account = LoyaltyAccount::firstOrCreate(
+                ['customer_id' => $customerId],
+                ['points_balance' => 0, 'total_earned' => 0, 'total_spent' => 0]
+            );
+
+            $pointsToRevoke = min($points, $account->points_balance);
+
+            if ($pointsToRevoke <= 0) {
+                return null;
+            }
+
+            $account->decrement('points_balance', $pointsToRevoke);
+            // Optionally decrement total_earned or just leave it as an adjustment
+            // $account->decrement('total_earned', $pointsToRevoke);
+
+            return LoyaltyTransaction::create([
+                'loyalty_account_id' => $account->id,
+                'type' => 'deduct',
+                'points' => -$pointsToRevoke,
+                'description' => $description,
+            ]);
+        });
+    }
 }

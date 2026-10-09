@@ -15,7 +15,7 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $branchId = session('active_branch_id', 1);
-        $query = Employee::forBranch($branchId)->with(['user.role'])->withCount('appointments');
+        $query = Employee::forBranch($branchId)->with(['user.role', 'employeeTitle'])->withCount('appointments');
 
         if ($request->has('role_id') && $request->role_id != '') {
             $query->whereHas('user', function($q) use ($request) {
@@ -25,13 +25,15 @@ class EmployeeController extends Controller
 
         $employees = $query->paginate(15);
         $roles = Role::all();
-        return view('employees.index', compact('employees', 'roles'));
+        $titles = \App\Models\EmployeeTitle::forBranch($branchId)->get();
+        return view('employees.index', compact('employees', 'roles', 'titles'));
     }
 
     public function create()
     {
         $roles = Role::all();
-        return view('employees.create', compact('roles'));
+        $titles = \App\Models\EmployeeTitle::forBranch(session('active_branch_id', 1))->get();
+        return view('employees.create', compact('roles', 'titles'));
     }
 
     public function store(Request $request)
@@ -43,10 +45,11 @@ class EmployeeController extends Controller
             'phone' => 'nullable|string',
             'role_id' => 'required|exists:roles,id',
             'password' => 'required|string|min:6',
-            'title' => 'nullable|string|max:100',
+            'employee_title_id' => 'nullable|exists:employee_titles,id',
             'salary_type' => 'required|in:fixed,commission,fixed_plus_commission,hourly',
             'salary_amount' => 'required|numeric',
             'commission_rate' => 'required|numeric',
+            'hire_date' => 'required|date',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -69,8 +72,8 @@ class EmployeeController extends Controller
             'branch_id' => session('active_branch_id', 1),
             'user_id' => $user->id,
             'employee_code' => 'EMP-' . strtoupper(Str::random(6)),
-            'title' => $validated['title'],
-            'hire_date' => now(),
+            'employee_title_id' => $validated['employee_title_id'] ?? null,
+            'hire_date' => $validated['hire_date'],
             'salary_type' => $validated['salary_type'],
             'salary_amount' => $validated['salary_amount'],
             'commission_rate' => $validated['commission_rate'],
@@ -102,8 +105,9 @@ class EmployeeController extends Controller
         }
 
         $roles = Role::all();
+        $titles = \App\Models\EmployeeTitle::forBranch(session('active_branch_id', 1))->get();
         $employee->load('user');
-        return view('employees.edit', compact('employee', 'roles'));
+        return view('employees.edit', compact('employee', 'roles', 'titles'));
     }
 
     public function update(Request $request, Employee $employee)
@@ -118,10 +122,11 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:users,email,' . $employee->user_id,
             'phone' => 'nullable|string',
             'role_id' => 'required|exists:roles,id',
-            'title' => 'nullable|string|max:100',
+            'employee_title_id' => 'nullable|exists:employee_titles,id',
             'salary_type' => 'required|in:fixed,commission,fixed_plus_commission,hourly',
             'salary_amount' => 'required|numeric',
             'commission_rate' => 'required|numeric',
+            'hire_date' => 'required|date',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -146,7 +151,8 @@ class EmployeeController extends Controller
         }
 
         $employee->update([
-            'title' => $validated['title'],
+            'employee_title_id' => $validated['employee_title_id'] ?? null,
+            'hire_date' => $validated['hire_date'],
             'salary_type' => $validated['salary_type'],
             'salary_amount' => $validated['salary_amount'],
             'commission_rate' => $validated['commission_rate'],

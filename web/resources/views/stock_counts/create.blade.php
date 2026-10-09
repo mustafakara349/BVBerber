@@ -74,16 +74,25 @@
         function createItemRow() {
             let options = '<option value="">Ürün Seçiniz...</option>';
             products.forEach(p => {
-                options += `<option value="${p.id}" data-stock="${p.stock_quantity}">${p.name} (Sistem: ${p.stock_quantity})</option>`;
+                const sku = p.sku ? ` [SKU: ${p.sku}]` : '';
+                const barcode = p.barcode ? ` | Barkod: ${p.barcode}` : '';
+                options += `<option value="${p.id}" data-stock="${p.stock_quantity}" data-sku="${p.sku ?? ''}" data-barcode="${p.barcode ?? ''}" data-price="${p.sell_price}">${p.name}${sku}${barcode} — Sistem Stoku: ${p.stock_quantity}</option>`;
             });
 
             const rowHtml = `
-                <div class="row g-3 mb-3 align-items-end item-row bg-light bg-opacity-50 p-3 rounded-3" data-index="${itemIndex}">
-                    <div class="col-md-5">
+                <div class="row g-3 mb-3 align-items-start item-row bg-light bg-opacity-50 p-3 rounded-3" data-index="${itemIndex}">
+                    <div class="col-md-4">
                         <label class="form-label fw-semibold text-secondary small">Ürün *</label>
                         <select name="items[${itemIndex}][product_id]" class="form-select border-0 shadow-sm item-select" required>
                             ${options}
                         </select>
+                        <div class="item-product-detail mt-2 d-none">
+                            <div class="bg-white border rounded-3 p-2 small">
+                                <span class="item-sku text-muted"></span>
+                                <span class="item-barcode text-muted ms-2"></span>
+                                <span class="item-price text-success fw-bold ms-2"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold text-secondary small">Sistemdeki Stok</label>
@@ -91,13 +100,15 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold text-primary small">Sayılan Gerçek Miktar *</label>
-                        <input type="number" name="items[${itemIndex}][counted_quantity]" class="form-control border-0 shadow-sm item-counted" value="0" min="0" required>
+                        <input type="number" name="items[${itemIndex}][counted_quantity]" class="form-control border-0 shadow-sm item-counted" placeholder="Fiziksel sayım yapın" min="0" required>
+                        <small class="text-muted">Boş bırakmayın, fiziksel olarak sayın.</small>
                     </div>
-                    <div class="col-md-1 text-center">
+                    <div class="col-md-2 text-center">
                         <label class="form-label fw-semibold text-secondary small">Fark</label>
                         <div class="form-control-plaintext fw-bold pb-0 item-diff">-</div>
                     </div>
                     <div class="col-md-1 text-end">
+                        <label class="form-label fw-semibold text-secondary small d-block">&nbsp;</label>
                         <button type="button" class="btn btn-outline-danger btn-sm rounded-circle p-2 border-0 remove-item-btn" title="Satırı Sil">
                             <i class="ti ti-trash fs-5"></i>
                         </button>
@@ -135,12 +146,30 @@
                 const selectedOption = this.options[this.selectedIndex];
                 if (selectedOption && selectedOption.value) {
                     const stock = selectedOption.getAttribute('data-stock');
+                    const sku = selectedOption.getAttribute('data-sku');
+                    const barcode = selectedOption.getAttribute('data-barcode');
+                    const price = selectedOption.getAttribute('data-price');
+
                     systemStockDisplay.textContent = stock;
-                    countedInput.value = stock; // Default to system stock to speed up entry
+
+                    // Show product detail panel
+                    const detailPanel = newRow.querySelector('.item-product-detail');
+                    if (detailPanel) {
+                        detailPanel.classList.remove('d-none');
+                        newRow.querySelector('.item-sku').textContent = sku ? `SKU: ${sku}` : '';
+                        newRow.querySelector('.item-barcode').textContent = barcode ? `Barkod: ${barcode}` : '';
+                        newRow.querySelector('.item-price').textContent = price ? `₺${parseFloat(price).toLocaleString('tr-TR', {minimumFractionDigits:2})}` : '';
+                    }
+
+                    // Do NOT auto-fill counted input — let the user count physically
+                    countedInput.value = '';
+                    countedInput.focus();
                     updateDiff();
                 } else {
                     systemStockDisplay.textContent = '-';
                     diffDisplay.textContent = '-';
+                    const detailPanel = newRow.querySelector('.item-product-detail');
+                    if (detailPanel) detailPanel.classList.add('d-none');
                 }
             });
 

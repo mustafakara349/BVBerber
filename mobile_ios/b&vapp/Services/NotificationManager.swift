@@ -114,7 +114,7 @@ final class NotificationManager: NSObject, ObservableObject {
 
         Task {
             do {
-                let url = URL(string: "\(AuthManager.shared.baseURL)/save-token")!
+                let url = URL(string: "\(AppConfig.apiBaseURL)/save-token")!
                 var request = URLRequest(url: url)
                 request.httpMethod = "POST"
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -175,7 +175,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         completionHandler([.banner, .list, .sound, .badge])
     }
 
-    /// Kullanıcı bildirime tıkladığında veya aksiyona bastığında çağrılır.
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -184,8 +183,14 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
         print("[NotificationManager] Bildirime tıklandı: \(userInfo)")
         
-        // Bildirimler ekranına yönlendirmek için global Notification yayınla
         DispatchQueue.main.async {
+            // Randevuyla ilgili bildirimse listeyi yenile
+            let appointmentTypes = ["appointment_cancelled", "appointment_confirmed",
+                                    "appointment_rejected", "appointment_reminder"]
+            if let type = userInfo["type"] as? String, appointmentTypes.contains(type) {
+                NotificationCenter.default.post(name: .refreshAppointments, object: nil)
+            }
+            // Bildirimler ekranına yönlendirmek için global Notification yayınla
             NotificationCenter.default.post(name: .navigateToNotifications, object: nil)
         }
         
@@ -197,5 +202,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
 extension Notification.Name {
     static let navigateToNotifications = Notification.Name("navigateToNotifications")
+    static let refreshAppointments = Notification.Name("refreshAppointments")
 }
 

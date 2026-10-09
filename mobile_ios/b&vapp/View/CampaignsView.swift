@@ -100,21 +100,31 @@ struct DetailedCampaignCard: View {
                 Spacer()
                 
                 VStack(spacing: 4) {
-                    if campaign.discountType == "percentage" {
-                        Text("%\(Int(campaign.discountValue))")
+                    if let rType = campaign.rewardType, rType != "discount" {
+                        Image(systemName: rType == "gift_cafe" ? "cup.and.saucer.fill" : "bag.fill")
                             .font(.title)
-                            .fontWeight(.black)
                             .foregroundColor(.yellow)
-                    } else {
-                        Text("₺\(Int(campaign.discountValue))")
-                            .font(.title)
-                            .fontWeight(.black)
-                            .foregroundColor(.yellow)
+                        Text("HEDİYE")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                    } else if let type = campaign.discountType, let val = campaign.discountValue {
+                        if type == "percentage" {
+                            Text("%\(Int(val))")
+                                .font(.title)
+                                .fontWeight(.black)
+                                .foregroundColor(.yellow)
+                        } else {
+                            Text("₺\(Int(val))")
+                                .font(.title)
+                                .fontWeight(.black)
+                                .foregroundColor(.yellow)
+                        }
+                        Text("İNDİRİM")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
                     }
-                    Text("İNDİRİM")
-                        .font(.caption2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primary)
                 }
                 .padding()
                 .background(Color(.systemGray6))
@@ -135,57 +145,10 @@ struct DetailedCampaignCard: View {
     }
     
     var campaignConditions: [String] {
-        var list: [String] = []
-        
-        // 1. Türü
-        if let type = campaign.type {
-            if type == "auto_apply" {
-                list.append("Bu kampanya sepetinizde otomatik olarak uygulanır.")
-            } else {
-                list.append("Bu kampanyadan yararlanmak için kupon kodu girilmelidir.")
-            }
+        if let terms = campaign.terms, !terms.isEmpty {
+            return terms.components(separatedBy: "\n").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
         }
-        
-        // 2. Müşteri Kitlesi
-        if let audience = campaign.targetAudience {
-            switch audience {
-            case "new_customers":
-                list.append("Kampanya sadece yeni müşterilerimiz için geçerlidir.")
-            case "loyalty_members":
-                list.append("Kampanya sadece sadakat programı üyelerimiz için geçerlidir.")
-            default:
-                list.append("Kampanya tüm müşterilerimiz için geçerlidir.")
-            }
-        }
-        
-        // 3. Minimum Sipariş Tutarı
-        if let minAmount = campaign.minOrderAmount, minAmount > 0 {
-            list.append("Minimum sipariş tutarı ₺\(Int(minAmount)) olmalıdır.")
-        }
-        
-        // 4. Maksimum İndirim
-        if let maxAmount = campaign.maxDiscountAmount, maxAmount > 0 {
-            list.append("Maksimum indirim tutarı ₺\(Int(maxAmount)) ile sınırlıdır.")
-        }
-        
-        // 5. Hizmetler / Kategoriler
-        if let cats = campaign.categories, !cats.isEmpty {
-            let catNames = cats.joined(separator: ", ")
-            list.append("Kampanya yalnızca şu kategorilerde geçerlidir: \(catNames).")
-        } else {
-            list.append("Kampanya tüm hizmet kategorilerinde geçerlidir.")
-        }
-        
-        // 6. Kişi Başı Limit
-        if let limit = campaign.perCustomerLimit, limit > 0 {
-            list.append("Bu kampanya kişi başı en fazla \(limit) defa kullanılabilir.")
-        }
-        
-        // Standart koşullar
-        list.append("Bu kampanya diğer indirimlerle birleştirilemez.")
-        list.append("Sadece belirtilen geçerlilik tarihleri arasında kullanılabilir.")
-        
-        return list
+        return []
     }
     
     private func formatCampaignDate(_ dateStr: String) -> String {

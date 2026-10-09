@@ -21,6 +21,14 @@ class AppointmentsViewModel: ObservableObject {
     @Published var upcomingAppointments: [Appointment] = []
     @Published var pastAppointments: [Appointment] = []
     @Published var selectedTab = 0
+    @Published var appointmentToCancel: Appointment? = nil
+    @Published var showCancelAlert = false
+
+    // MARK: - Misafir (Guest) Durumu
+    @Published var isGuestMode: Bool = false
+    @Published var guestFirstName: String = ""
+    @Published var guestLastName: String = ""
+    @Published var guestPhone: String = ""
 
     // MARK: - Randevu Oluşturma Akışı
     @Published var barbers: [Barber] = []
@@ -41,9 +49,16 @@ class AppointmentsViewModel: ObservableObject {
     @Published var discountMode: DiscountMode = .campaign
     @Published var availableCampaigns: [Campaign] = []
     @Published var selectedCampaignId: String? = nil
+    
+    // Kampanya Ödülü Bilgileri
+    @Published var validatedRewardType: String? = nil
+    @Published var validatedRewardProductId: String? = nil
+    @Published var validatedRewardCafeProductId: String? = nil
+    @Published var validatedRewardProductName: String? = nil
 
     @Published var availableDates: [Date] = []
     @Published var blockedSlots: [String] = []      // barberAvailability.blockedSlots + aktif randevular
+    @Published var barberAvailabilityMap: [String: BarberAvailability] = [:]
 
     // MARK: - Loading
     @Published var isLoading = false
@@ -54,10 +69,27 @@ class AppointmentsViewModel: ObservableObject {
     @Published var alertMessage = ""
     @Published var showAlert = false
 
-    private let db = FirestoreManager.shared
+    private let db = APIClient.shared
 
-    /// barberId → BarberAvailability haritası
-    private var barberAvailabilityMap: [String: BarberAvailability] = [:]
+    // MARK: - Helpers
+
+    init() {
+        NotificationCenter.default.addObserver(
+            forName: .refreshAppointments,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task {
+                await self?.fetchAppointments()
+            }
+        }
+    }
+
+    private func showError(title: String = "Hata", message: String) {
+        alertTitle = title
+        alertMessage = message
+        showAlert = true
+    }
 
     // MARK: - Computed
 
@@ -70,7 +102,7 @@ class AppointmentsViewModel: ObservableObject {
             let all: [Campaign] = try await db.fetchCollection("campaigns")
             self.availableCampaigns = all.filter { $0.type == "auto_apply" && $0.isActive }
         } catch {
-            print("Kampanyalar yüklenemedi: \(error.localizedDescription)")
+            showError(message: "Kampanyalar yüklenemedi: \(error.localizedDescription)")
         }
     }
 
@@ -110,7 +142,7 @@ class AppointmentsViewModel: ObservableObject {
                 }
 
         } catch {
-            print("Randevular yüklenemedi: \(error.localizedDescription)")
+            showError(message: "Randevular yüklenemedi: \(error.localizedDescription)")
         }
 
         isLoading = false
@@ -131,7 +163,7 @@ class AppointmentsViewModel: ObservableObject {
         do {
             store = try await db.fetchDocument("store", documentId: "main")
         } catch {
-            print("Mağaza bilgisi yüklenemedi: \(error.localizedDescription)")
+            showError(message: "Mağaza bilgisi yüklenemedi: \(error.localizedDescription)")
         }
     }
 
@@ -148,7 +180,7 @@ class AppointmentsViewModel: ObservableObject {
                 await fetchBarberAvailability()
             }
         } catch {
-            print("Berberler yüklenemedi: \(error.localizedDescription)")
+            showError(message: "Berberler yüklenemedi: \(error.localizedDescription)")
         }
     }
 
@@ -164,7 +196,7 @@ class AppointmentsViewModel: ObservableObject {
                 selectedServices = [first]
             }
         } catch {
-            print("Hizmetler yüklenemedi: \(error.localizedDescription)")
+            showError(message: "Hizmetler yüklenemedi: \(error.localizedDescription)")
         }
     }
 
@@ -180,6 +212,7 @@ class AppointmentsViewModel: ObservableObject {
         isCouponValid = nil
         couponMessage = ""
         selectedCampaignId = nil
+        discountMode = .campaign
         availableDates = []
         blockedSlots = []
         barberAvailabilityMap = [:]
@@ -210,7 +243,7 @@ class AppointmentsViewModel: ObservableObject {
             await fetchBlockedSlots()
 
         } catch {
-            print("Müsaitlik bilgisi yüklenemedi: \(error.localizedDescription)")
+            showError(message: "Müsaitlik bilgisi yüklenemedi: \(error.localizedDescription)")
         }
 
         isLoadingAvailability = false
@@ -222,7 +255,7 @@ class AppointmentsViewModel: ObservableObject {
         let today = Date()
         let maxDays = store?.settings?.maxBookingDaysAhead ?? 30
 
-        let dates: [Date] = (0..<maxDays).compactMap { offset in
+        let dates: [Date] = (0..<maxDays).compactMap { offset -> Date? in
             guard let date = calendar.date(byAdding: .day, value: offset, to: today) else { return nil }
 
             let dayName = DateManager.weekdayName(from: date)
@@ -282,14 +315,14 @@ class AppointmentsViewModel: ObservableObject {
         do {
             let existingAppts: [Appointment] = try await db.fetchCollection(
                 "appointments",
-                whereFields: [("barberId", barberId)]
+                whereFields: [("barberId", barberId), ("date", dateStr)]
             )
             let bookedTimes = existingAppts
-                .filter { $0.date == dateStr && $0.isActive }
+                .filter { $0.isActive }
                 .map { $0.time }
             blocked += bookedTimes
         } catch {
-            print("Randevu kontrol hatası: \(error.localizedDescription)")
+            showError(message: "Randevu kontrol hatası: \(error.localizedDescription)")
         }
 
         blockedSlots = Array(Set(blocked)) // tekrarları temizle
@@ -311,6 +344,9 @@ class AppointmentsViewModel: ObservableObject {
             showError(title: "Hata", message: "Lütfen bir saat seçin.")
             return false
         }
+        
+        isLoading = true
+        defer { isLoading = false }
 
         // MARK: Veritabanı Çakışma Kontrolü
         // Kaydetmeden önce seçilen berber + tarih + saat için aktif kayıt var mı kontrol et
@@ -371,6 +407,45 @@ class AppointmentsViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Misafir Randevusu Oluştur
+    func createGuestAppointment() async -> Bool {
+        guard let barber = selectedBarber, let barberId = barber.id else {
+            showError(title: "Hata", message: "Lütfen bir berber seçin.")
+            return false
+        }
+        guard !selectedServices.isEmpty else {
+            showError(title: "Hata", message: "Lütfen en az bir hizmet seçin.")
+            return false
+        }
+        guard let time = selectedTime else {
+            showError(title: "Hata", message: "Lütfen bir saat seçin.")
+            return false
+        }
+
+        let serviceIds = Array(selectedServices.compactMap { $0.id })
+        
+        let data: [String: Any] = [
+            "firstName": guestFirstName,
+            "lastName": guestLastName,
+            "phone": guestPhone,
+            "barberId": Int(barberId) ?? 0,
+            "serviceIds": serviceIds.compactMap { Int($0) },
+            "date": selectedDateString,
+            "time": time
+        ]
+        
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            _ = try await db.postData(to: "guest-appointment", data: data)
+            return true
+        } catch {
+            showError(title: "Hata", message: "Randevu oluşturulamadı: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     // MARK: - İndirim Doğrulama
 
     func validateDiscount() async {
@@ -396,6 +471,10 @@ class AppointmentsViewModel: ObservableObject {
         isCouponValid = nil
         couponMessage = ""
         validatedDiscountAmount = 0.0
+        validatedRewardType = nil
+        validatedRewardProductId = nil
+        validatedRewardCafeProductId = nil
+        validatedRewardProductName = nil
 
         let subtotal = Double(selectedServices.reduce(0) { $0 + $1.effectivePrice })
         let serviceIds = Array(selectedServices.compactMap { Int($0.id ?? "0") ?? 0 })
@@ -405,6 +484,10 @@ class AppointmentsViewModel: ObservableObject {
             isCouponValid = response.isValid
             validatedDiscountAmount = response.discountAmount
             couponMessage = response.message
+            validatedRewardType = response.rewardType
+            validatedRewardProductId = response.rewardProductId
+            validatedRewardCafeProductId = response.rewardCafeProductId
+            validatedRewardProductName = response.rewardProductName
         } catch {
             isCouponValid = false
             let nsError = error as NSError
@@ -465,11 +548,4 @@ class AppointmentsViewModel: ObservableObject {
         Task { await fetchBlockedSlots() }
     }
 
-    // MARK: - Private Helper
-
-    private func showError(title: String, message: String) {
-        alertTitle = title
-        alertMessage = message
-        showAlert = true
-    }
 }

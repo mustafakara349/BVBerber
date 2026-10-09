@@ -7,6 +7,10 @@ use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Models\Supplier;
 use App\Models\Product;
+use App\Models\Expense;
+use App\Models\ExpenseCategory;
+use App\Models\Transaction;
+use App\Enums\TransactionType;
 use App\Services\StockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,8 +45,9 @@ class PurchaseOrderController extends Controller
         $branchId = session('active_branch_id', 1);
         $suppliers = Supplier::active()->orderBy('name')->get();
         $products = Product::forBranch($branchId)->active()->orderBy('name')->get();
+        $categories = \App\Models\ProductCategory::forBranch($branchId)->orderBy('sort_order')->orderBy('name')->get();
 
-        return view('purchase_orders.create', compact('suppliers', 'products'));
+        return view('purchase_orders.create', compact('suppliers', 'products', 'categories'));
     }
 
     public function store(Request $request, StockService $stockService)
@@ -58,6 +63,7 @@ class PurchaseOrderController extends Controller
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
+            'payment_method' => 'required|string|in:cash,credit_card,bank_transfer',
         ]);
 
         DB::transaction(function () use ($validated, $branchId, $stockService) {
@@ -111,6 +117,29 @@ class PurchaseOrderController extends Controller
             $order->update([
                 'subtotal' => $subtotal,
                 'total_amount' => $subtotal, // Gelecekte vergi vb eklenebilir
+            ]);
+
+            // === FİNANSAL KAYIT (GİDER) OLUŞTURMA ===
+            // 1. Kategori Bul veya Oluştur
+            $category = ExpenseCategory::firstOrCreate(
+                ['name' => 'Mal Alımı', 'branch_id' => $branchId],
+                ['description' => 'Tedarikçilerden yapılan mal alımları']
+            );
+
+            $supplier = Supplier::find($validated['supplier_id']);
+            $invoiceText = $validated['invoice_number'] ? $validated['invoice_number'] : 'Faturasız';
+
+            // 2. Kasa Hareketi (Transaction) Kaydı
+            Transaction::create([
+                'branch_id'        => $branchId,
+                'created_by'       => Auth::id(),
+                'transaction_type' => TransactionType::Expense,
+                'category'         => 'Mal Alımı',
+                'amount'           => $subtotal,
+                'currency'         => 'TRY',
+                'payment_method'   => $validated['payment_method'],
+                'description'      => 'Mal Alımı Ödemesi - ' . $invoiceText . ' (' . $supplier->name . ')',
+                'transaction_date' => $validated['purchase_date'],
             ]);
         });
 

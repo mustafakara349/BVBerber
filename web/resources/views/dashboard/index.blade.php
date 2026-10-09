@@ -32,6 +32,7 @@
                                         <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Müşteri</th>
                                         <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Berber</th>
                                         <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Hizmet</th>
+                                        <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Tutar</th>
                                         <th class="text-end pe-4 text-uppercase text-muted fs-7 fw-semibold py-3 border-0">İşlem
                                         </th>
                                     </tr>
@@ -49,10 +50,13 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="avatar avatar-sm rounded-circle bg-warning-subtle text-warning me-3 d-flex align-items-center justify-content-center fw-bold shadow-sm"
-                                                        style="width: 40px; height: 40px;">
-                                                        {{ mb_substr($apt->customer->first_name ?? 'M', 0, 1) }}{{ mb_substr($apt->customer->last_name ?? 'M', 0, 1) }}
-                                                    </div>
+                                                    @if($apt->customer && $apt->customer->profile_photo_url)
+                                                        <img src="{{ $apt->customer->profile_photo_url }}" class="rounded-circle border border-warning border-opacity-25 shadow-sm me-3 object-fit-cover" style="width: 32px; height: 32px;" alt="{{ $apt->customer->full_name }}">
+                                                    @else
+                                                        <div class="avatar avatar-sm rounded-circle bg-warning-subtle text-warning border border-warning border-opacity-25 me-3 d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                                                            {{ mb_substr($apt->customer->first_name ?? 'M', 0, 1) }}{{ mb_substr($apt->customer->last_name ?? 'M', 0, 1) }}
+                                                        </div>
+                                                    @endif
                                                     <div>
                                                         <span
                                                             class="d-block fw-bold text-dark">{{ $apt->customer->full_name ?? 'Bilinmeyen Müşteri' }}</span>
@@ -62,14 +66,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div
-                                                        class="icon-shape icon-sm bg-primary-subtle text-primary rounded-circle me-2">
-                                                        <i class="ti ti-cut fs-5"></i>
-                                                    </div>
-                                                    <span
-                                                        class="fw-medium text-dark">{{ $apt->employee->user->full_name ?? '-' }}</span>
-                                                </div>
+                                                <span class="fw-medium text-dark">{{ $apt->employee->user->full_name ?? '-' }}</span>
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
@@ -79,24 +76,30 @@
                                                     @endforeach
                                                 </div>
                                             </td>
+                                            <td>
+                                                <span class="fw-bold text-dark fs-6">₺{{ number_format($apt->total_price, 2, ',', '.') }}</span>
+                                                @if($apt->appliedCoupon)
+                                                    <a tabindex="0" class="text-info ms-1" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Kupon Kullanıldı" data-bs-content="Kupon: {{ $apt->appliedCoupon->code }} | İndirim: ₺{{ number_format($apt->discount_amount, 2, ',', '.') }}"><i class="ti ti-info-circle fs-5"></i></a>
+                                                @elseif($apt->appliedCampaign)
+                                                    <a tabindex="0" class="text-info ms-1" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Kampanya Kullanıldı" data-bs-content="Kampanya: {{ $apt->appliedCampaign->title }} | İndirim: ₺{{ number_format($apt->discount_amount, 2, ',', '.') }}"><i class="ti ti-info-circle fs-5"></i></a>
+                                                @endif
+                                            </td>
                                             <td class="text-end pe-4">
-                                                <div class="btn-group shadow-sm">
+                                                <div class="d-flex gap-2 justify-content-end align-items-center">
                                                     <form action="{{ route('appointments.update-status', $apt) }}" method="POST"
                                                         class="d-inline">
                                                         @csrf
                                                         @method('PATCH')
                                                         <input type="hidden" name="status" value="confirmed">
-                                                        <button type="submit" class="btn btn-sm btn-success" title="Onayla"
-                                                            style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                                        <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm" title="Onayla">
                                                             <i class="ti ti-check me-1"></i>Onayla
                                                         </button>
                                                     </form>
-                                                    <button type="button" class="btn btn-sm btn-danger btn-reject-trigger" 
+                                                    <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 fw-bold shadow-sm btn-reject-trigger" 
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#rejectReasonModal"
                                                             data-url="{{ route('appointments.update-status', $apt) }}"
-                                                            title="Reddet"
-                                                            style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                                                            title="Reddet">
                                                         <i class="ti ti-x me-1"></i>Reddet
                                                     </button>
                                                 </div>
@@ -380,10 +383,14 @@
         <div class="col-lg-4">
             <div class="card h-100">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center px-4 py-3">
-                    <h4 class="mb-0 h5">Popüler Hizmetler</h4>
-                    <a href="{{ route('services.index') }}" class="small text-primary text-decoration-underline">Tümü</a>
+                    <h4 class="mb-0 h5" style="font-size: 1.1rem !important;">En Çok Tercih Edilen Hizmetler</h4>
+                    <select class="form-select form-select-sm w-auto" id="topServicesStatsPeriod">
+                        <option value="day">Günlük</option>
+                        <option value="month" selected>Aylık</option>
+                        <option value="year">Yıllık</option>
+                    </select>
                 </div>
-                <ul class="list-group list-group-flush">
+                <ul class="list-group list-group-flush" id="topServicesList">
                     @forelse($topServices as $service)
                         <li class="list-group-item d-flex align-items-center gap-3">
                             <div class="icon-shape icon-sm bg-primary bg-opacity-10 text-primary rounded-2">
@@ -471,10 +478,10 @@
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden border-start border-warning border-4">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center px-4 py-3 border-bottom">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="p-1 bg-warning bg-opacity-20 rounded-2 text-warning">
-                            <i class="ti ti-alert-triangle fs-4"></i>
+                        <span class="p-2 bg-warning-subtle text-warning rounded-3 d-inline-flex align-items-center justify-content-center">
+                            <i class="ti ti-clock-exclamation fs-4"></i>
                         </span>
-                        <h4 class="mb-0 h5 text-dark fw-bold">⚠️ İşlem Bekleyen Randevular (Süresi Dolanlar)</h4>
+                        <h4 class="mb-0 h5 text-dark fw-bold">İşlem Bekleyen Randevular (Süresi Dolanlar)</h4>
                     </div>
                     <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
                         {{ $awaitingActionAppointments->count() }} Randevu Eylem Bekliyor
@@ -504,9 +511,13 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-sm rounded-circle bg-warning bg-opacity-15 text-warning me-3 d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 40px; height: 40px;">
-                                                {{ mb_substr($apt->customer->first_name ?? 'M', 0, 1) }}{{ mb_substr($apt->customer->last_name ?? 'M', 0, 1) }}
-                                            </div>
+                                            @if($apt->customer && $apt->customer->profile_photo_url)
+                                                <img src="{{ $apt->customer->profile_photo_url }}" class="rounded-circle border border-warning border-opacity-25 shadow-sm me-3 object-fit-cover" style="width: 32px; height: 32px;" alt="{{ $apt->customer->full_name }}">
+                                            @else
+                                                <div class="avatar avatar-sm rounded-circle bg-warning-subtle text-warning border border-warning border-opacity-25 me-3 d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                                                    {{ mb_substr($apt->customer->first_name ?? 'M', 0, 1) }}{{ mb_substr($apt->customer->last_name ?? 'M', 0, 1) }}
+                                                </div>
+                                            @endif
                                             <div>
                                                 <span class="d-block fw-bold text-dark">{{ $apt->customer->full_name ?? 'Bilinmeyen Müşteri' }}</span>
                                                 <small class="text-muted"><i class="ti ti-phone me-1"></i>{{ $apt->customer->phone ?? 'Belirtilmemiş' }}</small>
@@ -514,7 +525,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="fw-medium text-dark"><i class="ti ti-cut text-warning me-1"></i>{{ $apt->employee->user->full_name ?? '-' }}</span>
+                                        <span class="fw-medium text-dark">{{ $apt->employee->user->full_name ?? '-' }}</span>
                                     </td>
                                     <td>
                                         <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
@@ -525,6 +536,11 @@
                                     </td>
                                     <td>
                                         <span class="fw-bold text-dark fs-6">₺{{ number_format($apt->total_price, 2, ',', '.') }}</span>
+                                        @if($apt->appliedCoupon)
+                                            <a tabindex="0" class="text-info ms-1" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Kupon Kullanıldı" data-bs-content="Kupon: {{ $apt->appliedCoupon->code }} | İndirim: ₺{{ number_format($apt->discount_amount, 2, ',', '.') }}"><i class="ti ti-info-circle fs-5"></i></a>
+                                        @elseif($apt->appliedCampaign)
+                                            <a tabindex="0" class="text-info ms-1" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Kampanya Kullanıldı" data-bs-content="Kampanya: {{ $apt->appliedCampaign->title }} | İndirim: ₺{{ number_format($apt->discount_amount, 2, ',', '.') }}"><i class="ti ti-info-circle fs-5"></i></a>
+                                        @endif
                                     </td>
                                     <td class="pe-4 text-end">
                                         <div class="d-flex gap-2 justify-content-end align-items-center">
@@ -955,6 +971,51 @@
                         }
                     });
                 }
+            }
+
+            // Top Services Filter and AJAX Fetch
+            const topServicesPeriodSelect = document.getElementById('topServicesStatsPeriod');
+            const topServicesList = document.getElementById('topServicesList');
+
+            function fetchTopServices(period) {
+                fetch(`{{ route('dashboard.top-services') }}?period=${period}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        topServicesList.innerHTML = '';
+                        if (data.length === 0) {
+                            topServicesList.innerHTML = '<li class="list-group-item text-center text-muted py-4">Henüz veri yok</li>';
+                            return;
+                        }
+
+                        data.forEach(service => {
+                            const formattedRevenue = Number(service.total_revenue).toLocaleString('tr-TR', { maximumFractionDigits: 0 });
+                            const html = `
+                                <li class="list-group-item d-flex align-items-center gap-3">
+                                    <div class="icon-shape icon-sm bg-primary bg-opacity-10 text-primary rounded-2">
+                                        <i class="ti ti-cut"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-1">${service.name}</p>
+                                        <div class="d-flex align-items-center gap-2 text-muted">
+                                            <small class="fw-semibold">₺${formattedRevenue}</small>
+                                            <small>•</small>
+                                            <small>${service.usage_count} kullanım</small>
+                                        </div>
+                                    </div>
+                                </li>
+                            `;
+                            topServicesList.insertAdjacentHTML('beforeend', html);
+                        });
+                    })
+                    .catch(err => {
+                        console.error("Error fetching top services:", err);
+                    });
+            }
+
+            if (topServicesPeriodSelect) {
+                topServicesPeriodSelect.addEventListener('change', function(e) {
+                    fetchTopServices(e.target.value);
+                });
             }
         });
     </script>

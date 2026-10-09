@@ -10,8 +10,6 @@ import SwiftUI
 struct AppointmentsView: View {
     
     @EnvironmentObject var viewModel: AppointmentsViewModel
-    @State private var appointmentToCancel: Appointment? = nil
-    @State private var showCancelAlert = false
     
     var body: some View {
         
@@ -91,8 +89,8 @@ struct AppointmentsView: View {
                                         AppointmentCardView(
                                             appointment: appointment,
                                             onCancel: {
-                                                appointmentToCancel = appointment
-                                                showCancelAlert = true
+                                                viewModel.appointmentToCancel = appointment
+                                                viewModel.showCancelAlert = true
                                             },
                                             onDirections: {
                                                 viewModel.openMaps()
@@ -132,12 +130,12 @@ struct AppointmentsView: View {
                 
             }
             .toolbar(.visible, for: .tabBar)
-            .alert("Emin misiniz?", isPresented: $showCancelAlert) {
+            .alert("Emin misiniz?", isPresented: $viewModel.showCancelAlert) {
                 Button("Vazgeç", role: .cancel) {
-                    appointmentToCancel = nil
+                    viewModel.appointmentToCancel = nil
                 }
                 Button("Evet, İptal Et", role: .destructive) {
-                    if let appt = appointmentToCancel {
+                    if let appt = viewModel.appointmentToCancel {
                         Task { await viewModel.cancelAppointment(appt) }
                     }
                 }

@@ -14,7 +14,7 @@ class ServicesViewModel: ObservableObject {
     @Published var services: [Service] = []
     @Published var isLoading = false
 
-    private let db = FirestoreManager.shared
+    private let db = APIClient.shared
 
     // MARK: - Fetch Services
 

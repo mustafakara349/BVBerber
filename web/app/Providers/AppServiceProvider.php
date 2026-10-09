@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Route model binding: {customer} → User model (müşteri rolündeki kullanıcılar)
         Route::bind('customer', function ($value) {
-            return User::withTrashed()->findOrFail($value);
+            return User::withTrashed()->where('uuid', $value)->orWhere('id', $value)->firstOrFail();
         });
 
         // API Rate Limiting configuration

@@ -19,7 +19,7 @@ class DashboardRepository implements DashboardRepositoryInterface
     public function getRevenueStats(int $branchId, string $period = 'month'): array
     {
         $base = Transaction::forBranch($branchId)->income();
-        $dailyExpense = Expense::forBranch($branchId)->whereDate('expense_date', today())->sum('amount');
+        $dailyExpense = Transaction::expense()->forBranch($branchId)->whereDate('transaction_date', today())->sum('amount');
 
         return [
             'daily' => round((clone $base)->whereDate('transaction_date', today())->sum('amount'), 2),
@@ -88,6 +88,10 @@ class DashboardRepository implements DashboardRepositoryInterface
             })
             ->forBranch($branchId)
             ->active()
+            ->where(function ($q) {
+                $q->whereNull('hire_date')
+                  ->orWhere('hire_date', '<=', now()->endOfMonth());
+            })
             ->withCount(['appointments as completed_appointments_count' => function ($q) {
                 $q->where('status', AppointmentStatus::Completed)
                     ->whereMonth('start_at', now()->month);
@@ -112,17 +116,25 @@ class DashboardRepository implements DashboardRepositoryInterface
             ->toArray();
     }
 
-    public function getTopServices(int $branchId, int $limit = 5): array
+    public function getTopServices(int $branchId, string $period = 'month', int $limit = 5): array
     {
         return DB::table('services')
             ->leftJoin('appointment_services', 'services.id', '=', 'appointment_services.service_id')
-            ->leftJoin('appointments', function($join) use ($branchId) {
+            ->leftJoin('appointments', function($join) use ($branchId, $period) {
                 $join->on('appointment_services.appointment_id', '=', 'appointments.id')
                      ->where('appointments.branch_id', '=', $branchId)
                      ->where('appointments.status', '=', AppointmentStatus::Completed->value);
+                
+                if ($period === 'day') {
+                    $join->whereDate('appointments.start_at', today());
+                } elseif ($period === 'month') {
+                    $join->whereMonth('appointments.start_at', now()->month)
+                         ->whereYear('appointments.start_at', now()->year);
+                } elseif ($period === 'year') {
+                    $join->whereYear('appointments.start_at', now()->year);
+                }
             })
             ->where('services.branch_id', $branchId)
-            ->where('services.is_popular', true)
             ->where('services.is_active', true)
             ->select(
                 'services.id',
@@ -198,9 +210,9 @@ class DashboardRepository implements DashboardRepositoryInterface
             ->whereYear('transaction_date', $year)
             ->sum('amount');
 
-        $expense = Expense::forBranch($branchId)
-            ->whereMonth('expense_date', $month)
-            ->whereYear('expense_date', $year)
+        $expense = Transaction::expense()->forBranch($branchId)
+            ->whereMonth('transaction_date', $month)
+            ->whereYear('transaction_date', $year)
             ->sum('amount');
 
         return [

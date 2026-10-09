@@ -17,34 +17,31 @@ use Carbon\Carbon;
 
 class DebtController extends Controller
 {
-    public function index(Request $request)
+    public function receivables(Request $request)
     {
         $branchId = $this->getActiveBranchId();
 
-        $query = Debt::forBranch($branchId)
-            ->with(['customer', 'appointment'])
-            ->orderBy('created_at', 'desc');
+        $query = Debt::receivable()->forBranch($branchId)
+            ->selectRaw('
+                customer_id,
+                counterparty_name,
+                COUNT(id) as debt_count,
+                SUM(amount) as total_amount,
+                SUM(paid_amount) as total_paid,
+                SUM(amount - paid_amount) as remaining_amount,
+                MIN(due_date) as nearest_due_date,
+                MAX(created_at) as last_debt_date
+            ')
+            ->with('customer')
+            ->groupBy('customer_id', 'counterparty_name')
+            ->orderByRaw('SUM(amount - paid_amount) DESC');
 
-        // Apply status filter
         if ($request->filled('status') && $request->status !== 'all') {
             $query->where('status', $request->status);
-        } else {
-            // By default, display unpaid & partial (active) debts
-            if (!$request->filled('status')) {
-                $query->whereIn('status', ['unpaid', 'partial']);
-            }
+        } else if (!$request->filled('status')) {
+            $query->whereIn('status', ['unpaid', 'partial']);
         }
 
-        // Apply type filter
-        if ($request->filled('type') && $request->type !== 'all') {
-            if ($request->type === 'appointment') {
-                $query->whereNotNull('appointment_id');
-            } elseif ($request->type === 'manual') {
-                $query->whereNull('appointment_id');
-            }
-        }
-
-        // Apply search filter (customer name, customer phone, appointment code, description)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -54,91 +51,149 @@ class DebtController extends Controller
                       ->orWhere('phone', 'like', "%{$search}%");
                 })->orWhereHas('appointment', function ($a) use ($search) {
                     $a->where('appointment_code', 'like', "%{$search}%");
-                })->orWhere('description', 'like', "%{$search}%");
+                })->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('counterparty_name', 'like', "%{$search}%");
             });
         }
 
         $debts = $query->paginate(15)->withQueryString();
 
-        // Calculate summary cards based on the branch and filters (excluding pagination)
-        $summaryQuery = Debt::forBranch($branchId);
-        if ($request->filled('type') && $request->type !== 'all') {
-            if ($request->type === 'appointment') {
-                $summaryQuery->whereNotNull('appointment_id');
-            } elseif ($request->type === 'manual') {
-                $summaryQuery->whereNull('appointment_id');
-            }
-        }
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $summaryQuery->where(function ($q) use ($search) {
-                $q->whereHas('customer', function ($c) use ($search) {
-                    $c->where('first_name', 'like', "%{$search}%")
-                      ->orWhere('last_name', 'like', "%{$search}%")
-                      ->orWhere('phone', 'like', "%{$search}%");
-                })->orWhereHas('appointment', function ($a) use ($search) {
-                    $a->where('appointment_code', 'like', "%{$search}%");
-                })->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        // We only sum active or currently filtered status for card statistics
-        $statsQuery = clone $summaryQuery;
+        $statsQuery = Debt::receivable()->forBranch($branchId);
         if ($request->filled('status') && $request->status !== 'all') {
             $statsQuery->where('status', $request->status);
-        } else {
-            if (!$request->filled('status')) {
-                $statsQuery->whereIn('status', ['unpaid', 'partial']);
-            }
+        } else if (!$request->filled('status')) {
+            $statsQuery->whereIn('status', ['unpaid', 'partial']);
         }
 
         $totalDebt = (float) $statsQuery->sum('amount');
         $totalPaidOnActive = (float) $statsQuery->sum('paid_amount');
         $remainingDebt = $totalDebt - $totalPaidOnActive;
 
-        // Calculate collected debt payments today
-        $todayPaid = (float) Transaction::forBranch($branchId)
-            ->income()
-            ->where('description', 'like', 'Borç Tahsilatı%')
-            ->whereDate('transaction_date', today())
-            ->sum('amount');
-
-        // Get customers for the manual debt modal (must be active role 'customer')
         $customers = User::customers()->active()->orderBy('first_name')->get();
 
-        return view('finance.debts.index', compact(
-            'debts',
-            'totalDebt',
-            'todayPaid',
-            'remainingDebt',
-            'customers'
+        return view('finance.debts.receivables', compact(
+            'debts', 'totalDebt', 'remainingDebt', 'customers'
+        ));
+    }
+
+    public function payables(Request $request)
+    {
+        $branchId = $this->getActiveBranchId();
+
+        $query = Debt::payable()->forBranch($branchId)
+            ->selectRaw('
+                customer_id,
+                counterparty_name,
+                COUNT(id) as debt_count,
+                SUM(amount) as total_amount,
+                SUM(paid_amount) as total_paid,
+                SUM(amount - paid_amount) as remaining_amount,
+                MIN(due_date) as nearest_due_date,
+                MAX(created_at) as last_debt_date
+            ')
+            ->with('customer')
+            ->groupBy('customer_id', 'counterparty_name')
+            ->orderByRaw('SUM(amount - paid_amount) DESC');
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        } else if (!$request->filled('status')) {
+            $query->whereIn('status', ['unpaid', 'partial']);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                  ->orWhere('counterparty_name', 'like', "%{$search}%");
+            });
+        }
+
+        $debts = $query->paginate(15)->withQueryString();
+
+        $statsQuery = Debt::payable()->forBranch($branchId);
+        if ($request->filled('status') && $request->status !== 'all') {
+            $statsQuery->where('status', $request->status);
+        } else if (!$request->filled('status')) {
+            $statsQuery->whereIn('status', ['unpaid', 'partial']);
+        }
+
+        $totalDebt = (float) $statsQuery->sum('amount');
+        $totalPaidOnActive = (float) $statsQuery->sum('paid_amount');
+        $remainingDebt = $totalDebt - $totalPaidOnActive;
+
+        return view('finance.debts.payables', compact(
+            'debts', 'totalDebt', 'remainingDebt'
+        ));
+    }
+
+    public function details(Request $request)
+    {
+        $branchId = $this->getActiveBranchId();
+        
+        $type = $request->query('type', 'receivable');
+        $customerId = $request->query('customer_id');
+        $counterpartyName = $request->query('counterparty_name');
+
+        if (!$customerId && !$counterpartyName) {
+            return redirect()->back()->with('error', 'Geçersiz borçlu bilgisi.');
+        }
+
+        $query = Debt::where('type', $type)->forBranch($branchId)
+                     ->with(['customer', 'appointment.payments', 'transactions'])
+                     ->orderBy('created_at', 'desc');
+
+        if ($customerId) {
+            $query->where('customer_id', $customerId);
+        } else {
+            $query->where('counterparty_name', $counterpartyName)
+                  ->whereNull('customer_id');
+        }
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        $debts = $query->paginate(15)->withQueryString();
+
+        // Calculate totals for this specific person
+        $statsQuery = clone $query;
+        $totalDebt = (float) $statsQuery->sum('amount');
+        $totalPaid = (float) $statsQuery->sum('paid_amount');
+        $remainingDebt = $totalDebt - $totalPaid;
+
+        return view('finance.debts.details', compact(
+            'debts', 'type', 'customerId', 'counterpartyName', 'totalDebt', 'totalPaid', 'remainingDebt'
         ));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'customer_id' => 'required|exists:users,id',
+            'type' => 'required|in:receivable,payable',
+            'customer_id' => 'nullable|exists:users,id',
+            'counterparty_name' => 'nullable|string|max:255',
             'amount' => 'required|numeric|min:0.01',
             'due_date' => 'nullable|date',
             'description' => 'nullable|string|max:500',
         ]);
 
-        $customer = User::customers()->findOrFail($validated['customer_id']);
         $branchId = $this->getActiveBranchId();
 
         Debt::create([
             'branch_id' => $branchId,
-            'customer_id' => $customer->id,
+            'type' => $validated['type'],
+            'customer_id' => $validated['customer_id'] ?? null,
+            'counterparty_name' => $validated['counterparty_name'] ?? null,
             'amount' => $validated['amount'],
             'paid_amount' => 0.00,
-            'description' => $validated['description'] ?? 'Manuel Borç',
+            'description' => $validated['description'] ?? 'Manuel Kayıt',
             'due_date' => $validated['due_date'],
             'status' => 'unpaid',
         ]);
 
-        return redirect()->route('finance.debts.index')
-            ->with('success', 'Borç kaydı başarıyla eklendi.');
+        $route = $validated['type'] === 'receivable' ? 'finance.receivables.index' : 'finance.payables.index';
+        return redirect()->route($route)->with('success', 'Kayıt başarıyla eklendi.');
     }
 
     public function pay(Request $request, Debt $debt)
@@ -157,7 +212,7 @@ class DebtController extends Controller
         $remaining = $debt->remaining_amount;
 
         if ($validated['amount'] > $remaining + 0.01) {
-            return back()->with('error', 'Ödeme tutarı kalan borç tutarından fazla olamaz. Kalan borç: ₺' . number_format($remaining, 2, ',', '.'));
+            return back()->with('error', 'İşlem tutarı kalan tutardan fazla olamaz. Kalan: ₺' . number_format($remaining, 2, ',', '.'));
         }
 
         DB::transaction(function () use ($debt, $validated) {
@@ -166,35 +221,24 @@ class DebtController extends Controller
                 $paidAtDateTime->setTimeFrom(now());
             }
 
-            // Update Debt record paid amount
-            $newPaidAmount = (float) $debt->paid_amount + (float) $validated['amount'];
-            $debtStatus = 'partial';
-
-            if ($newPaidAmount >= (float) $debt->amount - 0.005) {
-                $debtStatus = 'paid';
-                $newPaidAmount = $debt->amount; // Make it exact
-            }
-
-            $debt->update([
-                'paid_amount' => $newPaidAmount,
-                'status' => $debtStatus,
-            ]);
-
-            // Register dynamic Transaction in finance ledger
-            $typeLabel = $debt->appointment ? '#' . $debt->appointment->appointment_code : 'Manuel Borç';
-            $description = 'Borç Tahsilatı - ' . ($debt->customer?->full_name ?? 'Müşteri') . ' (' . $typeLabel . ')';
-
-            Transaction::create([
+            // Create Transaction via TransactionService would be better, but we can do it inline or call service.
+            // Since we created TransactionService, let's use it.
+            $data = [
                 'branch_id' => $debt->branch_id,
                 'created_by' => Auth::id(),
-                'transaction_type' => TransactionType::Income,
+                'transaction_type' => $debt->type === 'receivable' ? TransactionType::Income->value : TransactionType::Expense->value,
+                'category' => $debt->type === 'receivable' ? 'Alacak Tahsilatı' : 'Borç Ödemesi',
                 'amount' => $validated['amount'],
                 'currency' => 'TRY',
                 'payment_method' => $validated['payment_method'],
-                'description' => $description,
+                'description' => ($debt->type === 'receivable' ? 'Tahsilat - ' : 'Ödeme - ') . ($debt->counterparty_name ?? $debt->customer?->full_name ?? 'Bilinmeyen'),
                 'transaction_date' => $paidAtDateTime,
-                'appointment_id' => $debt->appointment_id,
-            ]);
+                'reference_type' => Debt::class,
+                'reference_id' => $debt->id,
+            ];
+
+            $transactionService = app(\App\Services\TransactionService::class);
+            $transactionService->createTransaction($data);
 
             // If it is linked to an appointment, record a payment on the appointment
             if ($debt->appointment_id) {
@@ -224,8 +268,7 @@ class DebtController extends Controller
             }
         });
 
-        return redirect()->route('finance.debts.index')
-            ->with('success', 'Ödeme başarıyla tahsil edildi.');
+        return back()->with('success', 'İşlem başarıyla kaydedildi.');
     }
 
     public function destroy(Debt $debt)
@@ -249,8 +292,7 @@ class DebtController extends Controller
         // güvenle silebiliriz.
         $debt->delete();
 
-        return redirect()->route('finance.debts.index')
-            ->with('success', 'Borç kaydı başarıyla silindi.');
+        return back()->with('success', 'Kayıt başarıyla silindi.');
     }
 
     private function getActiveBranchId(): int

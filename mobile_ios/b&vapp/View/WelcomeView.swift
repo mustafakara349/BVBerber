@@ -49,10 +49,19 @@ struct WelcomeView: View {
                     Spacer()
                     
                     HStack(spacing: 20) {
-                        FeatureButton(
-                            icon: "calendar",
-                            text: "KOLAY RANDEVU"
-                        )
+                        NavigationLink {
+                            let vm = AppointmentsViewModel()
+                            SelectAppointmentView()
+                                .environmentObject(vm)
+                                .onAppear {
+                                    vm.isGuestMode = true
+                                }
+                        } label: {
+                            FeatureButton(
+                                icon: "calendar",
+                                text: "KOLAY RANDEVU"
+                            )
+                        }
                     }
                     
                     // LOGIN BUTTON

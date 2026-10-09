@@ -14,7 +14,7 @@ class NotificationViewModel: ObservableObject {
     @Published var notifications: [NotificationItem] = []
     @Published var isLoading = false
     
-    private let firestoreManager = FirestoreManager.shared
+    private let firestoreManager = APIClient.shared
     
     
     // MARK: - Fetch Notifications

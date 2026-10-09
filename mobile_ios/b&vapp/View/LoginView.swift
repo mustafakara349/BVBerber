@@ -15,7 +15,7 @@ struct LoginView: View {
         
         ZStack {
             
-            Color.black
+            Color(UIColor.systemBackground)
                 .ignoresSafeArea()
             
             VStack(spacing: 25) {
@@ -30,7 +30,7 @@ struct LoginView: View {
                 
                 Text("Hesabına Giriş Yap")
                     .font(.title.bold())
-                    .foregroundColor(.white)
+                    .foregroundColor(.primary)
                 
                 
                 // EMAIL
@@ -43,9 +43,9 @@ struct LoginView: View {
                     
                     TextField("example@email.com", text: $viewModel.loginEmail)
                         .padding()
-                        .background(Color.white.opacity(0.1))
+                        .background(Color(UIColor.secondarySystemBackground))
                         .cornerRadius(10)
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                         .autocapitalization(.none)
                         .keyboardType(.emailAddress)
                         .textContentType(.emailAddress)
@@ -76,9 +76,9 @@ struct LoginView: View {
                         }
                     }
                     .padding()
-                    .background(Color.white.opacity(0.1))
+                    .background(Color(UIColor.secondarySystemBackground))
                     .cornerRadius(10)
-                    .foregroundColor(.white)
+                    .foregroundColor(.primary)
                     .textContentType(.password)
                 }
                 
@@ -88,11 +88,9 @@ struct LoginView: View {
                 HStack {
                     Spacer()
                     
-                    Button("Şifremi Unuttum") {
-                        
-                    }
-                    .font(.footnote)
-                    .foregroundColor(.yellow)
+                    NavigationLink("Şifremi Unuttum", destination: ForgotPasswordView(viewModel: viewModel), isActive: $viewModel.navigateToForgotPassword)
+                        .font(.footnote)
+                        .foregroundColor(.yellow)
                 }
                 
                 
@@ -142,6 +140,7 @@ struct LoginView: View {
             }
             .padding(.horizontal, 30)
         }
+        .onTapGesture { hideKeyboard() }
         .navigationBarTitleDisplayMode(.inline)
         .alert(viewModel.alertTitle, isPresented: $viewModel.showAlert) {
             Button("Tamam", role: .cancel) { }

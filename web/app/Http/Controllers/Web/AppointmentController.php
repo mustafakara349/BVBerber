@@ -62,6 +62,7 @@ class AppointmentController extends Controller
 
         $appointments = Appointment::forBranch($branchId)
             ->whereBetween('start_at', [$request->start, $request->end])
+            ->whereNotIn('status', ['cancelled', 'rejected'])
             ->with(['customer', 'employee.user', 'appointmentServices.service'])
             ->get();
 
@@ -102,9 +103,9 @@ class AppointmentController extends Controller
     {
         $branchId = session('active_branch_id', 1);
         $employees = Employee::forBranch($branchId)->active()->visible()->with('user')->get();
-        $services = Service::forBranch($branchId)->active()->get();
+        $services = Service::forBranch($branchId)->active()->with('category')->get();
         $customers = \App\Models\User::customers()->active()->get();
-        $coupons = \App\Models\Coupon::with('user')->get();
+        $coupons = \App\Models\Coupon::with('users')->get();
 
         return view('appointments.create', compact('employees', 'services', 'customers', 'coupons'));
     }
@@ -117,9 +118,9 @@ class AppointmentController extends Controller
 
         $branchId = session('active_branch_id', 1);
         $employees = Employee::forBranch($branchId)->active()->visible()->with('user')->get();
-        $services = Service::forBranch($branchId)->active()->get();
+        $services = Service::forBranch($branchId)->active()->with('category')->get();
         $customers = \App\Models\User::customers()->active()->get();
-        $coupons = \App\Models\Coupon::with('user')->get();
+        $coupons = \App\Models\Coupon::with('users')->get();
 
         $appointment->load(['appointmentServices.service']);
 
@@ -132,6 +133,7 @@ class AppointmentController extends Controller
         $data = $request->validated();
         $data['created_by'] = auth()->id();
         $data['source'] = 'admin_panel';
+        $data['status'] = AppointmentStatus::Confirmed->value;
 
         $this->appointmentService->createAppointment($data);
 
@@ -193,11 +195,28 @@ class AppointmentController extends Controller
         $employeeId = $request->employee_id;
         $branchId = session('active_branch_id', 1);
 
+        $employee = Employee::findOrFail($employeeId);
+
+        // İşe başlama tarihinden önce randevu alınamaz
+        if ($employee->hire_date && \Carbon\Carbon::parse($date)->startOfDay()->lt($employee->hire_date->startOfDay())) {
+            return response()->json([]);
+        }
+
         $appointments = Appointment::forBranch($branchId)
             ->where('employee_id', $employeeId)
             ->whereDate('start_at', $date)
             ->whereNotIn('status', ['cancelled', 'rejected', 'no_show'])
             ->get();
+
+        // Çalışanın İzin ve Kısıtlamalarını Çek
+        $timeBlocks = \App\Models\EmployeeTimeBlock::where('employee_id', $employeeId)
+            ->where('date', $date)
+            ->get();
+
+        // Eğer o gün tüm gün izinliyse boş dön (randevu alınamaz)
+        if ($timeBlocks->where('type', 'full_day')->count() > 0) {
+            return response()->json([]);
+        }
 
         // Dynamically fetch branch working hours
         $branch = \App\Models\Branch::find($branchId);
@@ -225,6 +244,7 @@ class AppointmentController extends Controller
             $slotTime = $startTime->copy();
             $isAvailable = true;
 
+            // Randevu çakışması
             foreach ($appointments as $apt) {
                 $aptStart = \Carbon\Carbon::parse($apt->start_at);
                 $aptEnd = $apt->end_at ? \Carbon\Carbon::parse($apt->end_at) : $aptStart->copy()->addMinutes($apt->total_duration ?? 30);
@@ -235,6 +255,21 @@ class AppointmentController extends Controller
                 }
             }
             
+            // Saatlik İzin (Bloklama) çakışması
+            if ($isAvailable) {
+                foreach ($timeBlocks as $block) {
+                    if ($block->type === 'partial_time') {
+                        $blockStart = \Carbon\Carbon::parse($date . ' ' . $block->start_time);
+                        $blockEnd = \Carbon\Carbon::parse($date . ' ' . $block->end_time);
+                        
+                        if ($slotTime >= $blockStart && $slotTime < $blockEnd) {
+                            $isAvailable = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
             if ($date === today()->toDateString() && $slotTime <= now()) {
                 $isAvailable = false;
             }

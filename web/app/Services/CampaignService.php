@@ -52,14 +52,16 @@ class CampaignService
      */
     public function validateCoupon(User $user, int $branchId, string $code, float $subtotal, array $serviceIds = [], array $productIds = []): array
     {
-        $coupon = Coupon::where('code', $code)->first();
+        $coupon = Coupon::where('code', $code)->lockForUpdate()->first();
 
         if (!$coupon || !$coupon->isValid()) {
             return ['valid' => false, 'message' => 'Geçersiz veya süresi dolmuş kupon kodu.'];
         }
 
-        if ($coupon->user_id && $coupon->user_id !== $user->id) {
-            return ['valid' => false, 'message' => 'Bu kupon size ait değil.'];
+        if ($coupon->users()->exists()) {
+            if (!$coupon->users()->where('users.id', $user->id)->exists()) {
+                return ['valid' => false, 'message' => 'Bu kupon size ait değil.'];
+            }
         }
 
         // Müşteri kullanım limiti kontrolü

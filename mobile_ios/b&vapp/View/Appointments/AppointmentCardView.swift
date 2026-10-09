@@ -56,6 +56,12 @@ struct AppointmentCardView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
+                    if let originalPrice = appointment.originalPrice, originalPrice > appointment.price {
+                        Text("₺\(originalPrice)")
+                            .font(.caption)
+                            .strikethrough()
+                            .foregroundColor(.secondary)
+                    }
                     Text("₺\(appointment.price)")
                         .fontWeight(.bold)
                         .foregroundColor(.yellow)
@@ -87,6 +93,43 @@ struct AppointmentCardView: View {
                     .font(.subheadline)
             }
             .foregroundColor(.secondary)
+            
+            // MARK: Kampanya Hediyesi
+            if let rType = appointment.rewardType {
+                HStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.yellow.opacity(0.15))
+                            .frame(width: 36, height: 36)
+                        Image(systemName: rType == "gift_cafe" ? "cup.and.saucer.fill" : "bag.fill")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 16))
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Kampanya Hediyesi")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        Text(appointment.rewardName ?? "Sürpriz Hediye")
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                            
+                        Text("Randevunuz esnasında hediyenizi personelimizden talep ediniz.")
+                            .font(.system(size: 9))
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.yellow.opacity(0.3), lineWidth: 1)
+                        .background(Color.yellow.opacity(0.05).cornerRadius(12))
+                )
+            }
 
             // MARK: Butonlar
             HStack(spacing: 12) {

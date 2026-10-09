@@ -14,8 +14,7 @@ struct RegisterView: View {
     var body: some View {
 
         ZStack {
-
-            Color.black.ignoresSafeArea()
+            Color(UIColor.systemBackground).ignoresSafeArea()
 
             // ScrollView + SwiftUI klavye yönetimi
             // .ignoresSafeArea(.keyboard) KULLANILMADI — SwiftUI otomatik ScrollView'i
@@ -34,7 +33,7 @@ struct RegisterView: View {
 
                     Text("Hesap Oluştur")
                         .font(.title.bold())
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                         .padding(.bottom, 4)
 
                     // AD
@@ -59,9 +58,9 @@ struct RegisterView: View {
                         Text("Telefon Numarası").foregroundColor(.gray).font(.caption)
                         TextField("05XX XXX XX XX", text: $viewModel.registerPhone)
                             .padding()
-                            .background(Color.white.opacity(0.1))
+                            .background(Color(UIColor.secondarySystemBackground))
                             .cornerRadius(10)
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                             .textContentType(.telephoneNumber)
                             .keyboardType(.numberPad)
                             .onChange(of: viewModel.registerPhone) { newVal in
@@ -131,6 +130,7 @@ struct RegisterView: View {
             // NOT: .ignoresSafeArea(.keyboard) kasıtlı olarak ÇIKARILDI.
             // SwiftUI, ScrollView'in alt kenarını klavye belirince otomatik kısaltır.
         }
+        .onTapGesture { hideKeyboard() }
         .navigationBarTitleDisplayMode(.inline)
         .alert(viewModel.alertTitle, isPresented: $viewModel.showAlert) {
             Button("Tamam", role: .cancel) { }
@@ -183,9 +183,9 @@ struct RegisterView: View {
             Text(label).foregroundColor(.gray).font(.caption)
             TextField(placeholder, text: text)
                 .padding()
-                .background(Color.white.opacity(0.1))
+                .background(Color(UIColor.secondarySystemBackground))
                 .cornerRadius(10)
-                .foregroundColor(.white)
+                .foregroundColor(.primary)
                 .textContentType(contentType)
                 .keyboardType(keyboardType)
                 .autocapitalization(autocapitalize ? .words : .none)
@@ -215,9 +215,9 @@ struct RegisterView: View {
                 }
             }
             .padding()
-            .background(Color.white.opacity(0.1))
+            .background(Color(UIColor.secondarySystemBackground))
             .cornerRadius(10)
-            .foregroundColor(.white)
+            .foregroundColor(.primary)
             .textContentType(contentType)
         }
     }

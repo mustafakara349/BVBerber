@@ -19,21 +19,21 @@ class ExpenseController extends Controller
     {
         $branchId = $this->getActiveBranchId();
 
-        $query = Expense::forBranch($branchId)
-            ->with(['category', 'createdBy'])
-            ->orderBy('expense_date', 'desc');
+        $query = Transaction::expense()->forBranch($branchId)
+            ->with(['createdBy'])
+            ->orderBy('transaction_date', 'desc');
 
         // Apply filters
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+        if ($request->filled('category_name')) {
+            $query->where('category', $request->category_name);
         }
 
         if ($request->filled('start_date')) {
-            $query->whereDate('expense_date', '>=', $request->start_date);
+            $query->whereDate('transaction_date', '>=', $request->start_date);
         }
 
         if ($request->filled('end_date')) {
-            $query->whereDate('expense_date', '<=', $request->end_date);
+            $query->whereDate('transaction_date', '<=', $request->end_date);
         }
 
         // Paginate results
@@ -43,28 +43,29 @@ class ExpenseController extends Controller
         $categories = ExpenseCategory::where('branch_id', $branchId)->orWhereNull('branch_id')->get();
 
         // Calculate summary cards
-        $summaryQuery = Expense::forBranch($branchId);
+        $summaryQuery = Transaction::expense()->forBranch($branchId);
         if ($request->filled('start_date')) {
-            $summaryQuery->whereDate('expense_date', '>=', $request->start_date);
+            $summaryQuery->whereDate('transaction_date', '>=', $request->start_date);
         }
         if ($request->filled('end_date')) {
-            $summaryQuery->whereDate('expense_date', '<=', $request->end_date);
+            $summaryQuery->whereDate('transaction_date', '<=', $request->end_date);
         }
 
-        $totalExpenseThisMonth = (clone $summaryQuery)->whereMonth('expense_date', now()->month)->whereYear('expense_date', now()->year)->sum('amount');
+        $totalExpenseThisMonth = (clone $summaryQuery)->whereMonth('transaction_date', now()->month)->whereYear('transaction_date', now()->year)->sum('amount');
         $totalExpenseAllTime = (clone $summaryQuery)->sum('amount');
         $expenseCount = $summaryQuery->count();
 
         // Get top spending category
-        $topCategory = DB::table('expenses')
-            ->join('expense_categories', 'expenses.category_id', '=', 'expense_categories.id')
-            ->where('expenses.branch_id', $branchId)
-            ->select('expense_categories.name', DB::raw('SUM(expenses.amount) as total_amount'))
-            ->groupBy('expense_categories.name')
+        $topCategory = DB::table('transactions')
+            ->where('branch_id', $branchId)
+            ->where('transaction_type', TransactionType::Expense->value)
+            ->whereNotNull('category')
+            ->select('category', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('category')
             ->orderByDesc('total_amount')
             ->first();
 
-        $topCategoryName = $topCategory ? $topCategory->name : 'Yok';
+        $topCategoryName = $topCategory ? $topCategory->category : 'Yok';
         $topCategoryAmount = $topCategory ? $topCategory->total_amount : 0;
 
         return view('finance.expenses', compact(
@@ -81,7 +82,7 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'category_id'    => 'required|exists:expense_categories,id',
+            'category_name'  => 'required|string',
             'amount'         => 'required|numeric|min:0.01',
             'expense_date'   => 'required|date',
             'description'    => 'nullable|string|max:500',
@@ -91,71 +92,42 @@ class ExpenseController extends Controller
 
         $branchId = $this->getActiveBranchId();
 
-        // Kategorinin aktif şubeye ait olduğunu doğrula (şube izolasyonu)
-        $category = ExpenseCategory::where('id', $validated['category_id'])
-            ->where('branch_id', $branchId)
-            ->first();
-
-        if (! $category) {
-            abort(403, 'Bu kategoriye erişim yetkiniz bulunmamaktadır.');
-        }
-
         $receiptPath = null;
-
         if ($request->hasFile('receipt_file')) {
             $receiptPath = $request->file('receipt_file')->store('receipts', 'public');
         }
 
-        DB::transaction(function () use ($validated, $branchId, $receiptPath, $category) {
-            // 1. Create the Expense
-            $expense = Expense::create([
-                'branch_id'    => $branchId,
-                'category_id'  => $validated['category_id'],
-                'created_by'   => Auth::id(),
-                'amount'       => $validated['amount'],
-                'expense_date' => $validated['expense_date'],
-                'description'  => $validated['description'],
-                'receipt_file' => $receiptPath,
-            ]);
-
-            // 2. Automatically create the corresponding Transaction for kasa balance integrity!
-            Transaction::create([
-                'branch_id'        => $branchId,
-                'created_by'       => Auth::id(),
-                'transaction_type' => TransactionType::Expense,
-                'amount'           => $validated['amount'],
-                'currency'         => 'TRY',
-                'payment_method'   => $validated['payment_method'],
-                'description'      => 'Gider Harcaması - ' . $category->name . ($validated['description'] ? ' (' . $validated['description'] . ')' : ''),
-                'transaction_date' => $validated['expense_date'],
-                'expense_id'       => $expense->id,
-            ]);
-        });
+        Transaction::create([
+            'branch_id'        => $branchId,
+            'created_by'       => Auth::id(),
+            'transaction_type' => TransactionType::Expense,
+            'category'         => $validated['category_name'],
+            'amount'           => $validated['amount'],
+            'currency'         => 'TRY',
+            'payment_method'   => $validated['payment_method'],
+            'description'      => $validated['description'],
+            'transaction_date' => $validated['expense_date'],
+            'document_path'    => $receiptPath,
+        ]);
 
         return redirect()->route('finance.expenses')
-            ->with('success', 'Gider harcaması ve ilgili kasa işlemi başarıyla eklendi.');
+            ->with('success', 'Gider harcaması başarıyla kaydedildi.');
     }
 
-    public function destroy(Expense $expense)
+    public function destroy(Transaction $expense)
     {
         if ($expense->branch_id !== $this->getActiveBranchId()) {
             abort(403, 'Yetkisiz işlem.');
         }
 
-        DB::transaction(function () use ($expense) {
-            // Delete receipt file if it exists
-            if ($expense->receipt_file) {
-                Storage::disk('public')->delete($expense->receipt_file);
-            }
+        if ($expense->document_path) {
+            Storage::disk('public')->delete($expense->document_path);
+        }
 
-            // Delete the linked transaction directly using the relation!
-            $expense->transaction?->delete();
-
-            $expense->delete();
-        });
+        $expense->delete();
 
         return redirect()->route('finance.expenses')
-            ->with('success', 'Gider kaydı ve ilgili kasa işlemi başarıyla silindi.');
+            ->with('success', 'Gider kaydı başarıyla silindi.');
     }
 
     // Quick creation of Expense Categories

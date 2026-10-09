@@ -17,9 +17,13 @@ class CommissionService
         $startDate = $month->copy()->startOfMonth();
         $endDate = $month->copy()->endOfMonth();
 
-        // Şubedeki aktif çalışanları al
+        // Şubedeki aktif çalışanları al (veya işe başlama tarihi bu ay veya öncesi olanlar)
         $employees = Employee::forBranch($branchId)
             ->active()
+            ->where(function ($query) use ($endDate) {
+                $query->whereNull('hire_date')
+                      ->orWhere('hire_date', '<=', $endDate);
+            })
             ->with('user')
             ->get();
 

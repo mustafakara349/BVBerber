@@ -19,8 +19,12 @@ struct Appointment: Identifiable, Codable {
     var serviceName: String
     var date: String            // "YYYY-MM-DD"
     var time: String            // "HH:mm" (örn. "09:00", "14:30")
+    var originalPrice: Int?
     var price: Int
     var status: String          // "active", "cancelled", "completed", "pending", "confirmed", "rejected", "no_show"
+
+    var rewardType: String?
+    var rewardName: String?
 
     var reminderSent: Bool?     // Cloud Function CRON tarafından true yapılır
 
@@ -39,26 +43,26 @@ struct Appointment: Identifiable, Codable {
     var isUpcoming: Bool {
         guard isActive else { return false }
 
+        let timeZone = TimeZone(identifier: "Europe/Istanbul") ?? .current
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = timeZone
         let todayStr = formatter.string(from: Date())
 
         if date > todayStr { return true }
         if date < todayStr { return false }
 
-        // Aynı gün → dakika bazlı karşılaştırma
-        // time "HH:mm" veya eski format "HH" olabilir — her ikisini destekle
         let parts = time.split(separator: ":").compactMap { Int($0) }
         let slotMinutes: Int
         if parts.count >= 2 {
             slotMinutes = parts[0] * 60 + parts[1]
         } else {
-            // Eski "HH" formatı için fallback
             slotMinutes = (parts.first ?? 0) * 60
         }
 
         let now = Date()
-        let cal = Calendar.current
+        var cal = Calendar.current
+        cal.timeZone = timeZone
         let nowMinutes = cal.component(.hour, from: now) * 60
                        + cal.component(.minute, from: now)
 

@@ -125,7 +125,7 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <form method="POST" action="{{ route('notifications.toggle-read', $notif->id) }}">
+                            <form method="POST" action="{{ route('notifications.toggle-read', $notif) }}">
                                 @csrf
                                 @method('PATCH')
                                 @if(($notif->recipients_count ?? 1) > 1)
@@ -144,7 +144,7 @@
                             {{ $notif->sent_at ? $notif->sent_at->format('d.m.Y H:i') : ($notif->created_at ? $notif->created_at->format('d.m.Y H:i') : '-') }}
                         </td>
                         <td class="text-end pe-4">
-                            <form method="POST" action="{{ route('notifications.destroy', $notif->id) }}" onsubmit="return confirm('Bu bildirim kaydını silmek istediğinize emin misiniz?');">
+                            <form method="POST" action="{{ route('notifications.destroy', $notif) }}" onsubmit="return confirm('Bu bildirim kaydını silmek istediğinize emin misiniz?');">
                                 @csrf
                                 @method('DELETE')
                                 @if(($notif->recipients_count ?? 1) > 1)

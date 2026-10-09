@@ -13,8 +13,10 @@ class Campaign extends Model
     use Auditable;
 
     protected $fillable = [
-        'branch_id', 'title', 'description',
-        'type', 'min_order_amount', 'max_discount_amount',
+        'branch_id', 'title', 'description', 'terms',
+        'type', 'trigger_type', 'reward_type',
+        'reward_product_id', 'reward_cafe_product_id',
+        'min_order_amount', 'max_discount_amount',
         'target_audience', 'image_path', 'priority', 'per_customer_limit',
         'discount_type', 'discount_value',
         'start_date', 'end_date', 'is_active',
@@ -39,12 +41,6 @@ class Campaign extends Model
         return $this->belongsTo(Branch::class);
     }
 
-    public function coupons(): HasMany
-    {
-        // Removed as coupons are no longer directly tied to campaigns
-        // Keeping an empty method to not break anything if called blindly, or return null relation
-        return $this->hasMany(Coupon::class); // It will fail as campaign_id doesn't exist, we should just remove this but maybe some code relies on it?
-    }
 
     public function services(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
@@ -69,6 +65,16 @@ class Campaign extends Model
     public function usages(): HasMany
     {
         return $this->hasMany(CampaignUsage::class);
+    }
+
+    public function rewardProduct(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'reward_product_id');
+    }
+
+    public function rewardCafeProduct(): BelongsTo
+    {
+        return $this->belongsTo(CafeProduct::class, 'reward_cafe_product_id');
     }
 
     public function scopeActive($query)

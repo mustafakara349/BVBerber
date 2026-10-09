@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Transaction extends Model
 {
     protected $fillable = [
-        'branch_id', 'appointment_id', 'expense_id', 'created_by',
-        'transaction_type', 'amount', 'currency',
-        'payment_method', 'description', 'transaction_date',
+        'branch_id', 'reference_type', 'reference_id', 'created_by',
+        'transaction_type', 'category', 'amount', 'currency',
+        'payment_method', 'description', 'document_path', 'transaction_date',
     ];
 
     protected function casts(): array
@@ -30,14 +30,9 @@ class Transaction extends Model
         return $this->belongsTo(Branch::class);
     }
 
-    public function appointment(): BelongsTo
+    public function reference()
     {
-        return $this->belongsTo(Appointment::class);
-    }
-
-    public function expense(): BelongsTo
-    {
-        return $this->belongsTo(Expense::class);
+        return $this->morphTo();
     }
 
     public function createdBy(): BelongsTo

@@ -16,6 +16,9 @@ struct MainContentView: View {
     @State private var showNotificationView: Bool = false
     @State private var showCampaignsView: Bool = false
     @State private var selectedCampaign: Campaign? = nil
+    @State private var selectedSaleProduct: SaleProduct? = nil
+    @State private var selectedCafeProduct: CafeProduct? = nil
+    @State private var activeCampaignId: String? = nil
 
     var body: some View {
 
@@ -48,6 +51,10 @@ struct MainContentView: View {
 
                         servicesSection
 
+                        cafeSection
+
+                        productsSection
+
                         directionCard
                             .padding(.horizontal, 20)
                     }
@@ -70,6 +77,12 @@ struct MainContentView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .navigateToNotifications)) { _ in
             showNotificationView = true
+        }
+        .sheet(item: $selectedSaleProduct) { product in
+            SaleProductDetailSheet(product: product, allProducts: viewModel.saleProducts)
+        }
+        .sheet(item: $selectedCafeProduct) { product in
+            CafeProductDetailSheet(product: product)
         }
     }
 }
@@ -281,9 +294,7 @@ extension MainContentView {
 
                 Spacer()
 
-                Button {
-                    selectedTab = .services
-                } label: {
+                NavigationLink(destination: BarberServicesView()) {
                     Text("Tümünü Gör")
                         .foregroundColor(.yellow)
                         .fontWeight(.medium)
@@ -300,7 +311,13 @@ extension MainContentView {
                         }
                     } else {
                         ForEach(viewModel.services.prefix(5)) { service in
-                            serviceCard(service: service)
+                            Button {
+                                viewModel.pendingNavigationAction = .barber(service)
+                                selectedTab = .services
+                            } label: {
+                                serviceCard(service: service)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
@@ -373,6 +390,171 @@ extension MainContentView {
             }
 
             Text(service.name)
+                .foregroundColor(.primary)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+        }
+        .frame(width: 160)
+    }
+    var cafeSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Kafe Menüsü")
+                    .foregroundColor(.primary)
+                    .font(.title3)
+                    .fontWeight(.bold)
+
+                Spacer()
+
+                NavigationLink(destination: CafeServicesView()) {
+                    Text("Tümünü Gör")
+                        .foregroundColor(.yellow)
+                        .fontWeight(.medium)
+                }
+            }
+            .padding(.horizontal, 20)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    if viewModel.cafeProducts.isEmpty {
+                        ForEach(0..<3, id: \.self) { _ in
+                            ShimmerServiceCard()
+                        }
+                    } else {
+                        ForEach(viewModel.cafeProducts.prefix(5)) { product in
+                            Button {
+                                viewModel.pendingNavigationAction = .cafe(product)
+                                selectedTab = .services
+                            } label: {
+                                cafeProductCard(product: product)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                .padding(.leading, 20)
+            }
+        }
+    }
+
+    var productsSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Ürünler")
+                    .foregroundColor(.primary)
+                    .font(.title3)
+                    .fontWeight(.bold)
+
+                Spacer()
+
+                NavigationLink(destination: ProductsServicesView()) {
+                    Text("Tümünü Gör")
+                        .foregroundColor(.yellow)
+                        .fontWeight(.medium)
+                }
+            }
+            .padding(.horizontal, 20)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    if viewModel.saleProducts.isEmpty {
+                        ForEach(0..<3, id: \.self) { _ in
+                            ShimmerServiceCard()
+                        }
+                    } else {
+                        ForEach(viewModel.saleProducts.prefix(5)) { product in
+                            Button {
+                                viewModel.pendingNavigationAction = .product(product)
+                                selectedTab = .services
+                            } label: {
+                                saleProductCard(product: product)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                .padding(.leading, 20)
+            }
+        }
+    }
+
+    func cafeProductCard(product: CafeProduct) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ZStack(alignment: .topTrailing) {
+                ZStack(alignment: .bottomLeading) {
+                    CachedAsyncImage(url: URL(string: product.imageUrl)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().scaledToFill()
+                        case .empty:
+                            ShimmerCard(width: 160, height: 180, cornerRadius: 16)
+                        default:
+                            ZStack {
+                                Color.gray.opacity(0.2)
+                                Image(systemName: "cup.and.saucer.fill").foregroundColor(.gray)
+                            }
+                        }
+                    }
+                    .frame(width: 160, height: 180)
+                    .clipped()
+                    .cornerRadius(16)
+
+                    HStack(spacing: 4) {
+                        Text(product.formattedPrice)
+                            .foregroundColor(.yellow)
+                            .fontWeight(.bold)
+                            .font(.caption)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.black.opacity(0.6))
+                    .cornerRadius(8)
+                    .padding(8)
+                }
+            }
+            Text(product.name)
+                .foregroundColor(.primary)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+        }
+        .frame(width: 160)
+    }
+
+    func saleProductCard(product: SaleProduct) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ZStack(alignment: .topTrailing) {
+                ZStack(alignment: .bottomLeading) {
+                    CachedAsyncImage(url: URL(string: product.imageUrl)) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().scaledToFill()
+                        case .empty:
+                            ShimmerCard(width: 160, height: 180, cornerRadius: 16)
+                        default:
+                            ZStack {
+                                Color.gray.opacity(0.2)
+                                Image(systemName: "bag.fill").foregroundColor(.gray)
+                            }
+                        }
+                    }
+                    .frame(width: 160, height: 180)
+                    .clipped()
+                    .cornerRadius(16)
+
+                    HStack(spacing: 4) {
+                        Text(product.formattedPrice)
+                            .foregroundColor(.yellow)
+                            .fontWeight(.bold)
+                            .font(.caption)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.black.opacity(0.6))
+                    .cornerRadius(8)
+                    .padding(8)
+                }
+            }
+            Text(product.name)
                 .foregroundColor(.primary)
                 .fontWeight(.semibold)
                 .lineLimit(1)
@@ -472,19 +654,48 @@ extension MainContentView {
                     .padding(.horizontal, 20)
                     
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
+                        HStack(spacing: -30) { // Negatif spacing ile üst üste binme
                             ForEach(viewModel.campaigns) { campaign in
-                                Button {
-                                    selectedCampaign = campaign
-                                    showCampaignsView = true
-                                } label: {
-                                    campaignCard(campaign: campaign)
+                                GeometryReader { proxy in
+                                    let minX = proxy.frame(in: .global).minX
+                                    let screenWidth = UIScreen.main.bounds.width
+                                    let midX = minX + 150
+                                    let distance = abs(screenWidth / 2 - midX)
+                                    
+                                    let scale = max(0.80, 1 - (distance / screenWidth) * 0.4)
+                                    let opacity = max(0.6, 1 - (distance / screenWidth) * 0.5)
+                                    
+
+
+                                    Button {
+                                        selectedCampaign = campaign
+                                        showCampaignsView = true
+                                    } label: {
+                                        campaignCard(campaign: campaign)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .scaleEffect(scale)
+                                    .opacity(opacity)
+                                    // 3D dönüş efekti ile derinlik katma
+                                    .rotation3DEffect(.degrees((minX - (screenWidth - 300) / 2) / -12), axis: (x: 0, y: 1, z: 0))
+                                    .onChange(of: minX) { _ in
+                                        if distance < 80 && self.activeCampaignId != campaign.id {
+                                            self.activeCampaignId = campaign.id
+                                        }
+                                    }
+                                    .onAppear {
+                                        if distance < 80 && self.activeCampaignId != campaign.id {
+                                            self.activeCampaignId = campaign.id
+                                        }
+                                    }
                                 }
-                                .buttonStyle(PlainButtonStyle())
+                                .frame(width: 300, height: 130)
+                                .zIndex(activeCampaignId == campaign.id ? 1 : 0)
                             }
                         }
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, (UIScreen.main.bounds.width - 300) / 2)
                     }
+                    .frame(height: 150)
                 }
             }
         }
@@ -543,20 +754,31 @@ extension MainContentView {
             // Sağ Taraf (İndirim Tutarı / Ticket Stub)
             VStack(spacing: 4) {
                 Spacer()
-                if campaign.discountType == "percentage" {
-                    Text("%\(Int(campaign.discountValue))")
-                        .font(.system(size: 28, weight: .black, design: .rounded))
+                if let rType = campaign.rewardType, rType != "discount" {
+                    Image(systemName: rType == "gift_cafe" ? "cup.and.saucer.fill" : "bag.fill")
+                        .font(.system(size: 26))
                         .foregroundColor(.yellow)
-                } else {
-                    Text("₺\(Int(campaign.discountValue))")
-                        .font(.system(size: 24, weight: .black, design: .rounded))
-                        .foregroundColor(.yellow)
+                    
+                    Text("HEDİYE")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(.white)
+                        .tracking(1.5)
+                } else if let type = campaign.discountType, let val = campaign.discountValue {
+                    if type == "percentage" {
+                        Text("%\(Int(val))")
+                            .font(.system(size: 28, weight: .black, design: .rounded))
+                            .foregroundColor(.yellow)
+                    } else {
+                        Text("₺\(Int(val))")
+                            .font(.system(size: 24, weight: .black, design: .rounded))
+                            .foregroundColor(.yellow)
+                    }
+                    
+                    Text("İNDİRİM")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(.white)
+                        .tracking(1.5)
                 }
-                
-                Text("İNDİRİM")
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundColor(.white)
-                    .tracking(1.5)
                 Spacer()
             }
             .frame(width: 85)

@@ -18,21 +18,18 @@ struct ProfileView: View {
 
         NavigationStack {
 
-            VStack(spacing: 30) {
-
-                Spacer().frame(height: 20)
-
-                profileHeader
-
-                Spacer()
-
-                menuSection
-
-                Spacer()
-
-                logoutButton
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 40) {
+                    profileHeader
+                        .padding(.top, 20)
+                    
+                    menuSection
+                    
+                    logoutButton
+                        .padding(.bottom, 30)
+                }
+                .padding()
             }
-            .padding()
             .sheet(isPresented: $viewModel.showCropView) {
                 if let image = viewModel.selectedImage {
                     ImageCropView(image: image) { croppedImage in
