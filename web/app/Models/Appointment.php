@@ -6,13 +6,16 @@ use App\Enums\AppointmentSource;
 use App\Enums\AppointmentStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
+use App\Observers\AppointmentObserver;
 use App\Traits\HasUuid;
 use App\Traits\Auditable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy([AppointmentObserver::class])]
 class Appointment extends Model
 {
     use HasUuid, SoftDeletes, Auditable;

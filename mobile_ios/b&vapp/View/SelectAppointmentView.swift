@@ -331,9 +331,7 @@ struct SelectAppointmentView: View {
                     spacing: 14
                 ) {
                     ForEach(viewModel.currentTimeSlots, id: \.self) { time in
-                        let isPast    = TimeManager.isPastTime(selectedDate: viewModel.selectedDate, time: time)
-                        let isBlocked = viewModel.blockedSlots.contains(time)
-                        let disabled  = isPast || isBlocked
+                        let disabled = viewModel.isSlotDisabled(time: time)
                         
                         TimeCard(
                             time: time,
@@ -378,6 +376,11 @@ struct SelectAppointmentView: View {
             }
         } else {
             viewModel.selectedServices.insert(service)
+        }
+        
+        // If the currently selected time becomes invalid due to duration change, reset it
+        if let time = viewModel.selectedTime, viewModel.isSlotDisabled(time: time) {
+            viewModel.selectedTime = nil
         }
     }
     

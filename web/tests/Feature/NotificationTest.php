@@ -2,17 +2,24 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use App\Models\User;
+use App\Enums\AdminNotificationCategory;
+use App\Enums\AdminNotificationLevel;
+use App\Models\AdminNotification;
 use App\Models\Role;
+use App\Models\User;
+use App\Services\AdminNotificationService;
+use App\Services\AdminNotifications\AdminAlert;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 /**
  * NotificationTest
  *
- * Sprint 1 backlog'unun test karşılığı.
- * markAllRead metodunun yalnızca mevcut kullanıcının
- * bildirimlerini işaretlediğini doğrular.
+ * Sistem Bildirimleri (/notifications) sayfasının güvenlik ve davranış testleri:
+ * - Her personel yalnızca kendi bildirimlerini görür/değiştirir.
+ * - Bildirim gönderme (broadcast) uç noktası bulunmaz.
+ * - Bildirimler servis aracılığıyla rol bazlı alıcılara üretilir.
  */
 class NotificationTest extends TestCase
 {
@@ -27,59 +34,114 @@ class NotificationTest extends TestCase
             'role_id'    => $role->id,
             'first_name' => 'Test',
             'last_name'  => $slug,
-            'email'      => $slug . rand(1, 9999) . '@test.com',
+            'email'      => $slug . rand(1, 99999) . '@test.com',
             'password'   => bcrypt('password'),
             'status'     => 'active',
         ]);
     }
 
-    private function createNotification(int $userId, bool $isRead = false): \App\Models\Notification
+    private function createNotification(int $userId, bool $isRead = false): AdminNotification
     {
-        return \App\Models\Notification::create([
+        return AdminNotification::create([
             'user_id'  => $userId,
+            'category' => AdminNotificationCategory::System,
+            'event'    => 'system.test',
+            'level'    => AdminNotificationLevel::Info,
             'title'    => 'Test Bildirimi',
             'body'     => 'Test içeriği',
-            'is_read'  => $isRead,
+            'read_at'  => $isRead ? now() : null,
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function mark_all_read_only_affects_current_user_notifications(): void
     {
         $userA = $this->createUserWithRole('manager');
         $userB = $this->createUserWithRole('barber');
 
-        // Kullanıcı A için 3 okunmamış bildirim
-        $notifA1 = $this->createNotification($userA->id, false);
-        $notifA2 = $this->createNotification($userA->id, false);
-        $notifA3 = $this->createNotification($userA->id, false);
+        $notifA = $this->createNotification($userA->id);
+        $notifB = $this->createNotification($userB->id);
 
-        // Kullanıcı B için 2 okunmamış bildirim
-        $notifB1 = $this->createNotification($userB->id, false);
-        $notifB2 = $this->createNotification($userB->id, false);
+        $this->actingAs($userA)
+            ->post('/notifications/mark-all-read')
+            ->assertRedirect(route('notifications.index'))
+            ->assertSessionHas('success');
 
-        // Kullanıcı A olarak markAllRead çağır
-        $this->actingAs($userA)->post('/notifications/mark-all-read');
-
-        // Kullanıcı A'nın bildirimleri okunmuş olmalı
-        $this->assertDatabaseHas('notifications', ['id' => $notifA1->id, 'is_read' => true]);
-        $this->assertDatabaseHas('notifications', ['id' => $notifA2->id, 'is_read' => true]);
-        $this->assertDatabaseHas('notifications', ['id' => $notifA3->id, 'is_read' => true]);
-
-        // Kullanıcı B'nin bildirimleri ETKİLENMEMELİ
-        $this->assertDatabaseHas('notifications', ['id' => $notifB1->id, 'is_read' => false]);
-        $this->assertDatabaseHas('notifications', ['id' => $notifB2->id, 'is_read' => false]);
+        $this->assertNotNull($notifA->fresh()->read_at);
+        $this->assertNull($notifB->fresh()->read_at);
     }
 
-    /** @test */
-    public function mark_all_read_returns_redirect_to_notifications_index(): void
+    #[Test]
+    public function user_cannot_toggle_or_delete_another_users_notification(): void
+    {
+        $owner = $this->createUserWithRole('manager');
+        $intruder = $this->createUserWithRole('receptionist');
+        $notification = $this->createNotification($owner->id);
+
+        $this->actingAs($intruder)->patch(route('notifications.toggle-read', $notification))->assertNotFound();
+        $this->actingAs($intruder)->delete(route('notifications.destroy', $notification))->assertNotFound();
+        $this->actingAs($intruder)->get(route('notifications.open', $notification))->assertNotFound();
+
+        $this->assertDatabaseHas('admin_notifications', ['id' => $notification->id, 'read_at' => null]);
+    }
+
+    #[Test]
+    public function index_lists_only_own_notifications(): void
+    {
+        $userA = $this->createUserWithRole('manager');
+        $userB = $this->createUserWithRole('manager');
+        $this->createNotification($userA->id)->update(['title' => 'A kullanıcısının uyarısı']);
+        $this->createNotification($userB->id)->update(['title' => 'B kullanıcısının uyarısı']);
+
+        $this->actingAs($userA)
+            ->get(route('notifications.index'))
+            ->assertOk()
+            ->assertSee('A kullanıcısının uyarısı')
+            ->assertDontSee('B kullanıcısının uyarısı');
+    }
+
+    #[Test]
+    public function broadcast_endpoint_no_longer_exists(): void
+    {
+        $user = $this->createUserWithRole('super_admin');
+
+        $this->actingAs($user)
+            ->post('/notifications', ['user_id' => 'all', 'title' => 'x', 'body' => 'y', 'type' => 'general'])
+            ->assertStatus(405);
+    }
+
+    #[Test]
+    public function open_marks_as_read_and_rejects_external_redirects(): void
     {
         $user = $this->createUserWithRole('manager');
-        $this->createNotification($user->id, false);
+        $notification = $this->createNotification($user->id);
+        $notification->update(['action_url' => '//evil.example.com']);
 
-        $response = $this->actingAs($user)->post('/notifications/mark-all-read');
+        $this->actingAs($user)
+            ->get(route('notifications.open', $notification))
+            ->assertRedirect(route('notifications.index'));
 
-        $response->assertRedirect(route('notifications.index'));
-        $response->assertSessionHas('success');
+        $this->assertNotNull($notification->fresh()->read_at);
+    }
+
+    #[Test]
+    public function service_delivers_alert_only_to_target_roles(): void
+    {
+        $manager = $this->createUserWithRole('manager');
+        $barber = $this->createUserWithRole('barber');
+        $customer = $this->createUserWithRole('customer');
+
+        app(AdminNotificationService::class)->send(new AdminAlert(
+            category: AdminNotificationCategory::Stock,
+            event: 'stock.low',
+            level: AdminNotificationLevel::Warning,
+            title: 'Kritik Stok',
+            body: 'Test',
+            roles: AdminNotificationService::MANAGEMENT_ROLES,
+        ));
+
+        $this->assertDatabaseHas('admin_notifications', ['user_id' => $manager->id, 'event' => 'stock.low']);
+        $this->assertDatabaseMissing('admin_notifications', ['user_id' => $barber->id]);
+        $this->assertDatabaseMissing('admin_notifications', ['user_id' => $customer->id]);
     }
 }

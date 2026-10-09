@@ -106,6 +106,35 @@ class AppointmentsViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Required Slots
+    var totalServiceDuration: Int {
+        selectedServices.reduce(0) { $0 + $1.duration }
+    }
+    
+    var requiredSlotsCount: Int {
+        let count = Int(ceil(Double(totalServiceDuration) / 30.0))
+        return max(1, count)
+    }
+
+    func isSlotDisabled(time: String) -> Bool {
+        if TimeManager.isPastTime(selectedDate: selectedDate, time: time) { return true }
+        
+        let allSlots = currentTimeSlots
+        guard let startIndex = allSlots.firstIndex(of: time) else { return true }
+        
+        let requiredCount = requiredSlotsCount
+        for i in 0..<requiredCount {
+            if startIndex + i >= allSlots.count {
+                return true // Not enough slots remaining
+            }
+            let checkTime = allSlots[startIndex + i]
+            if blockedSlots.contains(checkTime) {
+                return true
+            }
+        }
+        return false
+    }
+
     /// Seçili berberin çalışma saatleri ve uygunluk durumue slot listesi
     var currentTimeSlots: [String] {
         let dayName = DateManager.weekdayName(from: selectedDate)

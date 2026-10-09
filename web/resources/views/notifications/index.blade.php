@@ -1,226 +1,236 @@
 @extends('layouts.app')
 @section('title', 'Sistem Bildirimleri - B&V Barber')
+
+@push('styles')
+<style>
+    .sn-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block; position: relative; }
+    .sn-live-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: rgba(16, 185, 129, .35); animation: sn-pulse 1.8s ease-out infinite; }
+    @keyframes sn-pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
+
+    .sn-kpi { transition: transform .2s ease, box-shadow .2s ease; }
+    .sn-kpi:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1.25rem rgba(15, 23, 42, .08) !important; }
+
+    .sn-item { position: relative; transition: background-color .15s ease; }
+    .sn-item:hover { background-color: #f8fafc; }
+    .sn-item.is-unread { background-color: rgba(59, 130, 246, .035); }
+    .sn-item.is-unread::before { content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 0 3px 3px 0; background: var(--bs-primary); }
+    .sn-icon { width: 44px; height: 44px; flex-shrink: 0; }
+    .sn-filter .btn { font-size: 12.5px; }
+    .sn-new-banner { animation: sn-slide .35s ease; }
+    @keyframes sn-slide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+</style>
+@endpush
+
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-            <div>
-                <h1 class="fs-3 mb-1">Sistem Bildirimleri</h1>
-                <p class="text-muted">Kullanıcılara (Müşteriler, Berberler, Yöneticiler) gönderilen veya gönderilecek olan bildirimlerin yönetimi.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <form method="POST" action="{{ route('notifications.mark-all-read') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-light border rounded-pill px-4 btn-sm fw-semibold">
-                        <i class="ti ti-check-all me-1"></i> Tümünü Okundu Yap
-                    </button>
-                </form>
-                <button class="btn btn-primary rounded-pill px-4 btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#sendNotificationModal">
-                    <i class="ti ti-send me-1"></i> Bildirim Gönder / Yayınla
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+@php
+    $activeStatus = $filters['status'] ?? null;
+    $activeCategory = $filters['category'] ?? null;
+@endphp
 
-<!-- KPI Stats Row -->
-<div class="row g-4 mb-4">
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-4 d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-secondary small fw-medium text-uppercase mb-1">Toplam Gönderilen</h6>
-                    <h3 class="fw-bold mb-0 text-dark">{{ $stats['total'] }} Bildirim</h3>
-                </div>
-                <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3">
-                    <i class="ti ti-mail fs-3"></i>
-                </div>
-            </div>
-        </div>
+{{-- Başlık --}}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="fs-3 mb-1 d-flex align-items-center gap-2">
+            Sistem Bildirimleri
+            <span class="badge bg-success-subtle text-success rounded-pill fw-semibold d-inline-flex align-items-center gap-2 px-2.5 py-1" style="font-size: 11px;">
+                <span class="sn-live-dot"></span> Canlı
+            </span>
+        </h1>
+        <p class="text-muted mb-0">Randevu, stok ve değerlendirme gibi işletme olaylarına ait size özel uyarılar. Bildirimden doğrudan ilgili işleme geçebilirsiniz.</p>
     </div>
-    
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 rounded-4" style="border-bottom: 4px solid #f59e0b !important;">
-            <div class="card-body p-4 d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-secondary small fw-medium text-uppercase mb-1">Okunmamış (Bekleyen)</h6>
-                    <h3 class="fw-bold mb-0 text-warning">{{ $stats['unread'] }} Bildirim</h3>
-                </div>
-                <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-3">
-                    <i class="ti ti-mail-opened fs-3"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 rounded-4" style="border-bottom: 4px solid #10b981 !important;">
-            <div class="card-body p-4 d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-secondary small fw-medium text-uppercase mb-1">Okunmuş / Görüldü</h6>
-                    <h3 class="fw-bold mb-0 text-success">{{ $stats['read'] }} Bildirim</h3>
-                </div>
-                <div class="bg-success bg-opacity-10 text-success rounded-3 p-3">
-                    <i class="ti ti-mail-forward fs-3"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Notification Logs List -->
-<div class="card shadow-sm border-0 rounded-4">
-    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-2">
-        <h5 class="fw-bold text-dark mb-0"><i class="ti ti-history text-secondary me-2"></i>Son Bildirim Gönderim Günlüğü (En Son 100)</h5>
-        <p class="text-muted small mb-0">Sistemde kayıtlı kullanıcılara gönderilmiş en son bildirim kayıtları.</p>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th class="ps-4">Alıcı Kullanıcı</th>
-                        <th>Bildirim İçeriği</th>
-                        <th class="text-center">Tür</th>
-                        <th class="text-center">Durum</th>
-                        <th class="text-center">Zaman</th>
-                        <th class="text-end pe-4">İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($notifications as $notif)
-                    <tr>
-                        <td class="ps-4">
-                            @if(($notif->recipients_count ?? 1) > 1)
-                                <div class="fw-semibold text-primary"><i class="ti ti-users me-1"></i>{{ $notif->target_group }}</div>
-                                <div class="text-secondary small">{{ $notif->recipients_count }} Alıcı</div>
-                            @elseif($notif->user)
-                                <div class="fw-semibold text-dark">{{ $notif->user->full_name }}</div>
-                                <div class="text-secondary small">{{ $notif->user->email }}</div>
-                            @else
-                                <span class="badge bg-secondary-subtle text-secondary">Genel Alıcı</span>
-                            @endif
-                        </td>
-                        <td class="py-3">
-                            <div class="fw-bold text-dark">{{ $notif->title }}</div>
-                            <div class="text-secondary small text-wrap text-break" style="max-width: 400px;">{{ $notif->body }}</div>
-                        </td>
-                        <td class="text-center">
-                            @php
-                                $typeBadge = match($notif->type) {
-                                    'system' => 'bg-danger-subtle text-danger',
-                                    'appointment' => 'bg-success-subtle text-success',
-                                    'campaign' => 'bg-warning-subtle text-warning',
-                                    default => 'bg-primary-subtle text-primary'
-                                };
-                                $typeLabel = match($notif->type) {
-                                    'system' => 'Sistem',
-                                    'appointment' => 'Randevu',
-                                    'campaign' => 'Kampanya',
-                                    default => 'Genel'
-                                };
-                            @endphp
-                            <span class="badge {{ $typeBadge }} px-2.5 py-1 rounded-pill">
-                                {{ $typeLabel }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <form method="POST" action="{{ route('notifications.toggle-read', $notif) }}">
-                                @csrf
-                                @method('PATCH')
-                                @if(($notif->recipients_count ?? 1) > 1)
-                                    <input type="hidden" name="group_ids" value="{{ json_encode($notif->group_ids) }}">
-                                    <button type="submit" class="badge {{ $notif->read_count == $notif->recipients_count ? 'bg-success text-white border-0' : ($notif->read_count > 0 ? 'bg-info text-white border-0' : 'bg-warning-subtle text-warning border-0') }} px-2.5 py-1 rounded-pill">
-                                        {{ $notif->read_count }}/{{ $notif->recipients_count }} Okundu
-                                    </button>
-                                @else
-                                    <button type="submit" class="badge {{ $notif->is_read ? 'bg-success text-white border-0' : 'bg-warning-subtle text-warning border-0' }} px-2.5 py-1 rounded-pill">
-                                        {{ $notif->is_read ? 'Okundu' : 'Okunmadı' }}
-                                    </button>
-                                @endif
-                            </form>
-                        </td>
-                        <td class="text-center text-secondary small">
-                            {{ $notif->sent_at ? $notif->sent_at->format('d.m.Y H:i') : ($notif->created_at ? $notif->created_at->format('d.m.Y H:i') : '-') }}
-                        </td>
-                        <td class="text-end pe-4">
-                            <form method="POST" action="{{ route('notifications.destroy', $notif) }}" onsubmit="return confirm('Bu bildirim kaydını silmek istediğinize emin misiniz?');">
-                                @csrf
-                                @method('DELETE')
-                                @if(($notif->recipients_count ?? 1) > 1)
-                                    <input type="hidden" name="group_ids" value="{{ json_encode($notif->group_ids) }}">
-                                @endif
-                                <button type="submit" class="btn btn-outline-danger border-0 rounded-circle btn-sm" title="Bildirim Sil">
-                                    <i class="ti ti-trash fs-5"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
-                            <i class="ti ti-mail-opened fs-1 d-block mb-1"></i>
-                            Kayıtlı sistem bildirimi bulunmuyor.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Send Notification Modal -->
-<div class="modal fade" id="sendNotificationModal" tabindex="-1" aria-labelledby="sendNotificationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form method="POST" action="{{ route('notifications.store') }}" class="modal-content border-0 rounded-4 shadow">
+    <div class="d-flex gap-2">
+        <form method="POST" action="{{ route('notifications.mark-all-read') }}">
             @csrf
-            <div class="modal-header border-bottom-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="sendNotificationModalLabel">Yeni Bildirim Gönder / Yayınla</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body px-4">
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Alıcı Grubu veya Kullanıcı</label>
-                    <select name="user_id" class="form-select border-0 bg-light rounded-3 select2-recipient" required>
-                        <optgroup label="Toplu Gruplar">
-                            <option value="all">Tüm Sistem Üyeleri (Müşteriler & Personel)</option>
-                            <option value="customers">Yalnızca Müşteriler</option>
-                            <option value="employees">Yalnızca Personeller (Berber & Adminler)</option>
-                        </optgroup>
-                        <optgroup label="Bireysel Seçim">
-                            @foreach($users as $usr)
-                                <option value="{{ $usr->id }}">{{ $usr->full_name }} ({{ $usr->email }} - {{ $usr->role?->name }})</option>
-                            @endforeach
-                        </optgroup>
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Bildirim Türü</label>
-                    <select name="type" class="form-select border-0 bg-light rounded-3" required>
-                        <option value="general">Genel Duyuru / Mesaj</option>
-                        <option value="campaign">Kampanya & Fırsat</option>
-                        <option value="appointment">Randevu Bilgilendirmesi</option>
-                        <option value="system">Sistem Uyarısı</option>
-                    </select>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Bildirim Başlığı</label>
-                    <input type="text" name="title" class="form-control border-0 bg-light rounded-3" placeholder="Örn: Hafta Sonu Fırsatı!" required>
-                </div>
-                
-                <div class="mb-2">
-                    <label class="form-label small fw-bold text-secondary">Bildirim İçeriği (Body)</label>
-                    <textarea name="body" rows="4" class="form-control border-0 bg-light rounded-3" placeholder="Gönderilecek bildirim veya mesajın detayları..." required></textarea>
-                </div>
-            </div>
-            <div class="modal-footer border-top-0 pb-4 px-4">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Vazgeç</button>
-                <button type="submit" class="btn btn-primary rounded-pill px-4">Bildirimi Gönder</button>
-            </div>
+            <button type="submit" id="markAllReadBtn" class="btn btn-light border rounded-pill px-4 btn-sm fw-semibold" @disabled($stats['unread'] === 0)>
+                <i class="ti ti-checks me-1"></i> Tümünü Okundu Yap
+            </button>
+        </form>
+        <form method="POST" action="{{ route('notifications.destroy-read') }}" onsubmit="return confirm('Okunmuş tüm bildirimler silinecek. Emin misiniz?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" id="clearReadBtn" class="btn btn-outline-danger rounded-pill px-4 btn-sm fw-semibold" @disabled($stats['read'] === 0)>
+                <i class="ti ti-trash me-1"></i> Okunmuşları Temizle
+            </button>
         </form>
     </div>
 </div>
+
+{{-- KPI --}}
+<div class="row g-4 mb-4">
+    @foreach([
+        ['label' => 'Toplam Bildirim', 'value' => $stats['total'], 'color' => 'primary', 'icon' => 'ti-bell', 'status' => null],
+        ['label' => 'Okunmamış', 'value' => $stats['unread'], 'color' => 'warning', 'icon' => 'ti-bell-ringing', 'status' => 'unread'],
+        ['label' => 'Okunmuş', 'value' => $stats['read'], 'color' => 'success', 'icon' => 'ti-bell-check', 'status' => 'read'],
+    ] as $kpi)
+    <div class="col-md-4">
+        <a href="{{ route('notifications.index', array_filter(['status' => $kpi['status'], 'category' => $activeCategory])) }}" class="text-decoration-none">
+            <div class="card sn-kpi shadow-sm border-0 rounded-4 h-100" style="border-bottom: 4px solid var(--bs-{{ $kpi['color'] }}) !important;">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-secondary small fw-medium text-uppercase mb-1">{{ $kpi['label'] }}</h6>
+                        <h3 class="fw-bold mb-0 text-{{ $kpi['color'] === 'primary' ? 'dark' : $kpi['color'] }}" @if($kpi['status'] === 'unread') id="kpiUnreadCount" @endif>{{ $kpi['value'] }}</h3>
+                    </div>
+                    <div class="bg-{{ $kpi['color'] }} bg-opacity-10 text-{{ $kpi['color'] }} rounded-3 p-3">
+                        <i class="ti {{ $kpi['icon'] }} fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    @endforeach
+</div>
+
+{{-- Yeni bildirim bandı (canlı akış) --}}
+<div id="newNotificationsBanner" class="alert alert-primary border-0 rounded-4 shadow-sm d-none align-items-center justify-content-between sn-new-banner" role="status">
+    <span><i class="ti ti-bell-ringing me-2"></i><strong id="newNotificationsText">Yeni bildirim var.</strong></span>
+    <a href="{{ route('notifications.index', array_filter($filters)) }}" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold" id="refreshNotificationsBtn">
+        <i class="ti ti-refresh me-1"></i> Listeyi Yenile
+    </a>
+</div>
+
+{{-- Liste --}}
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-3 d-flex flex-column flex-lg-row justify-content-between gap-3">
+        <div class="sn-filter btn-group" role="group" aria-label="Durum filtresi">
+            @foreach([null => 'Tümü', 'unread' => 'Okunmamış', 'read' => 'Okunmuş'] as $value => $label)
+                <a href="{{ route('notifications.index', array_filter(['status' => $value ?: null, 'category' => $activeCategory])) }}"
+                   class="btn btn-sm {{ $activeStatus === ($value ?: null) ? 'btn-dark' : 'btn-light border' }} px-3 fw-semibold">{{ $label }}</a>
+            @endforeach
+        </div>
+        <div class="sn-filter d-flex flex-wrap gap-2">
+            <a href="{{ route('notifications.index', array_filter(['status' => $activeStatus])) }}"
+               class="btn btn-sm rounded-pill px-3 fw-semibold {{ $activeCategory === null ? 'btn-primary' : 'btn-light border' }}">Tüm Kategoriler</a>
+            @foreach($categories as $category)
+                <a href="{{ route('notifications.index', array_filter(['status' => $activeStatus, 'category' => $category->value])) }}"
+                   class="btn btn-sm rounded-pill px-3 fw-semibold {{ $activeCategory === $category->value ? 'btn-primary' : 'btn-light border' }}">
+                    <i class="ti {{ $category->icon() }} me-1"></i>{{ $category->label() }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+    <div class="card-body p-0">
+        <ul class="list-unstyled mb-0" id="notificationRows" data-latest-id="{{ $latestId }}">
+            @forelse($notifications as $notif)
+                @php
+                    $color = $notif->level->color();
+                    $actionUrl = $notif->safeActionUrl();
+                    $subject = $notif->subject;
+                    $canQuickConfirm = $notif->event === 'appointment.created'
+                        && $subject instanceof \App\Models\Appointment
+                        && $subject->status === \App\Enums\AppointmentStatus::Pending;
+                @endphp
+                <li class="sn-item {{ $notif->isRead() ? '' : 'is-unread' }} border-top px-4 py-3" id="notification-{{ $notif->id }}">
+                    <div class="d-flex flex-column flex-md-row gap-3 align-items-md-center">
+                        <div class="d-flex gap-3 flex-grow-1 align-items-start">
+                            <div class="sn-icon rounded-circle bg-{{ $color }}-subtle text-{{ $color }} d-flex align-items-center justify-content-center">
+                                <i class="ti {{ $notif->category->icon() }} fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                    <span class="fw-bold text-dark">{{ $notif->title }}</span>
+                                    <span class="badge bg-{{ $color }}-subtle text-{{ $color }} rounded-pill px-2 py-1" style="font-size: 10.5px;">{{ $notif->category->label() }}</span>
+                                    @unless($notif->isRead())
+                                        <span class="badge bg-primary rounded-pill px-2 py-1" style="font-size: 10px;">Yeni</span>
+                                    @endunless
+                                </div>
+                                <div class="text-secondary small text-break" style="max-width: 720px;">{{ $notif->body }}</div>
+
+                                @if($subject instanceof \App\Models\Product)
+                                    <div class="small mt-1">
+                                        <span class="text-muted">Güncel stok:</span>
+                                        <span class="fw-semibold {{ $subject->stock_quantity <= 0 ? 'text-danger' : 'text-dark' }}">{{ $subject->stock_quantity }} adet</span>
+                                    </div>
+                                @elseif($subject instanceof \App\Models\Appointment && $notif->category === \App\Enums\AdminNotificationCategory::Appointment)
+                                    <div class="small mt-1">
+                                        <span class="text-muted">Güncel durum:</span>
+                                        <span class="badge bg-{{ $subject->status->color() }}-subtle text-{{ $subject->status->color() }} rounded-pill">{{ $subject->status->label() }}</span>
+                                    </div>
+                                @endif
+
+                                <div class="text-muted mt-1" style="font-size: 11.5px;" title="{{ $notif->created_at?->format('d.m.Y H:i') }}">
+                                    <i class="ti ti-clock me-1"></i>{{ $notif->created_at?->diffForHumans() }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-md-auto ps-5 ps-md-0">
+                            @if($canQuickConfirm)
+                                <form method="POST" action="{{ route('appointments.update-status', $subject) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" value="{{ \App\Enums\AppointmentStatus::Confirmed->value }}">
+                                    <button type="submit" class="btn btn-success btn-sm rounded-pill px-3 fw-semibold" id="quick-confirm-{{ $notif->id }}">
+                                        <i class="ti ti-check me-1"></i> Onayla
+                                    </button>
+                                </form>
+                            @endif
+
+                            @if($actionUrl)
+                                <a href="{{ route('notifications.open', $notif) }}" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold" id="open-notification-{{ $notif->id }}">
+                                    {{ $notif->action_label ?? 'Görüntüle' }} <i class="ti ti-arrow-right ms-1"></i>
+                                </a>
+                            @endif
+
+                            <form method="POST" action="{{ route('notifications.toggle-read', $notif) }}">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-light border btn-sm rounded-circle" title="{{ $notif->isRead() ? 'Okunmadı yap' : 'Okundu yap' }}" id="toggle-read-{{ $notif->id }}">
+                                    <i class="ti {{ $notif->isRead() ? 'ti-mail' : 'ti-mail-opened' }}"></i>
+                                </button>
+                            </form>
+
+                            <form method="POST" action="{{ route('notifications.destroy', $notif) }}" onsubmit="return confirm('Bu bildirimi silmek istediğinize emin misiniz?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger border-0 btn-sm rounded-circle" title="Sil" id="delete-notification-{{ $notif->id }}">
+                                    <i class="ti ti-trash fs-5"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            @empty
+                <li class="text-center py-5 text-muted border-top">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px;">
+                        <i class="ti ti-bell-off fs-1"></i>
+                    </div>
+                    <div class="fw-semibold text-dark">Gösterilecek bildirim yok</div>
+                    <div class="small">Yeni randevu, stok uyarısı veya değerlendirme geldiğinde burada anında görünecek.</div>
+                </li>
+            @endforelse
+        </ul>
+    </div>
+
+    @if($notifications->hasPages())
+        <div class="card-footer bg-transparent border-top px-4 py-3">
+            {{ $notifications->links() }}
+        </div>
+    @endif
+</div>
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        const rows = document.getElementById('notificationRows');
+        const banner = document.getElementById('newNotificationsBanner');
+        const bannerText = document.getElementById('newNotificationsText');
+        const kpiUnread = document.getElementById('kpiUnreadCount');
+        const pageLatestId = Number(rows?.dataset.latestId || 0);
+
+        // Canlı akış topbar tarafından tek bir polling ile sağlanır; sayfa sadece olayı dinler.
+        document.addEventListener('admin-notifications:update', function (event) {
+            const { unreadCount, items } = event.detail;
+            if (kpiUnread) kpiUnread.textContent = unreadCount;
+
+            const freshCount = items.filter(item => item.id > pageLatestId).length;
+            if (freshCount > 0) {
+                bannerText.textContent = freshCount + ' yeni bildirim geldi.';
+                banner.classList.remove('d-none');
+                banner.classList.add('d-flex');
+            }
+        });
+    })();
+</script>
+@endpush

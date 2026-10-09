@@ -92,7 +92,7 @@ class AppointmentService
                     } else {
                         throw new \InvalidArgumentException($campaignResult['message']);
                     }
-                } else {
+                } elseif (!isset($data['source']) || $data['source'] !== 'admin_panel') {
                     $autoCampaignResult = $this->campaignService->evaluateCart($customer, $data['branch_id'], $subtotal, $serviceIds);
                     if ($autoCampaignResult) {
                         $discountAmount = $autoCampaignResult['discount_amount'];

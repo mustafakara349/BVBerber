@@ -2,159 +2,133 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Enums\AdminNotificationCategory;
 use App\Http\Controllers\Controller;
-use App\Models\Notification;
-use App\Models\User;
+use App\Models\AdminNotification;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
+/**
+ * Sistem Bildirimleri (/notifications)
+ *
+ * Yalnızca oturum açmış personele ait iç sistem uyarılarını listeler ve yönetir.
+ * Bildirim oluşturma/gönderme uç noktası bilinçli olarak YOKTUR; kayıtlar sadece
+ * uygulama içi olaylardan (Observer'lar) üretilir.
+ */
 class NotificationController extends Controller
 {
-    public function index()
+    private const PER_PAGE = 20;
+
+    public function index(Request $request): View
     {
-        // Group by title, body, type, and sent_at
-        $rawNotifications = Notification::with('user')->latest('id')->get();
-        
-        $notifications = $rawNotifications->groupBy(function ($notif) {
-            return $notif->title . '|' . $notif->body . '|' . $notif->type . '|' . ($notif->sent_at ? $notif->sent_at->format('Y-m-d H:i:s') : '');
-        })
-        ->map(function ($group) {
-            $first = $group->first();
-            $first->recipients_count = $group->count();
-            $first->read_count = $group->where('is_read', true)->count();
-            
-            // Determine group label
-            $first->target_group = 'Bireysel';
-            if ($group->count() > 1) {
-                $totalUsers = User::count();
-                $totalCustomers = User::customers()->count();
-                $totalStaff = User::staff()->count();
-                
-                if ($group->count() == $totalUsers) {
-                    $first->target_group = 'Tüm Sistem Üyeleri';
-                } elseif ($group->count() == $totalCustomers) {
-                    $first->target_group = 'Tüm Müşteriler';
-                } elseif ($group->count() == $totalStaff) {
-                    $first->target_group = 'Tüm Personeller';
-                } else {
-                    $first->target_group = 'Grup (' . $group->count() . ' Alıcı)';
-                }
-            }
-            
-            $first->group_ids = $group->pluck('id')->toArray();
-            return $first;
-        })
-        ->values()
-        ->take(100);
-
-        $users = User::orderBy('first_name')->get();
-
-        // Calculate stats based on grouped notifications (batches)
-        $totalBatches = Notification::selectRaw('title, body, type, sent_at')
-            ->groupBy('title', 'body', 'type', 'sent_at')
-            ->get()
-            ->count();
-            
-        $unreadBatches = Notification::where('is_read', false)
-            ->selectRaw('title, body, type, sent_at')
-            ->groupBy('title', 'body', 'type', 'sent_at')
-            ->get()
-            ->count();
-
-        $stats = [
-            'total' => $totalBatches,
-            'unread' => $unreadBatches,
-            'read' => max(0, $totalBatches - $unreadBatches),
-        ];
-
-        return view('notifications.index', compact('notifications', 'users', 'stats'));
-    }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required',
-            'title' => 'required|string|max:255',
-            'body' => 'required|string',
-            'type' => 'required|string|in:system,appointment,campaign,general',
+        $filters = $request->validate([
+            'status' => ['nullable', Rule::in(['unread', 'read'])],
+            'category' => ['nullable', Rule::enum(AdminNotificationCategory::class)],
         ]);
 
-        $recipientType = $validated['user_id'];
-        $title = $validated['title'];
-        $body = $validated['body'];
-        $type = $validated['type'];
+        $user = $request->user();
 
-        $targetUsers = [];
+        $notifications = AdminNotification::query()
+            ->ownedBy($user)
+            ->when(($filters['status'] ?? null) === 'unread', fn ($q) => $q->unread())
+            ->when(($filters['status'] ?? null) === 'read', fn ($q) => $q->read())
+            ->when($filters['category'] ?? null, fn ($q, $category) => $q->where('category', $category))
+            ->with('subject')
+            ->latest('id')
+            ->paginate(self::PER_PAGE)
+            ->withQueryString();
 
-        if ($recipientType === 'all') {
-            $targetUsers = User::all();
-        } elseif ($recipientType === 'customers') {
-            $targetUsers = User::customers()->get();
-        } elseif ($recipientType === 'employees') {
-            $targetUsers = User::staff()->get();
-        } else {
-            $targetUsers = User::where('id', $recipientType)->get();
-        }
+        $counts = AdminNotification::query()
+            ->ownedBy($user)
+            ->selectRaw('COUNT(*) as total, SUM(CASE WHEN read_at IS NULL THEN 1 ELSE 0 END) as unread, MAX(id) as latest_id')
+            ->first();
 
-        $sentAt = now();
-        $userIds = [];
-        foreach ($targetUsers as $user) {
-            Notification::create([
-                'user_id' => $user->id,
-                'title' => $title,
-                'body' => $body,
-                'type' => $type,
-                'is_read' => false,
-                'sent_at' => $sentAt,
-            ]);
-            $userIds[] = $user->id;
-        }
+        $stats = [
+            'total' => (int) $counts->total,
+            'unread' => (int) $counts->unread,
+            'read' => (int) $counts->total - (int) $counts->unread,
+        ];
 
-        // Push Notification gönderimi
-        try {
-            $pushService = new \App\Services\FirebasePushService();
-            $pushService->sendToMultipleUsers($userIds, $title, $body, [
-                'type' => $type,
-            ]);
-        } catch (\Exception $e) {
-            \Log::error("[FCM] Panelden push gönderimi başarısız: " . $e->getMessage());
-        }
-
-        return redirect()->route('notifications.index')->with('success', 'Bildirim(ler) başarıyla gönderildi.');
+        return view('notifications.index', [
+            'notifications' => $notifications,
+            'stats' => $stats,
+            'categories' => AdminNotificationCategory::cases(),
+            'filters' => $filters,
+            'latestId' => (int) $counts->latest_id,
+        ]);
     }
 
-    public function markAllRead()
+    /** Topbar ve bildirim sayfasının canlı akışı (polling) için hafif JSON uç noktası. */
+    public function feed(Request $request): JsonResponse
     {
-        Notification::where('is_read', false)->update(['is_read' => true]);
+        $user = $request->user();
+
+        $items = AdminNotification::query()
+            ->ownedBy($user)
+            ->latest('id')
+            ->limit(config('admin_notifications.feed_limit'))
+            ->get();
+
+        return response()->json([
+            'unread_count' => AdminNotification::query()->ownedBy($user)->unread()->count(),
+            'latest_id' => (int) ($items->first()?->id ?? 0),
+            'items' => $items->map->toFeedArray()->values(),
+        ]);
+    }
+
+    /** Bildirimi okundu yapar ve ilgili işlem ekranına güvenli şekilde yönlendirir. */
+    public function open(AdminNotification $notification): RedirectResponse
+    {
+        Gate::authorize('manage', $notification);
+
+        $notification->markAsRead();
+
+        $target = $notification->safeActionUrl();
+
+        return $target !== null
+            ? redirect()->to($target)
+            : redirect()->route('notifications.index');
+    }
+
+    public function toggleRead(AdminNotification $notification): RedirectResponse
+    {
+        Gate::authorize('manage', $notification);
+
+        $notification->forceFill(['read_at' => $notification->isRead() ? null : now()])->save();
+
+        return back()->with('success', 'Bildirim durumu güncellendi.');
+    }
+
+    public function markAllRead(Request $request): RedirectResponse
+    {
+        AdminNotification::query()
+            ->ownedBy($request->user())
+            ->unread()
+            ->update(['read_at' => now()]);
 
         return redirect()->route('notifications.index')->with('success', 'Tüm bildirimler okundu olarak işaretlendi.');
     }
 
-    public function toggleRead(Request $request, Notification $notification)
+    public function destroy(AdminNotification $notification): RedirectResponse
     {
-        if ($request->has('group_ids')) {
-            $ids = json_decode($request->get('group_ids'), true);
-            if (is_array($ids)) {
-                $hasUnread = Notification::whereIn('id', $ids)->where('is_read', false)->exists();
-                Notification::whereIn('id', $ids)->update(['is_read' => $hasUnread]);
-                return redirect()->route('notifications.index')->with('success', 'Bildirim grubu durumu güncellendi.');
-            }
-        }
-
-        $notification->update(['is_read' => !$notification->is_read]);
-        return redirect()->route('notifications.index')->with('success', 'Bildirim durumu güncellendi.');
-    }
-
-    public function destroy(Request $request, Notification $notification)
-    {
-        if ($request->has('group_ids')) {
-            $ids = json_decode($request->get('group_ids'), true);
-            if (is_array($ids)) {
-                Notification::whereIn('id', $ids)->delete();
-                return redirect()->route('notifications.index')->with('success', 'Bildirim grubu silindi.');
-            }
-        }
+        Gate::authorize('manage', $notification);
 
         $notification->delete();
-        return redirect()->route('notifications.index')->with('success', 'Bildirim silindi.');
+
+        return back()->with('success', 'Bildirim silindi.');
+    }
+
+    public function destroyRead(Request $request): RedirectResponse
+    {
+        $deleted = AdminNotification::query()
+            ->ownedBy($request->user())
+            ->read()
+            ->delete();
+
+        return redirect()->route('notifications.index')->with('success', "{$deleted} okunmuş bildirim temizlendi.");
     }
 }

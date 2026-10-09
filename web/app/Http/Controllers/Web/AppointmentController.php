@@ -189,11 +189,13 @@ class AppointmentController extends Controller
         $request->validate([
             'date' => 'required|date',
             'employee_id' => 'required|exists:employees,id',
+            'duration' => 'nullable|integer|min:0'
         ]);
 
         $date = $request->date;
         $employeeId = $request->employee_id;
         $branchId = session('active_branch_id', 1);
+        $duration = $request->get('duration', 30);
 
         $employee = Employee::findOrFail($employeeId);
 
@@ -280,6 +282,29 @@ class AppointmentController extends Controller
             ];
 
             $startTime->addMinutes(30);
+        }
+
+        $requiredSlotsCount = max(1, (int) ceil($duration / 30));
+
+        if ($requiredSlotsCount > 1) {
+            foreach ($slots as $index => &$slot) {
+                if (!$slot['is_available']) {
+                    continue;
+                }
+
+                $consecutiveAvailable = true;
+                for ($i = 1; $i < $requiredSlotsCount; $i++) {
+                    if (!isset($slots[$index + $i]) || !$slots[$index + $i]['is_available']) {
+                        $consecutiveAvailable = false;
+                        break;
+                    }
+                }
+
+                if (!$consecutiveAvailable) {
+                    $slot['is_available'] = false;
+                }
+            }
+            unset($slot); // break the reference with the last element
         }
 
         return response()->json($slots);

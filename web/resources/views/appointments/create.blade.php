@@ -242,6 +242,11 @@
                             idx++;
                         }
                     });
+                    
+                    // Re-fetch slots with new duration
+                    if (employeeSelect.value && dateInput.value) {
+                        fetchAvailableSlots();
+                    }
                 });
             });
 
@@ -250,28 +255,51 @@
                 const empId = employeeSelect.value;
                 const date = dateInput.value;
 
+                let totalDuration = 0;
+                checkboxes.forEach(c => {
+                    if (c.checked) {
+                        totalDuration += parseInt(c.dataset.duration) || 0;
+                    }
+                });
+
                 if (!empId || !date) {
                     timeSlotsContainer.innerHTML = '<span class="text-muted small"><i class="ti ti-info-circle me-1"></i>Berber ve tarih seçimi bekleniyor...</span>';
                     startAtInput.value = '';
                     return;
                 }
 
-                timeSlotsContainer.innerHTML = '<span class="text-muted small"><i class="ti ti-loader ti-spin me-1"></i>Saatler yükleniyor...</span>';
-                startAtInput.value = '';
+                const previousSelectedTime = startAtInput.value ? startAtInput.value.split('T')[1] : null;
 
-                fetch(`/appointments/available-slots?employee_id=${empId}&date=${date}`)
+                timeSlotsContainer.innerHTML = '<span class="text-muted small"><i class="ti ti-loader ti-spin me-1"></i>Saatler yükleniyor...</span>';
+
+                fetch(`/appointments/available-slots?employee_id=${empId}&date=${date}&duration=${totalDuration}`)
                     .then(res => res.json())
                     .then(slots => {
                         timeSlotsContainer.innerHTML = '';
                         if (slots.length === 0) {
                             timeSlotsContainer.innerHTML = '<span class="text-danger small"><i class="ti ti-alert-circle me-1"></i>Seçilen tarihte uygun saat bulunmuyor.</span>';
+                            startAtInput.value = '';
                             return;
                         }
+
+                        let foundSelected = false;
 
                         slots.forEach(slot => {
                             const btn = document.createElement('button');
                             btn.type = 'button';
-                            btn.className = `btn btn-outline-primary px-3 py-2 fw-semibold rounded-3 ${!slot.is_available ? 'disabled opacity-50 border-secondary text-secondary' : ''}`;
+                            
+                            let isSelected = (previousSelectedTime === slot.time);
+                            if (isSelected && !slot.is_available) {
+                                isSelected = false;
+                            }
+                            
+                            if (isSelected) {
+                                foundSelected = true;
+                                btn.className = `btn btn-primary text-white px-3 py-2 fw-semibold rounded-3 active`;
+                            } else {
+                                btn.className = `btn btn-outline-primary px-3 py-2 fw-semibold rounded-3 ${!slot.is_available ? 'disabled opacity-50 border-secondary text-secondary' : ''}`;
+                            }
+                            
                             btn.textContent = slot.time;
                             if (!slot.is_available) {
                                 btn.style.cursor = 'not-allowed';
@@ -290,6 +318,12 @@
                             }
                             timeSlotsContainer.appendChild(btn);
                         });
+                        
+                        if (!foundSelected) {
+                            startAtInput.value = '';
+                        } else {
+                            startAtInput.value = `${date}T${previousSelectedTime}`;
+                        }
                     })
                     .catch(err => {
                         console.error(err);

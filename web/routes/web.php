@@ -39,8 +39,20 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/appointments/{appointment}/payments/{payment}', [AppointmentController::class, 'destroyPayment'])->name('appointments.payments.destroy');
         Route::post('/appointments/{appointment}/complete-payment', [AppointmentController::class, 'completeWithPayment'])->name('appointments.complete-payment');
 
-        Route::get('/notifications', [App\Http\Controllers\Web\NotificationController::class, 'index'])->name('notifications.index');
-        Route::patch('/notifications/{notification}/toggle-read', [App\Http\Controllers\Web\NotificationController::class, 'toggleRead'])->name('notifications.toggle-read');
+        // Sistem Bildirimleri: her personel yalnızca kendi bildirimlerini yönetir (Policy ile korunur).
+        // Bildirim oluşturma uç noktası bilinçli olarak yoktur; kayıtlar Observer'lar tarafından üretilir.
+        Route::controller(App\Http\Controllers\Web\NotificationController::class)
+            ->prefix('notifications')
+            ->name('notifications.')
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/feed', 'feed')->name('feed')->middleware('throttle:60,1');
+                Route::post('/mark-all-read', 'markAllRead')->name('mark-all-read');
+                Route::delete('/read', 'destroyRead')->name('destroy-read');
+                Route::get('/{notification}/open', 'open')->name('open')->whereNumber('notification');
+                Route::patch('/{notification}/toggle-read', 'toggleRead')->name('toggle-read')->whereNumber('notification');
+                Route::delete('/{notification}', 'destroy')->name('destroy')->whereNumber('notification');
+            });
     });
 
     // -------------------------------------------------------------------------
@@ -123,11 +135,6 @@ Route::middleware(['auth'])->group(function () {
         // Reviews
         Route::get('/reviews', [App\Http\Controllers\Web\ReviewController::class, 'index'])->name('reviews.index');
         Route::delete('/reviews/{review}', [App\Http\Controllers\Web\ReviewController::class, 'destroy'])->name('reviews.destroy');
-
-        // Notifications (gönderme ve silme sadece yönetim)
-        Route::post('/notifications', [App\Http\Controllers\Web\NotificationController::class, 'store'])->name('notifications.store');
-        Route::post('/notifications/mark-all-read', [App\Http\Controllers\Web\NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
-        Route::delete('/notifications/{notification}', [App\Http\Controllers\Web\NotificationController::class, 'destroy'])->name('notifications.destroy');
 
         // Reports
         Route::get('/reports', [App\Http\Controllers\Web\ReportController::class, 'index'])->name('reports.index');

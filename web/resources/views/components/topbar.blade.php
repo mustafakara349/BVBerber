@@ -11,56 +11,25 @@
 
     <div>
         <ul class="list-unstyled d-flex align-items-center mb-0 gap-3">
-            {{-- Notifications --}}
-            <li class="dropdown">
-                <a class="position-relative btn-icon btn-sm btn-light rounded-circle d-flex align-items-center justify-content-center shadow-sm border border-light" data-bs-toggle="dropdown" aria-expanded="false" href="#" role="button" style="width: 38px; height: 38px; transition: all 0.2s ease;">
+            {{-- Notifications (canlı akış: notifications.feed) --}}
+            <li class="dropdown" id="topbarNotifications"
+                data-feed-url="{{ route('notifications.feed') }}"
+                data-poll-seconds="{{ config('admin_notifications.feed_poll_seconds') }}">
+                <a class="position-relative btn-icon btn-sm btn-light rounded-circle d-flex align-items-center justify-content-center shadow-sm border border-light" data-bs-toggle="dropdown" aria-expanded="false" href="#" role="button" aria-label="Bildirimler" style="width: 38px; height: 38px; transition: all 0.2s ease;">
                     <i class="ti ti-bell fs-5 text-dark"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle p-1.5 bg-danger border border-2 border-white rounded-circle mt-1 ms-n1.5" id="notificationBadge" style="width: 10px; height: 10px;">
+                    <span class="position-absolute top-0 start-100 translate-middle p-1.5 bg-danger border border-2 border-white rounded-circle mt-1 ms-n1.5 d-none" id="notificationBadge" style="width: 10px; height: 10px;">
                     </span>
                 </a>
                 
-                <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 p-0 overflow-hidden" style="min-width: 340px; margin-top: 15px; border: 1px solid rgba(0, 0, 0, 0.05) !important;">
+                <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 p-0 overflow-hidden" style="min-width: 340px; max-width: 380px; margin-top: 15px; border: 1px solid rgba(0, 0, 0, 0.05) !important;">
                     <div class="px-4 py-3 bg-light border-bottom d-flex justify-content-between align-items-center">
                         <span class="fw-bold text-dark fs-6"><i class="ti ti-bell-ringing text-warning me-1"></i> Bildirimler</span>
-                        <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fw-semibold small" style="font-size: 11px;">3 Yeni</span>
+                        <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fw-semibold small d-none" id="notificationUnreadLabel" style="font-size: 11px;"></span>
                     </div>
                     <div class="py-1" style="max-height: 320px; overflow-y: auto;">
                         <ul class="list-unstyled p-0 m-0" id="notificationList">
-                            <!-- Item 1: New Appointment -->
-                            <li>
-                                <a href="{{ route('appointments.index') }}" class="dropdown-item px-4 py-3 border-bottom border-light d-flex gap-3 align-items-start whitespace-normal" style="white-space: normal; transition: all 0.15s ease;">
-                                    <div class="flex-shrink-0 p-2 bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                                        <i class="ti ti-calendar-plus fs-5"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="mb-1 text-dark fw-medium small" style="line-height: 1.4; font-size: 13px;"><strong>Ahmet Yılmaz</strong> yeni bir randevu oluşturdu.</p>
-                                        <span class="text-secondary small d-block" style="font-size: 11px;"><i class="ti ti-clock me-1"></i>5 dakika önce</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <!-- Item 2: Payment Received -->
-                            <li>
-                                <a href="{{ route('finance.transactions') }}" class="dropdown-item px-4 py-3 border-bottom border-light d-flex gap-3 align-items-start whitespace-normal" style="white-space: normal; transition: all 0.15s ease;">
-                                    <div class="flex-shrink-0 p-2 bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                                        <i class="ti ti-wallet fs-5"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="mb-1 text-dark fw-medium small" style="line-height: 1.4; font-size: 13px;">Randevu #BV-1082 ödemesi (₺350,00 Nakit) alındı.</p>
-                                        <span class="text-secondary small d-block" style="font-size: 11px;"><i class="ti ti-clock me-1"></i>1 saat önce</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <!-- Item 3: System Alert -->
-                            <li>
-                                <a href="{{ route('dashboard') }}" class="dropdown-item px-4 py-3 d-flex gap-3 align-items-start whitespace-normal" style="white-space: normal; transition: all 0.15s ease;">
-                                    <div class="flex-shrink-0 p-2 bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                                        <i class="ti ti-alert-triangle fs-5"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="mb-1 text-dark fw-medium small" style="line-height: 1.4; font-size: 13px;">Saç Şampuanı stok limiti kritik seviyenin altında.</p>
-                                        <span class="text-secondary small d-block" style="font-size: 11px;"><i class="ti ti-clock me-1"></i>2 saat önce</span>
-                                    </div>
-                                </a>
+                            <li class="px-4 py-4 text-center text-muted small" data-placeholder>
+                                <i class="ti ti-loader-2 me-1"></i> Yükleniyor...
                             </li>
                         </ul>
                     </div>
@@ -143,3 +112,112 @@
         </ul>
     </div>
 </nav>
+
+@push('scripts')
+<script>
+    /**
+     * Sistem bildirimleri canlı akışı.
+     * - Tek bir polling döngüsü çalışır; sonuç `admin-notifications:update` olayı ile yayınlanır
+     *   (bildirimler sayfası aynı veriyi ek istek atmadan kullanır).
+     * - Sekme arka plandayken istek atılmaz.
+     * - İçerik yalnızca textContent ile basılır (XSS'e karşı güvenli).
+     */
+    (function () {
+        const root = document.getElementById('topbarNotifications');
+        if (!root) return;
+
+        const feedUrl = root.dataset.feedUrl;
+        const intervalMs = Math.max(10, Number(root.dataset.pollSeconds || 20)) * 1000;
+        const list = document.getElementById('notificationList');
+        const dot = document.getElementById('notificationBadge');
+        const label = document.getElementById('notificationUnreadLabel');
+        let timer = null;
+        let inFlight = false;
+
+        function el(tag, className, text) {
+            const node = document.createElement(tag);
+            if (className) node.className = className;
+            if (text !== undefined && text !== null) node.textContent = text;
+            return node;
+        }
+
+        function renderItem(item) {
+            const li = el('li');
+            const link = el('a', 'dropdown-item px-4 py-3 border-bottom border-light d-flex gap-3 align-items-start' + (item.is_read ? '' : ' bg-primary bg-opacity-10'));
+            link.href = item.open_url;
+            link.style.whiteSpace = 'normal';
+
+            const iconWrap = el('div', 'flex-shrink-0 rounded-circle d-flex align-items-center justify-content-center bg-' + item.color + '-subtle text-' + item.color);
+            iconWrap.style.width = '38px';
+            iconWrap.style.height = '38px';
+            iconWrap.appendChild(el('i', 'ti ' + item.icon + ' fs-5'));
+
+            const content = el('div', 'flex-grow-1');
+            const title = el('p', 'mb-0 text-dark fw-semibold small', item.title);
+            title.style.fontSize = '13px';
+            const body = el('p', 'mb-1 text-secondary small', item.body);
+            body.style.fontSize = '12px';
+            body.style.lineHeight = '1.4';
+            const time = el('span', 'text-muted d-block', item.time);
+            time.style.fontSize = '11px';
+
+            content.append(title, body, time);
+            link.append(iconWrap, content);
+            li.appendChild(link);
+            return li;
+        }
+
+        function render(data) {
+            const unread = Number(data.unread_count || 0);
+            dot.classList.toggle('d-none', unread === 0);
+            label.classList.toggle('d-none', unread === 0);
+            label.textContent = unread + ' Yeni';
+
+            list.replaceChildren();
+            if (!data.items.length) {
+                const empty = el('li', 'px-4 py-4 text-center text-muted small');
+                empty.appendChild(el('i', 'ti ti-bell-off d-block fs-3 mb-1'));
+                empty.append('Henüz bildirim yok.');
+                list.appendChild(empty);
+            } else {
+                data.items.forEach(item => list.appendChild(renderItem(item)));
+            }
+
+            document.dispatchEvent(new CustomEvent('admin-notifications:update', {
+                detail: { unreadCount: unread, latestId: data.latest_id, items: data.items },
+            }));
+        }
+
+        async function poll() {
+            if (inFlight || document.hidden) return;
+            inFlight = true;
+            try {
+                const response = await fetch(feedUrl, {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    credentials: 'same-origin',
+                    cache: 'no-store',
+                });
+                if (response.ok) render(await response.json());
+            } catch (e) {
+                // Ağ hatası: bir sonraki döngüde yeniden denenir.
+            } finally {
+                inFlight = false;
+            }
+        }
+
+        function start() {
+            if (timer) return;
+            poll();
+            timer = setInterval(poll, intervalMs);
+        }
+
+        function stop() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+        start();
+    })();
+</script>
+@endpush
