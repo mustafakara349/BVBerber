@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile_android/core/app_theme.dart';
+import 'package:mobile_android/providers/auth_provider.dart';
 
 /// Güvenlik ve Giriş ekranı – Şifre değiştirme
 class SecurityScreen extends StatefulWidget {
@@ -96,7 +98,34 @@ class _SecurityScreenState extends State<SecurityScreen> {
       return;
     }
 
-    _showError('Şifre değiştirme işlemi şu anda sadece web panel üzerinden yapılabilmektedir.');
+    setState(() => _isLoading = true);
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      await authProvider.updatePassword(
+        currentPassword: _currentPasswordController.text,
+        newPassword: _newPasswordController.text,
+      );
+
+      if (mounted) {
+        _currentPasswordController.clear();
+        _newPasswordController.clear();
+        _confirmPasswordController.clear();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Şifreniz başarıyla güncellendi!'),
+            backgroundColor: AppTheme.successColor,
+          ),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        _showError(e.toString().replaceAll('Exception: ', ''));
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   void _showError(String message) {

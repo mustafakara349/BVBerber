@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile_android/core/app_theme.dart';
+import 'package:mobile_android/providers/auth_provider.dart';
+import 'package:mobile_android/screens/auth/otp_verification_screen.dart';
 import 'package:mobile_android/utils/validators.dart';
 
 /// Şifre sıfırlama ekranı – Şifremi Unuttum
@@ -13,7 +16,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  bool _isSent = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -23,8 +26,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppTheme.bg(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -35,11 +40,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               children: [
                 const SizedBox(height: 8),
                 // Geri butonu
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+                    border: Border.all(color: isDark ? const Color(0xFF2C2C30) : Colors.black12),
+                  ),
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87, size: 20),
+                    padding: EdgeInsets.zero,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 // Kilit ikonu
@@ -58,19 +71,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 24),
                 // Başlık
-                const Text(
+                Text(
                   'Şifremi Unuttum',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.black87,
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
+                Text(
                   'Şifrenizi sıfırlamak için e-posta adresinizi girin. Size bir bağlantı göndereceğiz.',
                   style: TextStyle(
-                    color: Colors.white38,
+                    color: isDark ? Colors.white60 : Colors.black54,
                     fontSize: 15,
                     height: 1.5,
                   ),
@@ -90,22 +103,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                   validator: Validators.email,
                   decoration: InputDecoration(
                     hintText: 'e-posta@adresiniz.com',
-                    hintStyle: const TextStyle(color: Colors.white24),
-                    prefixIcon: const Icon(Icons.email_outlined, color: Colors.white38, size: 20),
+                    hintStyle: TextStyle(color: isDark ? Colors.white38 : Colors.black38),
+                    prefixIcon: Icon(Icons.email_outlined, color: isDark ? Colors.white60 : Colors.black54, size: 20),
                     filled: true,
-                    fillColor: const Color(0xFF2A2A2A),
+                    fillColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                      borderSide: BorderSide(color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFF3A3A3A)),
+                      borderSide: BorderSide(color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -119,17 +132,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() => _isSent = true);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Şifre sıfırlama talebiniz alındı. Lütfen yöneticinizle iletişime geçin.'),
-                              backgroundColor: AppTheme.secondaryColor,
-                            ),
-                          );
-                        }
-                      },
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                            if (_formKey.currentState!.validate()) {
+                              final email = _emailController.text.trim();
+                              setState(() => _isLoading = true);
+                              try {
+                                final auth = Provider.of<AuthProvider>(context, listen: false);
+                                await auth.sendOtp(email);
+                                if (!mounted) return;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => OtpVerificationScreen(email: email),
+                                  ),
+                                );
+                              } catch (e) {
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(e.toString().replaceAll('Exception: ', '')),
+                                    backgroundColor: AppTheme.errorColor,
+                                  ),
+                                );
+                              } finally {
+                                if (mounted) setState(() => _isLoading = false);
+                              }
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.secondaryColor,
                       foregroundColor: Colors.black,
@@ -142,14 +173,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(_isSent ? 'Tekrar Gönder' : 'Gönder'),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.arrow_forward, size: 20),
-                      ],
-                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2.5),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text('Kod Gönder'),
+                              SizedBox(width: 8),
+                              Icon(Icons.arrow_forward, size: 20),
+                            ],
+                          ),
                   ),
                 ),
                 const Spacer(),

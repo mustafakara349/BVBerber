@@ -23,6 +23,15 @@ class UserModel {
     required this.createdAt,
   });
 
+  String get fullName => '$name $surname'.trim();
+
+  String get initials {
+    final first = name.isNotEmpty ? name[0].toUpperCase() : '';
+    final last = surname.isNotEmpty ? surname[0].toUpperCase() : '';
+    final res = '$first$last';
+    return res.isNotEmpty ? res : 'B';
+  }
+
   /// Firestore veya Laravel API'den gelen Map'i modele dönüştür
   factory UserModel.fromMap(Map<String, dynamic> map, [String id = '']) {
     final rawId = map['id']?.toString() ?? id;

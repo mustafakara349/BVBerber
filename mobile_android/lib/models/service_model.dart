@@ -13,6 +13,7 @@ class ServiceModel {
   final bool isFeatured;
   final bool isPopular;
   final String categoryName;
+  final String? genderType;
 
   const ServiceModel({
     required this.id,
@@ -26,7 +27,21 @@ class ServiceModel {
     this.isFeatured = false,
     this.isPopular = false,
     this.categoryName = 'Diğer',
+    this.genderType = 'unisex',
   });
+
+  bool get hasDiscount => discountedPrice != null && discountedPrice! < price;
+
+  double get effectivePrice {
+    if (discountedPrice != null && discountedPrice! < price) {
+      return discountedPrice!;
+    }
+    return price;
+  }
+
+  String get formattedPrice {
+    return '${effectivePrice.toStringAsFixed(0)} ₺';
+  }
 
   factory ServiceModel.fromMap(Map<String, dynamic> map, [String id = '']) {
     final rawPrice = map['price'] != null ? (double.tryParse(map['price'].toString()) ?? 0.0) : 0.0;
@@ -44,7 +59,8 @@ class ServiceModel {
       isActive: map['is_active'] ?? map['isActive'] ?? true,
       isFeatured: map['is_featured'] ?? map['isFeatured'] ?? false,
       isPopular: map['is_popular'] ?? map['isPopular'] ?? false,
-      categoryName: map['category_name'] ?? map['categoryName'] ?? 'Diğer',
+      categoryName: map['category_name'] ?? map['categoryName'] ?? map['category'] ?? 'Diğer',
+      genderType: map['gender_type'] ?? map['genderType'] ?? 'unisex',
     );
   }
 

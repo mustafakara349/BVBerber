@@ -39,8 +39,10 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       extendBody: true,
       body: IndexedStack(
         index: _currentIndex,
@@ -51,11 +53,15 @@ class _MainScreenState extends State<MainScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF18181A) : Colors.white,
             borderRadius: BorderRadius.circular(40),
+            border: Border.all(
+              color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200,
+              width: 1,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -76,6 +82,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildNavItem(int index, IconData icon, String label) {
+    final isDark = AppTheme.isDark(context);
     final isSelected = _currentIndex == index;
     return GestureDetector(
       onTap: () {
@@ -88,7 +95,9 @@ class _MainScreenState extends State<MainScreen> {
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.secondaryColor.withOpacity(0.15) : Colors.transparent,
+          color: isSelected
+              ? AppTheme.secondaryColor.withOpacity(isDark ? 0.22 : 0.15)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Column(
@@ -96,14 +105,18 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppTheme.secondaryColor : Colors.black87,
+              color: isSelected
+                  ? AppTheme.secondaryColor
+                  : (isDark ? Colors.white70 : Colors.black87),
               size: 24,
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppTheme.secondaryColor : Colors.black54,
+                color: isSelected
+                    ? AppTheme.secondaryColor
+                    : (isDark ? Colors.white54 : Colors.black54),
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
               ),

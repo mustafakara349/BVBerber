@@ -75,7 +75,12 @@ class AppointmentProvider extends ChangeNotifier {
   }
 
   /// Yeni randevu oluştur
-  Future<void> createAppointment(AppointmentModel appointment, {List<int>? serviceIds}) async {
+  Future<void> createAppointment(
+    AppointmentModel appointment, {
+    List<int>? serviceIds,
+    String? couponCode,
+    double? discountAmount,
+  }) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -93,6 +98,8 @@ class AppointmentProvider extends ChangeNotifier {
         serviceIds: svcIds,
         startAt: startAtStr,
         customerNote: appointment.note,
+        couponCode: couponCode,
+        discountAmount: discountAmount,
       );
 
       final newAppointment = AppointmentModel.fromMap(responseData);

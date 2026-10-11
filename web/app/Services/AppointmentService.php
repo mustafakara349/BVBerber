@@ -6,7 +6,11 @@ use App\Enums\AppointmentStatus;
 use App\Models\Appointment;
 use App\Models\AppointmentService as AppointmentServiceModel;
 use App\Models\AppointmentStatusLog;
+use App\Models\Branch;
+use App\Models\Employee;
+use App\Models\EmployeeTimeBlock;
 use App\Repositories\Contracts\AppointmentRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -111,19 +115,52 @@ class AppointmentService
             $data['coupon_id']      = $couponId;
             $data['status']         = $data['status'] ?? AppointmentStatus::Pending;
 
+            $newStart = Carbon::parse($data['start_at']);
+            $newEnd = isset($data['end_at']) 
+                ? Carbon::parse($data['end_at']) 
+                : $newStart->copy()->addMinutes($totalDuration);
+            $newStartStr = $newStart->format('Y-m-d H:i:s');
+            $newEndStr = $newEnd->format('Y-m-d H:i:s');
+
             // --- ÇAKIŞMA KORUMASI ---
             $conflict = Appointment::where('employee_id', $data['employee_id'])
-                ->where('start_at', $data['start_at'])
-                ->whereIn('status', [
-                    AppointmentStatus::Pending->value,
-                    AppointmentStatus::Confirmed->value,
-                    AppointmentStatus::InProgress->value,
+                ->whereNotIn('status', [
+                    AppointmentStatus::Cancelled->value,
+                    AppointmentStatus::Rejected->value,
+                    AppointmentStatus::NoShow->value,
                 ])
+                ->where(function ($query) use ($newStartStr, $newEndStr) {
+                    $query->where('start_at', '<', $newEndStr)
+                          ->where(function ($sub) use ($newStartStr) {
+                              $sub->where('end_at', '>', $newStartStr)
+                                  ->orWhere(function ($fallback) use ($newStartStr) {
+                                      $fallback->whereNull('end_at')
+                                               ->whereRaw('DATE_ADD(start_at, INTERVAL COALESCE(total_duration, 30) MINUTE) > ?', [$newStartStr]);
+                                  });
+                          });
+                })
                 ->lockForUpdate() // Pessimistic lock: aynı anda gelen diğer istek bekler
                 ->exists();
 
             if ($conflict) {
-                throw new \RuntimeException('Bu saat dolu. Lütfen farklı bir saat veya berber seçiniz.');
+                throw new \RuntimeException('Seçilen saat veya süre aralığında berber dolu. Lütfen farklı bir saat veya berber seçiniz.');
+            }
+
+            // Personel İzin/Blok Çakışma Koruması
+            $timeBlockConflict = EmployeeTimeBlock::where('employee_id', $data['employee_id'])
+                ->whereDate('date', $newStart->toDateString())
+                ->where(function ($q) use ($newStartStr, $newEndStr) {
+                    $q->where('type', 'full_day')
+                      ->orWhere(function ($sub) use ($newStartStr, $newEndStr) {
+                          $sub->where('type', 'partial_time')
+                              ->whereRaw('CONCAT(date, " ", start_time) < ?', [$newEndStr])
+                              ->whereRaw('CONCAT(date, " ", end_time) > ?', [$newStartStr]);
+                      });
+                })
+                ->exists();
+
+            if ($timeBlockConflict) {
+                throw new \RuntimeException('Berber seçilen saat veya tarih aralığında izinli/müsait değil.');
             }
             // --- ÇAKIŞMA KORUMASI SONU ---
 
@@ -239,5 +276,145 @@ class AppointmentService
         } while (Appointment::where('appointment_code', $code)->exists());
 
         return $code;
+    }
+
+    public function getAvailableSlots(int $branchId, int $employeeId, string $date, int $duration = 30): array
+    {
+        $employee = Employee::find($employeeId);
+        if (! $employee) {
+            return [];
+        }
+
+        // İşe başlama tarihinden önce veya ayrılma tarihinden sonra randevu alınamaz
+        $dateCarbon = Carbon::parse($date);
+        if ($employee->hire_date && $dateCarbon->copy()->startOfDay()->lt($employee->hire_date->startOfDay())) {
+            return [];
+        }
+        if ($employee->leave_date && $dateCarbon->copy()->startOfDay()->gt($employee->leave_date->startOfDay())) {
+            return [];
+        }
+
+        // Tüm gün izinli veya bloklu ise randevu alınamaz
+        $timeBlocks = EmployeeTimeBlock::where('employee_id', $employeeId)
+            ->whereDate('date', $date)
+            ->get();
+
+        if ($timeBlocks->where('type', 'full_day')->count() > 0) {
+            return [];
+        }
+
+        // Şube çalışma saatleri
+        $branch = Branch::find($branchId);
+        $openTimeStr = '08:00:00';
+        $closeTimeStr = '20:00:00';
+
+        if ($branch) {
+            if ($branch->opening_time) {
+                $openTimeStr = $branch->opening_time instanceof \DateTimeInterface 
+                    ? $branch->opening_time->format('H:i:s') 
+                    : (string) $branch->opening_time;
+            }
+            if ($branch->closing_time) {
+                $closeTimeStr = $branch->closing_time instanceof \DateTimeInterface 
+                    ? $branch->closing_time->format('H:i:s') 
+                    : (string) $branch->closing_time;
+            }
+        }
+
+        // O günkü tüm aktif randevular (tüm müşteriler dahil)
+        $appointments = Appointment::forBranch($branchId)
+            ->where('employee_id', $employeeId)
+            ->whereDate('start_at', $date)
+            ->whereNotIn('status', [
+                AppointmentStatus::Cancelled->value,
+                AppointmentStatus::Rejected->value,
+                AppointmentStatus::NoShow->value,
+            ])
+            ->get();
+
+        $slots = [];
+        $startTime = Carbon::parse($date . ' ' . $openTimeStr, config('app.timezone', 'Europe/Istanbul'));
+        $endTime = Carbon::parse($date . ' ' . $closeTimeStr, config('app.timezone', 'Europe/Istanbul'));
+        $now = Carbon::now(config('app.timezone', 'Europe/Istanbul'));
+        $isToday = $date === $now->toDateString();
+
+        while ($startTime < $endTime) {
+            $slotTime = $startTime->copy();
+            $isAvailable = true;
+            $isBusy = false;
+            $isPast = false;
+
+            // Randevu çakışması kontrolü
+            foreach ($appointments as $apt) {
+                $aptStart = Carbon::parse($apt->start_at, config('app.timezone', 'Europe/Istanbul'));
+                $aptEnd = $apt->end_at 
+                    ? Carbon::parse($apt->end_at, config('app.timezone', 'Europe/Istanbul')) 
+                    : $aptStart->copy()->addMinutes($apt->total_duration ?? 30);
+                
+                // Eğer slot randevu aralığına denk geliyorsa
+                if ($slotTime >= $aptStart && $slotTime < $aptEnd) {
+                    $isAvailable = false;
+                    $isBusy = true;
+                    break;
+                }
+            }
+
+            // Saatlik izin/bloklama çakışması kontrolü
+            if ($isAvailable) {
+                foreach ($timeBlocks as $block) {
+                    if ($block->type === 'partial_time') {
+                        $blockStart = Carbon::parse($date . ' ' . $block->start_time, config('app.timezone', 'Europe/Istanbul'));
+                        $blockEnd = Carbon::parse($date . ' ' . $block->end_time, config('app.timezone', 'Europe/Istanbul'));
+                        
+                        if ($slotTime >= $blockStart && $slotTime < $blockEnd) {
+                            $isAvailable = false;
+                            $isBusy = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Geçmiş saat kontrolü (Bugün için)
+            if ($isToday && $slotTime <= $now) {
+                $isAvailable = false;
+                $isPast = true;
+            }
+
+            $slots[] = [
+                'time' => $slotTime->format('H:i'),
+                'is_available' => $isAvailable,
+                'is_busy' => $isBusy,
+                'is_past' => $isPast,
+            ];
+
+            $startTime->addMinutes(30);
+        }
+
+        // İstenen süre (duration) 30 dakikadan fazlaysa ardışık slot kontrolü
+        $requiredSlotsCount = max(1, (int) ceil($duration / 30));
+
+        if ($requiredSlotsCount > 1) {
+            foreach ($slots as $index => &$slot) {
+                if (! $slot['is_available']) {
+                    continue;
+                }
+
+                $consecutiveAvailable = true;
+                for ($i = 1; $i < $requiredSlotsCount; $i++) {
+                    if (! isset($slots[$index + $i]) || ! $slots[$index + $i]['is_available']) {
+                        $consecutiveAvailable = false;
+                        break;
+                    }
+                }
+
+                if (! $consecutiveAvailable) {
+                    $slot['is_available'] = false;
+                }
+            }
+            unset($slot);
+        }
+
+        return $slots;
     }
 }

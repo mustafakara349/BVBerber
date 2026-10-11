@@ -39,7 +39,7 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
         final File? cropped = await Navigator.push<File?>(
           context,
           MaterialPageRoute(
-            builder: (_) => _PhotoCropScreen(imageFile: file),
+            builder: (_) => PhotoCropScreen(imageFile: file),
           ),
         );
 
@@ -62,6 +62,7 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
   }
 
   void _showSourcePicker() {
+    final isDark = AppTheme.isDark(context);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -69,18 +70,18 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
         return Container(
           margin: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 'Fotoğraf Kaynağı',
                 style: TextStyle(
-                  color: Colors.black87,
+                  color: isDark ? Colors.white : Colors.black87,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -94,8 +95,8 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                   child: OutlinedButton(
                     onPressed: () => _pickImage(ImageSource.gallery),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.black87,
-                      side: BorderSide(color: Colors.grey.shade300),
+                      foregroundColor: isDark ? Colors.white : Colors.black87,
+                      side: BorderSide(color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -114,8 +115,8 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                   child: OutlinedButton(
                     onPressed: () => _pickImage(ImageSource.camera),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.black87,
-                      side: BorderSide(color: Colors.grey.shade300),
+                      foregroundColor: isDark ? Colors.white : Colors.black87,
+                      side: BorderSide(color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -149,11 +150,12 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
     // Fotoğraf seçildiyse farklı UI göster
     final bool hasPhoto = _croppedImage != null;
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -235,10 +237,10 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
               const SizedBox(height: 32),
 
               // Başlık
-              const Text(
+              Text(
                 'Profil Fotoğrafı',
                 style: TextStyle(
-                  color: Colors.black87,
+                  color: isDark ? Colors.white : Colors.black87,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                 ),
@@ -250,8 +252,8 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                 hasPhoto
                     ? 'Fotoğrafı kaydetmek için sağ üstteki ✓\nbutonuna bas.'
                     : 'Profil fotoğrafı ekleyebilirsin.\nBunu daha sonra da yapabilirsin.',
-                style: const TextStyle(
-                  color: Colors.black54,
+                style: TextStyle(
+                  color: isDark ? Colors.white60 : Colors.black54,
                   fontSize: 14,
                   height: 1.5,
                 ),
@@ -302,8 +304,8 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                 child: OutlinedButton(
                   onPressed: _isUploading ? null : _skipAndContinue,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.black54,
-                    side: BorderSide(color: Colors.grey.shade300, width: 1.5),
+                    foregroundColor: isDark ? Colors.white70 : Colors.black54,
+                    side: BorderSide(color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300, width: 1.5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -327,16 +329,16 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
 // ─────────────────────────────────────────────────────────
 // Fotoğrafı Ayarla Ekranı (Crop Screen)
 // ─────────────────────────────────────────────────────────
-class _PhotoCropScreen extends StatefulWidget {
+class PhotoCropScreen extends StatefulWidget {
   final File imageFile;
 
-  const _PhotoCropScreen({required this.imageFile});
+  const PhotoCropScreen({required this.imageFile});
 
   @override
-  State<_PhotoCropScreen> createState() => _PhotoCropScreenState();
+  State<PhotoCropScreen> createState() => PhotoCropScreenState();
 }
 
-class _PhotoCropScreenState extends State<_PhotoCropScreen> {
+class PhotoCropScreenState extends State<PhotoCropScreen> {
   final TransformationController _transformController = TransformationController();
   final GlobalKey _cropKey = GlobalKey();
 
@@ -378,11 +380,12 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final circleSize = screenWidth * 0.7;
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -394,19 +397,19 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context, null),
-                    child: const Text(
+                    child: Text(
                       'İptal',
                       style: TextStyle(
-                        color: Colors.black54,
+                        color: isDark ? Colors.white60 : Colors.black54,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  const Text(
+                  Text(
                     'Fotoğrafı Ayarla',
                     style: TextStyle(
-                      color: Colors.black87,
+                      color: isDark ? Colors.white : Colors.black87,
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
                     ),
@@ -470,10 +473,10 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
               padding: const EdgeInsets.only(bottom: 40),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'Fotoğrafı kaydırın ve yakınlaştırın',
                     style: TextStyle(
-                      color: Colors.black54,
+                      color: isDark ? Colors.white60 : Colors.black54,
                       fontSize: 14,
                     ),
                   ),
@@ -481,18 +484,18 @@ class _PhotoCropScreenState extends State<_PhotoCropScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.touch_app, color: Colors.black38, size: 18),
+                      Icon(Icons.touch_app, color: isDark ? Colors.white38 : Colors.black38, size: 18),
                       const SizedBox(width: 6),
-                      const Text(
+                      Text(
                         'Kaydır',
-                        style: TextStyle(color: Colors.black38, fontSize: 13),
+                        style: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 13),
                       ),
                       const SizedBox(width: 20),
-                      Icon(Icons.pinch, color: Colors.black38, size: 18),
+                      Icon(Icons.pinch, color: isDark ? Colors.white38 : Colors.black38, size: 18),
                       const SizedBox(width: 6),
-                      const Text(
+                      Text(
                         'Yakınlaştır',
-                        style: TextStyle(color: Colors.black38, fontSize: 13),
+                        style: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 13),
                       ),
                     ],
                   ),

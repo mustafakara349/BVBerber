@@ -22,6 +22,29 @@ class AppointmentController extends Controller
         private AppointmentService $appointmentService
     ) {}
 
+    public function availableSlots(Request $request): JsonResponse
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'employee_id' => 'required|exists:employees,id',
+            'duration' => 'nullable|integer|min:0',
+            'branch_id' => 'nullable|integer|exists:branches,id',
+        ]);
+
+        $date = $request->date;
+        $employeeId = (int) $request->employee_id;
+        $branchId = (int) $request->get('branch_id', 1);
+        $duration = (int) $request->get('duration', 30);
+
+        $slots = $this->appointmentService->getAvailableSlots($branchId, $employeeId, $date, $duration);
+
+        return $this->success([
+            'slots' => $slots,
+            'busy_times' => collect($slots)->where('is_busy', true)->pluck('time')->values()->all(),
+            'available_times' => collect($slots)->where('is_available', true)->pluck('time')->values()->all(),
+        ], 'Müsait randevu saatleri başarıyla getirildi.');
+    }
+
     public function index(Request $request): JsonResponse
     {
         $branchId = $request->get('branch_id', 1);

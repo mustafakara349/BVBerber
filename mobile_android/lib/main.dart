@@ -9,6 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile_android/services/notification_service.dart';
 
+import 'package:mobile_android/providers/cafe_provider.dart';
+import 'package:mobile_android/providers/sale_products_provider.dart';
+import 'package:mobile_android/providers/campaign_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -29,6 +33,9 @@ void main() async {
         ChangeNotifierProvider.value(value: authProvider),
         ChangeNotifierProvider(create: (_) => ServiceProvider()),
         ChangeNotifierProvider(create: (_) => AppointmentProvider()),
+        ChangeNotifierProvider(create: (_) => CafeProvider()),
+        ChangeNotifierProvider(create: (_) => SaleProductsProvider()),
+        ChangeNotifierProvider(create: (_) => CampaignProvider()),
       ],
       child: BVBarberApp(isLoggedIn: isLoggedIn),
     ),
@@ -45,6 +52,8 @@ class BVBarberApp extends StatelessWidget {
       title: 'BVBarber',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       initialRoute: isLoggedIn ? AppRoutes.main : AppRoutes.initialRoute,
       onGenerateRoute: AppRoutes.onGenerateRoute,
     );

@@ -38,8 +38,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,8 +52,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Randevularım', style: TextStyle(
-                    color: Colors.black87, fontSize: 26, fontWeight: FontWeight.bold)),
+                  Text('Randevularım', style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87, fontSize: 26, fontWeight: FontWeight.bold)),
                   InkWell(
                     onTap: () async {
                       final result = await Navigator.pushNamed(context, AppRoutes.createAppointment);
@@ -78,8 +80,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
                 indicatorColor: AppTheme.secondaryColor,
                 indicatorWeight: 3,
                 indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: Colors.black87,
-                unselectedLabelColor: Colors.black54,
+                labelColor: isDark ? Colors.white : Colors.black87,
+                unselectedLabelColor: isDark ? Colors.white54 : Colors.black54,
                 labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 unselectedLabelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 dividerColor: Colors.transparent,
@@ -332,15 +334,21 @@ class _AppointmentCard extends StatelessWidget {
         statusColor = Colors.blue; statusText = 'Devam Ediyor'; break;
     }
 
+    final isDark = AppTheme.isDark(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200,
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(isDark ? 0.35 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -357,12 +365,12 @@ class _AppointmentCard extends StatelessWidget {
               child: const Icon(Icons.content_cut, color: AppTheme.secondaryColor, size: 22)),
             const SizedBox(width: 12),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(appointment.serviceName ?? 'Hizmet', style: const TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(appointment.serviceName ?? 'Hizmet', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
               if (appointment.barberName != null && appointment.barberName!.trim().isNotEmpty)
-                Text(appointment.barberName!.trim(), style: const TextStyle(color: Colors.black54, fontSize: 13)),
+                Text(appointment.barberName!.trim(), style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 13)),
             ])),
-            Text('₺${(appointment.price ?? 0.0).toStringAsFixed(0)}', style: const TextStyle(
-              color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('₺${(appointment.price ?? 0.0).toStringAsFixed(0)}', style: TextStyle(
+              color: isDark ? Colors.white : Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
           ]),
           const SizedBox(height: 4),
           Align(alignment: Alignment.centerRight, child: Container(
@@ -377,16 +385,16 @@ class _AppointmentCard extends StatelessWidget {
         const SizedBox(height: 12),
         // Tarih
         Row(children: [
-          const Icon(Icons.access_time, color: Colors.black54, size: 16),
+          Icon(Icons.access_time, color: isDark ? Colors.white60 : Colors.black54, size: 16),
           const SizedBox(width: 8),
-          Text(dateStr, style: const TextStyle(color: Colors.black87, fontSize: 13)),
+          Text(dateStr, style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13)),
         ]),
         const SizedBox(height: 8),
         // Konum
-        const Row(children: [
-          Icon(Icons.near_me, color: Colors.black54, size: 16),
-          SizedBox(width: 8),
-          Text('B&V Coffee Barber – Tarsus/Mersin', style: TextStyle(color: Colors.black87, fontSize: 13)),
+        Row(children: [
+          Icon(Icons.near_me, color: isDark ? Colors.white60 : Colors.black54, size: 16),
+          const SizedBox(width: 8),
+          Text('B&V Coffee Barber – Tarsus/Mersin', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13)),
         ]),
 
         // Takvime Ekle (Yaklaşan randevular için aktifse)
@@ -397,10 +405,10 @@ class _AppointmentCard extends StatelessWidget {
             height: 40,
             child: OutlinedButton.icon(
               onPressed: () => _addToGoogleCalendar(context),
-              icon: const Icon(Icons.calendar_today, size: 16, color: Colors.black),
-              label: const Text('Takvime Ekle', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              icon: Icon(Icons.calendar_today, size: 16, color: isDark ? Colors.white : Colors.black),
+              label: Text('Takvime Ekle', style: TextStyle(color: isDark ? Colors.white : Colors.black, fontWeight: FontWeight.bold)),
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.black26),
+                side: BorderSide(color: isDark ? Colors.white24 : Colors.black26),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
