@@ -41,10 +41,10 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   @override
   void initState() {
     super.initState();
-    // 08:00 - 21:30 arası 30 dakika aralıklarla saatler
-    for (int h = 8; h <= 21; h++) {
+    // Şube çalışma saatleri: 09:00 - 22:00 (Son randevu başlangıcı: 21:30)
+    for (int h = 9; h <= 21; h++) {
       _allTimes.add('${h.toString().padLeft(2, '0')}:00');
-      if (h < 21 || true) _allTimes.add('${h.toString().padLeft(2, '0')}:30');
+      _allTimes.add('${h.toString().padLeft(2, '0')}:30');
     }
 
     _selectedDate = _availableDates.first;
@@ -79,6 +79,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         final first = _services.first;
         _selectedServices.add(first);
         _expandedCategories.add(first.categoryName);
+        _loadBusyTimes();
       }
     } catch (e) {
       debugPrint('Hizmetler yüklenirken hata: $e');
@@ -281,27 +282,37 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+          icon: Icon(Icons.arrow_back_ios_new, color: isDark ? Colors.white : Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'Randevu Oluştur',
           style: TextStyle(
-            color: Colors.black87,
+            color: isDark ? Colors.white : Colors.black87,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
       bottomNavigationBar: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF161618) : Colors.white,
+          border: Border(
+            top: BorderSide(
+              color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200,
+              width: 1,
+            ),
+          ),
+        ),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -312,8 +323,8 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.secondaryColor,
                   foregroundColor: Colors.black,
-                  disabledBackgroundColor: Colors.grey.shade300,
-                  disabledForegroundColor: Colors.grey.shade500,
+                  disabledBackgroundColor: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300,
+                  disabledForegroundColor: isDark ? Colors.grey.shade600 : Colors.grey.shade500,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   elevation: 0,
@@ -387,7 +398,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                             Text(
                               'Popüler & Öne Çıkanlar',
                               style: TextStyle(
-                                color: Colors.grey.shade700,
+                                color: isDark ? Colors.white70 : Colors.grey.shade700,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -409,16 +420,20 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                         return Container(
                           margin: const EdgeInsets.only(bottom: 12),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.grey.shade200),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.02),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                            border: Border.all(
+                              color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200,
+                            ),
+                            boxShadow: isDark
+                                ? []
+                                : [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.02),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
                           ),
                           child: Column(
                             children: [
@@ -440,8 +455,8 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                                       Expanded(
                                         child: Text(
                                           displayName,
-                                          style: const TextStyle(
-                                            color: Colors.black87,
+                                          style: TextStyle(
+                                            color: isDark ? Colors.white : Colors.black87,
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -449,7 +464,10 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                                       ),
                                       Text(
                                         '${categoryServices.length} Hizmet',
-                                        style: const TextStyle(color: Colors.black45, fontSize: 12),
+                                        style: TextStyle(
+                                          color: isDark ? Colors.white54 : Colors.black45,
+                                          fontSize: 12,
+                                        ),
                                       ),
                                       const SizedBox(width: 8),
                                       Icon(
@@ -462,7 +480,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                                 ),
                               ),
                               if (isExpanded) ...[
-                                const Divider(height: 1, indent: 16, endIndent: 16),
+                                Divider(height: 1, indent: 16, endIndent: 16, color: isDark ? const Color(0xFF2C2C30) : null),
                                 const SizedBox(height: 10),
                                 ...categoryServices.map((service) => _buildServiceCard(service)),
                                 const SizedBox(height: 6),
@@ -486,16 +504,16 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                       Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.grey,
+                          color: isDark ? Colors.red.shade400.withOpacity(0.7) : Colors.grey,
                         ),
                       ),
                       const SizedBox(width: 6),
-                      const Text(
+                      Text(
                         'DOLU',
                         style: TextStyle(
-                          color: Colors.black45,
+                          color: isDark ? Colors.white38 : Colors.black45,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -528,10 +546,11 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   }
 
   Widget _buildSectionHeader(String title) {
+    final isDark = AppTheme.isDark(context);
     return Text(
       title,
-      style: const TextStyle(
-        color: Colors.black87,
+      style: TextStyle(
+        color: isDark ? Colors.white : Colors.black87,
         fontSize: 17,
         fontWeight: FontWeight.bold,
         letterSpacing: -0.3,
@@ -540,6 +559,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   }
 
   Widget _buildBarberCard(BarberModel barber) {
+    final isDark = AppTheme.isDark(context);
     final isSelected = _selectedBarber?.id == barber.id;
     final initials = barber.initials;
 
@@ -553,10 +573,12 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.secondaryColor.withOpacity(0.12) : Colors.white,
+          color: isSelected
+              ? AppTheme.secondaryColor.withOpacity(isDark ? 0.2 : 0.12)
+              : (isDark ? const Color(0xFF1C1C1E) : Colors.white),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade200,
+            color: isSelected ? AppTheme.secondaryColor : (isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -568,9 +590,13 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
               height: 48,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? AppTheme.secondaryColor.withOpacity(0.2) : Colors.grey.shade100,
+                color: isSelected
+                    ? AppTheme.secondaryColor.withOpacity(0.2)
+                    : (isDark ? const Color(0xFF2A2A2E) : Colors.grey.shade100),
                 border: Border.all(
-                  color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade300,
+                  color: isSelected
+                      ? AppTheme.secondaryColor
+                      : (isDark ? const Color(0xFF3A3A40) : Colors.grey.shade300),
                   width: 1.5,
                 ),
               ),
@@ -583,7 +609,9 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                           child: Text(
                             initials,
                             style: TextStyle(
-                              color: isSelected ? AppTheme.secondaryColor : Colors.black87,
+                              color: isSelected
+                                  ? AppTheme.secondaryColor
+                                  : (isDark ? Colors.white : Colors.black87),
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
                             ),
@@ -595,7 +623,9 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                       child: Text(
                         initials,
                         style: TextStyle(
-                          color: isSelected ? AppTheme.secondaryColor : Colors.black87,
+                          color: isSelected
+                              ? AppTheme.secondaryColor
+                              : (isDark ? Colors.white : Colors.black87),
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -608,7 +638,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: Colors.black87,
+                color: isDark ? Colors.white : Colors.black87,
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
               ),
@@ -620,7 +650,11 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                 const SizedBox(width: 2),
                 Text(
                   barber.rating.toStringAsFixed(1),
-                  style: const TextStyle(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: isDark ? Colors.white60 : Colors.black54,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -631,6 +665,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   }
 
   Widget _buildDateCard(DateTime date) {
+    final isDark = AppTheme.isDark(context);
     final isSelected = _selectedDate != null &&
         _selectedDate!.day == date.day &&
         _selectedDate!.month == date.month;
@@ -649,19 +684,25 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         width: 56,
         margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.secondaryColor : Colors.white,
+          color: isSelected
+              ? AppTheme.secondaryColor
+              : (isDark ? const Color(0xFF1C1C1E) : Colors.white),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade200,
+            color: isSelected
+                ? AppTheme.secondaryColor
+                : (isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200),
             width: isSelected ? 1.5 : 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.02),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.02),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -669,7 +710,9 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
             Text(
               DateFormat('E', 'tr_TR').format(date).toUpperCase(),
               style: TextStyle(
-                color: isSelected ? Colors.black87 : Colors.black45,
+                color: isSelected
+                    ? Colors.black87
+                    : (isDark ? Colors.white54 : Colors.black45),
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
               ),
@@ -678,7 +721,9 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
             Text(
               '${date.day}',
               style: TextStyle(
-                color: isSelected ? Colors.black : Colors.black87,
+                color: isSelected
+                    ? Colors.black
+                    : (isDark ? Colors.white : Colors.black87),
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -687,7 +732,9 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
             Text(
               DateFormat('MMM', 'tr_TR').format(date),
               style: TextStyle(
-                color: isSelected ? Colors.black87 : Colors.black45,
+                color: isSelected
+                    ? Colors.black87
+                    : (isDark ? Colors.white54 : Colors.black45),
                 fontSize: 10,
               ),
             ),
@@ -698,6 +745,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   }
 
   Widget _buildServiceCard(ServiceModel service) {
+    final isDark = AppTheme.isDark(context);
     final isSelected = _selectedServices.contains(service);
 
     return GestureDetector(
@@ -706,10 +754,14 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
         margin: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.secondaryColor.withOpacity(0.08) : const Color(0xFFF9FAFB),
+          color: isSelected
+              ? AppTheme.secondaryColor.withOpacity(isDark ? 0.2 : 0.08)
+              : (isDark ? const Color(0xFF161618) : const Color(0xFFF9FAFB)),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade200,
+            color: isSelected
+                ? AppTheme.secondaryColor
+                : (isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200),
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -726,15 +778,15 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                       errorBuilder: (_, __, ___) => Container(
                         width: 48,
                         height: 48,
-                        color: Colors.grey.shade100,
-                        child: const Icon(Icons.content_cut, color: Colors.black26, size: 22),
+                        color: isDark ? const Color(0xFF2A2A2E) : Colors.grey.shade100,
+                        child: Icon(Icons.content_cut, color: isDark ? Colors.white30 : Colors.black26, size: 22),
                       ),
                     )
                   : Container(
                       width: 48,
                       height: 48,
-                      color: Colors.grey.shade100,
-                      child: const Icon(Icons.content_cut, color: Colors.black26, size: 22),
+                      color: isDark ? const Color(0xFF2A2A2E) : Colors.grey.shade100,
+                      child: Icon(Icons.content_cut, color: isDark ? Colors.white30 : Colors.black26, size: 22),
                     ),
             ),
             const SizedBox(width: 12),
@@ -745,7 +797,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                   Text(
                     service.name,
                     style: TextStyle(
-                      color: isSelected ? Colors.black87 : Colors.black87,
+                      color: isDark ? Colors.white : Colors.black87,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -753,18 +805,18 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.access_time_rounded, color: Colors.black38, size: 13),
+                      Icon(Icons.access_time_rounded, color: isDark ? Colors.white38 : Colors.black38, size: 13),
                       const SizedBox(width: 4),
                       Text(
                         '${service.durationMinutes} dk',
-                        style: const TextStyle(color: Colors.black54, fontSize: 12),
+                        style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 12),
                       ),
                       const SizedBox(width: 8),
-                      Text('•', style: TextStyle(color: Colors.grey.shade400)),
+                      Text('•', style: TextStyle(color: isDark ? Colors.white24 : Colors.grey.shade400)),
                       const SizedBox(width: 8),
                       Text(
                         _categoryDisplayName(service.categoryName),
-                        style: const TextStyle(color: Colors.black54, fontSize: 12),
+                        style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 12),
                       ),
                     ],
                   ),
@@ -777,8 +829,8 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                 if (service.hasDiscount) ...[
                   Text(
                     '₺${service.price.toStringAsFixed(0)}',
-                    style: const TextStyle(
-                      color: Colors.black38,
+                    style: TextStyle(
+                      color: isDark ? Colors.white38 : Colors.black38,
                       fontSize: 11,
                       decoration: TextDecoration.lineThrough,
                     ),
@@ -795,7 +847,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                   Text(
                     '₺${service.price.toStringAsFixed(0)}',
                     style: TextStyle(
-                      color: isSelected ? AppTheme.secondaryColor : Colors.black87,
+                      color: isSelected ? AppTheme.secondaryColor : (isDark ? Colors.white : Colors.black87),
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -806,7 +858,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
             const SizedBox(width: 10),
             Icon(
               isSelected ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
-              color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade300,
+              color: isSelected ? AppTheme.secondaryColor : (isDark ? Colors.white24 : Colors.grey.shade300),
               size: 22,
             ),
           ],
@@ -1021,6 +1073,7 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
     final dateStr = DateFormat('d MMMM, EEEE', 'tr_TR').format(widget.selectedDate);
     final serviceNames = widget.selectedServices.map((s) => s.name).join(' + ');
     final finalPrice = (widget.totalPrice - _validatedDiscountAmount).clamp(0.0, double.infinity);
@@ -1029,9 +1082,9 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
     return Container(
       constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.88),
       padding: const EdgeInsets.fromLTRB(22, 12, 22, 24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF18181B) : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1041,7 +1094,7 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
             width: 44,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: isDark ? const Color(0xFF333338) : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -1050,10 +1103,10 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
           // Header with edit button
           Row(
             children: [
-              const Text(
+              Text(
                 'Randevu Özeti',
                 style: TextStyle(
-                  color: Colors.black87,
+                  color: isDark ? Colors.white : Colors.black87,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1077,7 +1130,7 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
             ],
           ),
           const SizedBox(height: 14),
-          const Divider(height: 1),
+          Divider(height: 1, color: isDark ? const Color(0xFF27272A) : null),
 
           Expanded(
             child: SingleChildScrollView(
@@ -1085,16 +1138,16 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _detailRow(Icons.calendar_today_rounded, 'Tarih', dateStr),
-                  const Divider(height: 1, indent: 36),
-                  _detailRow(Icons.access_time_filled_rounded, 'Saat', widget.selectedTime),
-                  const Divider(height: 1, indent: 36),
-                  _detailRow(Icons.person_rounded, 'Personel', widget.selectedBarber.fullName),
-                  const Divider(height: 1, indent: 36),
-                  _detailRow(Icons.content_cut_rounded, 'Hizmet', serviceNames),
-                  const Divider(height: 1, indent: 36),
-                  _detailRow(Icons.timer_rounded, 'Toplam Süre', '${widget.totalDuration} dk'),
-                  const Divider(height: 1, indent: 36),
+                  _detailRow(Icons.calendar_today_rounded, 'Tarih', dateStr, isDark),
+                  Divider(height: 1, indent: 36, color: isDark ? const Color(0xFF27272A) : null),
+                  _detailRow(Icons.access_time_filled_rounded, 'Saat', widget.selectedTime, isDark),
+                  Divider(height: 1, indent: 36, color: isDark ? const Color(0xFF27272A) : null),
+                  _detailRow(Icons.person_rounded, 'Personel', widget.selectedBarber.fullName, isDark),
+                  Divider(height: 1, indent: 36, color: isDark ? const Color(0xFF27272A) : null),
+                  _detailRow(Icons.content_cut_rounded, 'Hizmet', serviceNames, isDark),
+                  Divider(height: 1, indent: 36, color: isDark ? const Color(0xFF27272A) : null),
+                  _detailRow(Icons.timer_rounded, 'Toplam Süre', '${widget.totalDuration} dk', isDark),
+                  Divider(height: 1, indent: 36, color: isDark ? const Color(0xFF27272A) : null),
 
                   // Toplam Ücret
                   Padding(
@@ -1103,13 +1156,13 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                       children: [
                         const Icon(Icons.payments_rounded, color: AppTheme.secondaryColor, size: 22),
                         const SizedBox(width: 14),
-                        const Text('Toplam Ücret', style: TextStyle(color: Colors.black54, fontSize: 14)),
+                        Text('Toplam Ücret', style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 14)),
                         const Spacer(),
                         if (_isCouponValid == true && _validatedDiscountAmount > 0) ...[
                           Text(
                             '₺${widget.totalPrice.toStringAsFixed(0)}',
-                            style: const TextStyle(
-                              color: Colors.black38,
+                            style: TextStyle(
+                              color: isDark ? Colors.white38 : Colors.black38,
                               fontSize: 14,
                               decoration: TextDecoration.lineThrough,
                             ),
@@ -1139,14 +1192,14 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
 
                   // Hediye Rozeti
                   if (_rewardProductName != null) ...[
-                    const Divider(height: 1, indent: 36),
+                    Divider(height: 1, indent: 36, color: isDark ? const Color(0xFF27272A) : null),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Row(
                         children: [
                           const Icon(Icons.card_giftcard_rounded, color: Colors.pinkAccent, size: 22),
                           const SizedBox(width: 14),
-                          const Text('Kampanya Hediyesi', style: TextStyle(color: Colors.black54, fontSize: 14)),
+                          Text('Kampanya Hediyesi', style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 14)),
                           const Spacer(),
                           Text(
                             _rewardProductName!,
@@ -1157,13 +1210,13 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                     ),
                   ],
 
-                  const Divider(height: 1),
+                  Divider(height: 1, color: isDark ? const Color(0xFF27272A) : null),
                   const SizedBox(height: 16),
 
                   // İndirim Seçimi Segmenti
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
+                      color: isDark ? const Color(0xFF222226) : Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: const EdgeInsets.all(4),
@@ -1185,9 +1238,11 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               decoration: BoxDecoration(
-                                color: _discountMode == BookingDiscountMode.campaign ? Colors.white : Colors.transparent,
+                                color: _discountMode == BookingDiscountMode.campaign
+                                    ? (isDark ? const Color(0xFF2C2C32) : Colors.white)
+                                    : Colors.transparent,
                                 borderRadius: BorderRadius.circular(10),
-                                boxShadow: _discountMode == BookingDiscountMode.campaign
+                                boxShadow: _discountMode == BookingDiscountMode.campaign && !isDark
                                     ? [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 4, offset: const Offset(0, 2))]
                                     : null,
                               ),
@@ -1195,7 +1250,9 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                                 child: Text(
                                   'Kampanya Kullan',
                                   style: TextStyle(
-                                    color: _discountMode == BookingDiscountMode.campaign ? Colors.black87 : Colors.black54,
+                                    color: _discountMode == BookingDiscountMode.campaign
+                                        ? (isDark ? Colors.white : Colors.black87)
+                                        : (isDark ? Colors.white54 : Colors.black54),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                   ),
@@ -1220,9 +1277,11 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               decoration: BoxDecoration(
-                                color: _discountMode == BookingDiscountMode.coupon ? Colors.white : Colors.transparent,
+                                color: _discountMode == BookingDiscountMode.coupon
+                                    ? (isDark ? const Color(0xFF2C2C32) : Colors.white)
+                                    : Colors.transparent,
                                 borderRadius: BorderRadius.circular(10),
-                                boxShadow: _discountMode == BookingDiscountMode.coupon
+                                boxShadow: _discountMode == BookingDiscountMode.coupon && !isDark
                                     ? [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 4, offset: const Offset(0, 2))]
                                     : null,
                               ),
@@ -1230,7 +1289,9 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                                 child: Text(
                                   'Kupon Kodu Gir',
                                   style: TextStyle(
-                                    color: _discountMode == BookingDiscountMode.coupon ? Colors.black87 : Colors.black54,
+                                    color: _discountMode == BookingDiscountMode.coupon
+                                        ? (isDark ? Colors.white : Colors.black87)
+                                        : (isDark ? Colors.white54 : Colors.black54),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                   ),
@@ -1247,11 +1308,11 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                   // KAMPANYA SEÇİMİ
                   if (_discountMode == BookingDiscountMode.campaign) ...[
                     if (campaignProvider.campaigns.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Text(
                           'Size özel aktif bir kampanya bulunmuyor.',
-                          style: TextStyle(color: Colors.black45, fontSize: 13),
+                          style: TextStyle(color: isDark ? Colors.white54 : Colors.black45, fontSize: 13),
                         ),
                       )
                     else
@@ -1284,10 +1345,12 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                                 margin: const EdgeInsets.only(right: 12),
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: isSel ? AppTheme.secondaryColor.withOpacity(0.15) : const Color(0xFFF9FAFB),
+                                  color: isSel
+                                      ? AppTheme.secondaryColor.withOpacity(isDark ? 0.2 : 0.15)
+                                      : (isDark ? const Color(0xFF222226) : const Color(0xFFF9FAFB)),
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                    color: isSel ? AppTheme.secondaryColor : Colors.grey.shade200,
+                                    color: isSel ? AppTheme.secondaryColor : (isDark ? const Color(0xFF333338) : Colors.grey.shade200),
                                     width: isSel ? 1.5 : 1,
                                   ),
                                 ),
@@ -1302,7 +1365,7 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              color: Colors.black87,
+                                              color: isDark ? Colors.white : Colors.black87,
                                               fontSize: 13,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -1317,13 +1380,13 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                                       campaign.description,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(color: Colors.black54, fontSize: 11),
+                                      style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 11),
                                     ),
                                     const Spacer(),
                                     Text(
                                       isSel ? 'Seçildi (Kaldırmak için dokunun)' : 'Seçmek için dokunun',
                                       style: TextStyle(
-                                        color: isSel ? AppTheme.secondaryColor : Colors.black45,
+                                        color: isSel ? AppTheme.secondaryColor : (isDark ? Colors.white38 : Colors.black45),
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -1343,12 +1406,13 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
                           child: TextField(
                             controller: _couponController,
                             textCapitalization: TextCapitalization.characters,
+                            style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                             decoration: InputDecoration(
                               hintText: 'Kupon Kodu',
-                              hintStyle: const TextStyle(color: Colors.black38),
-                              prefixIcon: const Icon(Icons.confirmation_number_outlined, color: Colors.black45, size: 20),
+                              hintStyle: TextStyle(color: isDark ? Colors.white38 : Colors.black38),
+                              prefixIcon: Icon(Icons.confirmation_number_outlined, color: isDark ? Colors.white54 : Colors.black45, size: 20),
                               filled: true,
-                              fillColor: Colors.grey.shade100,
+                              fillColor: isDark ? const Color(0xFF222226) : Colors.grey.shade100,
                               contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                             ),
@@ -1453,7 +1517,7 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
     );
   }
 
-  Widget _detailRow(IconData icon, String label, String value) {
+  Widget _detailRow(IconData icon, String label, String value, bool isDark) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -1461,15 +1525,15 @@ class _BookingSummarySheetState extends State<_BookingSummarySheet> {
         children: [
           Icon(icon, color: AppTheme.secondaryColor, size: 20),
           const SizedBox(width: 14),
-          Text(label, style: const TextStyle(color: Colors.black54, fontSize: 14)),
+          Text(label, style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 14)),
           const Spacer(),
           Expanded(
             flex: 2,
             child: Text(
               value,
               textAlign: TextAlign.end,
-              style: const TextStyle(
-                color: Colors.black87,
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black87,
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),

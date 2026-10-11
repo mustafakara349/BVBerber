@@ -55,19 +55,21 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
       return matchesCategory && matchesSearch;
     }).toList();
 
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+          icon: Icon(Icons.arrow_back_ios_new, color: isDark ? Colors.white : Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Berber & Bakım',
           style: TextStyle(
-            color: Colors.black87,
+            color: isDark ? Colors.white : Colors.black87,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
@@ -85,7 +87,7 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
               height: 44,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F4F6),
+                color: isDark ? const Color(0xFF1E1E22) : const Color(0xFFF3F4F6),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
@@ -100,9 +102,11 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: _selectedGenderIndex == 0 ? Colors.white : Colors.transparent,
+                          color: _selectedGenderIndex == 0
+                              ? (isDark ? const Color(0xFF2C2C32) : Colors.white)
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: _selectedGenderIndex == 0
+                          boxShadow: _selectedGenderIndex == 0 && !isDark
                               ? [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.06),
@@ -116,7 +120,9 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                           child: Text(
                             'Erkek',
                             style: TextStyle(
-                              color: _selectedGenderIndex == 0 ? Colors.black87 : Colors.black45,
+                              color: _selectedGenderIndex == 0
+                                  ? (isDark ? Colors.white : Colors.black87)
+                                  : (isDark ? Colors.white54 : Colors.black45),
                               fontWeight: _selectedGenderIndex == 0 ? FontWeight.bold : FontWeight.w500,
                               fontSize: 14,
                             ),
@@ -135,9 +141,11 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: _selectedGenderIndex == 1 ? Colors.white : Colors.transparent,
+                          color: _selectedGenderIndex == 1
+                              ? (isDark ? const Color(0xFF2C2C32) : Colors.white)
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: _selectedGenderIndex == 1
+                          boxShadow: _selectedGenderIndex == 1 && !isDark
                               ? [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.06),
@@ -151,7 +159,9 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                           child: Text(
                             'Kadın',
                             style: TextStyle(
-                              color: _selectedGenderIndex == 1 ? Colors.black87 : Colors.black45,
+                              color: _selectedGenderIndex == 1
+                                  ? (isDark ? Colors.white : Colors.black87)
+                                  : (isDark ? Colors.white54 : Colors.black45),
                               fontWeight: _selectedGenderIndex == 1 ? FontWeight.bold : FontWeight.w500,
                               fontSize: 14,
                             ),
@@ -172,23 +182,24 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F4F6),
+                color: isDark ? const Color(0xFF1E1E22) : const Color(0xFFF3F4F6),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.search, color: Colors.black45, size: 22),
+                  Icon(Icons.search, color: isDark ? Colors.white38 : Colors.black45, size: 22),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _searchController,
-                      decoration: const InputDecoration(
+                      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                      decoration: InputDecoration(
                         hintText: 'Hizmetlerde ara...',
-                        hintStyle: TextStyle(color: Colors.black38, fontSize: 14),
+                        hintStyle: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 14),
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onChanged: (_) => setState(() {}),
                     ),
@@ -199,7 +210,7 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                         _searchController.clear();
                         setState(() {});
                       },
-                      child: const Icon(Icons.cancel, color: Colors.black38, size: 20),
+                      child: Icon(Icons.cancel, color: isDark ? Colors.white38 : Colors.black38, size: 20),
                     ),
                 ],
               ),
@@ -228,16 +239,22 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppTheme.secondaryColor : Colors.white,
+                        color: isSelected
+                            ? AppTheme.secondaryColor
+                            : (isDark ? const Color(0xFF1E1E22) : Colors.white),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: isSelected ? AppTheme.secondaryColor : Colors.grey.shade300,
+                          color: isSelected
+                              ? AppTheme.secondaryColor
+                              : (isDark ? const Color(0xFF333338) : Colors.grey.shade300),
                         ),
                       ),
                       child: Text(
                         cat,
                         style: TextStyle(
-                          color: isSelected ? Colors.black87 : Colors.black54,
+                          color: isSelected
+                              ? Colors.black87
+                              : (isDark ? Colors.white70 : Colors.black54),
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                           fontSize: 13,
                         ),
@@ -255,15 +272,15 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
             child: serviceProvider.isLoading
                 ? const Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor))
                 : filteredServices.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.content_cut, size: 64, color: Colors.black26),
-                            SizedBox(height: 16),
+                            Icon(Icons.content_cut, size: 64, color: isDark ? Colors.white24 : Colors.black26),
+                            const SizedBox(height: 16),
                             Text(
                               'Hizmet bulunamadı.',
-                              style: TextStyle(color: Colors.black54, fontSize: 15),
+                              style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 15),
                             ),
                           ],
                         ),
@@ -289,17 +306,25 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
   }
 
   Widget _buildServiceGridCard(ServiceModel service) {
+    final isDark = AppTheme.isDark(context);
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(
+          color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200,
+          width: 1,
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,14 +337,14 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                 child: Container(
                   height: 105,
                   width: double.infinity,
-                  color: Colors.grey.shade100,
+                  color: isDark ? const Color(0xFF26262B) : Colors.grey.shade100,
                   child: service.imageUrl != null && service.imageUrl!.isNotEmpty
                       ? Image.network(
                           service.imageUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const Icon(Icons.content_cut, color: Colors.black26, size: 36),
+                          errorBuilder: (_, __, ___) => Icon(Icons.content_cut, color: isDark ? Colors.white30 : Colors.black26, size: 36),
                         )
-                      : const Icon(Icons.content_cut, color: Colors.black26, size: 36),
+                      : Icon(Icons.content_cut, color: isDark ? Colors.white30 : Colors.black26, size: 36),
                 ),
               ),
               // Süre Rozeti
@@ -356,8 +381,8 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
               children: [
                 Text(
                   service.name,
-                  style: const TextStyle(
-                    color: Colors.black87,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -367,7 +392,7 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                 const SizedBox(height: 4),
                 Text(
                   service.categoryName,
-                  style: const TextStyle(color: Colors.black45, fontSize: 11),
+                  style: TextStyle(color: isDark ? Colors.white54 : Colors.black45, fontSize: 11),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -389,7 +414,7 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                       },
                       child: Container(
                         padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppTheme.secondaryColor,
                           shape: BoxShape.circle,
                         ),

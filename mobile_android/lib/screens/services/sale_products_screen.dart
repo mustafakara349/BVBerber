@@ -57,20 +57,21 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final productsProvider = Provider.of<SaleProductsProvider>(context);
+    final isDark = AppTheme.isDark(context);
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+          icon: Icon(Icons.arrow_back_ios_new, color: isDark ? Colors.white : Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Ürünlerimiz',
           style: TextStyle(
-            color: Colors.black87,
+            color: isDark ? Colors.white : Colors.black87,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
@@ -85,7 +86,7 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
             child: Text(
               '${productsProvider.filteredProducts.length} ürün listeleniyor',
-              style: const TextStyle(color: Colors.black54, fontSize: 13),
+              style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 13),
             ),
           ),
 
@@ -95,23 +96,24 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F4F6),
+                color: isDark ? const Color(0xFF1E1E22) : const Color(0xFFF3F4F6),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.search, color: Colors.black45, size: 22),
+                  Icon(Icons.search, color: isDark ? Colors.white38 : Colors.black45, size: 22),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _searchController,
-                      decoration: const InputDecoration(
+                      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                      decoration: InputDecoration(
                         hintText: 'Ürün ara...',
-                        hintStyle: TextStyle(color: Colors.black38, fontSize: 14),
+                        hintStyle: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 14),
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onChanged: (val) {
                         productsProvider.setSearchText(val);
@@ -124,7 +126,7 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
                         _searchController.clear();
                         productsProvider.setSearchText('');
                       },
-                      child: const Icon(Icons.cancel, color: Colors.black38, size: 20),
+                      child: Icon(Icons.cancel, color: isDark ? Colors.white38 : Colors.black38, size: 20),
                     ),
                 ],
               ),
@@ -142,10 +144,14 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: productsProvider.activeFilterCount > 0 ? AppTheme.secondaryColor.withOpacity(0.2) : Colors.white,
+                      color: productsProvider.activeFilterCount > 0
+                          ? AppTheme.secondaryColor.withOpacity(isDark ? 0.3 : 0.2)
+                          : (isDark ? const Color(0xFF1E1E22) : Colors.white),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: productsProvider.activeFilterCount > 0 ? AppTheme.secondaryColor : Colors.grey.shade300,
+                        color: productsProvider.activeFilterCount > 0
+                            ? AppTheme.secondaryColor
+                            : (isDark ? const Color(0xFF333338) : Colors.grey.shade300),
                       ),
                     ),
                     child: Row(
@@ -153,7 +159,9 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
                         Icon(
                           Icons.tune,
                           size: 16,
-                          color: productsProvider.activeFilterCount > 0 ? Colors.black87 : Colors.black54,
+                          color: productsProvider.activeFilterCount > 0
+                              ? (isDark ? AppTheme.secondaryColor : Colors.black87)
+                              : (isDark ? Colors.white70 : Colors.black54),
                         ),
                         const SizedBox(width: 6),
                         Text(
@@ -161,7 +169,9 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: productsProvider.activeFilterCount > 0 ? Colors.black87 : Colors.black54,
+                            color: productsProvider.activeFilterCount > 0
+                                ? (isDark ? AppTheme.secondaryColor : Colors.black87)
+                                : (isDark ? Colors.white70 : Colors.black54),
                           ),
                         ),
                       ],
@@ -189,15 +199,15 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
             child: productsProvider.isLoading
                 ? const Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor))
                 : productsProvider.filteredProducts.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.inventory_2_outlined, size: 64, color: Colors.black26),
-                            SizedBox(height: 16),
+                            Icon(Icons.inventory_2_outlined, size: 64, color: isDark ? Colors.white24 : Colors.black26),
+                            const SizedBox(height: 16),
                             Text(
                               'Ürün bulunamadı.',
-                              style: TextStyle(color: Colors.black54, fontSize: 15),
+                              style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 15),
                             ),
                           ],
                         ),
@@ -217,6 +227,8 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
   }
 
   Widget _buildSaleProductCard(SaleProductModel product) {
+    final isDark = AppTheme.isDark(context);
+
     Color statusColor;
     switch (product.stockStatus) {
       case StockStatus.ok:
@@ -236,15 +248,21 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
           borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          border: Border.all(
+            color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200,
+            width: 1,
+          ),
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
         ),
         child: Row(
           children: [
@@ -254,14 +272,14 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
               child: Container(
                 width: 75,
                 height: 75,
-                color: Colors.grey.shade100,
+                color: isDark ? const Color(0xFF26262B) : Colors.grey.shade100,
                 child: product.imageUrl.isNotEmpty
                     ? Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Icon(Icons.shopping_bag, color: Colors.black26, size: 30),
+                        errorBuilder: (_, __, ___) => Icon(Icons.shopping_bag, color: isDark ? Colors.white30 : Colors.black26, size: 30),
                       )
-                    : const Icon(Icons.shopping_bag, color: Colors.black26, size: 30),
+                    : Icon(Icons.shopping_bag, color: isDark ? Colors.white30 : Colors.black26, size: 30),
               ),
             ),
             const SizedBox(width: 14),
@@ -276,8 +294,8 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
                       Expanded(
                         child: Text(
                           product.name,
-                          style: const TextStyle(
-                            color: Colors.black87,
+                          style: TextStyle(
+                            color: isDark ? Colors.white : Colors.black87,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -301,7 +319,7 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
                   const SizedBox(height: 4),
                   Text(
                     product.categoryName ?? 'Diğer',
-                    style: const TextStyle(color: Colors.black45, fontSize: 12),
+                    style: TextStyle(color: isDark ? Colors.white54 : Colors.black45, fontSize: 12),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -316,7 +334,7 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
               ),
             ),
 
-            const Icon(Icons.chevron_right, color: Colors.black26),
+            Icon(Icons.chevron_right, color: isDark ? Colors.white30 : Colors.black26),
           ],
         ),
       ),
@@ -332,6 +350,8 @@ class _SaleProductDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     Color statusColor;
     switch (product.stockStatus) {
       case StockStatus.ok:
@@ -347,9 +367,9 @@ class _SaleProductDetailSheet extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF18181B) : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -360,7 +380,7 @@ class _SaleProductDetailSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: isDark ? const Color(0xFF333338) : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -379,8 +399,8 @@ class _SaleProductDetailSheet extends StatelessWidget {
                     product.imageUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => Container(
-                      color: Colors.grey.shade100,
-                      child: const Icon(Icons.shopping_bag, color: Colors.black26, size: 60),
+                      color: isDark ? const Color(0xFF26262B) : Colors.grey.shade100,
+                      child: Icon(Icons.shopping_bag, color: isDark ? Colors.white30 : Colors.black26, size: 60),
                     ),
                   ),
                 ),
@@ -395,8 +415,8 @@ class _SaleProductDetailSheet extends StatelessWidget {
               Expanded(
                 child: Text(
                   product.name,
-                  style: const TextStyle(
-                    color: Colors.black87,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
@@ -417,7 +437,7 @@ class _SaleProductDetailSheet extends StatelessWidget {
             children: [
               Text(
                 product.categoryName ?? 'Diğer',
-                style: const TextStyle(color: Colors.black45, fontSize: 13),
+                style: TextStyle(color: isDark ? Colors.white54 : Colors.black45, fontSize: 13),
               ),
               const SizedBox(width: 10),
               Container(
@@ -436,14 +456,14 @@ class _SaleProductDetailSheet extends StatelessWidget {
           const SizedBox(height: 16),
 
           if (product.description.isNotEmpty) ...[
-            const Text(
+            Text(
               'Ürün Açıklaması',
-              style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 14, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
             Text(
               product.description,
-              style: const TextStyle(color: Colors.black54, fontSize: 13, height: 1.4),
+              style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13, height: 1.4),
             ),
             const SizedBox(height: 16),
           ],
@@ -452,9 +472,9 @@ class _SaleProductDetailSheet extends StatelessWidget {
             Row(
               children: [
                 if (product.sku.isNotEmpty)
-                  Text('Kod: ${product.sku}   ', style: const TextStyle(color: Colors.black38, fontSize: 12)),
+                  Text('Kod: ${product.sku}   ', style: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 12)),
                 if (product.barcode.isNotEmpty)
-                  Text('Barkod: ${product.barcode}', style: const TextStyle(color: Colors.black38, fontSize: 12)),
+                  Text('Barkod: ${product.barcode}', style: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 12)),
               ],
             ),
             const SizedBox(height: 20),
@@ -488,12 +508,13 @@ class _SaleFilterSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<SaleProductsProvider>(context);
+    final isDark = AppTheme.isDark(context);
 
     return Container(
       padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF18181B) : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -504,21 +525,21 @@ class _SaleFilterSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: isDark ? const Color(0xFF333338) : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Filtrele & Sırala',
-            style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
 
           // Stok durumu filtresi
           SwitchListTile(
-            title: const Text('Sadece Stoktakiler', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            title: Text('Sadece Stoktakiler', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 14, fontWeight: FontWeight.w600)),
             value: provider.showInStockOnly,
             activeColor: AppTheme.secondaryColor,
             contentPadding: EdgeInsets.zero,
@@ -529,9 +550,9 @@ class _SaleFilterSheet extends StatelessWidget {
           const SizedBox(height: 12),
 
           // Kategoriler
-          const Text(
+          Text(
             'Kategoriler',
-            style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.w600),
+            style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
           Wrap(
@@ -542,10 +563,13 @@ class _SaleFilterSheet extends StatelessWidget {
               return FilterChip(
                 label: Text(cat.label),
                 selected: isSelected,
-                selectedColor: AppTheme.secondaryColor.withOpacity(0.2),
-                checkmarkColor: Colors.black87,
+                selectedColor: AppTheme.secondaryColor.withOpacity(isDark ? 0.3 : 0.2),
+                backgroundColor: isDark ? const Color(0xFF222226) : null,
+                checkmarkColor: isDark ? AppTheme.secondaryColor : Colors.black87,
                 labelStyle: TextStyle(
-                  color: isSelected ? Colors.black87 : Colors.black54,
+                  color: isSelected
+                      ? (isDark ? AppTheme.secondaryColor : Colors.black87)
+                      : (isDark ? Colors.white70 : Colors.black54),
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
                 onSelected: (_) {
@@ -557,9 +581,9 @@ class _SaleFilterSheet extends StatelessWidget {
           const SizedBox(height: 20),
 
           // Sıralama
-          const Text(
+          Text(
             'Sıralama',
-            style: TextStyle(color: Colors.black87, fontSize: 14, fontWeight: FontWeight.w600),
+            style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
           Wrap(
@@ -568,16 +592,37 @@ class _SaleFilterSheet extends StatelessWidget {
               ChoiceChip(
                 label: const Text('İsim (A-Z)'),
                 selected: provider.sortOption == ProductSortOption.nameAsc,
+                selectedColor: AppTheme.secondaryColor.withOpacity(isDark ? 0.3 : 0.2),
+                backgroundColor: isDark ? const Color(0xFF222226) : null,
+                labelStyle: TextStyle(
+                  color: provider.sortOption == ProductSortOption.nameAsc
+                      ? (isDark ? AppTheme.secondaryColor : Colors.black87)
+                      : (isDark ? Colors.white70 : Colors.black54),
+                ),
                 onSelected: (_) => provider.setSortOption(ProductSortOption.nameAsc),
               ),
               ChoiceChip(
                 label: const Text('Fiyat (Artan)'),
                 selected: provider.sortOption == ProductSortOption.priceAsc,
+                selectedColor: AppTheme.secondaryColor.withOpacity(isDark ? 0.3 : 0.2),
+                backgroundColor: isDark ? const Color(0xFF222226) : null,
+                labelStyle: TextStyle(
+                  color: provider.sortOption == ProductSortOption.priceAsc
+                      ? (isDark ? AppTheme.secondaryColor : Colors.black87)
+                      : (isDark ? Colors.white70 : Colors.black54),
+                ),
                 onSelected: (_) => provider.setSortOption(ProductSortOption.priceAsc),
               ),
               ChoiceChip(
                 label: const Text('Fiyat (Azalan)'),
                 selected: provider.sortOption == ProductSortOption.priceDesc,
+                selectedColor: AppTheme.secondaryColor.withOpacity(isDark ? 0.3 : 0.2),
+                backgroundColor: isDark ? const Color(0xFF222226) : null,
+                labelStyle: TextStyle(
+                  color: provider.sortOption == ProductSortOption.priceDesc
+                      ? (isDark ? AppTheme.secondaryColor : Colors.black87)
+                      : (isDark ? Colors.white70 : Colors.black54),
+                ),
                 onSelected: (_) => provider.setSortOption(ProductSortOption.priceDesc),
               ),
             ],

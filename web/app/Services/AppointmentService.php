@@ -162,6 +162,54 @@ class AppointmentService
             if ($timeBlockConflict) {
                 throw new \RuntimeException('Berber seçilen saat veya tarih aralığında izinli/müsait değil.');
             }
+
+            // Personel Onaylı Resmi İzin Koruması (EmployeeLeave)
+            $leaveConflict = \App\Models\EmployeeLeave::where('employee_id', $data['employee_id'])
+                ->where('approval_status', \App\Enums\ApprovalStatus::Approved)
+                ->whereDate('start_date', '<=', $newStart->toDateString())
+                ->whereDate('end_date', '>=', $newStart->toDateString())
+                ->exists();
+
+            if ($leaveConflict) {
+                throw new \RuntimeException('Berber seçilen tarihte onaylı izinlidir.');
+            }
+
+            // Personel Çalışma Çizelgesi ve Mola Koruması (EmployeeSchedule)
+            $empSchedule = \App\Models\EmployeeSchedule::where('employee_id', $data['employee_id'])
+                ->whereDate('work_date', $newStart->toDateString())
+                ->first();
+
+            if ($empSchedule) {
+                if ($empSchedule->is_day_off) {
+                    throw new \RuntimeException('Berber seçilen tarihte haftalık izinlidir.');
+                }
+                if ($empSchedule->break_start && $empSchedule->break_end) {
+                    $breakStartStr = $newStart->toDateString() . ' ' . (strlen($empSchedule->break_start) === 5 ? $empSchedule->break_start . ':00' : $empSchedule->break_start);
+                    $breakEndStr = $newStart->toDateString() . ' ' . (strlen($empSchedule->break_end) === 5 ? $empSchedule->break_end . ':00' : $empSchedule->break_end);
+                    if ($newStartStr < $breakEndStr && $newEndStr > $breakStartStr) {
+                        throw new \RuntimeException('Seçilen randevu saati berberin mola / dinlenme saatine denk gelmektedir.');
+                    }
+                }
+                if ($empSchedule->start_time && $empSchedule->end_time) {
+                    $workStartStr = $newStart->toDateString() . ' ' . (strlen($empSchedule->start_time) === 5 ? $empSchedule->start_time . ':00' : $empSchedule->start_time);
+                    $workEndStr = $newStart->toDateString() . ' ' . (strlen($empSchedule->end_time) === 5 ? $empSchedule->end_time . ':00' : $empSchedule->end_time);
+                    if ($newStartStr < $workStartStr || $newEndStr > $workEndStr) {
+                        throw new \RuntimeException('Seçilen randevu saati berberin çalışma saatleri dışındadır.');
+                    }
+                }
+            }
+
+            // Şube Çalışma Saatleri Koruması (Açılış/Kapanış)
+            $branch = \App\Models\Branch::find($data['branch_id']);
+            if ($branch && $branch->opening_time && $branch->closing_time) {
+                $openTimeVal = $branch->opening_time instanceof \DateTimeInterface ? $branch->opening_time->format('H:i:s') : (strlen($branch->opening_time) === 5 ? $branch->opening_time . ':00' : (string) $branch->opening_time);
+                $closeTimeVal = $branch->closing_time instanceof \DateTimeInterface ? $branch->closing_time->format('H:i:s') : (strlen($branch->closing_time) === 5 ? $branch->closing_time . ':00' : (string) $branch->closing_time);
+                $branchOpenStr = $newStart->toDateString() . ' ' . $openTimeVal;
+                $branchCloseStr = $newStart->toDateString() . ' ' . $closeTimeVal;
+                if ($newStartStr < $branchOpenStr || $newEndStr > $branchCloseStr) {
+                    throw new \RuntimeException('Seçilen randevu şubenin çalışma saatleri (açılış/kapanış) dışındadır.');
+                }
+            }
             // --- ÇAKIŞMA KORUMASI SONU ---
 
             $appointment = $this->appointmentRepo->create($data);
@@ -303,21 +351,41 @@ class AppointmentService
             return [];
         }
 
+        // Onaylı resmi izin kontrolü (EmployeeLeave)
+        $hasApprovedLeave = \App\Models\EmployeeLeave::where('employee_id', $employeeId)
+            ->where('approval_status', \App\Enums\ApprovalStatus::Approved)
+            ->whereDate('start_date', '<=', $date)
+            ->whereDate('end_date', '>=', $date)
+            ->exists();
+
+        if ($hasApprovedLeave) {
+            return [];
+        }
+
+        // Personel çalışma çizelgesi kontrolü (EmployeeSchedule)
+        $schedule = \App\Models\EmployeeSchedule::where('employee_id', $employeeId)
+            ->whereDate('work_date', $date)
+            ->first();
+
+        if ($schedule && $schedule->is_day_off) {
+            return [];
+        }
+
         // Şube çalışma saatleri
         $branch = Branch::find($branchId);
-        $openTimeStr = '08:00:00';
-        $closeTimeStr = '20:00:00';
+        $openTimeStr = '09:00:00';
+        $closeTimeStr = '22:00:00';
 
         if ($branch) {
             if ($branch->opening_time) {
                 $openTimeStr = $branch->opening_time instanceof \DateTimeInterface 
                     ? $branch->opening_time->format('H:i:s') 
-                    : (string) $branch->opening_time;
+                    : (strlen($branch->opening_time) === 5 ? $branch->opening_time . ':00' : (string) $branch->opening_time);
             }
             if ($branch->closing_time) {
                 $closeTimeStr = $branch->closing_time instanceof \DateTimeInterface 
                     ? $branch->closing_time->format('H:i:s') 
-                    : (string) $branch->closing_time;
+                    : (strlen($branch->closing_time) === 5 ? $branch->closing_time . ':00' : (string) $branch->closing_time);
             }
         }
 
@@ -372,6 +440,26 @@ class AppointmentService
                             break;
                         }
                     }
+                }
+            }
+
+            // Personel mola saati kontrolü (EmployeeSchedule break_start - break_end)
+            if ($isAvailable && $schedule && $schedule->break_start && $schedule->break_end) {
+                $breakStart = Carbon::parse($date . ' ' . $schedule->break_start, config('app.timezone', 'Europe/Istanbul'));
+                $breakEnd = Carbon::parse($date . ' ' . $schedule->break_end, config('app.timezone', 'Europe/Istanbul'));
+                if ($slotTime >= $breakStart && $slotTime < $breakEnd) {
+                    $isAvailable = false;
+                    $isBusy = true;
+                }
+            }
+
+            // Personel özel mesai saati kısıtı (EmployeeSchedule start_time - end_time)
+            if ($isAvailable && $schedule && $schedule->start_time && $schedule->end_time) {
+                $workStart = Carbon::parse($date . ' ' . $schedule->start_time, config('app.timezone', 'Europe/Istanbul'));
+                $workEnd = Carbon::parse($date . ' ' . $schedule->end_time, config('app.timezone', 'Europe/Istanbul'));
+                if ($slotTime < $workStart || $slotTime >= $workEnd) {
+                    $isAvailable = false;
+                    $isBusy = true;
                 }
             }
 

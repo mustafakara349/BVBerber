@@ -70,20 +70,20 @@ class _CouponsScreenState extends State<CouponsScreen> {
                   ),
                 )
               : campaignProvider.coupons.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.confirmation_number_outlined, size: 64, color: Colors.black26),
-                          SizedBox(height: 16),
+                          Icon(Icons.confirmation_number_outlined, size: 64, color: isDark ? Colors.white24 : Colors.black26),
+                          const SizedBox(height: 16),
                           Text(
                             'Henüz kuponunuz bulunmuyor.',
-                            style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
                             'Size özel tanımlanan indirim kuponları burada listelenecektir.',
-                            style: TextStyle(color: Colors.black45, fontSize: 13),
+                            style: TextStyle(color: isDark ? Colors.white54 : Colors.black45, fontSize: 13),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -93,10 +93,10 @@ class _CouponsScreenState extends State<CouponsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                       children: [
                         if (campaignProvider.activeCoupons.isNotEmpty) ...[
-                          const Text(
+                          Text(
                             'Aktif Kuponlar',
                             style: TextStyle(
-                              color: Colors.black87,
+                              color: isDark ? Colors.white : Colors.black87,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -106,10 +106,10 @@ class _CouponsScreenState extends State<CouponsScreen> {
                           const SizedBox(height: 24),
                         ],
                         if (campaignProvider.pastCoupons.isNotEmpty) ...[
-                          const Text(
+                          Text(
                             'Geçmiş Kuponlar',
                             style: TextStyle(
-                              color: Colors.black54,
+                              color: isDark ? Colors.white70 : Colors.black54,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
