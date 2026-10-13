@@ -25,6 +25,33 @@ class DashboardController extends Controller
         return view('dashboard.index', compact('widgets', 'barbers', 'topServices', 'revenueChart', 'todayAppointments', 'pendingAppointments', 'awaitingActionAppointments'));
     }
 
+    public function liveSections(): \Illuminate\Http\JsonResponse
+    {
+        $branchId = $this->getActiveBranchId();
+
+        $widgets = $this->dashboardService->getWidgetData($branchId);
+        $todayAppointments = $this->dashboardService->getTodayAppointments($branchId);
+        $pendingAppointments = $this->dashboardService->getPendingAppointments($branchId);
+        $awaitingActionAppointments = $this->dashboardService->getAwaitingActionAppointments($branchId);
+
+        return response()->json([
+            'pending_html' => view('dashboard.partials.pending_appointments', compact('pendingAppointments'))->render(),
+            'pending_count' => $pendingAppointments->count(),
+            'awaiting_html' => view('dashboard.partials.awaiting_action_appointments', compact('awaitingActionAppointments'))->render(),
+            'awaiting_count' => $awaitingActionAppointments->count(),
+            'today_html' => view('dashboard.partials.today_appointments', compact('todayAppointments'))->render(),
+            'today_count' => $todayAppointments->count(),
+            'widgets_html' => view('dashboard.partials.revenue_widgets', compact('widgets'))->render(),
+            'widgets_data' => [
+                'today_total' => $widgets['appointments']['today_total'] ?? 0,
+                'today_completed' => $widgets['appointments']['today_completed'] ?? 0,
+                'daily_revenue' => number_format($widgets['revenue']['daily'] ?? 0, 0, ',', '.'),
+                'daily_expense' => number_format($widgets['revenue']['daily_expense'] ?? 0, 0, ',', '.'),
+                'new_customers' => $widgets['customers']['new_this_month'] ?? 0,
+            ],
+        ]);
+    }
+
     public function appointmentStats(\Illuminate\Http\Request $request): \Illuminate\Http\JsonResponse
     {
         $branchId = $this->getActiveBranchId();

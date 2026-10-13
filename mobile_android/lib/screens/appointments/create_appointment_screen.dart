@@ -7,6 +7,7 @@ import 'package:mobile_android/core/enums.dart';
 import 'package:mobile_android/models/barber_model.dart';
 import 'package:mobile_android/models/service_model.dart';
 import 'package:mobile_android/models/appointment_model.dart';
+import 'package:mobile_android/models/available_slot_model.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_android/providers/appointment_provider.dart';
 
@@ -24,6 +25,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   final List<ServiceModel> _selectedServices = [];
   DateTime? _selectedDate;
   String? _selectedTime;
+  List<AvailableSlotModel> _availableSlots = [];
   List<String> _busyTimes = [];
   bool _isLoadingBarbers = true;
   bool _isLoadingServices = true;
@@ -96,6 +98,14 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
   }
 
   bool _isSlotAvailable(String time) {
+    if (_availableSlots.isNotEmpty) {
+      final slot = _availableSlots.firstWhere(
+        (s) => s.time == time,
+        orElse: () => AvailableSlotModel(time: time, isAvailable: false),
+      );
+      return slot.isAvailable;
+    }
+
     final index = _allTimes.indexOf(time);
     if (index == -1) return false;
     
@@ -125,51 +135,39 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
 
   Future<void> _loadBusyTimes() async {
     if (_selectedBarber == null || _selectedDate == null) return;
-    setState(() { _isLoadingTimes = true; _selectedTime = null; });
+    setState(() { _isLoadingTimes = true; });
     try {
       final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate!);
       final empId = int.tryParse(_selectedBarber!.id) ?? 1;
-      final appointmentsData = await ApiService.getEmployeeAppointments(
-        employeeId: empId,
+      final duration = _totalDuration > 0 ? _totalDuration : 30;
+
+      final slots = await ApiService.getAvailableSlots(
+        barberId: empId,
         date: dateStr,
+        duration: duration,
       );
-      
-      final busyList = <String>[];
-      for (final appMap in appointmentsData) {
-        final statusStr = appMap['status']?.toString();
-        if (statusStr == 'cancelled') continue;
-        
-        final startStr = appMap['start_at']?.toString();
-        final endStr = appMap['end_at']?.toString();
-        if (startStr == null || endStr == null) continue;
-        
-        final start = DateTime.parse(startStr);
-        final end = DateTime.parse(endStr);
-        
-        for (final time in _allTimes) {
-          final parts = time.split(':');
-          final hour = int.parse(parts[0]);
-          final minute = int.parse(parts[1]);
-          final slotDateTime = DateTime(_selectedDate!.year, _selectedDate!.month, _selectedDate!.day, hour, minute);
-          
-          if ((slotDateTime.isAfter(start) || slotDateTime.isAtSameMomentAs(start)) &&
-              slotDateTime.isBefore(end)) {
-            if (!busyList.contains(time)) {
-              busyList.add(time);
-            }
-          }
-        }
-      }
       
       if (mounted) {
         setState(() {
-          _busyTimes = busyList;
+          _availableSlots = slots;
+          if (slots.isNotEmpty) {
+            _allTimes.clear();
+            _allTimes.addAll(slots.map((s) => s.time));
+          } else {
+            _allTimes.clear();
+          }
+          _busyTimes = slots.where((s) => !s.isAvailable).map((s) => s.time).toList();
+
+          if (_selectedTime != null && !_isSlotAvailable(_selectedTime!)) {
+            _selectedTime = null;
+          }
         });
       }
     } catch (e) {
-      debugPrint('Meşgul saatler yüklenirken hata: $e');
+      debugPrint('Slotlar yüklenirken hata: $e');
+    } finally {
+      if (mounted) setState(() => _isLoadingTimes = false);
     }
-    if (mounted) setState(() => _isLoadingTimes = false);
   }
 
   List<DateTime> get _availableDates {
@@ -295,8 +293,15 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
       Navigator.pop(context); // back to appointments list
       Provider.of<AppointmentProvider>(context, listen: false).loadAppointments();
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Hata: $e'), backgroundColor: AppTheme.errorColor));
+      final msg = e.toString().replaceFirst('Exception: ', '');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(msg),
+          backgroundColor: AppTheme.errorColor,
+        ));
+      }
+      // Çakışma durumunda slotları güncel durumla yenile
+      _loadBusyTimes();
     } finally {
       if (mounted) setState(() => _isCreating = false);
     }
@@ -411,14 +416,24 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
             const SizedBox(height: 16),
             _isLoadingTimes
               ? const Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor))
-              : GridView.builder(
-                  shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4, crossAxisSpacing: 10,
-                    mainAxisSpacing: 10, childAspectRatio: 2.2),
-                  itemCount: _allTimes.length,
-                  itemBuilder: (_, i) => _buildTimeChip(_allTimes[i]),
-                ),
+              : _allTimes.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24),
+                    child: Center(
+                      child: Text(
+                        'Bu gün için müsait saat bulunamadı.',
+                        style: TextStyle(color: Colors.black54, fontSize: 14),
+                      ),
+                    ),
+                  )
+                : GridView.builder(
+                    shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4, crossAxisSpacing: 10,
+                      mainAxisSpacing: 10, childAspectRatio: 2.2),
+                    itemCount: _allTimes.length,
+                    itemBuilder: (_, i) => _buildTimeChip(_allTimes[i]),
+                  ),
           ],
           const SizedBox(height: 24),
         ]),
@@ -504,6 +519,9 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
             _selectedTime = null;
           }
         });
+        if (_selectedDate != null && _selectedBarber != null) {
+          _loadBusyTimes();
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(left: 12, right: 12, bottom: 8),

@@ -3,10 +3,15 @@
 namespace App\Services;
 
 use App\Enums\AppointmentStatus;
+use App\Exceptions\AppointmentConflictException;
 use App\Models\Appointment;
 use App\Models\AppointmentService as AppointmentServiceModel;
 use App\Models\AppointmentStatusLog;
+use App\Models\Employee;
+use App\Models\EmployeeTimeBlock;
 use App\Repositories\Contracts\AppointmentRepositoryInterface;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -19,144 +24,177 @@ class AppointmentService
 
     public function createAppointment(array $data): Appointment
     {
-        return DB::transaction(function () use ($data) {
-            $data['uuid'] = (string) Str::uuid();
-            $data['appointment_code'] = $this->generateCode();
+        $employeeId = (int) $data['employee_id'];
+        $dateStr = Carbon::parse($data['start_at'])->toDateString();
+        $lockKey = "appointment_booking:employee:{$employeeId}:{$dateStr}";
+        $lock = Cache::lock($lockKey, 10);
 
-            $requestedServices = $data['services'] ?? [];
-            unset($data['services']);
-            
-            $couponCode = $data['coupon_code'] ?? null;
-            unset($data['coupon_code']);
+        return $lock->block(5, function () use ($data, $employeeId) {
+            return DB::transaction(function () use ($data, $employeeId) {
+                // 1) Eşzamanlılık Koruması: Berber satırı üzerinde Pessimistic Lock (InnoDB Exclusive Row Lock)
+                Employee::where('id', $employeeId)->lockForUpdate()->first();
 
-            // Fiyat ve süreyi veritabanından çek; client değerlerini yoksay.
-            $serviceIds = collect($requestedServices)->pluck('service_id')->unique()->toArray();
-            $dbServices = \App\Models\Service::whereIn('id', $serviceIds)
-                ->get()
-                ->keyBy('id');
+                $data['uuid'] = (string) Str::uuid();
+                $data['appointment_code'] = $this->generateCode();
 
-            $totalDuration = 0;
-            $subtotal = 0;
-            $enrichedServices = [];
+                $requestedServices = $data['services'] ?? [];
+                unset($data['services']);
+                
+                $couponCode = $data['coupon_code'] ?? null;
+                unset($data['coupon_code']);
 
-            foreach ($requestedServices as $item) {
-                $serviceId = $item['service_id'];
-                $quantity  = $item['quantity'] ?? 1;
+                // Fiyat ve süreyi veritabanından çek; client değerlerini yoksay.
+                $serviceIds = collect($requestedServices)->pluck('service_id')->unique()->toArray();
+                $dbServices = \App\Models\Service::whereIn('id', $serviceIds)
+                    ->get()
+                    ->keyBy('id');
 
-                $dbService = $dbServices->get($serviceId);
+                $totalDuration = 0;
+                $subtotal = 0;
+                $enrichedServices = [];
 
-                if (! $dbService) {
-                    throw new \InvalidArgumentException("Hizmet bulunamadı: ID #{$serviceId}");
+                foreach ($requestedServices as $item) {
+                    $serviceId = $item['service_id'];
+                    $quantity  = $item['quantity'] ?? 1;
+
+                    $dbService = $dbServices->get($serviceId);
+
+                    if (! $dbService) {
+                        throw new \InvalidArgumentException("Hizmet bulunamadı: ID #{$serviceId}");
+                    }
+
+                    // Geçerli fiyat: varsa indirimli, yoksa normal fiyat
+                    $unitPrice       = (float) ($dbService->discounted_price ?? $dbService->price);
+                    $durationMinutes = (int) $dbService->duration_minutes;
+                    $lineTotal       = $unitPrice * $quantity;
+
+                    $totalDuration += $durationMinutes * $quantity;
+                    $subtotal      += $lineTotal;
+
+                    $enrichedServices[] = [
+                        'service_id'       => $serviceId,
+                        'quantity'         => $quantity,
+                        'duration_minutes' => $durationMinutes,
+                        'unit_price'       => $unitPrice,
+                        'total_price'      => $lineTotal,
+                    ];
                 }
 
-                // Geçerli fiyat: varsa indirimli, yoksa normal fiyat
-                $unitPrice      = (float) ($dbService->discounted_price ?? $dbService->price);
-                $durationMinutes = (int) $dbService->duration_minutes;
-                $lineTotal       = $unitPrice * $quantity;
+                // Kampanya ve İndirim Hesaplama
+                $customer = \App\Models\User::find($data['customer_id']);
+                $discountAmount = 0;
+                $campaignId = null;
+                $couponId = null;
+                $appliedCoupon = null;
 
-                $totalDuration += $durationMinutes * $quantity;
-                $subtotal      += $lineTotal;
-
-                $enrichedServices[] = [
-                    'service_id'       => $serviceId,
-                    'quantity'         => $quantity,
-                    'duration_minutes' => $durationMinutes,
-                    'unit_price'       => $unitPrice,
-                    'total_price'      => $lineTotal,
-                ];
-            }
-
-            // Kampanya ve İndirim Hesaplama
-            $customer = \App\Models\User::find($data['customer_id']);
-            $discountAmount = 0;
-            $campaignId = null;
-            $couponId = null;
-            $appliedCoupon = null;
-
-            if ($customer) {
-                if ($couponCode) {
-                    $couponResult = $this->campaignService->validateCoupon($customer, $data['branch_id'], $couponCode, $subtotal, $serviceIds);
-                    if ($couponResult['valid']) {
-                        $discountAmount = $couponResult['discount_amount'];
-                        $campaignId = $couponResult['campaign']?->id;
-                        $couponId = $couponResult['coupon']->id;
-                        $appliedCoupon = $couponResult['coupon'];
-                    } else {
-                        throw new \InvalidArgumentException($couponResult['message']);
-                    }
-                } elseif (!empty($data['campaign_id'])) {
-                    $campaignResult = $this->campaignService->validateCampaign($customer, $data['branch_id'], $data['campaign_id'], $subtotal, $serviceIds);
-                    if ($campaignResult['valid']) {
-                        $discountAmount = $campaignResult['discount_amount'];
-                        $campaignId = $campaignResult['campaign']->id;
-                    } else {
-                        throw new \InvalidArgumentException($campaignResult['message']);
-                    }
-                } elseif (!isset($data['source']) || $data['source'] !== 'admin_panel') {
-                    $autoCampaignResult = $this->campaignService->evaluateCart($customer, $data['branch_id'], $subtotal, $serviceIds);
-                    if ($autoCampaignResult) {
-                        $discountAmount = $autoCampaignResult['discount_amount'];
-                        $campaignId = $autoCampaignResult['campaign']->id;
+                if ($customer) {
+                    if ($couponCode) {
+                        $couponResult = $this->campaignService->validateCoupon($customer, $data['branch_id'], $couponCode, $subtotal, $serviceIds);
+                        if ($couponResult['valid']) {
+                            $discountAmount = $couponResult['discount_amount'];
+                            $campaignId = $couponResult['campaign']?->id;
+                            $couponId = $couponResult['coupon']->id;
+                            $appliedCoupon = $couponResult['coupon'];
+                        } else {
+                            throw new \InvalidArgumentException($couponResult['message']);
+                        }
+                    } elseif (!empty($data['campaign_id'])) {
+                        $campaignResult = $this->campaignService->validateCampaign($customer, $data['branch_id'], $data['campaign_id'], $subtotal, $serviceIds);
+                        if ($campaignResult['valid']) {
+                            $discountAmount = $campaignResult['discount_amount'];
+                            $campaignId = $campaignResult['campaign']->id;
+                        } else {
+                            throw new \InvalidArgumentException($campaignResult['message']);
+                        }
+                    } elseif (!isset($data['source']) || $data['source'] !== 'admin_panel') {
+                        $autoCampaignResult = $this->campaignService->evaluateCart($customer, $data['branch_id'], $subtotal, $serviceIds);
+                        if ($autoCampaignResult) {
+                            $discountAmount = $autoCampaignResult['discount_amount'];
+                            $campaignId = $autoCampaignResult['campaign']->id;
+                        }
                     }
                 }
-            }
 
-            $data['end_at']         = \Carbon\Carbon::parse($data['start_at'])->addMinutes($totalDuration);
-            $data['total_duration'] = $totalDuration;
-            $data['subtotal']       = $subtotal;
-            $data['discount_amount']= $discountAmount;
-            $data['tax_amount']     = $data['tax_amount'] ?? 0;
-            $data['total_price']    = max(0, $subtotal - $discountAmount + $data['tax_amount']);
-            $data['campaign_id']    = $campaignId;
-            $data['coupon_id']      = $couponId;
-            $data['status']         = $data['status'] ?? AppointmentStatus::Pending;
+                $data['end_at']         = Carbon::parse($data['start_at'])->addMinutes($totalDuration);
+                $data['total_duration'] = $totalDuration;
+                $data['subtotal']       = $subtotal;
+                $data['discount_amount']= $discountAmount;
+                $data['tax_amount']     = $data['tax_amount'] ?? 0;
+                $data['total_price']    = max(0, $subtotal - $discountAmount + $data['tax_amount']);
+                $data['campaign_id']    = $campaignId;
+                $data['coupon_id']      = $couponId;
+                $data['status']         = $data['status'] ?? AppointmentStatus::Pending;
 
-            // --- ÇAKIŞMA KORUMASI ---
-            $conflict = Appointment::where('employee_id', $data['employee_id'])
-                ->where('start_at', $data['start_at'])
-                ->whereIn('status', [
-                    AppointmentStatus::Pending->value,
-                    AppointmentStatus::Confirmed->value,
-                    AppointmentStatus::InProgress->value,
-                ])
-                ->lockForUpdate() // Pessimistic lock: aynı anda gelen diğer istek bekler
-                ->exists();
+                $startAt = Carbon::parse($data['start_at']);
+                $endAt   = Carbon::parse($data['end_at']);
 
-            if ($conflict) {
-                throw new \RuntimeException('Bu saat dolu. Lütfen farklı bir saat veya berber seçiniz.');
-            }
-            // --- ÇAKIŞMA KORUMASI SONU ---
+                // --- ÇAKIŞMA KORUMASI (Zaman Aralığı Overlap Kontrolü) ---
+                $conflict = Appointment::where('employee_id', $employeeId)
+                    ->whereIn('status', [
+                        AppointmentStatus::Pending->value,
+                        AppointmentStatus::Confirmed->value,
+                        AppointmentStatus::InProgress->value,
+                    ])
+                    ->where(function ($query) use ($startAt, $endAt) {
+                        // [A, B) ile [C, D) çakışması: A < D AND B > C
+                        $query->where('start_at', '<', $endAt)
+                              ->where('end_at', '>', $startAt);
+                    })
+                    ->exists();
 
-            $appointment = $this->appointmentRepo->create($data);
-
-            foreach ($enrichedServices as $service) {
-                AppointmentServiceModel::create([
-                    'appointment_id'   => $appointment->id,
-                    'service_id'       => $service['service_id'],
-                    'employee_id'      => $data['employee_id'],
-                    'quantity'         => $service['quantity'],
-                    'duration_minutes' => $service['duration_minutes'],
-                    'unit_price'       => $service['unit_price'],
-                    'total_price'      => $service['total_price'],
-                ]);
-            }
-
-            // Kupon kullanıldıysa kaydını düş
-            if ($appliedCoupon && $customer) {
-                $this->campaignService->recordCouponUsage($appliedCoupon, $customer, $appointment->id);
-            }
-
-            // Kampanya kullanıldıysa kaydını düş
-            if ($campaignId && $customer) {
-                $campaign = \App\Models\Campaign::find($campaignId);
-                if ($campaign) {
-                    $this->campaignService->recordCampaignUsage($campaign, $customer, $appointment->id);
+                if ($conflict) {
+                    throw new AppointmentConflictException('Seçilen saat aralığı dolu veya başka bir müşteri tarafından yeni alındı. Lütfen farklı bir saat veya berber seçiniz.');
                 }
-            }
 
-            $this->logStatusChange($appointment, null, $appointment->status->value);
+                // İzin / Saatlik Blok Kontrolü
+                $timeBlockConflict = EmployeeTimeBlock::where('employee_id', $employeeId)
+                    ->where('date', $startAt->toDateString())
+                    ->where(function ($query) use ($startAt, $endAt) {
+                        $query->where('type', 'full_day')
+                              ->orWhere(function ($q) use ($startAt, $endAt) {
+                                  $q->where('type', 'partial_time')
+                                    ->whereRaw('? < STR_TO_DATE(CONCAT(date, " ", end_time), "%Y-%m-%d %H:%i:%s")', [$startAt->toDateTimeString()])
+                                    ->whereRaw('? > STR_TO_DATE(CONCAT(date, " ", start_time), "%Y-%m-%d %H:%i:%s")', [$endAt->toDateTimeString()]);
+                              });
+                    })
+                    ->exists();
 
-            return $appointment->load(['customer', 'employee.user', 'appointmentServices.service']);
+                if ($timeBlockConflict) {
+                    throw new AppointmentConflictException('Berber bu saat aralığında izinlidir veya moladadır.');
+                }
+                // --- ÇAKIŞMA KORUMASI SONU ---
+
+                $appointment = $this->appointmentRepo->create($data);
+
+                foreach ($enrichedServices as $service) {
+                    AppointmentServiceModel::create([
+                        'appointment_id'   => $appointment->id,
+                        'service_id'       => $service['service_id'],
+                        'employee_id'      => $data['employee_id'],
+                        'quantity'         => $service['quantity'],
+                        'duration_minutes' => $service['duration_minutes'],
+                        'unit_price'       => $service['unit_price'],
+                        'total_price'      => $service['total_price'],
+                    ]);
+                }
+
+                // Kupon kullanıldıysa kaydını düş
+                if ($appliedCoupon && $customer) {
+                    $this->campaignService->recordCouponUsage($appliedCoupon, $customer, $appointment->id);
+                }
+
+                // Kampanya kullanıldıysa kaydını düş
+                if ($campaignId && $customer) {
+                    $campaign = \App\Models\Campaign::find($campaignId);
+                    if ($campaign) {
+                        $this->campaignService->recordCampaignUsage($campaign, $customer, $appointment->id);
+                    }
+                }
+
+                $this->logStatusChange($appointment, null, $appointment->status->value);
+
+                return $appointment->load(['customer', 'employee.user', 'appointmentServices.service']);
+            });
         });
     }
 

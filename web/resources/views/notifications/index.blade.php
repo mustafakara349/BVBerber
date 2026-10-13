@@ -3,19 +3,232 @@
 
 @push('styles')
 <style>
-    .sn-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block; position: relative; }
-    .sn-live-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: rgba(16, 185, 129, .35); animation: sn-pulse 1.8s ease-out infinite; }
-    @keyframes sn-pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
-
     .sn-kpi { transition: transform .2s ease, box-shadow .2s ease; }
     .sn-kpi:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1.25rem rgba(15, 23, 42, .08) !important; }
 
-    .sn-item { position: relative; transition: background-color .15s ease; }
-    .sn-item:hover { background-color: #f8fafc; }
-    .sn-item.is-unread { background-color: rgba(59, 130, 246, .035); }
-    .sn-item.is-unread::before { content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 0 3px 3px 0; background: var(--bs-primary); }
-    .sn-icon { width: 44px; height: 44px; flex-shrink: 0; }
-    .sn-filter .btn { font-size: 12.5px; }
+    /* Bildirim Satırı — Geniş, ferah ve şık padding */
+    .sn-item {
+        position: relative;
+        transition: background-color .15s ease;
+        padding: 22px 32px;
+    }
+    @media (max-width: 992px) {
+        .sn-item {
+            padding: 18px 20px;
+        }
+    }
+    .sn-item:hover {
+        background-color: #fafbfd;
+    }
+    .sn-item.is-unread::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 14px;
+        bottom: 14px;
+        width: 4.5px;
+        border-radius: 0 4px 4px 0;
+        background-color: var(--sn-accent, #E66239);
+    }
+
+    /* Squircle İkon Kutusu */
+    .sn-icon-sq {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 13px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Sol Tıklanabilir İçerik Linki — Satıra tam yayılan genişlik */
+    .sn-content-link {
+        display: flex;
+        gap: 18px;
+        flex: 1 1 0%;
+        min-width: 0;
+        align-items: flex-start;
+        text-decoration: none;
+    }
+    .sn-content-body {
+        flex: 1 1 0%;
+        min-width: 0;
+    }
+    .sn-body-text {
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: #4B5563 !important;
+        word-break: normal;
+        overflow-wrap: break-word;
+        text-wrap: pretty;
+        margin-bottom: 5px;
+    }
+
+    /* Sağ Aksiyon Butonları */
+    .sn-actions-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    /* Kategori Butonları */
+    .sn-cat-btn {
+        font-size: 13px;
+        font-weight: 500;
+        padding: 6.5px 16px;
+        border-radius: 50rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all .2s ease;
+    }
+    .sn-cat-btn.is-active {
+        background-color: #E66239 !important;
+        color: #ffffff !important;
+        border: 1px solid #E66239 !important;
+        font-weight: 600;
+    }
+    .sn-cat-btn:not(.is-active) {
+        background-color: #ffffff;
+        color: #374151;
+        border: 1px solid #e5e7eb;
+    }
+    .sn-cat-btn:not(.is-active):hover {
+        background-color: #f9fafb;
+        border-color: #d1d5db;
+        color: #111827;
+    }
+
+    /* Durum Filtre Grubu */
+    .sn-status-pill-group {
+        background-color: #F1F3F5;
+        border-radius: 50rem;
+        padding: 4px;
+        display: inline-flex;
+        align-items: center;
+    }
+    .sn-status-pill {
+        font-size: 13px;
+        border-radius: 50rem;
+        padding: 5px 16px;
+        text-decoration: none;
+        transition: all .15s ease;
+    }
+    .sn-status-pill.is-active {
+        background-color: #ffffff;
+        color: #111827;
+        font-weight: 600;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .sn-status-pill:not(.is-active) {
+        background-color: transparent;
+        color: #6b7280;
+        font-weight: 500;
+    }
+    .sn-status-pill:not(.is-active):hover {
+        color: #111827;
+    }
+
+    /* Turuncu Aksiyon Butonu */
+    .sn-btn-action {
+        background-color: #E66239;
+        color: #ffffff;
+        border: none;
+        border-radius: 50rem;
+        padding: 7px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        transition: background-color .15s ease, transform .15s ease;
+    }
+    .sn-btn-action:hover {
+        background-color: #d2532c;
+        color: #ffffff;
+    }
+
+    /* Yuvarlak Hızlı Aksiyon Butonları */
+    .sn-btn-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e5e7eb;
+        background-color: #ffffff;
+        color: #4b5563;
+        transition: all .15s ease;
+        padding: 0;
+    }
+    .sn-btn-icon:hover {
+        background-color: #f3f4f6;
+        color: #111827;
+        border-color: #d1d5db;
+    }
+    .sn-btn-icon-danger {
+        border: none;
+        background-color: transparent;
+        color: #FA5252;
+    }
+    .sn-btn-icon-danger:hover {
+        background-color: rgba(250, 82, 82, 0.1);
+        color: #e03131;
+    }
+
+    /* Sayfalama (Görsel 2) */
+    .sn-pagination-box {
+        display: inline-flex;
+        background-color: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .sn-page-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        height: 38px;
+        padding: 0 12px;
+        background-color: #ffffff;
+        color: #374151;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        border-right: 1px solid #e5e7eb;
+        transition: background-color 0.15s ease, color 0.15s ease;
+        user-select: none;
+    }
+    .sn-page-link:last-child {
+        border-right: none;
+    }
+    .sn-page-link:first-child,
+    .sn-page-link:last-child {
+        background-color: #f3f4f6;
+        color: #4b5563;
+        font-size: 18px;
+        font-weight: 400;
+    }
+    .sn-page-link.is-active {
+        background-color: #E66239 !important;
+        color: #ffffff !important;
+        font-weight: 700;
+    }
+    .sn-page-link.disabled {
+        color: #9ca3af !important;
+        background-color: #f3f4f6 !important;
+        cursor: not-allowed;
+    }
+    .sn-page-link:not(.is-active):not(.disabled):hover {
+        background-color: #f9fafb;
+        color: #111827;
+    }
+
     .sn-new-banner { animation: sn-slide .35s ease; }
     @keyframes sn-slide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 </style>
@@ -32,9 +245,6 @@
     <div>
         <h1 class="fs-3 mb-1 d-flex align-items-center gap-2">
             Sistem Bildirimleri
-            <span class="badge bg-success-subtle text-success rounded-pill fw-semibold d-inline-flex align-items-center gap-2 px-2.5 py-1" style="font-size: 11px;">
-                <span class="sn-live-dot"></span> Canlı
-            </span>
         </h1>
         <p class="text-muted mb-0">Randevu, stok ve değerlendirme gibi işletme olaylarına ait size özel uyarılar. Bildirimden doğrudan ilgili işleme geçebilirsiniz.</p>
     </div>
@@ -88,102 +298,159 @@
     </a>
 </div>
 
-{{-- Liste --}}
-<div class="card shadow-sm border-0 rounded-4">
-    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-3 d-flex flex-column flex-lg-row justify-content-between gap-3">
-        <div class="sn-filter btn-group" role="group" aria-label="Durum filtresi">
+{{-- Liste Kartı (Görsel 1) --}}
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+    {{-- Filtreler (Üst Bar) --}}
+    <div class="card-header bg-white border-0 pt-4 px-4 px-lg-5 pb-3 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+        {{-- Durum Filtreleri (Sol Segment) --}}
+        <div class="sn-status-pill-group">
             @foreach([null => 'Tümü', 'unread' => 'Okunmamış', 'read' => 'Okunmuş'] as $value => $label)
                 <a href="{{ route('notifications.index', array_filter(['status' => $value ?: null, 'category' => $activeCategory])) }}"
-                   class="btn btn-sm {{ $activeStatus === ($value ?: null) ? 'btn-dark' : 'btn-light border' }} px-3 fw-semibold">{{ $label }}</a>
+                   class="sn-status-pill {{ $activeStatus === ($value ?: null) ? 'is-active' : '' }}">
+                    {{ $label }}
+                </a>
             @endforeach
         </div>
-        <div class="sn-filter d-flex flex-wrap gap-2">
+
+        {{-- Kategori Filtreleri (Sağ Butonlar) --}}
+        <div class="d-flex flex-wrap gap-2 align-items-center">
             <a href="{{ route('notifications.index', array_filter(['status' => $activeStatus])) }}"
-               class="btn btn-sm rounded-pill px-3 fw-semibold {{ $activeCategory === null ? 'btn-primary' : 'btn-light border' }}">Tüm Kategoriler</a>
+               class="sn-cat-btn {{ $activeCategory === null ? 'is-active' : '' }}">
+                Tüm Kategoriler
+            </a>
             @foreach($categories as $category)
+                @php
+                    $catIcon = match ($category) {
+                        \App\Enums\AdminNotificationCategory::Appointment => 'ti-calendar',
+                        \App\Enums\AdminNotificationCategory::Stock => 'ti-package',
+                        \App\Enums\AdminNotificationCategory::Review => 'ti-star',
+                        \App\Enums\AdminNotificationCategory::System => 'ti-settings',
+                        default => $category->icon(),
+                    };
+                @endphp
                 <a href="{{ route('notifications.index', array_filter(['status' => $activeStatus, 'category' => $category->value])) }}"
-                   class="btn btn-sm rounded-pill px-3 fw-semibold {{ $activeCategory === $category->value ? 'btn-primary' : 'btn-light border' }}">
-                    <i class="ti {{ $category->icon() }} me-1"></i>{{ $category->label() }}
+                   class="sn-cat-btn {{ $activeCategory === $category->value ? 'is-active' : '' }}">
+                    <i class="ti {{ $catIcon }} fs-6 me-1.5"></i>
+                    <span>{{ $category->label() }}</span>
                 </a>
             @endforeach
         </div>
     </div>
 
+    {{-- Bildirim Satırları --}}
     <div class="card-body p-0">
         <ul class="list-unstyled mb-0" id="notificationRows" data-latest-id="{{ $latestId }}">
             @forelse($notifications as $notif)
                 @php
-                    $color = $notif->level->color();
+                    $level = $notif->level;
+                    $accentColor = match ($level) {
+                        \App\Enums\AdminNotificationLevel::Danger => '#FA5252',
+                        \App\Enums\AdminNotificationLevel::Warning => '#F59F00',
+                        \App\Enums\AdminNotificationLevel::Success => '#00C951',
+                        \App\Enums\AdminNotificationLevel::Info => '#E66239',
+                        default => '#E66239',
+                    };
+
+                    $bgSoft = match ($level) {
+                        \App\Enums\AdminNotificationLevel::Danger => 'rgba(251, 44, 54, 0.12)',
+                        \App\Enums\AdminNotificationLevel::Warning => 'rgba(240, 177, 0, 0.14)',
+                        \App\Enums\AdminNotificationLevel::Success => 'rgba(0, 201, 81, 0.12)',
+                        \App\Enums\AdminNotificationLevel::Info => 'rgba(230, 98, 57, 0.12)',
+                        default => 'rgba(230, 98, 57, 0.12)',
+                    };
+
+                    $badgeTextColor = match ($level) {
+                        \App\Enums\AdminNotificationLevel::Danger => '#DC2626',
+                        \App\Enums\AdminNotificationLevel::Warning => '#D97706',
+                        \App\Enums\AdminNotificationLevel::Success => '#059669',
+                        \App\Enums\AdminNotificationLevel::Info => '#E66239',
+                        default => '#E66239',
+                    };
+
+                    $iconClass = match ($notif->category) {
+                        \App\Enums\AdminNotificationCategory::Appointment => 'ti-calendar',
+                        \App\Enums\AdminNotificationCategory::Stock => 'ti-package',
+                        \App\Enums\AdminNotificationCategory::Review => 'ti-star',
+                        \App\Enums\AdminNotificationCategory::System => 'ti-settings',
+                        default => 'ti-bell',
+                    };
+
                     $actionUrl = $notif->safeActionUrl();
-                    $subject = $notif->subject;
-                    $canQuickConfirm = $notif->event === 'appointment.created'
-                        && $subject instanceof \App\Models\Appointment
-                        && $subject->status === \App\Enums\AppointmentStatus::Pending;
+                    $actionLabel = $notif->action_label ?? 'Randevuya Git';
                 @endphp
-                <li class="sn-item {{ $notif->isRead() ? '' : 'is-unread' }} border-top px-4 py-3" id="notification-{{ $notif->id }}">
-                    <div class="d-flex flex-column flex-md-row gap-3 align-items-md-center">
-                        <div class="d-flex gap-3 flex-grow-1 align-items-start">
-                            <div class="sn-icon rounded-circle bg-{{ $color }}-subtle text-{{ $color }} d-flex align-items-center justify-content-center">
-                                <i class="ti {{ $notif->category->icon() }} fs-4"></i>
+                <li class="sn-item {{ $notif->isRead() ? 'is-read' : 'is-unread' }} border-top"
+                    id="notification-{{ $notif->id }}"
+                    style="--sn-accent: {{ $accentColor }};">
+                    <div class="d-flex flex-column flex-lg-row gap-4 align-items-lg-center justify-content-between">
+                        
+                        {{-- Sol İçerik Tıklama Alanı (Genişletilmiş) --}}
+                        <a href="{{ route('notifications.show', $notif) }}" class="sn-content-link">
+                            {{-- Squircle İkon (Görsel 1) --}}
+                            <div class="sn-icon-sq" style="background-color: {{ $bgSoft }}; color: {{ $accentColor }};">
+                                <i class="ti {{ $iconClass }} fs-4"></i>
                             </div>
-                            <div class="flex-grow-1">
+
+                            {{-- Detay Alanı --}}
+                            <div class="sn-content-body">
+                                {{-- Başlık & Rozetler --}}
                                 <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-                                    <span class="fw-bold text-dark">{{ $notif->title }}</span>
-                                    <span class="badge bg-{{ $color }}-subtle text-{{ $color }} rounded-pill px-2 py-1" style="font-size: 10.5px;">{{ $notif->category->label() }}</span>
+                                    <span class="fw-bold text-dark fs-6">{{ $notif->title }}</span>
+                                    <span class="badge rounded-pill"
+                                          style="background-color: {{ $bgSoft }}; color: {{ $badgeTextColor }}; font-size: 11px; font-weight: 600; padding: 2.5px 9px;">
+                                        {{ $notif->category->label() }}
+                                    </span>
                                     @unless($notif->isRead())
-                                        <span class="badge bg-primary rounded-pill px-2 py-1" style="font-size: 10px;">Yeni</span>
+                                        <span class="badge rounded-pill text-white fw-bold"
+                                              style="background-color: #E66239; font-size: 10px; padding: 2.5px 8px;">
+                                            Yeni
+                                        </span>
                                     @endunless
                                 </div>
-                                <div class="text-secondary small text-break" style="max-width: 720px;">{{ $notif->body }}</div>
 
-                                @if($subject instanceof \App\Models\Product)
-                                    <div class="small mt-1">
-                                        <span class="text-muted">Güncel stok:</span>
-                                        <span class="fw-semibold {{ $subject->stock_quantity <= 0 ? 'text-danger' : 'text-dark' }}">{{ $subject->stock_quantity }} adet</span>
-                                    </div>
-                                @elseif($subject instanceof \App\Models\Appointment && $notif->category === \App\Enums\AdminNotificationCategory::Appointment)
-                                    <div class="small mt-1">
-                                        <span class="text-muted">Güncel durum:</span>
-                                        <span class="badge bg-{{ $subject->status->color() }}-subtle text-{{ $subject->status->color() }} rounded-pill">{{ $subject->status->label() }}</span>
-                                    </div>
-                                @endif
+                                {{-- Bildirim Metni (Genişleyen ve taşmayan şık tipografi) --}}
+                                <div class="sn-body-text">
+                                    {{ $notif->body }}
+                                </div>
 
-                                <div class="text-muted mt-1" style="font-size: 11.5px;" title="{{ $notif->created_at?->format('d.m.Y H:i') }}">
-                                    <i class="ti ti-clock me-1"></i>{{ $notif->created_at?->diffForHumans() }}
+                                {{-- Zaman (Saat ikonu ile) --}}
+                                <div class="text-muted d-flex align-items-center" style="font-size: 11.5px; color: #9CA3AF !important;" title="{{ $notif->created_at?->format('d.m.Y H:i') }}">
+                                    <i class="ti ti-clock me-1"></i>
+                                    <span>{{ $notif->created_at?->diffForHumans() }}</span>
                                 </div>
                             </div>
-                        </div>
+                        </a>
 
-                        <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-md-auto ps-5 ps-md-0">
-                            @if($canQuickConfirm)
-                                <form method="POST" action="{{ route('appointments.update-status', $subject) }}">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="status" value="{{ \App\Enums\AppointmentStatus::Confirmed->value }}">
-                                    <button type="submit" class="btn btn-success btn-sm rounded-pill px-3 fw-semibold" id="quick-confirm-{{ $notif->id }}">
-                                        <i class="ti ti-check me-1"></i> Onayla
-                                    </button>
-                                </form>
-                            @endif
-
+                        {{-- Sağ Butonlar --}}
+                        <div class="sn-actions-wrap">
                             @if($actionUrl)
-                                <a href="{{ route('notifications.open', $notif) }}" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold" id="open-notification-{{ $notif->id }}">
-                                    {{ $notif->action_label ?? 'Görüntüle' }} <i class="ti ti-arrow-right ms-1"></i>
+                                <a href="{{ route('notifications.open', $notif) }}"
+                                   class="sn-btn-action"
+                                   id="open-notification-{{ $notif->id }}">
+                                    <span>{{ $actionLabel }}</span>
+                                    <i class="ti ti-arrow-right ms-1"></i>
                                 </a>
                             @endif
 
-                            <form method="POST" action="{{ route('notifications.toggle-read', $notif) }}">
+                            {{-- Okundu / Okunmadı Yap Butonu --}}
+                            <form method="POST" action="{{ route('notifications.toggle-read', $notif) }}" class="m-0">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="btn btn-light border btn-sm rounded-circle" title="{{ $notif->isRead() ? 'Okunmadı yap' : 'Okundu yap' }}" id="toggle-read-{{ $notif->id }}">
-                                    <i class="ti {{ $notif->isRead() ? 'ti-mail' : 'ti-mail-opened' }}"></i>
+                                <button type="submit"
+                                        class="sn-btn-icon"
+                                        title="{{ $notif->isRead() ? 'Okunmadı yap' : 'Okundu yap' }}"
+                                        id="toggle-read-{{ $notif->id }}">
+                                    <i class="ti {{ $notif->isRead() ? 'ti-mail-opened' : 'ti-mail' }} fs-5"></i>
                                 </button>
                             </form>
 
-                            <form method="POST" action="{{ route('notifications.destroy', $notif) }}" onsubmit="return confirm('Bu bildirimi silmek istediğinize emin misiniz?');">
+                            {{-- Sil Butonu --}}
+                            <form method="POST" action="{{ route('notifications.destroy', $notif) }}" onsubmit="return confirm('Bu bildirimi silmek istediğinize emin misiniz?');" class="m-0">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger border-0 btn-sm rounded-circle" title="Sil" id="delete-notification-{{ $notif->id }}">
+                                <button type="submit"
+                                        class="sn-btn-icon sn-btn-icon-danger"
+                                        title="Sil"
+                                        id="delete-notification-{{ $notif->id }}">
                                     <i class="ti ti-trash fs-5"></i>
                                 </button>
                             </form>
@@ -202,9 +469,10 @@
         </ul>
     </div>
 
+    {{-- Sayfalama (Görsel 2) --}}
     @if($notifications->hasPages())
-        <div class="card-footer bg-transparent border-top px-4 py-3">
-            {{ $notifications->links() }}
+        <div class="card-footer bg-transparent border-top px-4 px-lg-5 py-3.5">
+            {{ $notifications->links('partials.pagination') }}
         </div>
     @endif
 </div>

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mobile_android/models/available_slot_model.dart';
 
 class ApiService {
   // Yerel emülatör testi için varsayılan IP. Canlı ortam veya fiziksel cihaz testi için kendi IP'nizle değiştirilebilir.
@@ -205,6 +206,28 @@ class ApiService {
       return body['data'] as List;
     } else {
       throw Exception(body['message'] ?? 'Randevu listesi alınamadı.');
+    }
+  }
+
+  // Merkezi Slot Servisi: Belirli personel, tarih ve toplam işlem süresine göre müsait slotları getir
+  static Future<List<AvailableSlotModel>> getAvailableSlots({
+    required int barberId,
+    required String date,
+    required int duration,
+  }) async {
+    final headers = await _getHeaders();
+    final url = '$baseUrl/mobile/barbers/$barberId/available-slots?date=$date&duration=$duration';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+
+    final body = jsonDecode(response.body);
+    if (response.statusCode == 200 && body['success'] == true) {
+      final list = body['data'] as List;
+      return list.map((item) => AvailableSlotModel.fromMap(item as Map<String, dynamic>)).toList();
+    } else {
+      throw Exception(body['message'] ?? 'Müsait saatler alınamadı.');
     }
   }
 

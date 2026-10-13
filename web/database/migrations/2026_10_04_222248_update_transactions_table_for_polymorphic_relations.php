@@ -30,8 +30,10 @@ return new class extends Migration
 
         // Drop old foreign keys and columns
         Schema::table('transactions', function (Blueprint $table) {
-            $table->dropForeign('fk_transactions_appointment');
-            $table->dropForeign('fk_transactions_expense');
+            if (\Illuminate\Support\Facades\DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign('fk_transactions_appointment');
+                $table->dropForeign('fk_transactions_expense');
+            }
             $table->dropColumn(['appointment_id', 'expense_id']);
         });
     }

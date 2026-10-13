@@ -76,8 +76,15 @@ class GuestAppointmentController extends Controller
                 'id' => (string)$appt->id
             ], 'Appointment created successfully');
 
+        } catch (\App\Exceptions\AppointmentConflictException $e) {
+            if (DB::transactionLevel() > 0) {
+                DB::rollBack();
+            }
+            return $this->error($e->getMessage(), 409);
         } catch (\Exception $e) {
-            DB::rollBack();
+            if (DB::transactionLevel() > 0) {
+                DB::rollBack();
+            }
             return $this->error($e->getMessage(), 400);
         }
     }

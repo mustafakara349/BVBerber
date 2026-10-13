@@ -167,4 +167,22 @@ class MobileApiController extends Controller
 
         return $this->success($review, 'Yorumunuz başarıyla kaydedildi.');
     }
+
+    public function availableSlots(Request $request, int|string $barberId): JsonResponse
+    {
+        $validated = $request->validate([
+            'date'     => 'required|date_format:Y-m-d|after_or_equal:today',
+            'duration' => 'nullable|integer|min:15|max:480',
+        ]);
+
+        $slotService = app(\App\Services\Contracts\AppointmentSlotServiceInterface::class);
+
+        $slots = $slotService->getAvailableSlots(
+            employeeId: (int) $barberId,
+            date: $validated['date'],
+            duration: (int) ($validated['duration'] ?? 30)
+        );
+
+        return $this->success($slots, 'Available slots retrieved successfully');
+    }
 }

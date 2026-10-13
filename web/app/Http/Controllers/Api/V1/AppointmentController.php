@@ -52,7 +52,13 @@ class AppointmentController extends Controller
         $data = $request->validated();
         $data['created_by'] = $request->user()->id;
 
-        $appointment = $this->appointmentService->createAppointment($data);
+        try {
+            $appointment = $this->appointmentService->createAppointment($data);
+        } catch (\App\Exceptions\AppointmentConflictException $e) {
+            return $this->error($e->getMessage(), 409);
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 422);
+        }
 
         return $this->success(
             new AppointmentResource($appointment),

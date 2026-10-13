@@ -138,6 +138,8 @@ trait MobileDocumentTrait
                 return $this->success([
                     'id' => (string)$appt->id
                 ], 'Appointment created');
+            } catch (\App\Exceptions\AppointmentConflictException $e) {
+                return $this->error($e->getMessage(), 409);
             } catch (\Exception $e) {
                 return $this->error($e->getMessage(), 400);
             }

@@ -34,6 +34,7 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         Route::get('/sale-products', [MobileApiController::class, 'query'])->defaults('collection', 'sale_products');
         Route::get('/appointments/{appointment}/ical', [MobileApiController::class, 'generateIcal']);
         Route::get('/barber-availability', [MobileApiController::class, 'query'])->defaults('collection', 'barberAvailability');
+        Route::get('/barbers/{barberId}/available-slots', [MobileApiController::class, 'availableSlots'])->middleware('throttle:60,1');
         
         // Emulation Endpoints (Made public, they handle their own authorization)
         Route::post('/query', [MobileApiController::class, 'query']);

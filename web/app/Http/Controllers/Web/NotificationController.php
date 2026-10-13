@@ -80,6 +80,17 @@ class NotificationController extends Controller
         ]);
     }
 
+    public function show(AdminNotification $notification): View
+    {
+        Gate::authorize('manage', $notification);
+
+        if (! $notification->isRead()) {
+            $notification->markAsRead();
+        }
+
+        return view('notifications.show', compact('notification'));
+    }
+
     /** Bildirimi okundu yapar ve ilgili işlem ekranına güvenli şekilde yönlendirir. */
     public function open(AdminNotification $notification): RedirectResponse
     {

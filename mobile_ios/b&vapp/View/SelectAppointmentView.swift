@@ -378,9 +378,9 @@ struct SelectAppointmentView: View {
             viewModel.selectedServices.insert(service)
         }
         
-        // If the currently selected time becomes invalid due to duration change, reset it
-        if let time = viewModel.selectedTime, viewModel.isSlotDisabled(time: time) {
-            viewModel.selectedTime = nil
+        // Hizmet süresi değiştiğinde güncel slotları sunucudan tekrar çek
+        Task {
+            await viewModel.fetchBlockedSlots()
         }
     }
     

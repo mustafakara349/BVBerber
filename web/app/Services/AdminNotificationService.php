@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\AdminNotificationCreated;
 use App\Models\AdminNotification;
 use App\Models\User;
 use App\Services\AdminNotifications\AdminAlert;
@@ -50,6 +51,36 @@ class AdminNotificationService
             AdminNotification::insert($rows);
         } catch (Throwable $e) {
             Log::error('[AdminNotification] Bildirim oluşturulamadı', [
+                'event' => $alert->event,
+                'error' => $e->getMessage(),
+            ]);
+
+            return;
+        }
+
+        $this->broadcast($alert, $recipientIds);
+    }
+
+    /**
+     * WebSocket üzerinden hafif bir "yeni bildirim" sinyali yayınlar.
+     * İstemci sinyali alınca kendi listesini/rozetini feed uç noktasından tazeler;
+     * böylece okunma durumu ve yetki kontrolleri tek yerde (sunucu) kalır.
+     * WebSocket sunucusu kapalıysa bildirim yine kaydedilmiş olur, yalnızca anlık itme atlanır.
+     *
+     * @param  list<int>  $recipientIds
+     */
+    private function broadcast(AdminAlert $alert, array $recipientIds): void
+    {
+        try {
+            event(new AdminNotificationCreated($recipientIds, [
+                'event' => $alert->event,
+                'category' => $alert->category->value,
+                'level' => $alert->level->value,
+                'title' => $alert->title,
+                'body' => $alert->body,
+            ]));
+        } catch (Throwable $e) {
+            Log::warning('[AdminNotification] Anlık yayın yapılamadı', [
                 'event' => $alert->event,
                 'error' => $e->getMessage(),
             ]);

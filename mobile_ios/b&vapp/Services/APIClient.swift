@@ -278,4 +278,11 @@ class APIClient {
         let jsonData = try JSONSerialization.data(withJSONObject: data)
         return try await sendRequest(path: "/\(endpoint)", method: "POST", body: jsonData)
     }
+
+    // MARK: - Available Slots
+    
+    func getAvailableSlots(barberId: Int, date: String, duration: Int) async throws -> [AvailableSlot] {
+        let path = "/barbers/\(barberId)/available-slots?date=\(date)&duration=\(duration)"
+        return try await sendRequest(path: path, method: "GET")
+    }
 }

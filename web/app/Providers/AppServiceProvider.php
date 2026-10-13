@@ -16,7 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(
+            \App\Services\Contracts\AppointmentSlotServiceInterface::class,
+            \App\Services\AppointmentSlotService::class
+        );
     }
 
     /**

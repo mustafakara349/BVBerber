@@ -11,12 +11,13 @@
 
     <div>
         <ul class="list-unstyled d-flex align-items-center mb-0 gap-3">
-            {{-- Notifications (canlı akış: notifications.feed) --}}
+            {{-- Notifications (anlık: Reverb WebSocket, yedek: notifications.feed yoklaması) --}}
             <li class="dropdown" id="topbarNotifications"
                 data-feed-url="{{ route('notifications.feed') }}"
+                data-user-id="{{ auth()->id() }}"
                 data-poll-seconds="{{ config('admin_notifications.feed_poll_seconds') }}">
                 <a class="position-relative btn-icon btn-sm btn-light rounded-circle d-flex align-items-center justify-content-center shadow-sm border border-light" data-bs-toggle="dropdown" aria-expanded="false" href="#" role="button" aria-label="Bildirimler" style="width: 38px; height: 38px; transition: all 0.2s ease;">
-                    <i class="ti ti-bell fs-5 text-dark"></i>
+                    <i class="ti ti-bell fs-5 text-dark" id="notificationBellIcon"></i>
                     <span class="position-absolute top-0 start-100 translate-middle p-1.5 bg-danger border border-2 border-white rounded-circle mt-1 ms-n1.5 d-none" id="notificationBadge" style="width: 10px; height: 10px;">
                     </span>
                 </a>
@@ -114,12 +115,27 @@
 </nav>
 
 @push('scripts')
+<style>
+    @keyframes sn-bell-ring {
+        0%, 100% { transform: rotate(0); }
+        15% { transform: rotate(18deg); }
+        30% { transform: rotate(-16deg); }
+        45% { transform: rotate(12deg); }
+        60% { transform: rotate(-8deg); }
+        75% { transform: rotate(4deg); }
+    }
+    #notificationBellIcon.sn-ring { display: inline-block; transform-origin: 50% 0; animation: sn-bell-ring .9s ease-in-out; }
+    @keyframes sn-item-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    #notificationList li.sn-new { animation: sn-item-in .35s ease-out; }
+</style>
 <script>
     /**
-     * Sistem bildirimleri canlı akışı.
-     * - Tek bir polling döngüsü çalışır; sonuç `admin-notifications:update` olayı ile yayınlanır
-     *   (bildirimler sayfası aynı veriyi ek istek atmadan kullanır).
-     * - Sekme arka plandayken istek atılmaz.
+     * Sistem bildirimleri — anlık akış.
+     * - Birincil: Reverb WebSocket özel kanalı (admin.notifications.{userId}). Sinyal gelince
+     *   feed tek sefer çekilir; okunma/yetki durumu daima sunucudan gelir.
+     * - Yedek: WebSocket bağlantısı yoksa/koptuysa feed belirli aralıkla yoklanır.
+     *   Bağlantı geri geldiğinde yoklama durur ve aradaki bildirimler için bir kez senkronize edilir.
+     * - Sonuç `admin-notifications:update` olayı ile yayınlanır (bildirimler sayfası da kullanır).
      * - İçerik yalnızca textContent ile basılır (XSS'e karşı güvenli).
      */
     (function () {
@@ -127,12 +143,18 @@
         if (!root) return;
 
         const feedUrl = root.dataset.feedUrl;
-        const intervalMs = Math.max(10, Number(root.dataset.pollSeconds || 20)) * 1000;
+        const userId = root.dataset.userId;
+        const intervalMs = Math.max(15, Number(root.dataset.pollSeconds || 60)) * 1000;
         const list = document.getElementById('notificationList');
         const dot = document.getElementById('notificationBadge');
         const label = document.getElementById('notificationUnreadLabel');
+        const bell = document.getElementById('notificationBellIcon');
         let timer = null;
         let inFlight = false;
+        let pending = false;
+        let socketConnected = false;
+        let lastLatestId = null;
+        let audioCtx = null;
 
         function el(tag, className, text) {
             const node = document.createElement(tag);
@@ -167,8 +189,11 @@
             return li;
         }
 
-        function render(data) {
+        function render(data, opts) {
             const unread = Number(data.unread_count || 0);
+            const latestId = Number(data.latest_id || 0);
+            const isNew = lastLatestId !== null && latestId > lastLatestId;
+
             dot.classList.toggle('d-none', unread === 0);
             label.classList.toggle('d-none', unread === 0);
             label.textContent = unread + ' Yeni';
@@ -180,16 +205,57 @@
                 empty.append('Henüz bildirim yok.');
                 list.appendChild(empty);
             } else {
-                data.items.forEach(item => list.appendChild(renderItem(item)));
+                data.items.forEach(item => {
+                    const li = renderItem(item);
+                    if (isNew && Number(item.id) > lastLatestId) li.classList.add('sn-new');
+                    list.appendChild(li);
+                });
             }
+
+            if (isNew && opts && opts.alert) ringBell();
+            lastLatestId = latestId;
 
             document.dispatchEvent(new CustomEvent('admin-notifications:update', {
                 detail: { unreadCount: unread, latestId: data.latest_id, items: data.items },
             }));
         }
 
-        async function poll() {
-            if (inFlight || document.hidden) return;
+        /** Zil animasyonu + kısa, yumuşak bir uyarı sesi (harici dosya gerektirmez). */
+        function ringBell() {
+            bell.classList.remove('sn-ring');
+            void bell.offsetWidth;
+            bell.classList.add('sn-ring');
+
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') return; // kullanıcı etkileşimi olmadan tarayıcı sese izin vermez
+                [[880, 0], [1320, 0.12]].forEach(([freq, delay]) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    const t = audioCtx.currentTime + delay;
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.0001, t);
+                    gain.gain.exponentialRampToValueAtTime(0.08, t + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+                    osc.connect(gain).connect(audioCtx.destination);
+                    osc.start(t);
+                    osc.stop(t + 0.4);
+                });
+            } catch (e) { /* ses opsiyoneldir */ }
+        }
+
+        // Tarayıcı ses politikası: ilk kullanıcı etkileşiminde ses bağlamını aç.
+        document.addEventListener('pointerdown', function unlock() {
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                audioCtx.resume();
+            } catch (e) {}
+            document.removeEventListener('pointerdown', unlock);
+        });
+
+        async function fetchFeed(opts) {
+            if (inFlight) { pending = true; return; }
             inFlight = true;
             try {
                 const response = await fetch(feedUrl, {
@@ -197,27 +263,61 @@
                     credentials: 'same-origin',
                     cache: 'no-store',
                 });
-                if (response.ok) render(await response.json());
+                if (response.ok) render(await response.json(), opts);
             } catch (e) {
-                // Ağ hatası: bir sonraki döngüde yeniden denenir.
+                // Ağ hatası: bir sonraki sinyal/yoklamada yeniden denenir.
             } finally {
                 inFlight = false;
+                if (pending) { pending = false; fetchFeed(opts); }
             }
         }
 
-        function start() {
-            if (timer) return;
-            poll();
-            timer = setInterval(poll, intervalMs);
+        // ---- Yedek yoklama (yalnızca WebSocket yokken) ----
+        function startPolling() {
+            if (timer || socketConnected) return;
+            timer = setInterval(() => { if (!document.hidden) fetchFeed({ alert: true }); }, intervalMs);
         }
 
-        function stop() {
+        function stopPolling() {
             clearInterval(timer);
             timer = null;
         }
 
-        document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
-        start();
+        // ---- WebSocket (Reverb) ----
+        function connectSocket() {
+            if (!window.Echo || !userId || connectSocket.done) return;
+            connectSocket.done = true;
+
+            window.Echo.private('admin.notifications.' + userId)
+                .listen('.notification.created', () => fetchFeed({ alert: true }));
+
+            const conn = window.Echo.connector?.pusher?.connection;
+            if (!conn) return;
+
+            const onState = (state) => {
+                const wasConnected = socketConnected;
+                socketConnected = state === 'connected';
+                if (socketConnected) {
+                    stopPolling();
+                    if (!wasConnected) fetchFeed({ alert: true }); // kopukluk sırasında kaçanları al
+                } else {
+                    startPolling();
+                }
+            };
+
+            conn.bind('state_change', (s) => onState(s.current));
+            onState(conn.state);
+        }
+
+        // İlk yükleme (ses/animasyon yok)
+        fetchFeed({ alert: false });
+        startPolling();
+
+        if (window.Echo) connectSocket();
+        else document.addEventListener('echo:ready', connectSocket, { once: true });
+
+        // Sekme tekrar görünür olduğunda tek seferlik senkron
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) fetchFeed({ alert: false }); });
     })();
 </script>
 @endpush

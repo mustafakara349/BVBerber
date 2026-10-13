@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     // -------------------------------------------------------------------------
     Route::middleware(['role:super_admin,owner,manager,receptionist,barber'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/live-sections', [DashboardController::class, 'liveSections'])->name('dashboard.live-sections');
         Route::get('/dashboard/appointment-stats', [DashboardController::class, 'appointmentStats'])->name('dashboard.appointment-stats');
         Route::get('/dashboard/top-services', [DashboardController::class, 'topServices'])->name('dashboard.top-services');
 
@@ -49,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/feed', 'feed')->name('feed')->middleware('throttle:60,1');
                 Route::post('/mark-all-read', 'markAllRead')->name('mark-all-read');
                 Route::delete('/read', 'destroyRead')->name('destroy-read');
+                Route::get('/{notification}', 'show')->name('show')->whereNumber('notification');
                 Route::get('/{notification}/open', 'open')->name('open')->whereNumber('notification');
                 Route::patch('/{notification}/toggle-read', 'toggleRead')->name('toggle-read')->whereNumber('notification');
                 Route::delete('/{notification}', 'destroy')->name('destroy')->whereNumber('notification');

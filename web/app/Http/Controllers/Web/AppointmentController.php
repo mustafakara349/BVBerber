@@ -21,7 +21,8 @@ class AppointmentController extends Controller
     public function __construct(
         private AppointmentRepositoryInterface $appointmentRepo,
         private AppointmentService $appointmentService,
-        private DashboardService $dashboardService
+        private DashboardService $dashboardService,
+        private \App\Services\Contracts\AppointmentSlotServiceInterface $slotService
     ) {}
 
     public function index(Request $request): View
@@ -135,7 +136,11 @@ class AppointmentController extends Controller
         $data['source'] = 'admin_panel';
         $data['status'] = AppointmentStatus::Confirmed->value;
 
-        $this->appointmentService->createAppointment($data);
+        try {
+            $this->appointmentService->createAppointment($data);
+        } catch (\App\Exceptions\AppointmentConflictException $e) {
+            return back()->withErrors(['start_at' => $e->getMessage()])->withInput();
+        }
 
         // Yeni randevu oluşturulduğunda dashboard cache'ini temizle
         $this->dashboardService->flushBranchCache((int) $data['branch_id']);
@@ -192,120 +197,12 @@ class AppointmentController extends Controller
             'duration' => 'nullable|integer|min:0'
         ]);
 
-        $date = $request->date;
-        $employeeId = $request->employee_id;
-        $branchId = session('active_branch_id', 1);
-        $duration = $request->get('duration', 30);
-
-        $employee = Employee::findOrFail($employeeId);
-
-        // İşe başlama tarihinden önce randevu alınamaz
-        if ($employee->hire_date && \Carbon\Carbon::parse($date)->startOfDay()->lt($employee->hire_date->startOfDay())) {
-            return response()->json([]);
-        }
-
-        $appointments = Appointment::forBranch($branchId)
-            ->where('employee_id', $employeeId)
-            ->whereDate('start_at', $date)
-            ->whereNotIn('status', ['cancelled', 'rejected', 'no_show'])
-            ->get();
-
-        // Çalışanın İzin ve Kısıtlamalarını Çek
-        $timeBlocks = \App\Models\EmployeeTimeBlock::where('employee_id', $employeeId)
-            ->where('date', $date)
-            ->get();
-
-        // Eğer o gün tüm gün izinliyse boş dön (randevu alınamaz)
-        if ($timeBlocks->where('type', 'full_day')->count() > 0) {
-            return response()->json([]);
-        }
-
-        // Dynamically fetch branch working hours
-        $branch = \App\Models\Branch::find($branchId);
-        $openTimeStr = '08:00:00';
-        $closeTimeStr = '20:00:00';
-
-        if ($branch) {
-            if ($branch->opening_time) {
-                $openTimeStr = $branch->opening_time instanceof \DateTimeInterface 
-                    ? $branch->opening_time->format('H:i:s') 
-                    : (string) $branch->opening_time;
-            }
-            if ($branch->closing_time) {
-                $closeTimeStr = $branch->closing_time instanceof \DateTimeInterface 
-                    ? $branch->closing_time->format('H:i:s') 
-                    : (string) $branch->closing_time;
-            }
-        }
-
-        $slots = [];
-        $startTime = \Carbon\Carbon::parse($date . ' ' . $openTimeStr);
-        $endTime = \Carbon\Carbon::parse($date . ' ' . $closeTimeStr);
-
-        while ($startTime < $endTime) {
-            $slotTime = $startTime->copy();
-            $isAvailable = true;
-
-            // Randevu çakışması
-            foreach ($appointments as $apt) {
-                $aptStart = \Carbon\Carbon::parse($apt->start_at);
-                $aptEnd = $apt->end_at ? \Carbon\Carbon::parse($apt->end_at) : $aptStart->copy()->addMinutes($apt->total_duration ?? 30);
-                
-                if ($slotTime >= $aptStart && $slotTime < $aptEnd) {
-                    $isAvailable = false;
-                    break;
-                }
-            }
-            
-            // Saatlik İzin (Bloklama) çakışması
-            if ($isAvailable) {
-                foreach ($timeBlocks as $block) {
-                    if ($block->type === 'partial_time') {
-                        $blockStart = \Carbon\Carbon::parse($date . ' ' . $block->start_time);
-                        $blockEnd = \Carbon\Carbon::parse($date . ' ' . $block->end_time);
-                        
-                        if ($slotTime >= $blockStart && $slotTime < $blockEnd) {
-                            $isAvailable = false;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if ($date === today()->toDateString() && $slotTime <= now()) {
-                $isAvailable = false;
-            }
-
-            $slots[] = [
-                'time' => $slotTime->format('H:i'),
-                'is_available' => $isAvailable
-            ];
-
-            $startTime->addMinutes(30);
-        }
-
-        $requiredSlotsCount = max(1, (int) ceil($duration / 30));
-
-        if ($requiredSlotsCount > 1) {
-            foreach ($slots as $index => &$slot) {
-                if (!$slot['is_available']) {
-                    continue;
-                }
-
-                $consecutiveAvailable = true;
-                for ($i = 1; $i < $requiredSlotsCount; $i++) {
-                    if (!isset($slots[$index + $i]) || !$slots[$index + $i]['is_available']) {
-                        $consecutiveAvailable = false;
-                        break;
-                    }
-                }
-
-                if (!$consecutiveAvailable) {
-                    $slot['is_available'] = false;
-                }
-            }
-            unset($slot); // break the reference with the last element
-        }
+        $slots = $this->slotService->getAvailableSlots(
+            employeeId: (int) $request->employee_id,
+            date: $request->date,
+            duration: (int) $request->get('duration', 30),
+            branchId: (int) session('active_branch_id', 1)
+        );
 
         return response()->json($slots);
     }

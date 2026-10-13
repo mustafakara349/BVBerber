@@ -57,7 +57,8 @@ class AppointmentsViewModel: ObservableObject {
     @Published var validatedRewardProductName: String? = nil
 
     @Published var availableDates: [Date] = []
-    @Published var blockedSlots: [String] = []      // barberAvailability.blockedSlots + aktif randevular
+    @Published var availableSlots: [AvailableSlot] = [] // Sunucudan gelen kesin slotlar
+    @Published var blockedSlots: [String] = []          // Geriye dönük uyumluluk için
     @Published var barberAvailabilityMap: [String: BarberAvailability] = [:]
 
     // MARK: - Loading
@@ -119,24 +120,23 @@ class AppointmentsViewModel: ObservableObject {
     func isSlotDisabled(time: String) -> Bool {
         if TimeManager.isPastTime(selectedDate: selectedDate, time: time) { return true }
         
-        let allSlots = currentTimeSlots
-        guard let startIndex = allSlots.firstIndex(of: time) else { return true }
-        
-        let requiredCount = requiredSlotsCount
-        for i in 0..<requiredCount {
-            if startIndex + i >= allSlots.count {
-                return true // Not enough slots remaining
-            }
-            let checkTime = allSlots[startIndex + i]
-            if blockedSlots.contains(checkTime) {
-                return true
-            }
+        // Sunucu tarafından hesaplanan slot doğrulaması (Single Source of Truth)
+        if let slot = availableSlots.first(where: { $0.time == time }) {
+            return !slot.isAvailable
         }
+        
+        if blockedSlots.contains(time) {
+            return true
+        }
+        
         return false
     }
 
-    /// Seçili berberin çalışma saatleri ve uygunluk durumue slot listesi
+    /// Seçili berberin çalışma saatleri ve uygunluk durumuna göre slot listesi
     var currentTimeSlots: [String] {
+        if !availableSlots.isEmpty {
+            return availableSlots.map { $0.time }
+        }
         let dayName = DateManager.weekdayName(from: selectedDate)
         return TimeManager.generateSlots(for: store?.workingHours?[dayName])
     }
@@ -324,37 +324,35 @@ class AppointmentsViewModel: ObservableObject {
         Task { await fetchBlockedSlots() }
     }
 
-    // MARK: - Bloke Saatler
+    // MARK: - Bloke ve Müsait Saatler (Sunucu Doğrulamalı)
 
     func fetchBlockedSlots() async {
-        guard let barber = selectedBarber, let barberId = barber.id else {
+        guard let barber = selectedBarber, let barberId = barber.id, let bId = Int(barberId) else {
+            availableSlots = []
             blockedSlots = []
             return
         }
 
         let dateStr = selectedDateString
-        var blocked: [String] = []
+        let duration = max(15, totalServiceDuration)
+        isLoadingAvailability = true
 
-        // 1) barberAvailability.blockedSlots
-        if let avail = barberAvailabilityMap[dateStr] {
-            blocked += avail.effectiveBlockedSlots
-        }
-
-        // 2) Aynı berberin aynı gündeki aktif randevuları
         do {
-            let existingAppts: [Appointment] = try await db.fetchCollection(
-                "appointments",
-                whereFields: [("barberId", barberId), ("date", dateStr)]
-            )
-            let bookedTimes = existingAppts
-                .filter { $0.isActive }
-                .map { $0.time }
-            blocked += bookedTimes
+            let slots = try await db.getAvailableSlots(barberId: bId, date: dateStr, duration: duration)
+            self.availableSlots = slots
+            self.blockedSlots = slots.filter { !$0.isAvailable }.map { $0.time }
+
+            // Eğer seçilen saat yeni süreye veya müsaitliğe göre kapanmışsa seçimi sıfırla
+            if let time = selectedTime, isSlotDisabled(time: time) {
+                selectedTime = nil
+            }
         } catch {
-            showError(message: "Randevu kontrol hatası: \(error.localizedDescription)")
+            print("Slot getirme hatası: \(error.localizedDescription)")
+            self.availableSlots = []
+            self.blockedSlots = []
         }
 
-        blockedSlots = Array(Set(blocked)) // tekrarları temizle
+        isLoadingAvailability = false
     }
 
     // MARK: - Randevu Oluştur
@@ -376,32 +374,6 @@ class AppointmentsViewModel: ObservableObject {
         
         isLoading = true
         defer { isLoading = false }
-
-        // MARK: Veritabanı Çakışma Kontrolü
-        // Kaydetmeden önce seçilen berber + tarih + saat için aktif kayıt var mı kontrol et
-        do {
-            let conflicting: [Appointment] = try await db.fetchCollection(
-                "appointments",
-                whereFields: [
-                    ("barberId", barberId),
-                    ("date", selectedDateString),
-                    ("time", time),
-                    ("status", "active")
-                ]
-            )
-            if !conflicting.isEmpty {
-                showError(
-                    title: "Saat Dolu",
-                    message: "Bu saat müsait değildir, lütfen farklı bir saat seçiniz."
-                )
-                // Bloke listesini de güncelle, kullanıcı anında görsün
-                await fetchBlockedSlots()
-                return false
-            }
-        } catch {
-            // Kontrol hatası durumunda kaydetmeyi engelleme; sunucu tarafı catch eder
-            print("Çakışma kontrolü hatası: \(error.localizedDescription)")
-        }
 
         let serviceIds = Array(selectedServices.compactMap { $0.id })
         let serviceNames = selectedServices.map { $0.name }.joined(separator: " + ")
@@ -431,7 +403,9 @@ class AppointmentsViewModel: ObservableObject {
             await fetchAppointments()
             return true
         } catch {
-            showError(title: "Hata", message: "Randevu oluşturulamadı: \(error.localizedDescription)")
+            showError(title: "Uyarı", message: error.localizedDescription)
+            // Çakışma durumunda güncel slotları sunucudan tekrar çek
+            await fetchBlockedSlots()
             return false
         }
     }
@@ -470,7 +444,8 @@ class AppointmentsViewModel: ObservableObject {
             _ = try await db.postData(to: "guest-appointment", data: data)
             return true
         } catch {
-            showError(title: "Hata", message: "Randevu oluşturulamadı: \(error.localizedDescription)")
+            showError(title: "Uyarı", message: error.localizedDescription)
+            await fetchBlockedSlots()
             return false
         }
     }

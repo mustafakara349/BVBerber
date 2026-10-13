@@ -12,171 +12,14 @@
         </div>
     </div>
 
-    {{-- Pending Appointments Row --}}
-    @if($pendingAppointments->isNotEmpty())
-        <div class="row g-3 mt-1 mb-3">
-            <div class="col-12">
-                <div class="card border-warning border-opacity-50 shadow-sm">
-                    <div
-                        class="card-header bg-warning bg-opacity-10 d-flex justify-content-between align-items-center px-4 py-3 border-bottom border-warning border-opacity-25">
-                        <h4 class="mb-0 h5 text-warning-emphasis"><i class="ti ti-clock-exclamation me-2"></i>Onay Bekleyen
-                            Randevular</h4>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0 border-top-0">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th class="ps-4 text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Tarih / Saat
-                                        </th>
-                                        <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Müşteri</th>
-                                        <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Berber</th>
-                                        <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Hizmet</th>
-                                        <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Tutar</th>
-                                        <th class="text-end pe-4 text-uppercase text-muted fs-7 fw-semibold py-3 border-0">İşlem
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="border-top-0">
-                                    @foreach($pendingAppointments as $apt)
-                                        <tr>
-                                            <td class="ps-4">
-                                                <div
-                                                    class="d-inline-flex align-items-center justify-content-center px-3 py-2 rounded-2 bg-dark text-white fw-bold shadow-sm">
-                                                    {{ $apt->start_at->format('d.m.Y') }} <i
-                                                        class="ti ti-clock ms-2 me-1 opacity-75"></i>
-                                                    {{ $apt->start_at->format('H:i') }}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    @if($apt->customer && $apt->customer->profile_photo_url)
-                                                        <img src="{{ $apt->customer->profile_photo_url }}" class="rounded-circle border border-warning border-opacity-25 shadow-sm me-3 object-fit-cover" style="width: 32px; height: 32px;" alt="{{ $apt->customer->full_name }}">
-                                                    @else
-                                                        <div class="avatar avatar-sm rounded-circle bg-warning-subtle text-warning border border-warning border-opacity-25 me-3 d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 32px; height: 32px; font-size: 0.85rem;">
-                                                            {{ mb_substr($apt->customer->first_name ?? 'M', 0, 1) }}{{ mb_substr($apt->customer->last_name ?? 'M', 0, 1) }}
-                                                        </div>
-                                                    @endif
-                                                    <div>
-                                                        <span
-                                                            class="d-block fw-bold text-dark">{{ $apt->customer->full_name ?? 'Bilinmeyen Müşteri' }}</span>
-                                                        <small class="text-muted"><i
-                                                                class="ti ti-phone me-1"></i>{{ $apt->customer->phone ?? 'Belirtilmemiş' }}</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="fw-medium text-dark">{{ $apt->employee->user->full_name ?? '-' }}</span>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
-                                                    @foreach($apt->appointmentServices as $aps)
-                                                        <span class="badge bg-light text-secondary border px-2 py-1"><i
-                                                                class="ti ti-check me-1"></i>{{ $aps->service->name }}</span>
-                                                    @endforeach
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="fw-bold text-dark fs-6">₺{{ number_format($apt->total_price, 2, ',', '.') }}</span>
-                                                @if($apt->appliedCoupon)
-                                                    <a tabindex="0" class="text-info ms-1" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Kupon Kullanıldı" data-bs-content="Kupon: {{ $apt->appliedCoupon->code }} | İndirim: ₺{{ number_format($apt->discount_amount, 2, ',', '.') }}"><i class="ti ti-info-circle fs-5"></i></a>
-                                                @elseif($apt->appliedCampaign)
-                                                    <a tabindex="0" class="text-info ms-1" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Kampanya Kullanıldı" data-bs-content="Kampanya: {{ $apt->appliedCampaign->title }} | İndirim: ₺{{ number_format($apt->discount_amount, 2, ',', '.') }}"><i class="ti ti-info-circle fs-5"></i></a>
-                                                @endif
-                                            </td>
-                                            <td class="text-end pe-4">
-                                                <div class="d-flex gap-2 justify-content-end align-items-center">
-                                                    <form action="{{ route('appointments.update-status', $apt) }}" method="POST"
-                                                        class="d-inline">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <input type="hidden" name="status" value="confirmed">
-                                                        <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm" title="Onayla">
-                                                            <i class="ti ti-check me-1"></i>Onayla
-                                                        </button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 fw-bold shadow-sm btn-reject-trigger" 
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#rejectReasonModal"
-                                                            data-url="{{ route('appointments.update-status', $apt) }}"
-                                                            title="Reddet">
-                                                        <i class="ti ti-x me-1"></i>Reddet
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
+    {{-- Pending Appointments Section (Live Container) --}}
+    <div id="pendingAppointmentsSection">
+        @include('dashboard.partials.pending_appointments')
+    </div>
 
-    {{-- Revenue Widget Cards --}}
-    <div class="row g-3 mb-3">
-        <div class="col-lg-3 col-12">
-            <div class="card p-4 bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-2">
-                <div class="d-flex gap-3">
-                    <div class="icon-shape icon-md bg-primary text-white rounded-2">
-                        <i class="ti ti-calendar-event fs-4"></i>
-                    </div>
-                    <div>
-                        <h2 class="mb-3 fs-6">Bugünkü Randevular</h2>
-                        <h3 class="fw-bold mb-0">{{ $widgets['appointments']['today_total'] ?? 0 }}</h3>
-                        <p class="text-primary mb-0 small">{{ $widgets['appointments']['today_completed'] ?? 0 }} tamamlandı
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-12">
-            <div class="card p-4 bg-success bg-opacity-10 border border-success border-opacity-25 rounded-2">
-                <div class="d-flex gap-3">
-                    <div class="icon-shape icon-md bg-success text-white rounded-2">
-                        <i class="ti ti-currency-lira fs-4"></i>
-                    </div>
-                    <div>
-                        <h2 class="mb-3 fs-6">Günlük Gelir</h2>
-                        <h3 class="fw-bold mb-0">₺{{ number_format($widgets['revenue']['daily'] ?? 0, 0, ',', '.') }}</h3>
-                        <p class="text-success mb-0 small">Bugün</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-12">
-            <div class="card p-4 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded-2">
-                <div class="d-flex gap-3">
-                    <div class="icon-shape icon-md bg-danger text-white rounded-2">
-                        <i class="ti ti-coins fs-4"></i>
-                    </div>
-                    <div>
-                        <h2 class="mb-3 fs-6">Günlük Gider</h2>
-                        <h3 class="fw-bold mb-0">₺{{ number_format($widgets['revenue']['daily_expense'] ?? 0, 0, ',', '.') }}</h3>
-                        <p class="text-danger mb-0 small">Bugün</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-12">
-            <div class="card p-4 bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded-2">
-                <div class="d-flex gap-3">
-                    <div class="icon-shape icon-md bg-warning text-white rounded-2">
-                        <i class="ti ti-users fs-4"></i>
-                    </div>
-                    <div>
-                        <h2 class="mb-3 fs-6">Yeni Müşteriler</h2>
-                        <h3 class="fw-bold mb-0">{{ $widgets['customers']['new_this_month'] ?? 0 }}</h3>
-                        <p class="text-warning mb-0 small">Bu ay</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {{-- Revenue Widget Cards (Live Container) --}}
+    <div id="revenueWidgetsSection">
+        @include('dashboard.partials.revenue_widgets')
     </div>
 
     {{-- Financial Summary Cards --}}
@@ -471,305 +314,15 @@
         </div>
     </div>
 
-    {{-- Awaiting Action (Expired) Appointments Row --}}
-    @if(isset($awaitingActionAppointments) && $awaitingActionAppointments->count() > 0)
-    <div class="row g-3 mt-1 mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden border-start border-warning border-4">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center px-4 py-3 border-bottom">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="p-2 bg-warning-subtle text-warning rounded-3 d-inline-flex align-items-center justify-content-center">
-                            <i class="ti ti-clock-exclamation fs-4"></i>
-                        </span>
-                        <h4 class="mb-0 h5 text-dark fw-bold">İşlem Bekleyen Randevular (Süresi Dolanlar)</h4>
-                    </div>
-                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
-                        {{ $awaitingActionAppointments->count() }} Randevu Eylem Bekliyor
-                    </span>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0 text-dark">
-                            <thead class="bg-light text-secondary">
-                                <tr>
-                                    <th class="ps-4 py-3 text-uppercase fs-7 fw-bold border-0">Saat / Tarih</th>
-                                    <th class="py-3 text-uppercase fs-7 fw-bold border-0">Müşteri</th>
-                                    <th class="py-3 text-uppercase fs-7 fw-bold border-0">Berber</th>
-                                    <th class="py-3 text-uppercase fs-7 fw-bold border-0">Hizmetler</th>
-                                    <th class="py-3 text-uppercase fs-7 fw-bold border-0">Tutar</th>
-                                    <th class="pe-4 py-3 text-end text-uppercase fs-7 fw-bold border-0">Hızlı Eylemler</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($awaitingActionAppointments as $apt)
-                                <tr class="border-bottom border-light">
-                                    <td class="ps-4">
-                                        <div class="d-flex flex-column">
-                                            <span class="fw-bold text-dark fs-6">{{ $apt->start_at->format('H:i') }}</span>
-                                            <span class="text-secondary small">{{ $apt->start_at->format('d.m.Y') }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            @if($apt->customer && $apt->customer->profile_photo_url)
-                                                <img src="{{ $apt->customer->profile_photo_url }}" class="rounded-circle border border-warning border-opacity-25 shadow-sm me-3 object-fit-cover" style="width: 32px; height: 32px;" alt="{{ $apt->customer->full_name }}">
-                                            @else
-                                                <div class="avatar avatar-sm rounded-circle bg-warning-subtle text-warning border border-warning border-opacity-25 me-3 d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 32px; height: 32px; font-size: 0.85rem;">
-                                                    {{ mb_substr($apt->customer->first_name ?? 'M', 0, 1) }}{{ mb_substr($apt->customer->last_name ?? 'M', 0, 1) }}
-                                                </div>
-                                            @endif
-                                            <div>
-                                                <span class="d-block fw-bold text-dark">{{ $apt->customer->full_name ?? 'Bilinmeyen Müşteri' }}</span>
-                                                <small class="text-muted"><i class="ti ti-phone me-1"></i>{{ $apt->customer->phone ?? 'Belirtilmemiş' }}</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="fw-medium text-dark">{{ $apt->employee->user->full_name ?? '-' }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
-                                            @foreach($apt->appointmentServices as $aps)
-                                                <span class="badge bg-light text-secondary border px-2 py-1"><i class="ti ti-check me-1"></i>{{ $aps->service->name }}</span>
-                                            @endforeach
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="fw-bold text-dark fs-6">₺{{ number_format($apt->total_price, 2, ',', '.') }}</span>
-                                        @if($apt->appliedCoupon)
-                                            <a tabindex="0" class="text-info ms-1" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Kupon Kullanıldı" data-bs-content="Kupon: {{ $apt->appliedCoupon->code }} | İndirim: ₺{{ number_format($apt->discount_amount, 2, ',', '.') }}"><i class="ti ti-info-circle fs-5"></i></a>
-                                        @elseif($apt->appliedCampaign)
-                                            <a tabindex="0" class="text-info ms-1" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Kampanya Kullanıldı" data-bs-content="Kampanya: {{ $apt->appliedCampaign->title }} | İndirim: ₺{{ number_format($apt->discount_amount, 2, ',', '.') }}"><i class="ti ti-info-circle fs-5"></i></a>
-                                        @endif
-                                    </td>
-                                    <td class="pe-4 text-end">
-                                        <div class="d-flex gap-2 justify-content-end align-items-center">
-                                            <!-- Completed & Pay Button -->
-                                            <button type="button" class="btn btn-success btn-sm rounded-pill px-3 fw-bold shadow-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#dashboardCompleteModal{{ $apt->id }}">
-                                                <i class="ti ti-circle-check fs-5"></i> Tamamlandı & Ödeme Al
-                                            </button>
-
-                                            <!-- No Show Button -->
-                                            <form action="{{ route('appointments.update-status', $apt) }}" method="POST" class="d-inline-block">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="no_show">
-                                                <button type="submit" class="btn btn-outline-warning btn-sm rounded-pill px-3 fw-bold" onclick="return confirm('Bu randevuyu \'Gelmedi (No Show)\' olarak işaretlemek istediğinize emin misiniz?')">
-                                                    <i class="ti ti-user-off me-1"></i> Gelmedi
-                                                </button>
-                                            </form>
-
-                                            <!-- Cancel Button -->
-                                            <form action="{{ route('appointments.update-status', $apt) }}" method="POST" class="d-inline-block">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="cancelled">
-                                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold" onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')">
-                                                    <i class="ti ti-x me-1"></i> İptal
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Complete with Payment Modal for this specific appointment -->
-                                <div class="modal fade" id="dashboardCompleteModal{{ $apt->id }}" tabindex="-1" aria-labelledby="dashboardCompleteModalLabel{{ $apt->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered text-start">
-                                        <div class="modal-content border-0 rounded-4 shadow-lg">
-                                            <div class="modal-header border-0 bg-success text-white py-3">
-                                                <h5 class="modal-title fw-bold" id="dashboardCompleteModalLabel{{ $apt->id }}">Randevuyu Tamamla & Ödeme Kaydet</h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                                            </div>
-                                            <form action="{{ route('appointments.complete-payment', $apt) }}" method="POST">
-                                                @csrf
-                                                <div class="modal-body p-4">
-                                                    <div class="alert alert-success border-0 p-3 rounded-3 mb-3" role="alert">
-                                                        <div class="d-flex justify-content-between fw-bold">
-                                                            <span>Randevu Toplam Fiyatı:</span>
-                                                            <span>₺{{ number_format($apt->total_price, 2, ',', '.') }}</span>
-                                                        </div>
-                                                        <div class="small text-success mt-1">
-                                                            <span>Müşteri: {{ $apt->customer->full_name }}</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Amount -->
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold text-secondary">Ödenen Tutar (₺)</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text border-0 bg-light">₺</span>
-                                                            <input type="number" step="0.01" min="0.01" name="amount" class="form-control border-0 bg-light rounded-end-3" value="{{ $apt->total_price }}" required>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Paid At & Payment Method -->
-                                                    <div class="row g-3 mb-3">
-                                                        <div class="col-6">
-                                                            <label class="form-label fw-semibold text-secondary">Ödeme Yöntemi</label>
-                                                            <select name="payment_method" class="form-select border-0 bg-light" required>
-                                                                <option value="cash">Nakit (Kasa)</option>
-                                                                <option value="credit_card">Kredi Kartı</option>
-                                                                <option value="bank_transfer">Banka Transferi</option>
-                                                                <option value="online">Online</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="form-label fw-semibold text-secondary">Ödeme Tarihi</label>
-                                                            <input type="date" name="paid_at" class="form-control border-0 bg-light" value="{{ date('Y-m-d') }}" required>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Reference Number -->
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold text-secondary">Referans / İşlem Kodu (İsteğe Bağlı)</label>
-                                                        <input type="text" name="transaction_reference" class="form-control border-0 bg-light" placeholder="Havale referansı, fiş numarası vb...">
-                                                    </div>
-
-                                                    <!-- Completion note -->
-                                                    <div class="mb-2">
-                                                        <label class="form-label fw-semibold text-secondary">İşlem / Randevu Notu (İsteğe Bağlı)</label>
-                                                        <textarea name="note" rows="2" class="form-control border-0 bg-light" placeholder="Randevu tamamlanmasına dair not ekleyin..."></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer border-0 p-4 pt-0">
-                                                    <button type="button" class="btn btn-light rounded-pill px-4 text-secondary" data-bs-dismiss="modal">Vazgeç</button>
-                                                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-bold">Tamamla ve Ödeme Al</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {{-- Awaiting Action (Expired) Appointments Row (Live Container) --}}
+    <div id="awaitingActionSection">
+        @include('dashboard.partials.awaiting_action_appointments')
     </div>
-    @endif
 
-    {{-- Today's Appointments Row --}}
-    <div class="row g-3 mt-1">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center px-4 py-3 border-bottom">
-                    <h4 class="mb-0 h5"><i class="ti ti-calendar-clock text-primary me-2"></i>Günün Randevuları</h4>
-                    <a href="{{ route('appointments.index') }}" class="small text-primary text-decoration-underline">Tümünü
-                        Gör</a>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0 border-top-0">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th class="ps-4 text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Saat</th>
-                                    <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Müşteri</th>
-                                    <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Berber</th>
-                                    <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Hizmet</th>
-                                    <th class="text-uppercase text-muted fs-7 fw-semibold py-3 border-0">Durum</th>
-                                </tr>
-                            </thead>
-                            <tbody class="border-top-0">
-                                @php
-                                    $barberNextCount = [];
-                                @endphp
-                                @forelse($todayAppointments as $apt)
-                                    @php
-                                        $isPast = $apt->start_at < now();
-                                        $isNext = false;
-                                        if (!$isPast && !isset($barberNextCount[$apt->employee_id])) {
-                                            $isNext = true;
-                                            $barberNextCount[$apt->employee_id] = true;
-                                        }
-                                        $bgClass = $isNext ? 'bg-primary bg-opacity-10' : ($isPast ? 'bg-light opacity-75' : '');
 
-                                        $remainingTime = '';
-                                        if (!$isPast && !$isNext) {
-                                            $diff = now()->diff($apt->start_at);
-                                            if ($diff->h > 0) {
-                                                $remainingTime = $diff->h . ' sa ' . $diff->i . ' dk';
-                                            } else {
-                                                $remainingTime = $diff->i . ' dk';
-                                            }
-                                        }
-                                    @endphp
-                                    <tr class="{{ $bgClass }}" style="transition: all 0.2s ease;">
-                                        <td class="ps-4">
-                                            <div
-                                                class="d-inline-flex align-items-center justify-content-center px-3 py-2 rounded-2 {{ $isPast ? 'bg-secondary text-white' : 'bg-dark text-white' }} fw-bold shadow-sm">
-                                                <i class="ti ti-clock me-1 opacity-75"></i>
-                                                {{ $apt->start_at->format('H:i') }}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar avatar-sm rounded-circle {{ $isPast ? 'bg-secondary-subtle text-secondary' : 'bg-primary-subtle text-primary' }} me-3 d-flex align-items-center justify-content-center fw-bold shadow-sm"
-                                                    style="width: 40px; height: 40px;">
-                                                    {{ mb_substr($apt->customer->first_name ?? 'M', 0, 1) }}{{ mb_substr($apt->customer->last_name ?? 'M', 0, 1) }}
-                                                </div>
-                                                <div>
-                                                    <span
-                                                        class="d-block fw-bold text-dark">{{ $apt->customer->full_name ?? 'Bilinmeyen Müşteri' }}</span>
-                                                    <small class="text-muted"><i
-                                                            class="ti ti-phone me-1"></i>{{ $apt->customer->phone ?? 'Belirtilmemiş' }}</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div
-                                                    class="icon-shape icon-sm bg-warning-subtle text-warning rounded-circle me-2">
-                                                    <i class="ti ti-cut fs-5"></i>
-                                                </div>
-                                                <span
-                                                    class="fw-medium text-dark">{{ $apt->employee->user->full_name ?? '-' }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
-                                                @foreach($apt->appointmentServices as $aps)
-                                                    <span class="badge bg-light text-secondary border px-2 py-1"><i
-                                                            class="ti ti-check me-1"></i>{{ $aps->service->name }}</span>
-                                                @endforeach
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @if($apt->status->value == 'completed')
-                                                <span
-                                                    class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill"><i
-                                                        class="ti ti-circle-check me-1"></i>Tamamlandı</span>
-                                            @elseif($apt->status->value == 'cancelled')
-                                                <span
-                                                    class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill"><i
-                                                        class="ti ti-x me-1"></i>İptal</span>
-                                            @else
-                                                @if($isNext)
-                                                    <span class="badge bg-primary px-3 py-2 rounded-pill shadow-sm"><i
-                                                            class="ti ti-player-play-filled me-1"></i>Sıradaki</span>
-                                                @elseif($isPast)
-                                                    <span
-                                                        class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 rounded-pill"><i
-                                                            class="ti ti-clock-check me-1"></i>Süresi Geçti</span>
-                                                @else
-                                                    <span
-                                                        class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2 rounded-pill"><i
-                                                            class="ti ti-hourglass-empty me-1"></i>{{ $remainingTime }} kaldı</span>
-                                                @endif
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">Bugün için randevu bulunmuyor.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {{-- Today's Appointments Row (Live Container) --}}
+    <div id="todayAppointmentsSection">
+        @include('dashboard.partials.today_appointments')
     </div>
 
     <!-- Rejection Reason Modal -->
@@ -806,17 +359,17 @@
         document.addEventListener('DOMContentLoaded', () => {
             const chartDataAll = @json($revenueChart);
 
-            // Reject Modal Trigger Handler
-            document.querySelectorAll('.btn-reject-trigger').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const url = this.getAttribute('data-url');
-                    const form = document.getElementById('rejectReasonForm');
-                    if (form) {
-                        form.action = url;
-                    }
-                    const textarea = document.getElementById('cancellation_reason_input');
-                    if (textarea) textarea.value = '';
-                });
+            // Reject Modal Trigger Handler (Event Delegation for live elements)
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.btn-reject-trigger');
+                if (!btn) return;
+                const url = btn.getAttribute('data-url');
+                const form = document.getElementById('rejectReasonForm');
+                if (form && url) {
+                    form.action = url;
+                }
+                const textarea = document.getElementById('cancellation_reason_input');
+                if (textarea) textarea.value = '';
             });
 
             // Render Revenue Chart
@@ -1017,6 +570,99 @@
                     fetchTopServices(e.target.value);
                 });
             }
+
+            // -------------------------------------------------------------
+            // Dashboard Canlı Senkronizasyon (Live Real-time Sync)
+            // -------------------------------------------------------------
+            let isRefreshingLive = false;
+            let refreshDebounceTimer = null;
+
+            async function refreshDashboardLiveSections() {
+                if (isRefreshingLive) return;
+                isRefreshingLive = true;
+
+                try {
+                    const response = await fetch('{{ route('dashboard.live-sections') }}', {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        cache: 'no-store'
+                    });
+
+                    if (!response.ok) return;
+                    const data = await response.json();
+
+                    // 1. Onay Bekleyen Randevular
+                    const pendingEl = document.getElementById('pendingAppointmentsSection');
+                    if (pendingEl && typeof data.pending_html === 'string') {
+                        pendingEl.innerHTML = data.pending_html;
+                    }
+
+                    // 2. İşlem / Süresi Dolan Randevular
+                    const awaitingEl = document.getElementById('awaitingActionSection');
+                    if (awaitingEl && typeof data.awaiting_html === 'string') {
+                        awaitingEl.innerHTML = data.awaiting_html;
+                    }
+
+                    // 3. Günün Randevuları
+                    const todayEl = document.getElementById('todayAppointmentsSection');
+                    if (todayEl && typeof data.today_html === 'string') {
+                        todayEl.innerHTML = data.today_html;
+                    }
+
+                    // 4. Gelir & Sayaç Widget'ları
+                    const widgetsEl = document.getElementById('revenueWidgetsSection');
+                    if (widgetsEl && typeof data.widgets_html === 'string') {
+                        widgetsEl.innerHTML = data.widgets_html;
+                    }
+
+                    // Dinamik eklenen içeriklerdeki Bootstrap popover'ları yeniden etkinleştir
+                    const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
+                    [...popovers].forEach(p => {
+                        if (window.bootstrap && bootstrap.Popover) {
+                            bootstrap.Popover.getOrCreateInstance(p);
+                        }
+                    });
+
+                } catch (err) {
+                    console.warn('[Dashboard] Canlı senkronizasyon hatası:', err);
+                } finally {
+                    isRefreshingLive = false;
+                }
+            }
+
+            function scheduleLiveRefresh() {
+                clearTimeout(refreshDebounceTimer);
+                refreshDebounceTimer = setTimeout(refreshDashboardLiveSections, 200);
+            }
+
+            // A) Topbar'ın WebSocket'ten aldığı bildirim güncelleme olayını (CustomEvent) anında yakala
+            document.addEventListener('admin-notifications:update', scheduleLiveRefresh);
+
+            // B) Echo üzerinden personelin kendi kanalını doğrudan da dinle
+            function setupDashboardEcho() {
+                const userId = '{{ auth()->id() }}';
+                if (window.Echo && userId) {
+                    window.Echo.private('admin.notifications.' + userId)
+                        .listen('.notification.created', scheduleLiveRefresh);
+                }
+            }
+            if (window.Echo) setupDashboardEcho();
+            else document.addEventListener('echo:ready', setupDashboardEcho, { once: true });
         });
     </script>
+@endpush
+
+@push('styles')
+<style>
+    @keyframes sn-row-highlight {
+        0% { background-color: rgba(255, 193, 7, 0.4); }
+        50% { background-color: rgba(255, 193, 7, 0.15); }
+        100% { background-color: transparent; }
+    }
+    .dashboard-pending-row, .dashboard-awaiting-row, .dashboard-today-row {
+        animation: sn-row-highlight 2.2s ease-out;
+    }
+</style>
 @endpush
