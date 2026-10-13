@@ -6,19 +6,21 @@ class SupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB), // Light background like in the image
+      backgroundColor: AppTheme.bg(context),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF9FAFB),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+          icon: Icon(Icons.arrow_back_ios, color: isDark ? Colors.white : Colors.black, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Destek ve Yardım',
           style: TextStyle(
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -42,23 +44,23 @@ class SupportScreen extends StatelessWidget {
                   child: const Icon(Icons.chat_bubble_outline, color: AppTheme.secondaryColor),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Sıkça Sorulan Sorular',
                         style: TextStyle(
-                          color: Colors.black87,
+                          color: isDark ? Colors.white : Colors.black87,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         'Merak ettiğiniz soruların cevapları',
                         style: TextStyle(
-                          color: Colors.black54,
+                          color: isDark ? Colors.white54 : Colors.black54,
                           fontSize: 13,
                         ),
                       ),
@@ -71,26 +73,32 @@ class SupportScreen extends StatelessWidget {
 
             // FAQ Items
             _buildFaqItem(
+              context: context,
               question: 'Randevu nasıl alabilirim?',
               answer: "Ana sayfadaki 'Hemen Randevu Al' butonuna veya alt menüdeki Randevular sekmesindeki '+' ikonuna tıklayarak tarih, personel ve saat seçerek kolayca randevu oluşturabilirsiniz.",
             ),
             _buildFaqItem(
+              context: context,
               question: 'Randevumu nasıl iptal edebilirim?',
               answer: "Randevular sekmesindeki yaklaşan randevunuzun altındaki 'İptal Et' butonuna tıklayarak randevunuzu iptal edebilirsiniz.",
             ),
             _buildFaqItem(
+              context: context,
               question: 'Şifremi nasıl değiştirebilirim?',
               answer: "Profil sayfanızdaki 'Güvenlik ve Giriş' bölümünden şifrenizi güvenli bir şekilde değiştirebilirsiniz.",
             ),
             _buildFaqItem(
+              context: context,
               question: 'Hangi hizmetleri sunuyorsunuz?',
               answer: "Saç kesimi, sakal tıraşı, cilt bakımı, saç boyama ve daha birçok profesyonel erkek bakım hizmeti sunuyoruz. Detaylı listeyi 'Hizmetler' sekmesinden inceleyebilirsiniz.",
             ),
             _buildFaqItem(
+              context: context,
               question: 'Ödeme yöntemleri nelerdir?',
               answer: "Hizmet bedelini randevu sonrasında nakit veya kredi/banka kartı ile ödeyebilirsiniz. Uygulama üzerinden online ödeme şu an aktif değildir.",
             ),
             _buildFaqItem(
+              context: context,
               question: 'Çalışma saatleriniz nedir?',
               answer: "Haftanın 6 günü 09:00 - 22:00 saatleri arasında hizmet vermekteyiz. Pazar günleri kapalıyız.",
             ),
@@ -98,12 +106,12 @@ class SupportScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             // İletişim Header
-            const Center(
+            Center(
               child: Text(
                 'Farklı destek ve yardım ihtiyacı için\nbizimle iletişime geçin',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.black87,
+                  color: isDark ? Colors.white : Colors.black87,
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   height: 1.4,
@@ -114,6 +122,7 @@ class SupportScreen extends StatelessWidget {
 
             // E-posta Card
             _buildContactCard(
+              context: context,
               icon: Icons.email_outlined,
               title: 'E-posta',
               value: 'mustafakara200533@gmail.com',
@@ -122,10 +131,11 @@ class SupportScreen extends StatelessWidget {
             const SizedBox(height: 12),
             // Telefon Card
             _buildContactCard(
+              context: context,
               icon: Icons.phone_outlined,
               title: 'Telefon',
               value: '+90 552 812 0412',
-              valueColor: Colors.black87,
+              valueColor: isDark ? Colors.white : Colors.black87,
             ),
             const SizedBox(height: 100), // Bottom navbar space
           ],
@@ -134,11 +144,13 @@ class SupportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFaqItem({required String question, required String answer}) {
+  Widget _buildFaqItem({required BuildContext context, required String question, required String answer}) {
+    final isDark = AppTheme.isDark(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F4F6),
+        color: isDark ? const Color(0xFF1C1C1E) : const Color(0xFFF3F4F6),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Theme(
@@ -148,8 +160,8 @@ class SupportScreen extends StatelessWidget {
           collapsedIconColor: AppTheme.secondaryColor,
           title: Text(
             question,
-            style: const TextStyle(
-              color: Colors.black87,
+            style: TextStyle(
+              color: isDark ? Colors.white : Colors.black87,
               fontSize: 15,
               fontWeight: FontWeight.w600,
             ),
@@ -159,8 +171,8 @@ class SupportScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Text(
                 answer,
-                style: const TextStyle(
-                  color: Colors.black54,
+                style: TextStyle(
+                  color: isDark ? Colors.white70 : Colors.black54,
                   fontSize: 14,
                   height: 1.5,
                 ),
@@ -173,15 +185,18 @@ class SupportScreen extends StatelessWidget {
   }
 
   Widget _buildContactCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String value,
     required Color valueColor,
   }) {
+    final isDark = AppTheme.isDark(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F4F6),
+        color: isDark ? const Color(0xFF1C1C1E) : const Color(0xFFF3F4F6),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -201,8 +216,8 @@ class SupportScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.black54,
+                  style: TextStyle(
+                    color: isDark ? Colors.white54 : Colors.black54,
                     fontSize: 13,
                   ),
                 ),

@@ -38,8 +38,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,8 +52,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Randevularım', style: TextStyle(
-                    color: Colors.black87, fontSize: 26, fontWeight: FontWeight.bold)),
+                  Text('Randevularım', style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87, fontSize: 26, fontWeight: FontWeight.bold)),
                   InkWell(
                     onTap: () async {
                       final result = await Navigator.pushNamed(context, AppRoutes.createAppointment);
@@ -78,8 +80,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
                 indicatorColor: AppTheme.secondaryColor,
                 indicatorWeight: 3,
                 indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: Colors.black87,
-                unselectedLabelColor: Colors.black54,
+                labelColor: isDark ? Colors.white : Colors.black87,
+                unselectedLabelColor: isDark ? Colors.white54 : Colors.black54,
                 labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 unselectedLabelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 dividerColor: Colors.transparent,
@@ -128,23 +130,24 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
   }
 
   Widget _buildEmpty(String title, String description) {
+    final isDark = AppTheme.isDark(context);
     return Center(child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(width: 70, height: 70,
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+          decoration: BoxDecoration(color: isDark ? const Color(0xFF1C1C1E) : Colors.white, borderRadius: BorderRadius.circular(16)),
           child: Stack(alignment: Alignment.center, children: [
-            const Icon(Icons.calendar_month, color: Colors.black12, size: 36),
+            Icon(Icons.calendar_month, color: isDark ? Colors.white12 : Colors.black12, size: 36),
             Positioned(bottom: 10, right: 10, child: Container(
               width: 18, height: 18,
-              decoration: const BoxDecoration(shape: BoxShape.circle, color: AppTheme.backgroundColor),
-              child: const Icon(Icons.error_outline, color: Colors.black38, size: 14),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: isDark ? const Color(0xFF2C2C30) : AppTheme.backgroundColor),
+              child: Icon(Icons.error_outline, color: isDark ? Colors.white38 : Colors.black38, size: 14),
             )),
           ])),
         const SizedBox(height: 24),
-        Text(title, style: const TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+        Text(title, style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
         const SizedBox(height: 10),
-        Text(description, style: const TextStyle(color: Colors.black54, fontSize: 14, height: 1.5), textAlign: TextAlign.center),
+        Text(description, style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 14, height: 1.5), textAlign: TextAlign.center),
       ],
     ));
   }
@@ -207,25 +210,27 @@ class _AppointmentCard extends StatelessWidget {
     int selectedRating = 5;
     final commentController = TextEditingController();
 
+    final isDark = AppTheme.isDark(context);
+
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              backgroundColor: Colors.white,
+              backgroundColor: isDark ? const Color(0xFF1E1E22) : Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              title: const Text(
+              title: Text(
                 'Randevuyu Değerlendir',
-                style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.bold),
               ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    Text(
                       'Hizmet kalitesini ve berberinizi puanlayın:',
-                      style: TextStyle(color: Colors.black54, fontSize: 13),
+                      style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13),
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -249,19 +254,19 @@ class _AppointmentCard extends StatelessWidget {
                     const SizedBox(height: 20),
                     TextField(
                       controller: commentController,
-                      style: const TextStyle(color: Colors.black87),
+                      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                       maxLines: 3,
                       decoration: InputDecoration(
                         hintText: 'Yorumunuzu buraya yazabilirsiniz (isteğe bağlı)...',
-                        hintStyle: const TextStyle(color: Colors.black38),
-                        fillColor: AppTheme.backgroundColor,
+                        hintStyle: TextStyle(color: isDark ? Colors.white38 : Colors.black38),
+                        fillColor: isDark ? const Color(0xFF28282D) : AppTheme.backgroundColor,
                         filled: true,
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: AppTheme.secondaryColor),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
+                          borderSide: BorderSide(color: isDark ? const Color(0xFF3A3A40) : Colors.grey.shade300),
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
@@ -272,7 +277,7 @@ class _AppointmentCard extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Vazgeç', style: TextStyle(color: Colors.black54)),
+                  child: Text('Vazgeç', style: TextStyle(color: isDark ? Colors.white60 : Colors.black54)),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -332,15 +337,21 @@ class _AppointmentCard extends StatelessWidget {
         statusColor = Colors.blue; statusText = 'Devam Ediyor'; break;
     }
 
+    final isDark = AppTheme.isDark(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade200,
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(isDark ? 0.35 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -357,12 +368,12 @@ class _AppointmentCard extends StatelessWidget {
               child: const Icon(Icons.content_cut, color: AppTheme.secondaryColor, size: 22)),
             const SizedBox(width: 12),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(appointment.serviceName ?? 'Hizmet', style: const TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(appointment.serviceName ?? 'Hizmet', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
               if (appointment.barberName != null && appointment.barberName!.trim().isNotEmpty)
-                Text(appointment.barberName!.trim(), style: const TextStyle(color: Colors.black54, fontSize: 13)),
+                Text(appointment.barberName!.trim(), style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 13)),
             ])),
-            Text('₺${(appointment.price ?? 0.0).toStringAsFixed(0)}', style: const TextStyle(
-              color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('₺${(appointment.price ?? 0.0).toStringAsFixed(0)}', style: TextStyle(
+              color: isDark ? Colors.white : Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
           ]),
           const SizedBox(height: 4),
           Align(alignment: Alignment.centerRight, child: Container(
@@ -377,16 +388,16 @@ class _AppointmentCard extends StatelessWidget {
         const SizedBox(height: 12),
         // Tarih
         Row(children: [
-          const Icon(Icons.access_time, color: Colors.black54, size: 16),
+          Icon(Icons.access_time, color: isDark ? Colors.white60 : Colors.black54, size: 16),
           const SizedBox(width: 8),
-          Text(dateStr, style: const TextStyle(color: Colors.black87, fontSize: 13)),
+          Text(dateStr, style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13)),
         ]),
         const SizedBox(height: 8),
         // Konum
-        const Row(children: [
-          Icon(Icons.near_me, color: Colors.black54, size: 16),
-          SizedBox(width: 8),
-          Text('B&V Coffee Barber – Tarsus/Mersin', style: TextStyle(color: Colors.black87, fontSize: 13)),
+        Row(children: [
+          Icon(Icons.near_me, color: isDark ? Colors.white60 : Colors.black54, size: 16),
+          const SizedBox(width: 8),
+          Text('B&V Coffee Barber – Tarsus/Mersin', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13)),
         ]),
 
         // Takvime Ekle (Yaklaşan randevular için aktifse)
@@ -397,10 +408,10 @@ class _AppointmentCard extends StatelessWidget {
             height: 40,
             child: OutlinedButton.icon(
               onPressed: () => _addToGoogleCalendar(context),
-              icon: const Icon(Icons.calendar_today, size: 16, color: Colors.black),
-              label: const Text('Takvime Ekle', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              icon: Icon(Icons.calendar_today, size: 16, color: isDark ? Colors.white : Colors.black),
+              label: Text('Takvime Ekle', style: TextStyle(color: isDark ? Colors.white : Colors.black, fontWeight: FontWeight.bold)),
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.black26),
+                side: BorderSide(color: isDark ? Colors.white24 : Colors.black26),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
@@ -422,14 +433,20 @@ class _AppointmentCard extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(child: SizedBox(height: 42, child: ElevatedButton(
               onPressed: () async {
-                const latitude = 36.923826;
-                const longitude = 34.903672;
-                final webUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
+                final label = Uri.encodeComponent('B&V Coffee Barber');
+                final androidUri = Uri.parse('geo:36.9238616,34.9011379?q=$label');
+                final webUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=36.9238616,34.9011379');
                 try {
-                  if (await canLaunchUrl(webUri)) {
+                  if (await canLaunchUrl(androidUri)) {
+                    await launchUrl(androidUri, mode: LaunchMode.externalApplication);
+                  } else if (await canLaunchUrl(webUri)) {
                     await launchUrl(webUri, mode: LaunchMode.externalApplication);
                   }
-                } catch (_) {}
+                } catch (_) {
+                  try {
+                    await launchUrl(webUri, mode: LaunchMode.externalApplication);
+                  } catch (_) {}
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.secondaryColor,
@@ -466,17 +483,17 @@ class _AppointmentCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: AppTheme.backgroundColor,
+              color: isDark ? const Color(0xFF242428) : AppTheme.backgroundColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade200),
+              border: Border.all(color: isDark ? const Color(0xFF333338) : Colors.grey.shade200),
             ),
             child: Row(
               children: [
                 const Icon(Icons.check_circle_outline_rounded, color: AppTheme.successColor, size: 18),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'Değerlendirildi',
-                  style: TextStyle(color: Colors.black54, fontSize: 13, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 Row(
@@ -498,14 +515,15 @@ class _AppointmentCard extends StatelessWidget {
   }
 
   void _showCancelDialog(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
     showDialog(context: context, builder: (_) => AlertDialog(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF1E1E22) : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text('Randevuyu İptal Et', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
-      content: const Text('Bu randevuyu iptal etmek istediğinize emin misiniz?', style: TextStyle(color: Colors.black54)),
+      title: Text('Randevuyu İptal Et', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.bold)),
+      content: Text('Bu randevuyu iptal etmek istediğinize emin misiniz?', style: TextStyle(color: isDark ? Colors.white70 : Colors.black54)),
       actions: [
         TextButton(onPressed: () => Navigator.pop(context),
-          child: const Text('Vazgeç', style: TextStyle(color: Colors.black54))),
+          child: Text('Vazgeç', style: TextStyle(color: isDark ? Colors.white60 : Colors.black54))),
         TextButton(
           onPressed: () async {
             final messenger = ScaffoldMessenger.of(context);

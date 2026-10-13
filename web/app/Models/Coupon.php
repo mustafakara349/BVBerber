@@ -39,7 +39,7 @@ class Coupon extends Model
             return false;
         }
 
-        if ($this->used_count >= $this->usage_limit) {
+        if ($this->usage_limit !== null && $this->used_count >= $this->usage_limit) {
             return false;
         }
         
@@ -52,7 +52,7 @@ class Coupon extends Model
             }
 
             $usageCount = $this->usages()->where('customer_id', $user->id)->count();
-            if ($usageCount >= $this->per_customer_limit) {
+            if ($this->per_customer_limit !== null && $usageCount >= $this->per_customer_limit) {
                 return false;
             }
         }

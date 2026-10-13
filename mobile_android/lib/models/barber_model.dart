@@ -22,7 +22,21 @@ class BarberModel {
     this.serviceIds = const [],
     this.workingHours = const {},
     this.isActive = true,
+    this.rating = 5.0,
+    this.reviewCount = 0,
   });
+
+  final double rating;
+  final int reviewCount;
+
+  String get fullName => '$name $surname'.trim().isNotEmpty ? '$name $surname'.trim() : name;
+
+  String get initials {
+    final first = name.isNotEmpty ? name[0].toUpperCase() : '';
+    final last = surname.isNotEmpty ? surname[0].toUpperCase() : '';
+    final res = '$first$last';
+    return res.isNotEmpty ? res : 'B';
+  }
 
   factory BarberModel.fromMap(Map<String, dynamic> map, [String id = '']) {
     final rawId = map['id']?.toString() ?? id;
@@ -69,6 +83,8 @@ class BarberModel {
           ) ??
           {},
       isActive: map['is_active'] ?? map['isActive'] ?? true,
+      rating: (map['rating'] is num) ? (map['rating'] as num).toDouble() : double.tryParse(map['rating']?.toString() ?? '5.0') ?? 5.0,
+      reviewCount: (map['reviewCount'] ?? map['review_count'] ?? 0) as int,
     );
   }
 

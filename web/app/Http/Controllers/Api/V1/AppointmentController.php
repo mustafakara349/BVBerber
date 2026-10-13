@@ -22,6 +22,29 @@ class AppointmentController extends Controller
         private AppointmentService $appointmentService
     ) {}
 
+    public function availableSlots(Request $request): JsonResponse
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'employee_id' => 'required|exists:employees,id',
+            'duration' => 'nullable|integer|min:0',
+            'branch_id' => 'nullable|integer|exists:branches,id',
+        ]);
+
+        $date = $request->date;
+        $employeeId = (int) $request->employee_id;
+        $branchId = (int) $request->get('branch_id', 1);
+        $duration = (int) $request->get('duration', 30);
+
+        $slots = $this->appointmentService->getAvailableSlots($branchId, $employeeId, $date, $duration);
+
+        return $this->success([
+            'slots' => $slots,
+            'busy_times' => collect($slots)->where('is_busy', true)->pluck('time')->values()->all(),
+            'available_times' => collect($slots)->where('is_available', true)->pluck('time')->values()->all(),
+        ], 'Müsait randevu saatleri başarıyla getirildi.');
+    }
+
     public function index(Request $request): JsonResponse
     {
         $branchId = $request->get('branch_id', 1);
@@ -50,7 +73,13 @@ class AppointmentController extends Controller
     public function store(StoreAppointmentRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $data['created_by'] = $request->user()->id;
+        $user = $request->user();
+        $data['created_by'] = $user->id;
+
+        // IDOR Koruması: Müşteri rolündeki kullanıcı yalnızca kendi adına randevu oluşturabilir
+        if ($user->isCustomer()) {
+            $data['customer_id'] = $user->id;
+        }
 
         try {
             $appointment = $this->appointmentService->createAppointment($data);
@@ -89,16 +118,23 @@ class AppointmentController extends Controller
     {
         $request->validate(['status' => 'required|string']);
 
-        if ($appointment->customer_id != $request->user()->id && $request->user()->isCustomer()) {
+        $user = $request->user();
+
+        if ($appointment->customer_id != $user->id && $user->isCustomer()) {
             return $this->error('Bu randevu size ait değil.', 403);
         }
 
         $status = AppointmentStatus::from($request->status);
 
+        // Müşteri sadece randevusunu iptal edebilir; tamamlandı veya diğer statülere çekemez
+        if ($user->isCustomer() && $status !== AppointmentStatus::Cancelled) {
+            return $this->error('Müşteriler yalnızca randevularını iptal edebilir.', 403);
+        }
+
         $appointment = $this->appointmentService->updateStatus(
             $appointment,
             $status,
-            $request->user()->id,
+            $user->id,
             $request->get('note')
         );
 

@@ -33,10 +33,10 @@ class AppointmentResource extends JsonResource
             'is_reviewed' => $this->review()->exists(),
             'rating' => $this->review?->rating,
             'ical_url' => $request->schemeAndHttpHost() . '/api/v1/mobile/appointments/' . $this->id . '/ical?signature=' . hash_hmac('sha256', $this->id, config('app.key')),
-            'customer' => new UserResource($this->whenLoaded('customer')),
-            'employee' => new EmployeeResource($this->whenLoaded('employee')),
-            'branch' => new BranchResource($this->whenLoaded('branch')),
-            'services' => AppointmentServiceResource::collection($this->whenLoaded('appointmentServices')),
+            'customer' => $this->whenLoaded('customer', fn () => new UserResource($this->customer)),
+            'employee' => $this->whenLoaded('employee', fn () => new EmployeeResource($this->employee)),
+            'branch' => $this->whenLoaded('branch', fn () => new BranchResource($this->branch)),
+            'services' => $this->whenLoaded('appointmentServices', fn () => AppointmentServiceResource::collection($this->appointmentServices)),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

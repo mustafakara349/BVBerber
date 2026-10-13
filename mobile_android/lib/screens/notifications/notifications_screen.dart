@@ -40,17 +40,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       appBar: AppBar(
-        backgroundColor: AppTheme.backgroundColor,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Bildirimler', style: TextStyle(
-          color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
+        title: Text('Bildirimler', style: TextStyle(
+          color: isDark ? Colors.white : Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: RefreshIndicator(
@@ -59,13 +61,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         child: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppTheme.secondaryColor))
           : _notifications.isEmpty
-            ? _buildEmptyState()
-            : _buildNotificationList(),
+            ? _buildEmptyState(isDark)
+            : _buildNotificationList(isDark),
       ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(bool isDark) {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
@@ -77,18 +79,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               Container(
                 width: 70, height: 70,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(Icons.notifications_off_outlined, color: Colors.black12, size: 36),
+                child: Icon(Icons.notifications_off_outlined, color: isDark ? Colors.white24 : Colors.black12, size: 36),
               ),
               const SizedBox(height: 24),
-              const Text('Henüz Bildiriminiz Yok', style: TextStyle(
-                color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('Henüz Bildiriminiz Yok', style: TextStyle(
+                color: isDark ? Colors.white : Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              const Text('Randevu hatırlatmaları ve kampanyalar\nburada görüntülenecektir.', 
+              Text('Randevu hatırlatmaları ve kampanyalar\nburada görüntülenecektir.', 
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54, fontSize: 14, height: 1.5)),
+                style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 14, height: 1.5)),
             ],
           ),
         ),
@@ -96,7 +98,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _buildNotificationList() {
+  Widget _buildNotificationList(bool isDark) {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -138,12 +140,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(
+              color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withOpacity(isDark ? 0.35 : 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -165,14 +169,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(notification.title, style: const TextStyle(
-                      color: Colors.black87, fontSize: 15, fontWeight: FontWeight.bold)),
+                    Text(notification.title, style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87, fontSize: 15, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
-                    Text(notification.message, style: const TextStyle(
-                      color: Colors.black54, fontSize: 13, height: 1.4)),
+                    Text(notification.message, style: TextStyle(
+                      color: isDark ? const Color(0xFF9CA3AF) : Colors.black54, fontSize: 13, height: 1.4)),
                     const SizedBox(height: 10),
-                    Text(timeStr, style: const TextStyle(
-                      color: Colors.black38, fontSize: 11, fontWeight: FontWeight.w500)),
+                    Text(timeStr, style: TextStyle(
+                      color: isDark ? Colors.white38 : Colors.black38, fontSize: 11, fontWeight: FontWeight.w500)),
                   ],
                 ),
               ),

@@ -18,26 +18,36 @@ class AppointmentProvider extends ChangeNotifier {
   List<AppointmentModel> get upcomingAppointments {
     final now = DateTime.now();
     return _appointments
-        .where((a) =>
-            a.dateTime.isAfter(now) &&
-            a.status != AppointmentStatus.cancelled &&
-            a.status != AppointmentStatus.rejected &&
-            a.status != AppointmentStatus.completed &&
-            a.status != AppointmentStatus.noShow)
+        .where((a) {
+          final isFinished = a.status == AppointmentStatus.cancelled ||
+              a.status == AppointmentStatus.rejected ||
+              a.status == AppointmentStatus.completed ||
+              a.status == AppointmentStatus.noShow;
+          if (isFinished) return false;
+
+          // Randevu gelecekte mi, yoksa devam eden/başlamış aktif randevu mu?
+          return a.dateTime.isAfter(now) ||
+              a.status == AppointmentStatus.inProgress ||
+              a.dateTime.add(const Duration(hours: 2)).isAfter(now);
+        })
         .toList()
       ..sort((a, b) => a.dateTime.compareTo(b.dateTime));
   }
 
-  /// Geçmiş randevular (tamamlanmış, gelmedi, iptal/red veya tarihi geçmiş olanlar)
+  /// Geçmiş randevular (tamamlanmış, gelmedi, iptal/red veya süresi geçmiş olanlar)
   List<AppointmentModel> get pastAppointments {
     final now = DateTime.now();
     return _appointments
-        .where((a) =>
-            a.dateTime.isBefore(now) ||
-            a.status == AppointmentStatus.completed ||
-            a.status == AppointmentStatus.noShow ||
-            a.status == AppointmentStatus.cancelled ||
-            a.status == AppointmentStatus.rejected)
+        .where((a) {
+          final isFinished = a.status == AppointmentStatus.completed ||
+              a.status == AppointmentStatus.noShow ||
+              a.status == AppointmentStatus.cancelled ||
+              a.status == AppointmentStatus.rejected;
+          if (isFinished) return true;
+
+          return a.dateTime.add(const Duration(hours: 2)).isBefore(now) &&
+              a.status != AppointmentStatus.inProgress;
+        })
         .toList()
       ..sort((a, b) => b.dateTime.compareTo(a.dateTime));
   }
@@ -75,7 +85,12 @@ class AppointmentProvider extends ChangeNotifier {
   }
 
   /// Yeni randevu oluştur
-  Future<void> createAppointment(AppointmentModel appointment, {List<int>? serviceIds}) async {
+  Future<void> createAppointment(
+    AppointmentModel appointment, {
+    List<int>? serviceIds,
+    String? couponCode,
+    double? discountAmount,
+  }) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -93,6 +108,8 @@ class AppointmentProvider extends ChangeNotifier {
         serviceIds: svcIds,
         startAt: startAtStr,
         customerNote: appointment.note,
+        couponCode: couponCode,
+        discountAmount: discountAmount,
       );
 
       final newAppointment = AppointmentModel.fromMap(responseData);

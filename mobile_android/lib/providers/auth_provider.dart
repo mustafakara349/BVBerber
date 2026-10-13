@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobile_android/services/api_service.dart';
@@ -33,7 +34,8 @@ class AuthProvider extends ChangeNotifier {
       } else {
         // Token var ama Beni Hatırla seçilmediyse veya token yoksa temizle
         if (token != null) {
-          await ApiService.logout();
+          ApiService.logout().catchError((e) => debugPrint('Logout hatası: $e'));
+          await prefs.remove('auth_token');
         }
         _currentUser = null;
         _isLoggedIn = false;
@@ -102,10 +104,124 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Şifre Sıfırlama
-  Future<void> resetPassword(String email) async {
-    _errorMessage = 'Şifre sıfırlama işlemi şu anda desteklenmiyor.';
+  /// Şifre Sıfırlama - OTP Gönder
+  Future<void> sendOtp(String email) async {
+    _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
+    try {
+      await ApiService.forgotPassword(email);
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Şifre Sıfırlama - OTP Doğrula
+  Future<void> verifyOtp(String email, String otp) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      await ApiService.verifyOtp(email, otp);
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Şifre Sıfırlama - Yeni Şifre Onayla
+  Future<void> confirmResetPassword({
+    required String email,
+    required String otp,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      await ApiService.resetPassword(
+        email: email,
+        otp: otp,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+      );
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Profil Bilgilerini Güncelle
+  Future<void> updateProfile({
+    required String name,
+    required String surname,
+    required String phone,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      await ApiService.updateUserProfile(name: name, surname: surname, phone: phone);
+      if (_currentUser != null) {
+        _currentUser = _currentUser!.copyWith(name: name, surname: surname, phone: phone);
+      }
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Şifre Değiştir
+  Future<void> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      await ApiService.updatePassword(currentPassword: currentPassword, newPassword: newPassword);
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Profil Fotoğrafı Güncelle
+  Future<String> updateProfilePhoto(File file) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final newUrl = await ApiService.uploadProfilePhoto(file);
+      if (_currentUser != null) {
+        _currentUser = _currentUser!.copyWith(profileImageUrl: newUrl);
+      }
+      return newUrl;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   /// Çıkış yap

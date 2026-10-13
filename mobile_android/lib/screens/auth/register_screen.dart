@@ -37,25 +37,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   InputDecoration _inputDecoration({
+    required bool isDark,
     required String hint,
     IconData? icon,
     Widget? suffixIcon,
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.black38, fontSize: 15),
-      prefixIcon: icon != null ? Icon(icon, color: Colors.black54, size: 20) : null,
+      hintStyle: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 15),
+      prefixIcon: icon != null ? Icon(icon, color: isDark ? Colors.white60 : Colors.black54, size: 20) : null,
       suffixIcon: suffixIcon,
       filled: true,
-      fillColor: Colors.white,
+      fillColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: Colors.grey.shade300),
+        borderSide: BorderSide(color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: Colors.grey.shade300),
+        borderSide: BorderSide(color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
@@ -102,8 +103,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -119,11 +122,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 40,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.black12),
+                    color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+                    border: Border.all(color: isDark ? const Color(0xFF2C2C30) : Colors.black12),
                   ),
                   child: IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back, color: Colors.black87, size: 20),
+                    icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87, size: 20),
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -135,10 +139,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white,
+                      color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+                      border: Border.all(
+                        color: isDark ? const Color(0xFF2C2C30) : Colors.transparent,
+                        width: 1.5,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withOpacity(isDark ? 0.5 : 0.15),
                           blurRadius: 15,
                           spreadRadius: 2,
                         ),
@@ -171,11 +179,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
                 // Başlık
-                const Center(
+                Center(
                   child: Text(
                     'Hesap Oluştur',
                     style: TextStyle(
-                      color: Colors.black87,
+                      color: isDark ? Colors.white : Colors.black87,
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
@@ -183,61 +191,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 32),
                 // Ad
-                const Text('Ad', style: TextStyle(color: Colors.black54, fontSize: 13)),
+                Text('Ad', style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _nameController,
-                  style: const TextStyle(color: Colors.black87),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                   validator: Validators.name,
-                  decoration: _inputDecoration(hint: 'Adınız'),
+                  decoration: _inputDecoration(isDark: isDark, hint: 'Adınız'),
                 ),
                 const SizedBox(height: 20),
                 // Soyad
-                const Text('Soyad', style: TextStyle(color: Colors.black54, fontSize: 13)),
+                Text('Soyad', style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _surnameController,
-                  style: const TextStyle(color: Colors.black87),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                   validator: Validators.name,
-                  decoration: _inputDecoration(hint: 'Soyadınız'),
+                  decoration: _inputDecoration(isDark: isDark, hint: 'Soyadınız'),
                 ),
                 const SizedBox(height: 20),
                 // Email
-                const Text('Email', style: TextStyle(color: Colors.black54, fontSize: 13)),
+                Text('Email', style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: Colors.black87),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                   validator: Validators.email,
-                  decoration: _inputDecoration(hint: 'example@email.com'),
+                  decoration: _inputDecoration(isDark: isDark, hint: 'example@email.com'),
                 ),
                 const SizedBox(height: 20),
                 // Telefon Numarası
-                const Text('Telefon Numarası', style: TextStyle(color: Colors.black54, fontSize: 13)),
+                Text('Telefon Numarası', style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  style: const TextStyle(color: Colors.black87),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                   validator: Validators.phone,
-                  decoration: _inputDecoration(hint: '05'),
+                  decoration: _inputDecoration(isDark: isDark, hint: '05'),
                 ),
                 const SizedBox(height: 20),
                 // Şifre
-                const Text('Şifre', style: TextStyle(color: Colors.black54, fontSize: 13)),
+                Text('Şifre', style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  style: const TextStyle(color: Colors.black87),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                   validator: Validators.password,
                   decoration: _inputDecoration(
+                    isDark: isDark,
                     hint: 'Şifre',
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                        color: Colors.black38,
+                        color: isDark ? Colors.white38 : Colors.black38,
                         size: 20,
                       ),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
@@ -246,19 +255,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
                 // Şifre Tekrar
-                const Text('Şifre Tekrar', style: TextStyle(color: Colors.black54, fontSize: 13)),
+                Text('Şifre Tekrar', style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirmPassword,
-                  style: const TextStyle(color: Colors.black87),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                   validator: (value) => Validators.confirmPassword(value, _passwordController.text),
                   decoration: _inputDecoration(
+                    isDark: isDark,
                     hint: 'Şifre Tekrar',
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                        color: Colors.black38,
+                        color: isDark ? Colors.white38 : Colors.black38,
                         size: 20,
                       ),
                       onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
@@ -306,7 +316,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Center(
                   child: RichText(
                     text: TextSpan(
-                      style: const TextStyle(color: Colors.black54, fontSize: 14),
+                      style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 14),
                       children: [
                         const TextSpan(text: 'Zaten hesabın var mı?  '),
                         TextSpan(

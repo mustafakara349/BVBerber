@@ -13,6 +13,7 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::get('/services', [ServiceApiController::class, 'index']);
     Route::get('/employees', [EmployeeApiController::class, 'index']);
+    Route::get('/appointments/available-slots', [AppointmentController::class, 'availableSlots']);
 
     // Mobile App endpoints
     Route::prefix('mobile')->group(function () {

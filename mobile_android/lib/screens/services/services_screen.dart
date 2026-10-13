@@ -1,158 +1,140 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:mobile_android/core/app_theme.dart';
-import 'package:mobile_android/models/service_model.dart';
-import 'package:mobile_android/providers/service_provider.dart';
+import 'package:mobile_android/screens/services/barber_services_screen.dart';
+import 'package:mobile_android/screens/services/cafe_menu_screen.dart';
+import 'package:mobile_android/screens/services/sale_products_screen.dart';
+import 'package:mobile_android/screens/services/campaigns_screen.dart';
 
-/// Hizmetler ekranı – API'den veri çeker
-class ServicesScreen extends StatefulWidget {
+/// Hizmetler Hub Ekranı – iOS ServicesView ile birebir aynı tasarım
+class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
 
   @override
-  State<ServicesScreen> createState() => _ServicesScreenState();
-}
-
-class _ServicesScreenState extends State<ServicesScreen> {
-  late Future<void> _loadServicesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadServicesFuture = Provider.of<ServiceProvider>(context, listen: false).loadServices();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.bg(context),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
-              const Text(
-                'Hizmetlerimiz',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
+              const SizedBox(height: 16),
+
+              // Header: HİZMETLERİMİZ + Başlık + Kampanyalar butonu
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'HİZMETLERİMİZ',
+                          style: TextStyle(
+                            color: AppTheme.secondaryColor,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Sizin İçin Neler\nYapabiliriz?',
+                          style: TextStyle(
+                            color: isDark ? Colors.white : Colors.black87,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            height: 1.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Kampanyalar Butonu
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CampaignsScreen()),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppTheme.secondaryColor,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.secondaryColor.withOpacity(0.4),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Text(
+                        'Kampanyalar',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
-              Expanded(
-                child: FutureBuilder<void>(
-                  future: _loadServicesFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(color: AppTheme.secondaryColor),
-                      );
-                    }
 
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          'Hata oluştu: ${snapshot.error}',
-                          style: const TextStyle(color: Colors.black54),
-                        ),
-                      );
-                    }
-
-                    return Consumer<ServiceProvider>(
-                      builder: (context, serviceProvider, child) {
-                        final services = [
-                          ...serviceProvider.services,
-                          ...serviceProvider.cafeServices,
-                        ];
-
-                        // Öne çıkan hizmetleri en üstte göstermek için sıralama yapalım
-                        services.sort((a, b) {
-                          if (a.isFeatured && !b.isFeatured) return -1;
-                          if (!a.isFeatured && b.isFeatured) return 1;
-                          return 0;
-                        });
-
-                        if (services.isEmpty) {
-                          return const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.content_cut, color: Colors.black12, size: 64),
-                                SizedBox(height: 16),
-                                Text(
-                                  'Henüz hizmet eklenmemiş',
-                                  style: TextStyle(color: Colors.black54, fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-
-                        // Kategorilere göre gruplayalım
-                        final grouped = <String, List<ServiceModel>>{};
-                        for (final s in services) {
-                          grouped.putIfAbsent(s.categoryName, () => []).add(s);
-                        }
-
-                        return ListView.builder(
-                          padding: const EdgeInsets.only(bottom: 24),
-                          itemCount: grouped.length,
-                          itemBuilder: (context, index) {
-                            final categoryName = grouped.keys.elementAt(index);
-                            final categoryServices = grouped[categoryName]!;
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20, bottom: 12),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 4, height: 18,
-                                        decoration: BoxDecoration(
-                                          color: AppTheme.secondaryColor,
-                                          borderRadius: BorderRadius.circular(2),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        categoryName.toUpperCase(),
-                                        style: const TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 1.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 14,
-                                    mainAxisSpacing: 20,
-                                    childAspectRatio: 0.72,
-                                  ),
-                                  itemCount: categoryServices.length,
-                                  itemBuilder: (context, idx) {
-                                    return _buildServiceCard(categoryServices[idx]);
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
+              // 1. Berber & Bakım Kartı
+              _buildPremiumCategoryCard(
+                context,
+                title: 'Berber & Bakım',
+                subtitle: 'Saç kesimi, sakal tıraşı ve cilt bakımı ile kendinizi yenileyin.',
+                imageUrl: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=600&auto=format&fit=crop',
+                icon: Icons.content_cut_rounded,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const BarberServicesScreen()),
+                  );
+                },
               ),
+              const SizedBox(height: 20),
+
+              // 2. Kafe Kartı
+              _buildPremiumCategoryCard(
+                context,
+                title: 'Kafe',
+                subtitle: 'Sıcak & soğuk içeceklerimiz ve özel atıştırmalıklarımızla mola verin.',
+                imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=600&auto=format&fit=crop',
+                icon: Icons.local_cafe_rounded,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CafeMenuScreen()),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // 3. Ürünlerimiz Kartı
+              _buildPremiumCategoryCard(
+                context,
+                title: 'Ürünlerimiz',
+                subtitle: 'Kullandığımız premium saç ve sakal bakım ürünlerini keşfedin.',
+                imageUrl: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop',
+                icon: Icons.shopping_bag_rounded,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SaleProductsScreen()),
+                  );
+                },
+              ),
+              const SizedBox(height: 100), // Bottom nav bar payı
             ],
           ),
         ),
@@ -160,215 +142,95 @@ class _ServicesScreenState extends State<ServicesScreen> {
     );
   }
 
-  Widget _buildServiceCard(ServiceModel service) {
-    final hasDiscount = service.discountedPrice != null && service.discountedPrice! < service.price && service.discountedPrice! > 0;
-    
-    // İndirim yüzdesini hesaplayalım
-    int discountPercent = 0;
-    if (hasDiscount) {
-      discountPercent = (((service.price - service.discountedPrice!) / service.price) * 100).round();
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Hizmet görseli + fiyat
-        Expanded(
+  Widget _buildPremiumCategoryCard(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required String imageUrl,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 220,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(22),
           child: Stack(
+            fit: StackFit.expand,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: service.imageUrl != null && service.imageUrl!.isNotEmpty
-                    ? Image.network(
-                        service.imageUrl!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        errorBuilder: (_, __, ___) => Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Center(
-                            child: Icon(Icons.content_cut, color: Colors.black12, size: 36),
-                          ),
-                        ),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.content_cut, color: Colors.black12, size: 36),
-                        ),
-                      ),
-              ),
-              
-              // Hafif gölgeleme katmanı (Textlerin okunabilirliğini arttırmak için)
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.5),
-                      ],
-                    ),
-                  ),
-                ),
+              // Arka plan görseli
+              Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(color: Colors.grey.shade900),
               ),
 
-              // Öne Çıkan Rozeti (Featured)
-              if (service.isFeatured)
-                Positioned(
-                  top: 10,
-                  left: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFD700), // Gold Renk
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.star, color: Colors.black, size: 12),
-                        SizedBox(width: 4),
-                        Text(
-                          'ÖNE ÇIKAN',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-              // İndirim Rozeti (% Oranlı)
-              if (hasDiscount)
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE53935), // Kırmızı İndirim Rengi
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      '%$discountPercent İNDİRİM',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-
-              // Fiyat etiketi (Strikethrough desteğiyle)
-              Positioned(
-                bottom: 10,
-                left: 10,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: hasDiscount ? const Color(0xFFE53935) : AppTheme.secondaryColor,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
+              // Koyu gradyan overlay
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(0.85),
+                      Colors.black.withOpacity(0.35),
+                      Colors.transparent,
                     ],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (hasDiscount) ...[
+                ),
+              ),
+
+              // Kart İçeriği
+              Positioned(
+                bottom: 20,
+                left: 20,
+                right: 20,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(icon, color: AppTheme.secondaryColor, size: 24),
+                        const SizedBox(width: 10),
                         Text(
-                          '₺${service.price.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 11,
-                            decoration: TextDecoration.lineThrough,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          '₺${service.discountedPrice!.toStringAsFixed(0)}',
+                          title,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ] else ...[
-                        Text(
-                          '₺${service.price.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 13,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 14,
+                        height: 1.3,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
-        // Hizmet adı
-        Text(
-          service.name,
-          style: const TextStyle(
-            color: Colors.black87,
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 4),
-        // Süre
-        Row(
-          children: [
-            const Icon(Icons.access_time, color: Colors.black38, size: 14),
-            const SizedBox(width: 4),
-            Text(
-              '${service.durationMinutes} dk',
-              style: const TextStyle(color: Colors.black54, fontSize: 13),
-            ),
-          ],
-        ),
-      ],
+      ),
     );
   }
 }
