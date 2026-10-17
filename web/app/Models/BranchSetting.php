@@ -15,6 +15,7 @@ class BranchSetting extends Model
         'loyalty_enabled',
         'review_enabled',
         'online_payment_enabled',
+        'google_place_id',
     ];
 
     protected function casts(): array

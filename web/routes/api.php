@@ -47,7 +47,8 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
             Route::post('/me/update-password', [MobileApiController::class, 'updatePassword']);
             Route::post('/me/upload-photo', [MobileApiController::class, 'uploadPhoto']);
             Route::post('/save-token', [MobileApiController::class, 'saveToken']);
-            Route::post('/reviews', [MobileApiController::class, 'createReview']);
+            Route::post('/reviews', [MobileApiController::class, 'createReview'])->middleware('throttle:30,1');
+            Route::post('/reviews/{id}/google-clicked', [MobileApiController::class, 'trackGoogleReviewClick']);
             Route::post('/validate-coupon', [MobileApiController::class, 'validateCoupon']);
             Route::post('/logout', [MobileApiController::class, 'logout']);
             

@@ -28,7 +28,7 @@ class Appointment extends Model
         'customer_note', 'internal_note', 'cancellation_reason',
         'cancelled_by', 'cancelled_at', 'completed_at',
         'no_show', 'reminder_sent', 'checked_in_at', 'created_by',
-        'campaign_id', 'coupon_id'
+        'campaign_id', 'coupon_id', 'review_reminder_sent_at'
     ];
 
     protected function casts(): array
@@ -49,6 +49,7 @@ class Appointment extends Model
             'checked_in_at' => 'datetime',
             'no_show' => 'boolean',
             'reminder_sent' => 'boolean',
+            'review_reminder_sent_at' => 'datetime',
         ];
     }
 

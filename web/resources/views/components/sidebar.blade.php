@@ -256,6 +256,14 @@
         </li>
 
         <li>
+            <a class="nav-link {{ (request()->is('broadcast-notifications*') || request()->routeIs('broadcast.*')) ? 'active' : '' }}"
+                href="{{ route('broadcast.index') }}">
+                <i class="ti ti-broadcast"></i>
+                <span class="nav-text">Toplu Duyuru / Push</span>
+            </a>
+        </li>
+
+        <li>
             <a class="nav-link {{ (request()->is('reviews*') || request()->routeIs('reviews.*')) ? 'active' : '' }}"
                 href="{{ route('reviews.index') }}">
                 <i class="ti ti-star"></i>

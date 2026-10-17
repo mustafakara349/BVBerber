@@ -158,10 +158,17 @@ trait MobileAuthTrait
         $token = $request->input('fcmToken');
 
         if ($token) {
+            $deviceTypeInput = strtolower((string)$request->input('device_type', 'android'));
+            $deviceType = match($deviceTypeInput) {
+                'ios' => \App\Enums\DeviceType::Ios,
+                'web' => \App\Enums\DeviceType::Web,
+                default => \App\Enums\DeviceType::Android,
+            };
+
             $user->devices()->updateOrCreate(
                 ['push_token' => $token],
                 [
-                    'device_type' => \App\Enums\DeviceType::Ios,
+                    'device_type' => $deviceType,
                     'last_active_at' => now(),
                 ]
             );

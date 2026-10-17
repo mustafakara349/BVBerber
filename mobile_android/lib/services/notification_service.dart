@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:mobile_android/models/appointment_model.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_android/main.dart';
+import 'package:mobile_android/routes/app_routes.dart';
+import 'package:mobile_android/services/push_notification_service.dart';
 
 /// Yerel bildirim yönetimi ve planlama servisi
 class NotificationService {
@@ -44,6 +48,16 @@ class NotificationService {
       initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse details) {
         debugPrint('Bildirime tıklandı: ${details.payload}');
+        final payload = details.payload;
+        if (payload != null && payload.isNotEmpty) {
+          try {
+            final data = jsonDecode(payload) as Map<String, dynamic>;
+            PushNotificationService().handleNotificationRouting(data);
+            return;
+          } catch (_) {
+            navigatorKey.currentState?.pushNamed(AppRoutes.main);
+          }
+        }
       },
     );
 

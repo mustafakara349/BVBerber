@@ -146,5 +146,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings', [App\Http\Controllers\Web\SettingController::class, 'index'])->name('settings.index');
         Route::post('/settings/global', [App\Http\Controllers\Web\SettingController::class, 'updateGlobal'])->name('settings.global.update');
         Route::post('/settings/branch', [App\Http\Controllers\Web\SettingController::class, 'updateBranch'])->name('settings.branch.update');
+
+        // Broadcast Push Notifications (Toplu Bildirim & Duyuru Gönder)
+        Route::get('/broadcast-notifications', [App\Http\Controllers\Web\BroadcastNotificationController::class, 'index'])->name('broadcast.index');
+        Route::post('/broadcast-notifications/send', [App\Http\Controllers\Web\BroadcastNotificationController::class, 'send'])->name('broadcast.send');
     });
 });

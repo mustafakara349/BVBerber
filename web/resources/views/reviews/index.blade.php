@@ -145,12 +145,17 @@
                             </div>
                         </td>
                         <td class="text-center">
+                            @if($rev->rating <= 3)
+                                <div class="mb-1"><span class="badge bg-danger-subtle text-danger border border-danger-subtle"><i class="ti ti-alert-triangle me-1"></i> Düşük Puan</span></div>
+                            @elseif($rev->redirected_to_google_at)
+                                <div class="mb-1"><span class="badge bg-success-subtle text-success border border-success-subtle"><i class="ti ti-brand-google me-1"></i> Google'a Yönlendi</span></div>
+                            @endif
                             <span class="badge bg-warning bg-opacity-10 text-dark border border-warning-subtle px-2.5 py-1 rounded-pill">
-                                <i class="ti ti-star-filled text-warning me-1"></i> {{ $rev->rating }}
+                                <i class="ti ti-star-filled text-warning me-1"></i> {{ $rev->rating }} / 5
                             </span>
                         </td>
                         <td class="text-dark py-3" style="max-width: 350px;">
-                            <div class="text-wrap text-break fw-medium">{{ $rev->comment ?? '-' }}</div>
+                            <div class="text-wrap text-break fw-medium">{{ e($rev->comment ?? '-') }}</div>
                         </td>
                         <td class="text-center text-secondary small">
                             {{ $rev->created_at ? $rev->created_at->format('d.m.Y H:i') : '-' }}

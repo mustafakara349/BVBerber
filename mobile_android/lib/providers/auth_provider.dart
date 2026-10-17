@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobile_android/services/api_service.dart';
 import 'package:mobile_android/models/user_model.dart';
+import 'package:mobile_android/services/push_notification_service.dart';
 
 /// Kimlik doğrulama state yönetimi
 class AuthProvider extends ChangeNotifier {
@@ -30,6 +31,11 @@ class AuthProvider extends ChangeNotifier {
         final userData = await ApiService.getMe();
         _currentUser = UserModel.fromMap(userData);
         _isLoggedIn = true;
+        try {
+          PushNotificationService().syncTokenWithBackend();
+        } catch (e) {
+          debugPrint('Push token senkronizasyon hatası: $e');
+        }
         return true;
       } else {
         // Token var ama Beni Hatırla seçilmediyse veya token yoksa temizle
@@ -62,6 +68,11 @@ class AuthProvider extends ChangeNotifier {
       final loginData = await ApiService.login(email, password);
       _currentUser = UserModel.fromMap(loginData['user']);
       _isLoggedIn = true;
+      try {
+        PushNotificationService().syncTokenWithBackend();
+      } catch (e) {
+        debugPrint('Push token senkronizasyon hatası: $e');
+      }
     } catch (e) {
       _isLoggedIn = false;
       _currentUser = null;
@@ -94,6 +105,11 @@ class AuthProvider extends ChangeNotifier {
       );
       _currentUser = UserModel.fromMap(registerData['user']);
       _isLoggedIn = true;
+      try {
+        PushNotificationService().syncTokenWithBackend();
+      } catch (e) {
+        debugPrint('Push token senkronizasyon hatası: $e');
+      }
     } catch (e) {
       _isLoggedIn = false;
       _currentUser = null;

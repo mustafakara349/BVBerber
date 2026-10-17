@@ -7,6 +7,10 @@ import 'package:mobile_android/providers/service_provider.dart';
 import 'package:mobile_android/providers/appointment_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mobile_android/firebase_options.dart';
+import 'package:mobile_android/services/push_notification_service.dart';
 import 'package:mobile_android/services/notification_service.dart';
 
 import 'package:mobile_android/providers/cafe_provider.dart';
@@ -19,7 +23,20 @@ void main() async {
   // Türkçe tarih formatlaması için gerekli
   await initializeDateFormatting('tr_TR', null);
 
-  // Bildirim servisini başlat ve izin iste
+  // Firebase ve Arka Plan Push Bildirim Servisi (FCM)
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    
+    final pushService = PushNotificationService();
+    await pushService.initialize();
+  } catch (e) {
+    debugPrint('Firebase başlatma uyarısı: $e');
+  }
+
+  // Yerel randevu hatırlatıcı servisi
   final notificationService = NotificationService();
   await notificationService.initialize();
   await notificationService.requestPermission();
@@ -42,6 +59,8 @@ void main() async {
   );
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class BVBarberApp extends StatelessWidget {
   final bool isLoggedIn;
   const BVBarberApp({super.key, required this.isLoggedIn});
@@ -49,6 +68,7 @@ class BVBarberApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'BVBarber',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,

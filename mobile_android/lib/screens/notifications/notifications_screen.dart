@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_android/services/api_service.dart';
 import 'package:mobile_android/models/notification_model.dart';
 import 'package:mobile_android/core/app_theme.dart';
+import 'package:mobile_android/routes/app_routes.dart';
 import 'package:intl/intl.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -136,51 +137,57 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         final iconData = getNotificationIcon(notification.icon);
         final color = getNotificationColor(notification.icon);
 
-        return Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300,
+        return InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.main);
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark ? const Color(0xFF2C2C30) : Colors.grey.shade300,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.35 : 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.35 : 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(iconData, color: color, size: 22),
                 ),
-                child: Icon(iconData, color: color, size: 22),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(notification.title, style: TextStyle(
-                      color: isDark ? Colors.white : Colors.black87, fontSize: 15, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 6),
-                    Text(notification.message, style: TextStyle(
-                      color: isDark ? const Color(0xFF9CA3AF) : Colors.black54, fontSize: 13, height: 1.4)),
-                    const SizedBox(height: 10),
-                    Text(timeStr, style: TextStyle(
-                      color: isDark ? Colors.white38 : Colors.black38, fontSize: 11, fontWeight: FontWeight.w500)),
-                  ],
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(notification.title, style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black87, fontSize: 15, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 6),
+                      Text(notification.message, style: TextStyle(
+                        color: isDark ? const Color(0xFF9CA3AF) : Colors.black54, fontSize: 13, height: 1.4)),
+                      const SizedBox(height: 10),
+                      Text(timeStr, style: TextStyle(
+                        color: isDark ? Colors.white38 : Colors.black38, fontSize: 11, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

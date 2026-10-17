@@ -39,4 +39,9 @@ return [
         'credentials' => env('FIREBASE_CREDENTIALS_PATH', 'firebase-service-account.json'),
     ],
 
+    'google' => [
+        'place_id' => env('GOOGLE_PLACE_ID', ''),
+        'review_base_url' => env('GOOGLE_REVIEW_BASE_URL', 'https://search.google.com/local/writereview?placeid='),
+    ],
+
 ];

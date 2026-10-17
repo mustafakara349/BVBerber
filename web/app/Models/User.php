@@ -35,6 +35,7 @@ class User extends Authenticatable
         'last_login_at',
         'status',
         'is_guest',
+        'last_google_redirect_at',
     ];
 
     protected $hidden = [
@@ -53,6 +54,7 @@ class User extends Authenticatable
             'status' => UserStatus::class,
             'password' => 'hashed',
             'is_guest' => 'boolean',
+            'last_google_redirect_at' => 'datetime',
         ];
     }
 

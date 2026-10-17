@@ -19,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobile_android/services/api_service.dart';
+import 'package:mobile_android/services/push_notification_service.dart';
 import 'package:mobile_android/widgets/campaign_ticket_carousel.dart';
 
 /// Ana sayfa ekranı – iOS MainContentView ile birebir aynı bölümler ve akış
@@ -48,6 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadAllHomeData();
     _startNotificationPolling();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      PushNotificationService().syncTokenWithBackend();
+    });
   }
 
   @override
@@ -183,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ? Image.network(
                                 profileUrl,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => _buildInitialsAvatar(initials),
+                                errorBuilder: (_, _, _) => _buildInitialsAvatar(initials),
                               )
                             : _buildInitialsAvatar(initials),
                       ),
@@ -500,7 +504,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? Image.network(
                                     _barbers[i].profileImageUrl!,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Center(
+                                    errorBuilder: (_, _, _) => Center(
                                       child: Text(
                                         _barbers[i].initials,
                                         style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
@@ -596,7 +600,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Image.network(
                         service.imageUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(
+                        errorBuilder: (_, _, _) => Icon(
                           Icons.content_cut,
                           color: isDark ? Colors.white38 : Colors.black26,
                           size: 28,
@@ -690,7 +694,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(
+                        errorBuilder: (_, _, _) => Icon(
                           Icons.coffee,
                           color: isDark ? Colors.white38 : Colors.black26,
                           size: 28,
@@ -786,7 +790,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(
+                        errorBuilder: (_, _, _) => Icon(
                           Icons.shopping_bag,
                           color: isDark ? Colors.white38 : Colors.black26,
                           size: 28,

@@ -5,6 +5,7 @@ import 'package:mobile_android/core/app_theme.dart';
 import 'package:mobile_android/core/enums.dart';
 import 'package:mobile_android/models/barber_model.dart';
 import 'package:mobile_android/models/service_model.dart';
+import 'package:mobile_android/models/appointment_model.dart';
 import 'package:mobile_android/models/available_slot_model.dart';
 import 'package:mobile_android/providers/auth_provider.dart';
 import 'package:mobile_android/providers/appointment_provider.dart';
@@ -629,7 +630,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                       child: Image.network(
                         barber.profileImageUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Center(
+                        errorBuilder: (_, _, _) => Center(
                           child: Text(
                             initials,
                             style: TextStyle(
@@ -799,7 +800,7 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
                       width: 48,
                       height: 48,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (_, _, _) => Container(
                         width: 48,
                         height: 48,
                         color: isDark ? const Color(0xFF2A2A2E) : Colors.grey.shade100,

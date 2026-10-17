@@ -263,7 +263,7 @@ class _CafeMenuScreenState extends State<CafeMenuScreen> {
                     ? Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(Icons.coffee, color: isDark ? Colors.white30 : Colors.black26, size: 30),
+                        errorBuilder: (_, _, _) => Icon(Icons.coffee, color: isDark ? Colors.white30 : Colors.black26, size: 30),
                       )
                     : Icon(Icons.coffee, color: isDark ? Colors.white30 : Colors.black26, size: 30),
               ),
@@ -362,7 +362,7 @@ class _CafeProductDetailSheet extends StatelessWidget {
                   child: Image.network(
                     product.imageUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (_, _, _) => Container(
                       color: isDark ? const Color(0xFF26262B) : Colors.grey.shade100,
                       child: Icon(Icons.coffee, color: isDark ? Colors.white30 : Colors.black26, size: 60),
                     ),

@@ -332,7 +332,7 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
 class PhotoCropScreen extends StatefulWidget {
   final File imageFile;
 
-  const PhotoCropScreen({required this.imageFile});
+  const PhotoCropScreen({super.key, required this.imageFile});
 
   @override
   State<PhotoCropScreen> createState() => PhotoCropScreenState();

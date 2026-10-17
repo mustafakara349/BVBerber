@@ -342,7 +342,7 @@ class _BarberServicesScreenState extends State<BarberServicesScreen> {
                       ? Image.network(
                           service.imageUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Icon(Icons.content_cut, color: isDark ? Colors.white30 : Colors.black26, size: 36),
+                          errorBuilder: (_, _, _) => Icon(Icons.content_cut, color: isDark ? Colors.white30 : Colors.black26, size: 36),
                         )
                       : Icon(Icons.content_cut, color: isDark ? Colors.white30 : Colors.black26, size: 36),
                 ),

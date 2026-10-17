@@ -173,7 +173,7 @@ class ServicesScreen extends StatelessWidget {
               Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(color: Colors.grey.shade900),
+                errorBuilder: (_, _, _) => Container(color: Colors.grey.shade900),
               ),
 
               // Koyu gradyan overlay

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobile_android/models/available_slot_model.dart';
+import 'package:mobile_android/models/review_result_model.dart';
 
 class ApiService {
   // Android Studio Emülatörü için: 'http://10.0.2.2:8000/api/v1' (PC'deki localhost:8000'e bağlar)
@@ -344,7 +345,7 @@ class ApiService {
   }
 
   // Yorum ve puanlama ekle
-  static Future<bool> createReview({
+  static Future<ReviewResultModel> createReview({
     required String appointmentId,
     required int rating,
     String? comment,
@@ -362,9 +363,40 @@ class ApiService {
     
     final body = jsonDecode(response.body);
     if (response.statusCode == 200 && body['success'] == true) {
-      return true;
+      return ReviewResultModel.fromMap(body, 'Değerlendirmeniz başarıyla kaydedildi.');
     } else {
       throw Exception(body['message'] ?? 'Yorum kaydedilemedi.');
+    }
+  }
+
+  // Google Haritalar tıklama takibi (Arka planda sessizce çağrılır)
+  static Future<void> trackGoogleReviewClick(int reviewId) async {
+    try {
+      final headers = await _getHeaders();
+      await http.post(
+        Uri.parse('$baseUrl/mobile/reviews/$reviewId/google-clicked'),
+        headers: headers,
+      );
+    } catch (e) {
+      debugPrint('Google review click tracking error: $e');
+    }
+  }
+
+  // Cihaz push token kaydet
+  static Future<void> saveDeviceToken(String fcmToken) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/mobile/save-token'),
+        headers: headers,
+        body: jsonEncode({
+          'fcmToken': fcmToken,
+          'device_type': 'android',
+        }),
+      );
+      debugPrint('[FCM] saveDeviceToken yanıtı: ${response.statusCode} - ${response.body}');
+    } catch (e) {
+      debugPrint('[FCM] Device token save error: $e');
     }
   }
 

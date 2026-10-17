@@ -24,14 +24,23 @@ class FirebasePushService
     {
         $credentialsPath = base_path(config('services.firebase.credentials', 'firebase-service-account.json'));
 
-        if (!file_exists($credentialsPath)) {
-            throw new \RuntimeException(
-                "Firebase Service Account dosyası bulunamadı: {$credentialsPath}"
-            );
+        if (file_exists($credentialsPath)) {
+            $this->serviceAccount = json_decode(file_get_contents($credentialsPath), true) ?: [];
+            $this->projectId = $this->serviceAccount['project_id'] ?? 'bvbarber-ae2cd';
+        } else {
+            $this->serviceAccount = [];
+            $this->projectId = 'bvbarber-ae2cd';
         }
+    }
 
-        $this->serviceAccount = json_decode(file_get_contents($credentialsPath), true);
-        $this->projectId = $this->serviceAccount['project_id'] ?? 'bvbarber-ae2cd';
+    /**
+     * Firebase Service Account kimlik dosyasının varlığını ve geçerliliğini kontrol eder.
+     */
+    public function isConfigured(): bool
+    {
+        return !empty($this->serviceAccount) && 
+               !empty($this->serviceAccount['private_key']) && 
+               !empty($this->serviceAccount['client_email']);
     }
 
     // ───────────────────────────────────────────────
@@ -79,12 +88,18 @@ class FirebasePushService
             return 0;
         }
 
+        if (!$this->isConfigured()) {
+            Log::warning('[FCM] firebase-service-account.json bulunamadığı için push iletimi atlandı.');
+            return 0;
+        }
+
         $accessToken = $this->getAccessToken();
         $successCount = 0;
 
         foreach ($tokens as $token) {
             try {
-                $response = Http::withToken($accessToken)
+                $response = $this->httpClient()
+                    ->withToken($accessToken)
                     ->post(
                         "https://fcm.googleapis.com/v1/projects/{$this->projectId}/messages:send",
                         [
@@ -95,7 +110,22 @@ class FirebasePushService
                                     'body'  => $body,
                                 ],
                                 'data' => array_map('strval', $data),
+                                'android' => [
+                                    'priority' => 'high',
+                                    'notification' => [
+                                        'channel_id' => 'bvbarber_channel',
+                                        'sound' => 'default',
+                                        'notification_priority' => 'PRIORITY_MAX',
+                                        'default_sound' => true,
+                                        'default_vibrate_timings' => true,
+                                        'visibility' => 'PUBLIC',
+                                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                                    ],
+                                ],
                                 'apns' => [
+                                    'headers' => [
+                                        'apns-priority' => '10',
+                                    ],
                                     'payload' => [
                                         'aps' => [
                                             'sound' => 'default',
@@ -172,7 +202,7 @@ class FirebasePushService
             $jwt = "{$signatureInput}." . $this->base64UrlEncode($signature);
 
             // Token al
-            $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
+            $response = $this->httpClient()->asForm()->post('https://oauth2.googleapis.com/token', [
                 'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
                 'assertion'  => $jwt,
             ]);
@@ -183,6 +213,20 @@ class FirebasePushService
 
             return $response->json('access_token');
         });
+    }
+
+    /**
+     * Yerel geliştirme ortamında (özellikle Windows'ta CA sertifikası eksikse)
+     * cURL 60 SSL hatası almamak için güvenli fallback ile HTTP istemcisi döner.
+     * Canlı ortamda (production) her zaman katı SSL doğrulaması yapar.
+     */
+    private function httpClient(): \Illuminate\Http\Client\PendingRequest
+    {
+        $client = Http::timeout(15);
+        if (!app()->isProduction() && empty(ini_get('curl.cainfo')) && empty(ini_get('openssl.cafile'))) {
+            return $client->withoutVerifying();
+        }
+        return $client;
     }
 
     private function base64UrlEncode(string $data): string

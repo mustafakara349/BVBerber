@@ -375,7 +375,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           fit: BoxFit.cover,
                                           width: 120,
                                           height: 120,
-                                          errorBuilder: (_, __, ___) => _buildAvatarPlaceholder(isDark, size: 50),
+                                          errorBuilder: (_, _, _) => _buildAvatarPlaceholder(isDark, size: 50),
                                         )
                                       : _buildAvatarPlaceholder(isDark, size: 50),
                                 ),
@@ -536,7 +536,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? Image.network(
                           profileUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => _buildAvatarPlaceholder(isDark, size: 100),
+                          errorBuilder: (_, _, _) => _buildAvatarPlaceholder(isDark, size: 100),
                         )
                       : _buildAvatarPlaceholder(isDark, size: 100),
                 ),

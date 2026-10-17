@@ -9,6 +9,8 @@ import 'package:mobile_android/routes/app_routes.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile_android/services/api_service.dart';
+import 'package:mobile_android/models/review_result_model.dart';
+import 'package:mobile_android/widgets/google_review_invite_bottom_sheet.dart';
 
 class AppointmentsScreen extends StatefulWidget {
   const AppointmentsScreen({super.key});
@@ -185,7 +187,7 @@ class _AppointmentCard extends StatelessWidget {
     final googleUrl = 'https://calendar.google.com/calendar/render'
         '?action=TEMPLATE'
         '&text=${Uri.encodeComponent(title)}'
-        '&dates=${startStr}/${endStr}'
+        '&dates=$startStr/$endStr'
         '&details=${Uri.encodeComponent(details)}'
         '&location=${Uri.encodeComponent(location)}';
 
@@ -209,58 +211,101 @@ class _AppointmentCard extends StatelessWidget {
   void _showReviewDialog(BuildContext context) {
     int selectedRating = 5;
     final commentController = TextEditingController();
+    bool isSubmitting = false;
 
     final isDark = AppTheme.isDark(context);
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext ctx) {
         return StatefulBuilder(
           builder: (context, setState) {
+            final isLowRating = selectedRating <= 3;
+            final dynamicFeedbackText = isLowRating
+                ? 'Neyi beğenmediniz? Düşüncelerinizi yöneticimize iletin; hemen telafi edelim.'
+                : 'Hizmetimizden memnun kalmanıza çok sevindik! Deneyiminizi paylaşın.';
+
             return AlertDialog(
               backgroundColor: isDark ? const Color(0xFF1E1E22) : Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               title: Text(
                 'Randevuyu Değerlendir',
-                style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black87,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Hizmet kalitesini ve berberinizi puanlayın:',
-                      style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 13),
-                    ),
-                    const SizedBox(height: 16),
+                    // Yıldız seçimi
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(5, (index) {
                         final starValue = index + 1;
+                        final isSelected = starValue <= selectedRating;
                         return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedRating = starValue;
-                            });
-                          },
-                          child: Icon(
-                            starValue <= selectedRating ? Icons.star : Icons.star_border,
-                            color: AppTheme.secondaryColor,
-                            size: 36,
+                          onTap: isSubmitting
+                              ? null
+                              : () {
+                                  setState(() {
+                                    selectedRating = starValue;
+                                  });
+                                },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: Icon(
+                              isSelected ? Icons.star_rounded : Icons.star_outline_rounded,
+                              color: AppTheme.secondaryColor,
+                              size: 40,
+                            ),
                           ),
                         );
                       }),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 12),
+                    // Dinamik teşvik metni
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: Container(
+                        key: ValueKey<int>(selectedRating),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isLowRating
+                              ? AppTheme.errorColor.withOpacity(0.08)
+                              : AppTheme.secondaryColor.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          dynamicFeedbackText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: isLowRating
+                                ? (isDark ? Colors.redAccent.shade100 : AppTheme.errorColor)
+                                : (isDark ? AppTheme.secondaryColor : const Color(0xFF854D0E)),
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
                     TextField(
                       controller: commentController,
+                      enabled: !isSubmitting,
                       style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                       maxLines: 3,
                       decoration: InputDecoration(
-                        hintText: 'Yorumunuzu buraya yazabilirsiniz (isteğe bağlı)...',
-                        hintStyle: TextStyle(color: isDark ? Colors.white38 : Colors.black38),
+                        hintText: isLowRating
+                            ? 'Nasıl daha iyi olabilirdik? (İsteğe bağlı)...'
+                            : 'Yorumunuzu buraya yazabilirsiniz (İsteğe bağlı)...',
+                        hintStyle: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 13),
                         fillColor: isDark ? const Color(0xFF28282D) : AppTheme.backgroundColor,
                         filled: true,
+                        contentPadding: const EdgeInsets.all(12),
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: AppTheme.secondaryColor),
                           borderRadius: BorderRadius.circular(12),
@@ -276,35 +321,57 @@ class _AppointmentCard extends StatelessWidget {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(ctx),
+                  onPressed: isSubmitting ? null : () => Navigator.pop(ctx),
                   child: Text('Vazgeç', style: TextStyle(color: isDark ? Colors.white60 : Colors.black54)),
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    final messenger = ScaffoldMessenger.of(context);
-                    final apptProvider = Provider.of<AppointmentProvider>(context, listen: false);
-                    try {
-                      final success = await ApiService.createReview(
-                        appointmentId: appointment.id,
-                        rating: selectedRating,
-                        comment: commentController.text.trim().isEmpty ? null : commentController.text.trim(),
-                      );
-                      if (success) {
-                        Navigator.pop(ctx);
-                        _showSnackBar(messenger, 'Değerlendirmeniz başarıyla gönderildi.', AppTheme.successColor);
-                        apptProvider.markAsReviewed(appointment.id, selectedRating);
-                        apptProvider.loadAppointments();
-                      }
-                    } catch (e) {
-                      _showSnackBar(messenger, e.toString().replaceAll('Exception: ', ''), AppTheme.errorColor);
-                    }
-                  },
+                  onPressed: isSubmitting
+                      ? null
+                      : () async {
+                          setState(() => isSubmitting = true);
+                          final messenger = ScaffoldMessenger.of(context);
+                          final apptProvider = Provider.of<AppointmentProvider>(context, listen: false);
+                          try {
+                            final result = await ApiService.createReview(
+                              appointmentId: appointment.id,
+                              rating: selectedRating,
+                              comment: commentController.text.trim().isEmpty ? null : commentController.text.trim(),
+                            );
+
+                            if (ctx.mounted) Navigator.pop(ctx);
+
+                            _showSnackBar(messenger, result.message, AppTheme.successColor);
+                            apptProvider.markAsReviewed(appointment.id, selectedRating);
+                            apptProvider.loadAppointments();
+
+                            // Eğer yüksek puan ve Google yönlendirme aktifse GoogleReviewInviteBottomSheet aç
+                            if (result.shouldPromptGoogle && result.googleReviewUrl != null && context.mounted) {
+                              GoogleReviewInviteBottomSheet.show(
+                                context,
+                                reviewId: result.reviewId,
+                                googleReviewUrl: result.googleReviewUrl!,
+                              );
+                            }
+                          } catch (e) {
+                            if (ctx.mounted) {
+                              setState(() => isSubmitting = false);
+                            }
+                            _showSnackBar(messenger, e.toString().replaceAll('Exception: ', ''), AppTheme.errorColor);
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.secondaryColor,
                     foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: const Text('Gönder', style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: isSubmitting
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                        )
+                      : const Text('Gönder', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             );

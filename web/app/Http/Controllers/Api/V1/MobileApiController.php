@@ -134,9 +134,9 @@ class MobileApiController extends Controller
         ]);
 
         $user = $request->user();
-        $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
+        $appointment = \App\Models\Appointment::with(['branch.settings'])->findOrFail($request->appointment_id);
 
-        if ($appointment->customer_id != $user->id) {
+        if ((int)$appointment->customer_id !== (int)$user->id) {
             return $this->error('Bu randevu size ait değil.', 403);
         }
 
@@ -153,19 +153,66 @@ class MobileApiController extends Controller
             return $this->error('Henüz gerçekleşmemiş randevular için yorum yapamazsınız.', 400);
         }
 
-        if ($appointment->review()->exists()) {
-            return $this->error('Bu randevu için zaten yorum yapılmış.', 400);
+        if ($appointment->review()->exists() || \App\Models\Review::where('appointment_id', $appointment->id)->exists()) {
+            return $this->error('Bu randevu için zaten yorum yapılmış.', 409);
         }
+
+        $comment = $request->filled('comment') ? strip_tags(trim($request->comment)) : null;
 
         $review = \App\Models\Review::create([
             'appointment_id' => $appointment->id,
             'customer_id' => $user->id,
             'employee_id' => $appointment->employee_id,
-            'rating' => $request->rating,
-            'comment' => $request->comment,
+            'rating' => (int)$request->rating,
+            'comment' => $comment,
+            'prompted_for_google' => false,
         ]);
 
-        return $this->success($review, 'Yorumunuz başarıyla kaydedildi.');
+        $rating = (int)$review->rating;
+        $shouldPromptGoogle = false;
+        $googleReviewUrl = null;
+
+        if ($rating >= 4) {
+            $isCooldown = $user->last_google_redirect_at && $user->last_google_redirect_at->gt(now()->subDays(90));
+            $placeId = $appointment->branch?->settings?->google_place_id ?: config('services.google.place_id');
+
+            if ($placeId && !$isCooldown) {
+                $shouldPromptGoogle = true;
+                $baseUrl = config('services.google.review_base_url', 'https://search.google.com/local/writereview?placeid=');
+                $googleReviewUrl = $baseUrl . $placeId;
+            }
+        }
+
+        return $this->success([
+            'review_id' => $review->id,
+            'rating' => $rating,
+            'should_prompt_google' => $shouldPromptGoogle,
+            'google_review_url' => $googleReviewUrl,
+        ], $rating >= 4 
+            ? 'Değerlendirmeniz başarıyla kaydedildi.' 
+            : 'Geri bildiriminiz için teşekkürler. Notunuz işletme yöneticimize iletildi.');
+    }
+
+    /**
+     * Track when user clicks to write a Google review.
+     */
+    public function trackGoogleReviewClick(Request $request, int|string $id): JsonResponse
+    {
+        $user = $request->user();
+        $review = \App\Models\Review::where('id', $id)
+            ->where('customer_id', $user->id)
+            ->firstOrFail();
+
+        $review->update([
+            'redirected_to_google_at' => now(),
+            'prompted_for_google' => true,
+        ]);
+
+        $user->update([
+            'last_google_redirect_at' => now(),
+        ]);
+
+        return $this->success(null, 'Google yönlendirmesi kaydedildi.');
     }
 
     public function availableSlots(Request $request, int|string $barberId): JsonResponse

@@ -277,7 +277,7 @@ class _SaleProductsScreenState extends State<SaleProductsScreen> {
                     ? Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(Icons.shopping_bag, color: isDark ? Colors.white30 : Colors.black26, size: 30),
+                        errorBuilder: (_, _, _) => Icon(Icons.shopping_bag, color: isDark ? Colors.white30 : Colors.black26, size: 30),
                       )
                     : Icon(Icons.shopping_bag, color: isDark ? Colors.white30 : Colors.black26, size: 30),
               ),
@@ -398,7 +398,7 @@ class _SaleProductDetailSheet extends StatelessWidget {
                   child: Image.network(
                     product.imageUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (_, _, _) => Container(
                       color: isDark ? const Color(0xFF26262B) : Colors.grey.shade100,
                       child: Icon(Icons.shopping_bag, color: isDark ? Colors.white30 : Colors.black26, size: 60),
                     ),
@@ -541,7 +541,7 @@ class _SaleFilterSheet extends StatelessWidget {
           SwitchListTile(
             title: Text('Sadece Stoktakiler', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 14, fontWeight: FontWeight.w600)),
             value: provider.showInStockOnly,
-            activeColor: AppTheme.secondaryColor,
+            activeThumbColor: AppTheme.secondaryColor,
             contentPadding: EdgeInsets.zero,
             onChanged: (val) {
               provider.setShowInStockOnly(val);
