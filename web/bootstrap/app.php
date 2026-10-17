@@ -13,6 +13,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->authenticateSessions();
+
+        // 1. Trusted Reverse Proxies: Only trust designated reverse proxies/load balancers (never '*' blindly)
+        $trustedProxies = env('TRUSTED_PROXIES');
+        $proxies = $trustedProxies
+            ? array_map('trim', explode(',', $trustedProxies))
+            : ['127.0.0.1', '::1'];
+
+        $middleware->trustProxies(at: $proxies);
+
+        // 2. HTTP Security Headers (X-Content-Type-Options, CSP, Clickjacking, Referrer-Policy, HSTS)
+        $middleware->append(\App\Http\Middleware\SecurityHeadersMiddleware::class);
+
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'audit' => \App\Http\Middleware\AuditLogMiddleware::class,

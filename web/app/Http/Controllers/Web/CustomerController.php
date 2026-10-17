@@ -13,17 +13,23 @@ class CustomerController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', User::class);
+
         $customers = User::customers()->withCount('appointments')->paginate(15);
         return view('customers.index', compact('customers'));
     }
 
     public function create()
     {
+        $this->authorize('create', User::class);
+
         return view('customers.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
@@ -54,6 +60,8 @@ class CustomerController extends Controller
 
     public function show(User $customer)
     {
+        $this->authorize('view', $customer);
+
         if ($customer->role?->slug !== 'customer') {
             abort(404);
         }
@@ -88,6 +96,8 @@ class CustomerController extends Controller
 
     public function edit(User $customer)
     {
+        $this->authorize('update', $customer);
+
         if ($customer->role?->slug !== 'customer') {
             abort(404);
         }
@@ -97,6 +107,8 @@ class CustomerController extends Controller
 
     public function update(Request $request, User $customer)
     {
+        $this->authorize('update', $customer);
+
         if ($customer->role?->slug !== 'customer') {
             abort(404);
         }
@@ -122,11 +134,13 @@ class CustomerController extends Controller
 
     public function destroy(User $customer)
     {
+        $this->authorize('delete', $customer);
+
         if ($customer->role?->slug !== 'customer') {
             abort(404);
         }
 
-        $customer->forceDelete();
+        $customer->delete();
         return redirect()->route('customers.index')->with('success', 'Müşteri silindi.');
     }
 }

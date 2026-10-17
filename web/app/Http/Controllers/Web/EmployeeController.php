@@ -50,8 +50,40 @@ class EmployeeController extends Controller
             'salary_amount' => 'required|numeric',
             'commission_rate' => 'required|numeric',
             'hire_date' => 'required|date',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'profile_photo' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|mimetypes:image/jpeg,image/png,image/webp|max:2048',
         ]);
+
+        $photoFile = null;
+        $safePhotoFilename = null;
+
+        if ($request->hasFile('profile_photo')) {
+            $photoFile = $request->file('profile_photo');
+            $realPath = $photoFile->getRealPath();
+
+            $imageInfo = @getimagesize($realPath);
+            if ($imageInfo === false || !in_array($imageInfo[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true)) {
+                return back()->withErrors(['profile_photo' => 'Yüklenen dosya geçerli bir raster görsel (JPEG, PNG veya WebP) formatında olmalıdır.'])->withInput();
+            }
+
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $detectedMime = $finfo->file($realPath);
+            if (!in_array($detectedMime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+                return back()->withErrors(['profile_photo' => 'Geçersiz görsel türü tespit edildi.'])->withInput();
+            }
+
+            $safeExt = match ($imageInfo[2]) {
+                IMAGETYPE_JPEG => 'jpg',
+                IMAGETYPE_PNG => 'png',
+                IMAGETYPE_WEBP => 'webp',
+            };
+
+            $safePhotoFilename = Str::uuid()->toString() . '.' . $safeExt;
+        }
+
+        $storedPhotoPath = null;
+        if ($photoFile && $safePhotoFilename) {
+            $storedPhotoPath = $photoFile->storeAs('profile_photos', $safePhotoFilename, 'public');
+        }
 
         $user = User::create([
             'uuid' => Str::uuid(),
@@ -61,12 +93,8 @@ class EmployeeController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
+            'profile_photo' => $storedPhotoPath,
         ]);
-
-        if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
-            $user->update(['profile_photo' => $path]);
-        }
 
         Employee::create([
             'branch_id' => session('active_branch_id', 1),
@@ -127,7 +155,7 @@ class EmployeeController extends Controller
             'salary_amount' => 'required|numeric',
             'commission_rate' => 'required|numeric',
             'hire_date' => 'required|date',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'profile_photo' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|mimetypes:image/jpeg,image/png,image/webp|max:2048',
         ]);
 
         $employee->user->update([
@@ -143,11 +171,34 @@ class EmployeeController extends Controller
         }
 
         if ($request->hasFile('profile_photo')) {
-            if ($employee->user->profile_photo) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($employee->user->profile_photo);
+            $file = $request->file('profile_photo');
+            $realPath = $file->getRealPath();
+
+            $imageInfo = @getimagesize($realPath);
+            if ($imageInfo === false || !in_array($imageInfo[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true)) {
+                return back()->withErrors(['profile_photo' => 'Yüklenen dosya geçerli bir raster görsel (JPEG, PNG veya WebP) formatında olmalıdır.'])->withInput();
             }
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $detectedMime = $finfo->file($realPath);
+            if (!in_array($detectedMime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+                return back()->withErrors(['profile_photo' => 'Geçersiz görsel türü tespit edildi.'])->withInput();
+            }
+
+            $safeExt = match ($imageInfo[2]) {
+                IMAGETYPE_JPEG => 'jpg',
+                IMAGETYPE_PNG => 'png',
+                IMAGETYPE_WEBP => 'webp',
+            };
+
+            $safeFilename = Str::uuid()->toString() . '.' . $safeExt;
+            $oldPath = $employee->user->profile_photo;
+            $path = $file->storeAs('profile_photos', $safeFilename, 'public');
             $employee->user->update(['profile_photo' => $path]);
+
+            if ($oldPath && $oldPath !== $path && str_starts_with($oldPath, 'profile_photos/') && !str_contains($oldPath, '..')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+            }
         }
 
         $employee->update([

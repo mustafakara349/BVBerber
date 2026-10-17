@@ -5,6 +5,9 @@ namespace App\Traits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 trait MobileAuthTrait
 {
@@ -129,23 +132,88 @@ trait MobileAuthTrait
     }
 
     /**
-     * Upload profile photo.
+     * Upload profile photo with strict content validation and safe storage.
      */
     public function uploadPhoto(Request $request): JsonResponse
     {
         $user = $request->user();
+        if (!$user) {
+            return $this->error('Unauthenticated', 401);
+        }
+
         if (!$request->hasFile('photo')) {
             return $this->error('Photo file required', 400);
         }
 
-        $path = $request->file('photo')->store('profile_photos', 'public');
-        
-        $user->update([
-            'profile_photo' => $path
+        // 1. Structural file and raster image validation (rejects SVG, HTML, scripts)
+        $validator = Validator::make($request->all(), [
+            'photo' => [
+                'required',
+                'file',
+                'image',
+                'mimes:jpeg,jpg,png,webp',
+                'mimetypes:image/jpeg,image/png,image/webp',
+                'max:2048', // 2MB max
+            ],
+        ], [
+            'photo.required' => 'Fotoğraf dosyası zorunludur.',
+            'photo.file' => 'Geçersiz dosya formatı.',
+            'photo.image' => 'Yüklenen dosya geçerli bir raster görsel olmalıdır.',
+            'photo.mimes' => 'Yalnızca JPEG, PNG veya WebP formatında görsel yüklenebilir.',
+            'photo.mimetypes' => 'Yalnızca geçerli JPEG, PNG veya WebP görseli yüklenebilir.',
+            'photo.max' => 'Fotoğraf boyutu en fazla 2MB olabilir.',
         ]);
 
+        if ($validator->fails()) {
+            return $this->error($validator->errors()->first(), 422);
+        }
+
+        $file = $request->file('photo');
+        $realPath = $file->getRealPath();
+
+        // 2. Deep server-side content verification (getimagesize inspects actual image dimensions and headers)
+        $imageInfo = @getimagesize($realPath);
+        if ($imageInfo === false || !in_array($imageInfo[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true)) {
+            return $this->error('Yüklenen dosya geçerli bir raster görsel (JPEG, PNG veya WebP) formatında olmalıdır.', 422);
+        }
+
+        // 3. Finfo magic bytes verification against mime spoofing
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $detectedMime = $finfo->file($realPath);
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+
+        if (!in_array($detectedMime, $allowedMimes, true)) {
+            return $this->error('Geçersiz görsel türü tespit edildi.', 422);
+        }
+
+        // 4. Safe extension derived strictly from verified image content (never trust client extension)
+        $safeExtension = match ($imageInfo[2]) {
+            IMAGETYPE_JPEG => 'jpg',
+            IMAGETYPE_PNG => 'png',
+            IMAGETYPE_WEBP => 'webp',
+            default => 'jpg',
+        };
+
+        // 5. Generate cryptographically safe random filename (prevents overwrite & traversal)
+        $safeFilename = Str::uuid()->toString() . '.' . $safeExtension;
+
+        $oldPath = $user->profile_photo;
+
+        // 6. Store using safe filename in non-executable storage
+        $storedPath = $file->storeAs('profile_photos', $safeFilename, 'public');
+
+        // 7. Update authenticated user's record
+        $user->update([
+            'profile_photo' => $storedPath,
+        ]);
+
+        // 8. Delete previous profile photo if present on the public disk
+        if ($oldPath && $oldPath !== $storedPath && str_starts_with($oldPath, 'profile_photos/') && !str_contains($oldPath, '..')) {
+            Storage::disk('public')->delete($oldPath);
+        }
+
         return $this->success([
-            'profileImageUrl' => $request->schemeAndHttpHost() . '/storage/' . $path
+            'profileImageUrl' => $request->schemeAndHttpHost() . '/storage/' . $storedPath
         ], 'Photo uploaded successfully');
     }
 

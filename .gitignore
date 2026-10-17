@@ -11,6 +11,9 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+.agent/
+.agents/
+
 
 # IntelliJ related
 *.iml

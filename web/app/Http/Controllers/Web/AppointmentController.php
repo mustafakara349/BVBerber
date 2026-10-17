@@ -27,25 +27,40 @@ class AppointmentController extends Controller
 
     public function index(Request $request): View
     {
-        $branchId = session('active_branch_id', 1);
+        $this->authorize('viewAny', Appointment::class);
 
-        $appointments = $this->appointmentRepo->getForBranch($branchId, [
+        $branchId = session('active_branch_id', 1);
+        $user = auth()->user();
+
+        $filters = [
             'status' => $request->get('status'),
             'employee_id' => $request->get('employee_id'),
             'date_from' => $request->get('date_from'),
             'date_to' => $request->get('date_to'),
             'search' => $request->get('search'),
-        ], $request->get('per_page', 15));
+        ];
 
-        $employees = Employee::forBranch($branchId)
+        // Berberler yalnızca kendilerine atanmış randevuları görebilir
+        if ($user?->role?->slug === 'barber') {
+            $filters['employee_id'] = $user->employee?->id;
+        }
+
+        $appointments = $this->appointmentRepo->getForBranch($branchId, $filters, $request->get('per_page', 15));
+
+        $employeesQuery = Employee::forBranch($branchId)
             ->active()
             ->whereHas('user', function ($q) {
                 // Hardcoded role_id=5 yerine slug tabanlı sorgu kullanılır.
                 // Rol ID'si değiştiğinde kırılmaz.
                 $q->whereHas('role', fn ($r) => $r->where('slug', 'barber'));
             })
-            ->with('user')
-            ->get();
+            ->with('user');
+
+        if ($user?->role?->slug === 'barber' && $user->employee) {
+            $employeesQuery->where('id', $user->employee->id);
+        }
+
+        $employees = $employeesQuery->get();
         $statuses = AppointmentStatus::cases();
         $activeBranch = \App\Models\Branch::find($branchId);
 
@@ -54,6 +69,8 @@ class AppointmentController extends Controller
 
     public function events(Request $request): \Illuminate\Http\JsonResponse
     {
+        $this->authorize('viewAny', Appointment::class);
+
         $request->validate([
             'start' => 'required|date',
             'end' => 'required|date',
@@ -61,11 +78,17 @@ class AppointmentController extends Controller
 
         $branchId = session('active_branch_id', 1);
 
-        $appointments = Appointment::forBranch($branchId)
+        $query = Appointment::forBranch($branchId)
             ->whereBetween('start_at', [$request->start, $request->end])
             ->whereNotIn('status', ['cancelled', 'rejected'])
-            ->with(['customer', 'employee.user', 'appointmentServices.service'])
-            ->get();
+            ->with(['customer', 'employee.user', 'appointmentServices.service']);
+
+        // Berber takviminde yalnızca kendi randevuları gösterilir (diğer müşterilerin verileri sızdırılmaz)
+        if (auth()->user()?->role?->slug === 'barber') {
+            $query->where('employee_id', auth()->user()?->employee?->id);
+        }
+
+        $appointments = $query->get();
 
         $events = $appointments->map(function ($apt) {
             $customerName = $apt->customer->full_name ?? 'Bilinmeyen Müşteri';
@@ -102,8 +125,14 @@ class AppointmentController extends Controller
 
     public function create(): View
     {
+        $this->authorize('create', Appointment::class);
+
         $branchId = session('active_branch_id', 1);
-        $employees = Employee::forBranch($branchId)->active()->visible()->with('user')->get();
+        $employeesQuery = Employee::forBranch($branchId)->active()->visible()->with('user');
+        if (auth()->user()?->role?->slug === 'barber' && auth()->user()?->employee) {
+            $employeesQuery->where('id', auth()->user()?->employee->id);
+        }
+        $employees = $employeesQuery->get();
         $services = Service::forBranch($branchId)->active()->with('category')->get();
         $customers = \App\Models\User::customers()->active()->get();
         $coupons = \App\Models\Coupon::with('users')->get();
@@ -113,9 +142,7 @@ class AppointmentController extends Controller
 
     public function edit(Appointment $appointment): View
     {
-        if ($appointment->branch_id !== session('active_branch_id', 1)) {
-            abort(403, 'Yetkisiz işlem.');
-        }
+        $this->authorize('update', $appointment);
 
         $branchId = session('active_branch_id', 1);
         $employees = Employee::forBranch($branchId)->active()->visible()->with('user')->get();
@@ -131,10 +158,17 @@ class AppointmentController extends Controller
 
     public function store(StoreAppointmentRequest $request): RedirectResponse
     {
+        $this->authorize('create', Appointment::class);
+
         $data = $request->validated();
         $data['created_by'] = auth()->id();
         $data['source'] = 'admin_panel';
         $data['status'] = AppointmentStatus::Confirmed->value;
+
+        // Berber yalnızca kendi adına randevu oluşturabilir
+        if (auth()->user()?->role?->slug === 'barber') {
+            $data['employee_id'] = auth()->user()?->employee?->id;
+        }
 
         try {
             $this->appointmentService->createAppointment($data);
@@ -150,9 +184,7 @@ class AppointmentController extends Controller
 
     public function show(Appointment $appointment): View
     {
-        if ($appointment->branch_id !== session('active_branch_id', 1)) {
-            abort(403, 'Yetkisiz işlem.');
-        }
+        $this->authorize('view', $appointment);
 
         $appointment->load([
             'customer', 'employee.user', 'branch',
@@ -165,9 +197,7 @@ class AppointmentController extends Controller
 
     public function updateStatus(Request $request, Appointment $appointment): RedirectResponse
     {
-        if ($appointment->branch_id !== session('active_branch_id', 1)) {
-            abort(403, 'Yetkisiz işlem.');
-        }
+        $this->authorize('updateStatus', $appointment);
 
         $request->validate([
             'status' => 'required|string',
@@ -209,9 +239,7 @@ class AppointmentController extends Controller
 
     public function storePayment(Request $request, Appointment $appointment): RedirectResponse
     {
-        if ($appointment->branch_id !== session('active_branch_id', 1)) {
-            abort(403, 'Yetkisiz işlem.');
-        }
+        $this->authorize('managePayment', $appointment);
 
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0.01',
@@ -261,7 +289,8 @@ class AppointmentController extends Controller
                 'payment_method' => $validated['payment_method'],
                 'description' => 'Randevu Ödemesi - #' . $appointment->appointment_code . ' (' . ($appointment->customer?->full_name ?? 'Müşteri') . ')',
                 'transaction_date' => $paidAtDateTime,
-                'appointment_id' => $appointment->id,
+                'reference_type' => \App\Models\Appointment::class,
+                'reference_id' => $appointment->id,
             ]);
         });
 
@@ -275,17 +304,25 @@ class AppointmentController extends Controller
 
     public function destroyPayment(Appointment $appointment, \App\Models\Payment $payment): RedirectResponse
     {
-        if ($appointment->branch_id !== session('active_branch_id', 1)) {
-            abort(403, 'Yetkisiz işlem.');
+        // 1. Doğrulama: Ödeme kaydının bu randevuya ait olduğundan emin olun (IDOR önleme)
+        if ((int) $payment->appointment_id !== (int) $appointment->id) {
+            abort(404, 'Ödeme kaydı belirtilen randevuya ait değil.');
         }
+
+        // 2. Yetkilendirme: Yalnızca yetkili roller (yönetici, resepsiyonist) silebilir; berber silemez
+        $this->authorize('deletePayment', $appointment);
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($appointment, $payment) {
             // 1. Delete associated transaction from transactions table
-            \App\Models\Transaction::where('appointment_id', $appointment->id)
-                ->where('amount', $payment->amount)
-                ->where('transaction_type', \App\Enums\TransactionType::Income)
-                ->first()
-                ?->delete();
+            \App\Models\Transaction::where(function ($q) use ($appointment) {
+                $q->where('reference_type', \App\Models\Appointment::class)
+                  ->where('reference_id', $appointment->id);
+            })
+            ->orWhere('description', 'like', '%#' . $appointment->appointment_code . '%')
+            ->where('amount', $payment->amount)
+            ->where('transaction_type', \App\Enums\TransactionType::Income)
+            ->first()
+            ?->delete();
 
             // 2. Delete the payment record itself
             $payment->delete();
@@ -311,9 +348,8 @@ class AppointmentController extends Controller
 
     public function completeWithPayment(Request $request, Appointment $appointment): RedirectResponse
     {
-        if ($appointment->branch_id !== session('active_branch_id', 1)) {
-            abort(403, 'Yetkisiz işlem.');
-        }
+        $this->authorize('updateStatus', $appointment);
+        $this->authorize('managePayment', $appointment);
 
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0.01',
@@ -372,7 +408,8 @@ class AppointmentController extends Controller
                 'payment_method' => $validated['payment_method'],
                 'description' => 'Randevu Ödemesi - #' . $appointment->appointment_code . ' (' . ($appointment->customer?->full_name ?? 'Müşteri') . ')',
                 'transaction_date' => $paidAtDateTime,
-                'appointment_id' => $appointment->id,
+                'reference_type' => \App\Models\Appointment::class,
+                'reference_id' => $appointment->id,
             ]);
         });
 

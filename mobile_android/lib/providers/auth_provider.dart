@@ -24,7 +24,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
+      final token = await ApiService.getAuthToken();
       final rememberMe = prefs.getBool('remember_me') ?? false;
       
       if (token != null && rememberMe) {
@@ -41,7 +41,7 @@ class AuthProvider extends ChangeNotifier {
         // Token var ama Beni Hatırla seçilmediyse veya token yoksa temizle
         if (token != null) {
           ApiService.logout().catchError((e) => debugPrint('Logout hatası: $e'));
-          await prefs.remove('auth_token');
+          await ApiService.clearAuthToken();
         }
         _currentUser = null;
         _isLoggedIn = false;

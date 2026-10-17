@@ -15,6 +15,8 @@ class LoyaltyController extends Controller
 
     public function show(User $customer)
     {
+        $this->authorize('view', $customer);
+
         // Yalnızca müşteri rolü olanları göster
         if ($customer->role?->slug !== 'customer') {
             abort(404);
@@ -36,6 +38,8 @@ class LoyaltyController extends Controller
 
     public function store(Request $request, User $customer)
     {
+        $this->authorize('update', $customer);
+
         $validated = $request->validate([
             'points' => 'required|integer|not_in:0',
             'description' => 'nullable|string|max:255',

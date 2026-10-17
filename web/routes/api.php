@@ -20,10 +20,10 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         Route::post('/login', [MobileApiController::class, 'login']);
         Route::post('/register', [MobileApiController::class, 'register']);
         
-        // Password Reset Endpoints (with rate limiting for send-otp)
+        // Password Reset Endpoints (with rate limiting)
         Route::post('/forgot-password', [\App\Http\Controllers\Api\ForgotPasswordController::class, 'sendOtp'])->middleware('throttle:3,1');
-        Route::post('/verify-otp', [\App\Http\Controllers\Api\ForgotPasswordController::class, 'verifyOtp']);
-        Route::post('/reset-password', [\App\Http\Controllers\Api\ForgotPasswordController::class, 'resetPassword']);
+        Route::post('/verify-otp', [\App\Http\Controllers\Api\ForgotPasswordController::class, 'verifyOtp'])->middleware('throttle:10,1');
+        Route::post('/reset-password', [\App\Http\Controllers\Api\ForgotPasswordController::class, 'resetPassword'])->middleware('throttle:10,1');
         
         // Guest Appointment Endpoint (Rate Limited)
         Route::post('/guest-appointment', [\App\Http\Controllers\Api\V1\GuestAppointmentController::class, 'store'])->middleware('throttle:3,1');

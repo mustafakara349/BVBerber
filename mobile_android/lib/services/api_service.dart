@@ -1,16 +1,120 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobile_android/models/available_slot_model.dart';
 import 'package:mobile_android/models/review_result_model.dart';
 
 class ApiService {
-  // Android Studio Emülatörü için: 'http://10.0.2.2:8000/api/v1' (PC'deki localhost:8000'e bağlar)
-  // Fiziksel Cihaz için: PC'nin Wi-Fi IP'si (örn. 'http://10.102.143.114:8000/api/v1')
-  static const String baseUrl = 'http://10.0.2.2:8000/api/v1';
+  // Varsayılan API URL tanımları (Geliştirme vs Canlı/Production)
+  static const String _defaultDevBaseUrl = 'http://10.0.2.2:8000/api/v1';
+  static const String _defaultProdBaseUrl = 'https://api.bvbarber.com/api/v1';
 
+  /// Derleme moduna ve yapılandırmaya göre API temel adresini belirler.
+  /// Production / Release modunda HTTPS zorunludur; HTTP adresi verilirse hata fırlatır.
+  static String resolveBaseUrl({bool? isRelease, String? customUrl}) {
+    final release = isRelease ?? kReleaseMode;
+    const envUrl = String.fromEnvironment('API_BASE_URL');
+    final configured = customUrl ?? (envUrl.isNotEmpty ? envUrl : null);
+    final candidate = configured ?? (release ? _defaultProdBaseUrl : _defaultDevBaseUrl);
+
+    if (release && !candidate.toLowerCase().startsWith('https://')) {
+      throw StateError(
+        'Insecure HTTP communication is blocked in production release builds. Base URL must enforce HTTPS: $candidate',
+      );
+    }
+    return candidate;
+  }
+
+  /// Aktif API URL adresi
+  static String get baseUrl => resolveBaseUrl();
+
+  /// Verilen URL'in release ortamında HTTPS olduğunu doğrular
+  static String enforceHttps(String url, {bool? isRelease}) {
+    final release = isRelease ?? kReleaseMode;
+    if (release && url.toLowerCase().startsWith('http://')) {
+      throw StateError(
+        'Security Violation: Cleartext HTTP traffic is blocked in production: $url',
+      );
+    }
+    return url;
+  }
+
+  // Android Keystore destekli güvenli depolama yapılandırması (RSA OAEP + AES GCM)
+  static const AndroidOptions _androidOptions = AndroidOptions(
+    resetOnError: true,
+  );
+
+  static const FlutterSecureStorage _defaultSecureStorage = FlutterSecureStorage(
+    aOptions: _androidOptions,
+  );
+
+  @visibleForTesting
+  static FlutterSecureStorage secureStorage = _defaultSecureStorage;
+
+  static const String _authTokenKey = 'auth_token';
+
+  /// Token'ı Android Keystore destekli güvenli depolamadan getirir.
+  /// Eski SharedPreferences'ta token kalmışsa güvenli alana taşır ve eski kopyayı siler.
+  static Future<String?> getAuthToken() async {
+    try {
+      final token = await secureStorage.read(key: _authTokenKey);
+      if (token != null && token.isNotEmpty) {
+        return token;
+      }
+    } catch (e) {
+      debugPrint('SecureStorage okuma hatası: $e');
+    }
+
+    // Geriye dönük uyumluluk: SharedPreferences'taki eski token'ı Keystore'a migrate et
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final legacyToken = prefs.getString(_authTokenKey);
+      if (legacyToken != null && legacyToken.isNotEmpty) {
+        await setAuthToken(legacyToken);
+        await prefs.remove(_authTokenKey);
+        return legacyToken;
+      }
+    } catch (e) {
+      debugPrint('Eski token taşıma hatası: $e');
+    }
+
+    return null;
+  }
+
+  /// Token'ı Android Keystore destekli güvenli depolamaya yazar ve SharedPreferences'taki düz metin kopyaları siler.
+  static Future<void> setAuthToken(String token) async {
+    try {
+      await secureStorage.write(key: _authTokenKey, value: token);
+    } catch (e) {
+      debugPrint('SecureStorage yazma hatası: $e');
+    }
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.containsKey(_authTokenKey)) {
+        await prefs.remove(_authTokenKey);
+      }
+    } catch (_) {}
+  }
+
+  /// Token'ı hem güvenli depolamadan hem de eski depolamadan temizler.
+  static Future<void> clearAuthToken() async {
+    try {
+      await secureStorage.delete(key: _authTokenKey);
+    } catch (e) {
+      debugPrint('SecureStorage silme hatası: $e');
+    }
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.containsKey(_authTokenKey)) {
+        await prefs.remove(_authTokenKey);
+      }
+    } catch (_) {}
+  }
 
   /// URL'deki localhost/127.0.0.1 adreslerini emülatörün erişebileceği IP/host ile değiştirir
   static String? normalizeImageUrl(String? url) {
@@ -21,11 +125,16 @@ class ApiService {
       final port = uri.port;
       final replacement = port != 0 && port != 80 && port != 443 ? '$host:$port' : host;
       
-      return url
+      var normalized = url
           .replaceAll('127.0.0.1:8000', replacement)
           .replaceAll('localhost:8000', replacement)
           .replaceAll('127.0.0.1', host)
           .replaceAll('localhost', host);
+
+      if (kReleaseMode && normalized.startsWith('http://$host')) {
+        normalized = normalized.replaceFirst('http://', 'https://');
+      }
+      return normalized;
     } catch (e) {
       return url;
     }
@@ -33,13 +142,12 @@ class ApiService {
 
   // Ortak Header yapılandırması (Token ile yetkilendirme)
   static Future<Map<String, String>> _getHeaders() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
+    final token = await getAuthToken();
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       headers['Authorization'] = 'Bearer $token';
     }
     return headers;
@@ -62,8 +170,9 @@ class ApiService {
     final body = jsonDecode(response.body);
     if (response.statusCode == 200 && body['success'] == true) {
       final token = body['data']['token'];
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('auth_token', token);
+      if (token is String && token.isNotEmpty) {
+        await setAuthToken(token);
+      }
       return body['data'];
     } else {
       throw Exception(body['message'] ?? 'Giriş başarısız oldu.');
@@ -96,8 +205,9 @@ class ApiService {
     final body = jsonDecode(response.body);
     if ((response.statusCode == 200 || response.statusCode == 201) && body['success'] == true) {
       final token = body['data']['token'];
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('auth_token', token);
+      if (token is String && token.isNotEmpty) {
+        await setAuthToken(token);
+      }
       return body['data'];
     } else {
       throw Exception(body['message'] ?? 'Kayıt başarısız oldu.');
@@ -115,8 +225,7 @@ class ApiService {
     } catch (e) {
       debugPrint('Logout API hatası: $e');
     } finally {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('auth_token');
+      await clearAuthToken();
     }
   }
 
@@ -394,7 +503,7 @@ class ApiService {
           'device_type': 'android',
         }),
       );
-      debugPrint('[FCM] saveDeviceToken yanıtı: ${response.statusCode} - ${response.body}');
+      debugPrint('[FCM] saveDeviceToken tamamlandı: durum ${response.statusCode}');
     } catch (e) {
       debugPrint('[FCM] Device token save error: $e');
     }
@@ -635,12 +744,11 @@ class ApiService {
 
   // Profil Fotoğrafı Yükle
   static Future<String> uploadProfilePhoto(File file) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
+    final token = await getAuthToken();
     final uri = Uri.parse('$baseUrl/mobile/me/upload-photo');
     final request = http.MultipartRequest('POST', uri);
     request.headers['Accept'] = 'application/json';
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       request.headers['Authorization'] = 'Bearer $token';
     }
 

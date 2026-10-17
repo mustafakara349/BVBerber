@@ -5,15 +5,25 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
     public function login(array $credentials, bool $remember = false): array
     {
-        $user = User::with('role')->where('email', $credentials['email'])->first();
+        $email = Str::lower(trim((string) ($credentials['email'] ?? '')));
+        $password = (string) ($credentials['password'] ?? '');
 
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+        $user = User::with('role')->where('email', $email)->first();
+
+        // Prevent timing discrepancy by always calculating a hash verification
+        $passwordValid = $user ? Hash::check($password, $user->password) : false;
+        if (!$user) {
+            Hash::check($password, '$2y$12$WeQfJsfrjrwT6dov5rOWkewWzbW1vS7ZvbhX8HRhabj4WWcU56U4W');
+        }
+
+        if (!$user || !$passwordValid) {
             throw ValidationException::withMessages([
                 'email' => ['Geçersiz email veya şifre.'],
             ]);
@@ -40,9 +50,18 @@ class AuthService
 
     public function apiLogin(array $credentials): array
     {
-        $user = User::with('role')->where('email', $credentials['email'])->first();
+        $email = Str::lower(trim((string) ($credentials['email'] ?? '')));
+        $password = (string) ($credentials['password'] ?? '');
 
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+        $user = User::with('role')->where('email', $email)->first();
+
+        // Prevent timing discrepancy by always calculating a hash verification
+        $passwordValid = $user ? Hash::check($password, $user->password) : false;
+        if (!$user) {
+            Hash::check($password, '$2y$12$WeQfJsfrjrwT6dov5rOWkewWzbW1vS7ZvbhX8HRhabj4WWcU56U4W');
+        }
+
+        if (!$user || !$passwordValid) {
             throw ValidationException::withMessages([
                 'email' => ['Invalid email or password.'],
             ]);

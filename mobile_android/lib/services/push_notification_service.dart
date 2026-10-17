@@ -161,7 +161,7 @@ class PushNotificationService {
 
       // 8. Token yenilendiğinde backend'e otomatik güncelle
       fcm.onTokenRefresh.listen((newToken) {
-        debugPrint('FCM Token yenilendi: $newToken');
+        debugPrint('FCM Token yenilendi.');
         ApiService.saveDeviceToken(newToken);
       });
     } else {
@@ -214,7 +214,7 @@ class PushNotificationService {
       }
       final token = await fcm.getToken();
       if (token != null && token.isNotEmpty) {
-        debugPrint('Aktif FCM Token: $token');
+        debugPrint('Aktif FCM Token başarıyla alındı.');
         await ApiService.saveDeviceToken(token);
       }
     } catch (e) {

@@ -34,9 +34,18 @@ class AppServiceProvider extends ServiceProvider
             return User::withTrashed()->where('uuid', $value)->orWhere('id', $value)->firstOrFail();
         });
 
+        // Explicit Policy Registrations
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\Appointment::class, \App\Policies\AppointmentPolicy::class);
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\User::class, \App\Policies\UserPolicy::class);
+
         // API Rate Limiting configuration
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        // Web Login Route Rate Limiting (IP-level boundary against flood abuse)
+        RateLimiter::for('login', function (Request $request) {
+            return Limit::perMinute(60)->by($request->ip());
         });
     }
 }
