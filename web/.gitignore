@@ -28,6 +28,7 @@ Thumbs.db
 
 # Agent Skills
 .agent/
+.agents/
 b&vapp_antigravity/
 
 # Firebase Service Account Credentials

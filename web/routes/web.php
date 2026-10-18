@@ -137,6 +137,7 @@ Route::middleware(['auth'])->group(function () {
         // Reviews
         Route::get('/reviews', [App\Http\Controllers\Web\ReviewController::class, 'index'])->name('reviews.index');
         Route::get('/reviews/{review}', [App\Http\Controllers\Web\ReviewController::class, 'show'])->name('reviews.show');
+        Route::delete('/reviews/{review}', [App\Http\Controllers\Web\ReviewController::class, 'destroy'])->name('reviews.destroy');
 
         // Reports
         Route::get('/reports', [App\Http\Controllers\Web\ReportController::class, 'index'])->name('reports.index');
