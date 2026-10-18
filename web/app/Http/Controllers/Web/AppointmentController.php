@@ -219,6 +219,61 @@ class AppointmentController extends Controller
         return back()->with('success', 'Randevu durumu güncellendi.');
     }
 
+    public function bulkUpdateStatus(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'status' => 'required|string|in:confirmed,rejected',
+            'cancellation_reason' => $request->status === 'rejected' ? 'required|string|min:1' : 'nullable|string',
+            'appointment_ids' => 'nullable|string',
+        ]);
+
+        $status = AppointmentStatus::from($request->status);
+        $user = auth()->user();
+        $activeBranchId = (int) (session('active_branch_id') ?? $user->employee?->branch_id ?? 1);
+
+        $query = Appointment::query()->forBranch($activeBranchId)->where('status', AppointmentStatus::Pending);
+
+        if ($request->filled('appointment_ids')) {
+            $ids = array_filter(array_map('intval', explode(',', (string) $request->appointment_ids)));
+            if (!empty($ids)) {
+                $query->whereIn('id', $ids);
+            }
+        }
+
+        if ($user->role?->slug === 'barber' && $user->employee) {
+            $query->where('employee_id', $user->employee->id);
+        }
+
+        $appointments = $query->get();
+
+        if ($appointments->isEmpty()) {
+            return back()->with('error', 'İşlem yapılacak bekleyen randevu bulunamadı.');
+        }
+
+        $updatedCount = 0;
+        foreach ($appointments as $appointment) {
+            if ($user->cannot('updateStatus', $appointment)) {
+                continue;
+            }
+
+            $this->appointmentService->updateStatus(
+                $appointment,
+                $status,
+                $user->id,
+                $request->get('note'),
+                $request->get('cancellation_reason')
+            );
+
+            \App\Models\Debt::syncDebtForAppointment($appointment->fresh());
+            $updatedCount++;
+        }
+
+        $this->dashboardService->flushBranchCache($activeBranchId);
+
+        $actionText = $status === AppointmentStatus::Confirmed ? 'onaylandı' : 'reddedildi';
+        return back()->with('success', "Toplam {$updatedCount} randevu başarıyla {$actionText}.");
+    }
+
     public function availableSlots(Request $request)
     {
         $request->validate([

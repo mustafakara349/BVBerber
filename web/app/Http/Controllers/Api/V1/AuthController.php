@@ -18,7 +18,15 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $result = $this->authService->apiLogin($request->only('email', 'password'));
+        $request->ensureIsNotRateLimited();
+
+        try {
+            $result = $this->authService->apiLogin($request->only('email', 'password'));
+            $request->clearRateLimiter();
+        } catch (\Throwable $e) {
+            $request->hitRateLimiter();
+            throw $e;
+        }
 
         \App\Models\AuditLog::record(
             action: 'auth.api_login.success',

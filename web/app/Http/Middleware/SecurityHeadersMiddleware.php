@@ -97,6 +97,12 @@ class SecurityHeadersMiddleware
             }
         }
 
+        // 8. Prevent technology fingerprinting (strip X-Powered-By if exposed by PHP runtime)
+        $response->headers->remove('X-Powered-By');
+        if (function_exists('header_remove')) {
+            header_remove('X-Powered-By');
+        }
+
         return $response;
     }
 
@@ -123,11 +129,35 @@ class SecurityHeadersMiddleware
 
         // In local/testing environments, allow Vite development server and HMR WebSockets
         if (app()->environment('local', 'testing')) {
-            $viteHosts = ['http://127.0.0.1:5173', 'http://localhost:5173'];
-            $viteWs = ['ws://127.0.0.1:5173', 'ws://localhost:5173'];
+            $viteHosts = ['http://127.0.0.1:5173', 'http://localhost:5173', 'http://[::1]:5173'];
+            $viteWs = ['ws://127.0.0.1:5173', 'ws://localhost:5173', 'ws://[::1]:5173'];
+
+            $hotFile = public_path('hot');
+            if (file_exists($hotFile)) {
+                $hotUrl = rtrim(trim(@file_get_contents($hotFile)), '/');
+                if ($hotUrl) {
+                    $viteHosts[] = $hotUrl;
+                    $wsUrl = preg_replace('/^http/i', 'ws', $hotUrl);
+                    if ($wsUrl) {
+                        $viteWs[] = $wsUrl;
+                    }
+                }
+            }
+
+            $viteHosts = array_values(array_unique(array_filter($viteHosts)));
+            $viteWs = array_values(array_unique(array_filter($viteWs)));
 
             if (isset($directives['script-src'])) {
                 $directives['script-src'] = array_values(array_unique(array_merge($directives['script-src'], $viteHosts)));
+            }
+            if (isset($directives['style-src'])) {
+                $directives['style-src'] = array_values(array_unique(array_merge($directives['style-src'], $viteHosts)));
+            }
+            if (isset($directives['font-src'])) {
+                $directives['font-src'] = array_values(array_unique(array_merge($directives['font-src'], $viteHosts)));
+            }
+            if (isset($directives['img-src'])) {
+                $directives['img-src'] = array_values(array_unique(array_merge($directives['img-src'], $viteHosts)));
             }
             if (isset($directives['connect-src'])) {
                 $directives['connect-src'] = array_values(array_unique(array_merge($directives['connect-src'], $viteHosts, $viteWs)));

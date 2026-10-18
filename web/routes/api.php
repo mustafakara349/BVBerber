@@ -9,7 +9,7 @@ use App\Http\Controllers\Api\V1\MobileApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware('throttle:api')->group(function () {
-    Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login');
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::get('/services', [ServiceApiController::class, 'index']);
     Route::get('/employees', [EmployeeApiController::class, 'index']);
@@ -17,7 +17,7 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
 
     // Mobile App endpoints
     Route::prefix('mobile')->group(function () {
-        Route::post('/login', [MobileApiController::class, 'login']);
+        Route::post('/login', [MobileApiController::class, 'login'])->middleware('throttle:login');
         Route::post('/register', [MobileApiController::class, 'register']);
         
         // Password Reset Endpoints (with rate limiting)
@@ -62,7 +62,9 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
         Route::get('/auth/me', [AuthController::class, 'me']);
         Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-        Route::get('/dashboard', [DashboardController::class, 'index']);
+        Route::middleware('role:super_admin,owner,manager')->group(function () {
+            Route::get('/dashboard', [DashboardController::class, 'index']);
+        });
 
         Route::get('/appointments', [AppointmentController::class, 'index']);
         Route::post('/appointments', [AppointmentController::class, 'store']);

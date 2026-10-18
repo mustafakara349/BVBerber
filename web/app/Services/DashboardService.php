@@ -125,4 +125,9 @@ class DashboardService
             \Illuminate\Support\Facades\Cache::forget("dashboard.appointments.{$branchId}.{$period}");
         }
     }
+
+    public function clearDashboardCache(int $branchId): void
+    {
+        $this->flushBranchCache($branchId);
+    }
 }

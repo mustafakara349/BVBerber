@@ -34,6 +34,7 @@ Route::middleware(['auth', 'audit'])->group(function () {
 
         Route::get('/appointments/events', [AppointmentController::class, 'events'])->name('appointments.events');
         Route::get('/appointments/available-slots', [AppointmentController::class, 'availableSlots'])->name('appointments.available-slots');
+        Route::post('/appointments/bulk-status', [AppointmentController::class, 'bulkUpdateStatus'])->name('appointments.bulk-status');
         Route::resource('appointments', AppointmentController::class)->except(['destroy']);
         Route::patch('/appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])->name('appointments.update-status');
         Route::post('/appointments/{appointment}/payments', [AppointmentController::class, 'storePayment'])->name('appointments.payments.store');

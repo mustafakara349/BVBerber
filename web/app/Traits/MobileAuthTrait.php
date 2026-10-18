@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -23,9 +24,18 @@ trait MobileAuthTrait
             'password' => 'required',
         ]);
 
+        $email = Str::lower(trim((string) $request->input('email')));
+        $throttleKey = $email . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return $this->error("Çok fazla hatalı giriş denemesi yapıldı. Lütfen {$seconds} saniye bekleyin.", 429);
+        }
+
         $authService = app(\App\Services\AuthService::class);
         try {
             $result = $authService->apiLogin($request->only('email', 'password'));
+            RateLimiter::clear($throttleKey);
 
             \App\Models\AuditLog::record(
                 action: 'auth.mobile_login.success',
@@ -52,6 +62,8 @@ trait MobileAuthTrait
                 'token' => $result['token'],
             ], 'Login successful');
         } catch (\Exception $e) {
+            RateLimiter::hit($throttleKey, 60);
+
             \App\Models\AuditLog::record(
                 action: 'auth.mobile_login.failed',
                 modelType: 'user',

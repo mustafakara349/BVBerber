@@ -58,8 +58,14 @@ class AppointmentController extends Controller
             'search' => $request->get('search'),
         ];
 
-        if ($user && $user->isCustomer()) {
+        // Müşteri yalnızca kendi randevularını görebilir
+        if ($user && ($user->isCustomer() || $user->role?->slug === 'customer')) {
             $filters['customer_id'] = $user->id;
+        }
+
+        // Berber yalnızca kendisine atanmış randevuları görebilir
+        if ($user && $user->role?->slug === 'barber') {
+            $filters['employee_id'] = $user->employee?->id;
         }
 
         $appointments = $this->appointmentRepo->getForBranch($branchId, $filters, $request->get('per_page', 15));
@@ -77,8 +83,13 @@ class AppointmentController extends Controller
         $data['created_by'] = $user->id;
 
         // IDOR Koruması: Müşteri rolündeki kullanıcı yalnızca kendi adına randevu oluşturabilir
-        if ($user->isCustomer()) {
+        if ($user->isCustomer() || $user->role?->slug === 'customer') {
             $data['customer_id'] = $user->id;
+        }
+
+        // Berber yalnızca kendi adına randevu oluşturabilir
+        if ($user->role?->slug === 'barber') {
+            $data['employee_id'] = $user->employee?->id;
         }
 
         try {
@@ -98,8 +109,10 @@ class AppointmentController extends Controller
 
     public function show(Appointment $appointment): JsonResponse
     {
-        if ($appointment->customer_id != request()->user()->id && request()->user()->isCustomer()) {
-            return $this->error('Bu randevu size ait değil.', 403);
+        $user = request()->user();
+
+        if ($user && $user->cannot('view', $appointment)) {
+            return $this->error('Bu randevuyu görüntüleme yetkiniz bulunmamaktadır.', 403);
         }
 
         $appointment->load([
@@ -116,18 +129,18 @@ class AppointmentController extends Controller
 
     public function updateStatus(Request $request, Appointment $appointment): JsonResponse
     {
-        $request->validate(['status' => 'required|string']);
-
         $user = $request->user();
 
-        if ($appointment->customer_id != $user->id && $user->isCustomer()) {
-            return $this->error('Bu randevu size ait değil.', 403);
+        if ($user && $user->cannot('updateStatus', $appointment)) {
+            return $this->error('Bu randevunun durumunu değiştirme yetkiniz bulunmamaktadır.', 403);
         }
+
+        $request->validate(['status' => 'required|string']);
 
         $status = AppointmentStatus::from($request->status);
 
         // Müşteri sadece randevusunu iptal edebilir; tamamlandı veya diğer statülere çekemez
-        if ($user->isCustomer() && $status !== AppointmentStatus::Cancelled) {
+        if (($user->isCustomer() || $user->role?->slug === 'customer') && $status !== AppointmentStatus::Cancelled) {
             return $this->error('Müşteriler yalnızca randevularını iptal edebilir.', 403);
         }
 

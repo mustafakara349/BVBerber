@@ -53,6 +53,7 @@ return [
             'font-src' => [
                 "'self'",
                 'https://fonts.gstatic.com',
+                'https://cdn.jsdelivr.net',
                 'data:',
             ],
             'img-src' => [

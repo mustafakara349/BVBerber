@@ -25,6 +25,13 @@ class AppointmentPolicy
             return Response::allow();
         }
 
+        // Müşteri: Yalnızca kendi randevusunu görebilir
+        if ($user->isCustomer() || $user->role?->slug === 'customer') {
+            return ((int) $appointment->customer_id === (int) $user->id)
+                ? Response::allow()
+                : Response::deny('Bu randevuyu görüntüleme yetkiniz bulunmamaktadır.');
+        }
+
         // Berber: Yalnızca kendi personeline atanmış randevuyu görebilir
         if ($user->role?->slug === 'barber') {
             $employeeId = $user->employee?->id;
@@ -83,6 +90,13 @@ class AppointmentPolicy
     {
         if ($user->isSuperAdmin()) {
             return Response::allow();
+        }
+
+        // Müşteri: Sadece kendi randevusunu iptal edebilir
+        if ($user->isCustomer() || $user->role?->slug === 'customer') {
+            return ((int) $appointment->customer_id === (int) $user->id)
+                ? Response::allow()
+                : Response::deny('Bu randevunun durumunu değiştirme yetkiniz bulunmamaktadır.');
         }
 
         // Berber: Sadece kendi randevusunun durumunu değiştirebilir veya iptal edebilir

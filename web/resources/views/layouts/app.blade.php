@@ -5,6 +5,7 @@
     <title>@yield('title', 'B&V Barber Admin')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.35.0/dist/tabler-icons.min.css">
     @vite(['resources/scss/style.scss', 'resources/js/app.js'])
     @stack('styles')
 </head>

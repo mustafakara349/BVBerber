@@ -17,6 +17,11 @@ class DashboardController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $user = $request->user();
+        if (!$user || !in_array($user->role?->slug, ['super_admin', 'owner', 'manager'], true)) {
+            return $this->error('Bu işlem için yetkiniz bulunmamaktadır.', 403);
+        }
+
         $branchId = $request->get('branch_id', 1);
 
         return $this->success([

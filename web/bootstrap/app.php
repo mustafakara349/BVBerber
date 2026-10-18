@@ -40,11 +40,35 @@ return Application::configure(basePath: dirname(__DIR__))
             return $request->expectsJson() || $request->ajax() || $request->wantsJson();
         });
 
-        // 2. Render branded, safe, beautiful error pages for Web requests
+        // 2. Render safe, standardized JSON for API and branded HTML error pages for Web requests
         $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
-            // Never return HTML error views to API endpoints or AJAX callers
+            // Secure sanitized JSON responses for API endpoints and AJAX callers (prevents trace and path leakage)
             if ($request->is('api/*') || $request->expectsJson() || $request->ajax() || $request->wantsJson()) {
-                return null; // Let Laravel render JSON via shouldRenderJsonWhen
+                if ($e instanceof \Illuminate\Validation\ValidationException) {
+                    return null; // Standard Laravel validation error formatting
+                }
+                if ($e instanceof \Illuminate\Auth\AuthenticationException) {
+                    return response()->json(['success' => false, 'message' => 'Unauthenticated.'], 401);
+                }
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException || $e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                    return response()->json(['success' => false, 'message' => 'İstenen kaynak veya kayıt bulunamadı.'], 404);
+                }
+                if ($e instanceof \Illuminate\Auth\Access\AuthorizationException || $e instanceof \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException) {
+                    return response()->json(['success' => false, 'message' => $e->getMessage() ?: 'Bu işlem için yetkiniz bulunmamaktadır.'], 403);
+                }
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface) {
+                    return response()->json(['success' => false, 'message' => $e->getMessage()], $e->getStatusCode());
+                }
+
+                /** @var \App\Services\ErrorTrackingService $tracker */
+                $tracker = app(\App\Services\ErrorTrackingService::class);
+                $referenceId = $tracker->logException($e, $request);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyiniz.',
+                    'reference_id' => $referenceId,
+                ], 500);
             }
 
             // Never intercept validation exceptions (must redirect back with $errors)

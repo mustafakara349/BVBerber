@@ -352,6 +352,84 @@
             </div>
         </div>
     </div>
+
+    <!-- Bulk Approve Modal -->
+    <div class="modal fade" id="bulkApproveModal" tabindex="-1" aria-labelledby="bulkApproveModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg text-start" style="border-radius: 12px;">
+                <div class="modal-header bg-success text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="bulkApproveModalLabel"><i class="ti ti-checks me-1"></i> Tüm Randevuları Onayla</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <form id="bulkApproveForm" method="POST" action="{{ route('appointments.bulk-status') }}">
+                    @csrf
+                    <input type="hidden" name="status" value="confirmed">
+                    <input type="hidden" name="appointment_ids" id="bulkApproveIds" value="{{ isset($pendingAppointments) ? $pendingAppointments->pluck('id')->join(',') : '' }}">
+                    <div class="modal-body p-4">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="rounded-circle bg-success-subtle text-success p-3 d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="ti ti-checks fs-2"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Toplu Onaylama İşlemi</h6>
+                                <p class="text-secondary small mb-0">Onay bekleyen tüm randevular sisteme onaylı olarak kaydedilecektir.</p>
+                            </div>
+                        </div>
+                        <div class="alert alert-light border small text-muted mb-0">
+                            Onay bekleyen toplam <strong class="text-dark" id="bulkApproveCountBadge">{{ isset($pendingAppointments) ? $pendingAppointments->count() : 0 }}</strong> adet randevuyu tek seferde onaylamak istediğinize emin misiniz?
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0 py-3">
+                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Vazgeç</button>
+                        <button type="submit" class="btn btn-success px-4 fw-bold" id="btnBulkApproveSubmit">
+                            <i class="ti ti-check me-1"></i> Evet, Tümünü Onayla
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Reject Modal -->
+    <div class="modal fade" id="bulkRejectModal" tabindex="-1" aria-labelledby="bulkRejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg text-start" style="border-radius: 12px;">
+                <div class="modal-header bg-danger text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="bulkRejectModalLabel"><i class="ti ti-x me-1"></i> Tüm Randevuları Reddet</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <form id="bulkRejectForm" method="POST" action="{{ route('appointments.bulk-status') }}">
+                    @csrf
+                    <input type="hidden" name="status" value="rejected">
+                    <input type="hidden" name="appointment_ids" id="bulkRejectIds" value="{{ isset($pendingAppointments) ? $pendingAppointments->pluck('id')->join(',') : '' }}">
+                    <div class="modal-body p-4">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="rounded-circle bg-danger-subtle text-danger p-3 d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="ti ti-alert-triangle fs-2"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-danger mb-1">Toplu İptal / Reddetme</h6>
+                                <p class="text-secondary small mb-0">Onay bekleyen tüm randevular iptal edilecektir.</p>
+                            </div>
+                        </div>
+                        <p class="text-secondary small mb-3">
+                            Onay bekleyen toplam <strong class="text-dark" id="bulkRejectCountBadge">{{ isset($pendingAppointments) ? $pendingAppointments->count() : 0 }}</strong> adet randevuyu reddetmek üzeresiniz. Lütfen müşterilere bildirilecek ortak reddetme nedenini yazınız.
+                        </p>
+                        <div class="mb-2">
+                            <label for="bulk_cancellation_reason_input" class="form-label fw-semibold">Reddetme Nedeni <span class="text-danger">*</span></label>
+                            <textarea class="form-control border bg-light" id="bulk_cancellation_reason_input" name="cancellation_reason" rows="3" required placeholder="Örn: Teknik arıza / Salon tadilatı nedeniyle randevular iptal edildi."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0 py-3">
+                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Vazgeç</button>
+                        <button type="submit" class="btn btn-danger px-4 fw-bold" id="btnBulkRejectSubmit">
+                            <i class="ti ti-x me-1"></i> Tümünü Reddet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -362,15 +440,62 @@
             // Reject Modal Trigger Handler (Event Delegation for live elements)
             document.addEventListener('click', function(e) {
                 const btn = e.target.closest('.btn-reject-trigger');
-                if (!btn) return;
-                const url = btn.getAttribute('data-url');
-                const form = document.getElementById('rejectReasonForm');
-                if (form && url) {
-                    form.action = url;
+                if (btn) {
+                    const url = btn.getAttribute('data-url');
+                    const form = document.getElementById('rejectReasonForm');
+                    if (form && url) {
+                        form.action = url;
+                    }
+                    const textarea = document.getElementById('cancellation_reason_input');
+                    if (textarea) textarea.value = '';
                 }
-                const textarea = document.getElementById('cancellation_reason_input');
-                if (textarea) textarea.value = '';
+
+                // Bulk Trigger Handlers (Event Delegation)
+                const approveBtn = e.target.closest('.btn-bulk-approve');
+                if (approveBtn) {
+                    const count = approveBtn.getAttribute('data-count');
+                    const ids = approveBtn.getAttribute('data-ids');
+                    const countEl = document.getElementById('bulkApproveCountBadge');
+                    const idsInput = document.getElementById('bulkApproveIds');
+                    if (countEl && count) countEl.textContent = count;
+                    if (idsInput && ids) idsInput.value = ids;
+                }
+
+                const rejectBtn = e.target.closest('.btn-bulk-reject');
+                if (rejectBtn) {
+                    const count = rejectBtn.getAttribute('data-count');
+                    const ids = rejectBtn.getAttribute('data-ids');
+                    const countEl = document.getElementById('bulkRejectCountBadge');
+                    const idsInput = document.getElementById('bulkRejectIds');
+                    const textarea = document.getElementById('bulk_cancellation_reason_input');
+                    if (countEl && count) countEl.textContent = count;
+                    if (idsInput && ids) idsInput.value = ids;
+                    if (textarea) textarea.value = '';
+                }
             });
+
+            // Prevent double submits on bulk forms
+            const bulkApproveForm = document.getElementById('bulkApproveForm');
+            if (bulkApproveForm) {
+                bulkApproveForm.addEventListener('submit', function() {
+                    const btn = document.getElementById('btnBulkApproveSubmit');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Onaylanıyor...';
+                    }
+                });
+            }
+
+            const bulkRejectForm = document.getElementById('bulkRejectForm');
+            if (bulkRejectForm) {
+                bulkRejectForm.addEventListener('submit', function() {
+                    const btn = document.getElementById('btnBulkRejectSubmit');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Reddediliyor...';
+                    }
+                });
+            }
 
             // Render Revenue Chart
             try {

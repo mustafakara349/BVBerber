@@ -64,7 +64,7 @@ class BroadcastNotificationController extends Controller
 
         if ($target === 'customers') {
             $query->whereHas('role', function ($r) {
-                $r->where('name', 'customer');
+                $r->where('slug', 'customer');
             });
         } elseif ($target === 'last_30_days') {
             $thirtyDaysAgo = now()->subDays(30);

@@ -3,12 +3,28 @@
         <div class="col-12">
             <div class="card border-warning border-opacity-50 shadow-sm">
                 <div
-                    class="card-header bg-warning bg-opacity-10 d-flex justify-content-between align-items-center px-4 py-3 border-bottom border-warning border-opacity-25">
+                    class="card-header bg-warning bg-opacity-10 d-flex justify-content-between align-items-center px-4 py-3 border-bottom border-warning border-opacity-25 flex-wrap gap-2">
                     <h4 class="mb-0 h5 text-warning-emphasis"><i class="ti ti-clock-exclamation me-2"></i>Onay Bekleyen
                         Randevular</h4>
-                    <span class="badge bg-warning text-dark px-3 py-1.5 rounded-pill fw-bold">
-                        {{ $pendingAppointments->count() }} Randevu Onay Bekliyor
-                    </span>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge bg-warning text-dark px-3 py-1.5 rounded-pill fw-bold">
+                            {{ $pendingAppointments->count() }} Randevu Onay Bekliyor
+                        </span>
+                        <button type="button" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm d-inline-flex align-items-center gap-1 btn-bulk-approve"
+                                data-bs-toggle="modal" data-bs-target="#bulkApproveModal"
+                                data-count="{{ $pendingAppointments->count() }}"
+                                data-ids="{{ $pendingAppointments->pluck('id')->join(',') }}"
+                                title="Onay bekleyen tüm randevuları tek seferde onayla">
+                            <i class="ti ti-checks"></i> Tümünü Onayla
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 fw-bold shadow-sm d-inline-flex align-items-center gap-1 btn-bulk-reject"
+                                data-bs-toggle="modal" data-bs-target="#bulkRejectModal"
+                                data-count="{{ $pendingAppointments->count() }}"
+                                data-ids="{{ $pendingAppointments->pluck('id')->join(',') }}"
+                                title="Onay bekleyen tüm randevuları tek seferde reddet">
+                            <i class="ti ti-x"></i> Tümünü Reddet
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
