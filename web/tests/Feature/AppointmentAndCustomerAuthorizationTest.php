@@ -29,6 +29,7 @@ class AppointmentAndCustomerAuthorizationTest extends TestCase
     private User $customer2;
     private Appointment $aptBarber1;
     private Appointment $aptBarber2;
+    private Role $custRole;
 
     protected function setUp(): void
     {
@@ -42,7 +43,8 @@ class AppointmentAndCustomerAuthorizationTest extends TestCase
         $mgrRole = Role::firstOrCreate(['slug' => 'manager'], ['name' => 'manager', 'label' => 'Yönetici']);
         $recRole = Role::firstOrCreate(['slug' => 'receptionist'], ['name' => 'receptionist', 'label' => 'Resepsiyonist']);
         $barberRole = Role::firstOrCreate(['slug' => 'barber'], ['name' => 'barber', 'label' => 'Berber']);
-        $custRole = Role::firstOrCreate(['slug' => 'customer'], ['name' => 'customer', 'label' => 'Müşteri']);
+        $this->custRole = Role::firstOrCreate(['slug' => 'customer'], ['name' => 'customer', 'label' => 'Müşteri']);
+        $custRole = $this->custRole;
 
         $suffix = Str::lower(Str::random(6));
 
@@ -374,11 +376,22 @@ class AppointmentAndCustomerAuthorizationTest extends TestCase
     /** @test */
     public function test_manager_can_delete_customer_and_it_is_soft_deleted(): void
     {
+        $targetCustomer = User::create([
+            'uuid' => (string) Str::uuid(),
+            'first_name' => 'Delete',
+            'last_name' => 'Customer',
+            'email' => 'del_' . Str::random(8) . '@test.com',
+            'phone' => '055' . rand(1000000, 9999999),
+            'password' => bcrypt('password'),
+            'role_id' => $this->custRole->id,
+            'status' => 'active',
+        ]);
+
         $response = $this->actingAs($this->manager)
             ->withSession(['active_branch_id' => $this->branch->id])
-            ->delete(route('customers.destroy', $this->customer2));
+            ->delete(route('customers.destroy', $targetCustomer));
 
         $response->assertRedirect(route('customers.index'));
-        $this->assertSoftDeleted('users', ['id' => $this->customer2->id]);
+        $this->assertSoftDeleted('users', ['id' => $targetCustomer->id]);
     }
 }

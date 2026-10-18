@@ -381,7 +381,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     function toggleDebtDropdown() {
         const typeIncome = document.getElementById('type_income').checked;
         const optgroupIncome = document.getElementById('optgroup_income');

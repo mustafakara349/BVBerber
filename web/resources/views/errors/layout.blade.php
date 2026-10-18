@@ -190,7 +190,7 @@
         @endif
     </div>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         function smartGoBack(fallback = '{{ route("dashboard", [], false) ?: "/" }}') {
             try {
                 if (document.referrer && document.referrer.indexOf(window.location.host) !== -1 && window.history.length > 1) {

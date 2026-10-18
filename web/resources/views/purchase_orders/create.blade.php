@@ -161,7 +161,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', () => {
         const itemsContainer = document.getElementById('itemsContainer');
         const addItemBtn = document.getElementById('addItemBtn');
@@ -169,6 +169,16 @@
         let itemIndex = 0;
 
         let products = @json($products);
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
         function formatCurrency(amount) {
             return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(amount);
@@ -191,9 +201,9 @@
         function buildOptions() {
             let options = '<option value="">Ürün Seçiniz...</option>';
             products.forEach(p => {
-                const sku = p.sku ? ` [SKU: ${p.sku}]` : '';
-                const barcode = p.barcode ? ` | Barkod: ${p.barcode}` : '';
-                options += `<option value="${p.id}" data-price="${p.purchase_price}" data-sku="${p.sku ?? ''}" data-barcode="${p.barcode ?? ''}" data-stock="${p.stock_quantity}">${p.name}${sku}${barcode} — Sistem Stoku: ${p.stock_quantity}</option>`;
+                const sku = p.sku ? ` [SKU: ${escapeHtml(p.sku)}]` : '';
+                const barcode = p.barcode ? ` | Barkod: ${escapeHtml(p.barcode)}` : '';
+                options += `<option value="${p.id}" data-price="${p.purchase_price}" data-sku="${escapeHtml(p.sku ?? '')}" data-barcode="${escapeHtml(p.barcode ?? '')}" data-stock="${p.stock_quantity}">${escapeHtml(p.name)}${sku}${barcode} — Sistem Stoku: ${p.stock_quantity}</option>`;
             });
             return options;
         }
@@ -336,7 +346,7 @@
                     // Yeni satır açıp bu ürünü seçtir
                     createItemRow(data.product.id);
                 } else if (data.errors) {
-                    let errs = Object.values(data.errors).map(e => e.join('<br>')).join('<br>');
+                    let errs = Object.values(data.errors).flat().map(e => escapeHtml(e)).join('<br>');
                     alertBox.innerHTML = errs;
                     alertBox.classList.remove('d-none');
                 }

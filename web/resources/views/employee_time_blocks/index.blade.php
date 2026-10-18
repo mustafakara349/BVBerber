@@ -358,7 +358,7 @@
 @endsection
 
 @push('scripts')
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', function () {
             // New Create Modal logic
             const blockType = document.getElementById('block_type');

@@ -127,6 +127,17 @@ class ProductSaleController extends Controller
     {
         $branchId = session('active_branch_id', 1);
 
+        if ($request->has('product_id') && !$request->has('items')) {
+            $request->merge([
+                'items' => [
+                    [
+                        'product_id' => (int) $request->input('product_id'),
+                        'quantity'   => (int) $request->input('quantity', 1),
+                    ]
+                ]
+            ]);
+        }
+
         $validated = $request->validate([
             'items'              => 'required|array|min:1',
             'items.*.product_id' => 'required|integer|exists:products,id',

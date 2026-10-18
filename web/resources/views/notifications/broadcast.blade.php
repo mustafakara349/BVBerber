@@ -181,7 +181,7 @@
     </div>
 </div>
 
-<script>
+<script nonce="{{ $cspNonce }}">
 function updatePreview() {
     const titleVal = document.getElementById('notif_title').value.trim();
     const bodyVal = document.getElementById('notif_body').value.trim();

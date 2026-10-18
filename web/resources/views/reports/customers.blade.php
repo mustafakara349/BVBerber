@@ -189,8 +189,8 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
+<script nonce="{{ $cspNonce }}" src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', () => {
         // Toggle Custom Date Fields
         const periodSelect = document.getElementById('periodSelect');
@@ -241,8 +241,8 @@
         @if($totalCustomers > 0)
             const genderOptions = {
                 chart: { type: 'donut', height: 280, fontFamily: 'Outfit, system-ui, -apple-system, sans-serif' },
-                labels: {!! json_encode(array_column($genderDistribution, 'label')) !!},
-                series: {!! json_encode(array_column($genderDistribution, 'total')) !!},
+                labels: @json(array_column($genderDistribution, 'label')),
+                series: @json(array_column($genderDistribution, 'total')),
                 colors: ['#3b82f6', '#ec4899', '#94a3b8'],
                 legend: { position: 'bottom' },
                 dataLabels: { enabled: true, formatter: (val) => val.toFixed(1) + '%' }

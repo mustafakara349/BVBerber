@@ -17,6 +17,18 @@ class SecurityHeadersMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Generate a cryptographically secure 128-bit (16-byte) random nonce per request
+        $nonce = base64_encode(random_bytes(16));
+        $request->attributes->set('cspNonce', $nonce);
+
+        if (class_exists(\Illuminate\Support\Facades\View::class)) {
+            \Illuminate\Support\Facades\View::share('cspNonce', $nonce);
+        }
+
+        if (class_exists(\Illuminate\Support\Facades\Vite::class)) {
+            \Illuminate\Support\Facades\Vite::useCspNonce($nonce);
+        }
+
         $response = $next($request);
 
         // 1. Prevent MIME confusion and MIME sniffing attacks
@@ -76,7 +88,7 @@ class SecurityHeadersMiddleware
 
         // 7. Content Security Policy (CSP)
         if (!$response->headers->has('Content-Security-Policy') && !$response->headers->has('Content-Security-Policy-Report-Only')) {
-            $csp = $this->buildContentSecurityPolicy();
+            $csp = $this->buildContentSecurityPolicy($nonce);
             if ($csp !== '') {
                 $headerName = config('security.csp.report_only', false)
                     ? 'Content-Security-Policy-Report-Only'
@@ -91,7 +103,7 @@ class SecurityHeadersMiddleware
     /**
      * Build the Content Security Policy directive string.
      */
-    protected function buildContentSecurityPolicy(): string
+    protected function buildContentSecurityPolicy(?string $nonce = null): string
     {
         if (config('security.csp.enabled', true) === false) {
             return '';
@@ -100,6 +112,13 @@ class SecurityHeadersMiddleware
         $directives = config('security.csp.directives', []);
         if (empty($directives)) {
             return '';
+        }
+
+        // Add cryptographic per-request nonce to script-src if enabled
+        if ($nonce && config('security.csp.nonce_enabled', true)) {
+            if (isset($directives['script-src'])) {
+                $directives['script-src'][] = "'nonce-{$nonce}'";
+            }
         }
 
         // In local/testing environments, allow Vite development server and HMR WebSockets

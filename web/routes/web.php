@@ -20,7 +20,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/password/update', [\App\Http\Controllers\Web\Auth\ForgotPasswordController::class, 'resetPassword'])->name('password.update')->middleware('throttle:10,1');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'audit'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // -------------------------------------------------------------------------

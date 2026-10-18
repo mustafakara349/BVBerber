@@ -56,6 +56,50 @@ class HttpSecurityHeadersAndCookiesTest extends TestCase
         $this->assertStringContainsString("frame-ancestors 'self'", $csp);
         $this->assertStringContainsString("object-src 'none'", $csp);
         $this->assertStringContainsString("base-uri 'self'", $csp);
+
+        // SEC-BE-2026-015: unsafe-eval must NEVER be present in script-src
+        $this->assertStringNotContainsString("'unsafe-eval'", $csp, 'Content-Security-Policy must not contain unsafe-eval');
+
+        // SEC-BE-2026-015: Per-request cryptographic nonce must be present in script-src
+        $this->assertMatchesRegularExpression("/'nonce-[A-Za-z0-9+\/]+=*'/", $csp, 'script-src must include a cryptographic nonce');
+    }
+
+    public function test_csp_nonce_is_unique_per_request_and_bound_to_rendered_views(): void
+    {
+        $response1 = $this->get('/login');
+        $response1->assertStatus(200);
+        $csp1 = $response1->headers->get('Content-Security-Policy');
+
+        preg_match("/'nonce-([A-Za-z0-9+\/]+=*)'/", $csp1, $matches1);
+        $this->assertNotEmpty($matches1[1] ?? null, 'Nonce 1 must be present in CSP header');
+        $nonce1 = $matches1[1];
+
+        // Ensure rendered HTML contains the exact same nonce on script tags
+        $response1->assertSee('nonce="' . $nonce1 . '"', false);
+
+        // Second request must yield a fresh, non-predictable nonce
+        $response2 = $this->get('/login');
+        $response2->assertStatus(200);
+        $csp2 = $response2->headers->get('Content-Security-Policy');
+
+        preg_match("/'nonce-([A-Za-z0-9+\/]+=*)'/", $csp2, $matches2);
+        $this->assertNotEmpty($matches2[1] ?? null, 'Nonce 2 must be present in CSP header');
+        $nonce2 = $matches2[1];
+
+        $this->assertNotEquals($nonce1, $nonce2, 'Cryptographic nonce must be distinct and unique per request');
+        $response2->assertSee('nonce="' . $nonce2 . '"', false);
+    }
+
+    public function test_csp_nonce_can_be_disabled_via_configuration(): void
+    {
+        config(['security.csp.nonce_enabled' => false]);
+
+        $response = $this->get('/login');
+        $response->assertStatus(200);
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertStringNotContainsString("'nonce-", $csp, 'CSP should not contain nonce when nonce_enabled is false');
+        $this->assertStringNotContainsString("'unsafe-eval'", $csp);
     }
 
     public function test_api_responses_also_contain_baseline_security_headers(): void

@@ -175,7 +175,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
 document.addEventListener('DOMContentLoaded', function() {
     const toggles = document.querySelectorAll('.status-toggle');
     toggles.forEach(toggle => {

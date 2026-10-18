@@ -11,12 +11,12 @@ use App\Models\Service;
 use App\Models\User;
 use App\Models\LoyaltyAccount;
 use App\Enums\AppointmentStatus;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class Sprint3Test extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private User $manager;
     private User $customer;
@@ -25,27 +25,37 @@ class Sprint3Test extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        config([
+            'database.default' => 'mysql',
+            'database.connections.mysql.database' => 'bvapp_db',
+        ]);
         
         // Setup initial data
         Role::firstOrCreate(['name' => 'manager'], ['label' => 'Yönetici', 'slug' => 'manager']);
         Role::firstOrCreate(['name' => 'customer'], ['label' => 'Müşteri', 'slug' => 'customer']);
         Role::firstOrCreate(['name' => 'barber'], ['label' => 'Berber', 'slug' => 'barber']);
         
-        $this->branch = Branch::create([
-            'name' => 'Merkez Şube',
-            'slug' => 'merkez-sube',
-            'email' => 'test@test.com',
-            'phone' => '1234567890',
-            'city' => 'Istanbul',
-            'district' => 'Sisli',
-            'address' => 'Test Adres',
-        ]);
+        $suffix = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(6));
+
+        $this->branch = Branch::firstOrCreate(
+            ['slug' => 'merkez-sube-sprint3'],
+            [
+                'name' => 'Merkez Şube Sprint3',
+                'email' => "test_{$suffix}@test.com",
+                'phone' => '1234567890',
+                'city' => 'Istanbul',
+                'district' => 'Sisli',
+                'address' => 'Test Adres',
+            ]
+        );
         
         $this->manager = User::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'first_name' => 'Test',
             'last_name' => 'Manager',
-            'email' => 'manager@test.com',
-            'phone' => '1111111111',
+            'email' => "manager_{$suffix}@test.com",
+            'phone' => '555' . rand(1000000, 9999999),
             'password' => bcrypt('password'),
             'role_id' => Role::where('name', 'manager')->first()->id,
             'branch_id' => $this->branch->id,
@@ -53,10 +63,11 @@ class Sprint3Test extends TestCase
         ]);
         
         $this->customer = User::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'first_name' => 'Test',
             'last_name' => 'Customer',
-            'email' => 'customer@test.com',
-            'phone' => '2222222222',
+            'email' => "customer_{$suffix}@test.com",
+            'phone' => '555' . rand(1000000, 9999999),
             'password' => bcrypt('password'),
             'role_id' => Role::where('name', 'customer')->first()->id,
             'branch_id' => $this->branch->id,
@@ -66,20 +77,24 @@ class Sprint3Test extends TestCase
 
     public function test_loyalty_points_earned_on_appointment_completion()
     {
+        $suffix = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(6));
+
         $employeeUser = User::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'first_name' => 'Test',
             'last_name' => 'Barber',
-            'email' => 'barber@test.com',
-            'phone' => '3333333333',
+            'email' => "barber_{$suffix}@test.com",
+            'phone' => '555' . rand(1000000, 9999999),
             'password' => bcrypt('password'),
             'role_id' => Role::where('name', 'barber')->first()->id,
             'branch_id' => $this->branch->id,
             'is_active' => true,
         ]);
+
         $employee = Employee::create([
             'user_id' => $employeeUser->id,
             'branch_id' => $this->branch->id,
-            'employee_code' => 'EMP-001',
+            'employee_code' => 'EMP-' . rand(10000, 99999),
             'hire_date' => now(),
             'salary_type' => 'commission',
             'commission_rate' => 50,
@@ -87,21 +102,23 @@ class Sprint3Test extends TestCase
 
         $service = Service::create([
             'name' => 'Saç Kesimi',
-            'slug' => 'sac-kesimi',
+            'slug' => 'sac-kesimi-' . $suffix,
             'branch_id' => $this->branch->id,
             'price' => 200,
             'duration_minutes' => 30
         ]);
 
         $appointment = Appointment::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'branch_id' => $this->branch->id,
             'customer_id' => $this->customer->id,
             'employee_id' => $employee->id,
             'status' => AppointmentStatus::Pending,
             'total_price' => 200,
+            'total_duration' => 30,
             'start_at' => now()->addDay(),
             'end_at' => now()->addDay()->addMinutes(30),
-            'appointment_code' => 'TEST-001',
+            'appointment_code' => 'TEST-' . $suffix,
         ]);
 
         \App\Models\AppointmentService::create([
@@ -115,6 +132,7 @@ class Sprint3Test extends TestCase
         ]);
 
         $this->actingAs($this->manager)
+            ->withSession(['active_branch_id' => $this->branch->id])
             ->patch(route('appointments.update-status', $appointment), [
                 'status' => AppointmentStatus::Completed->value,
             ]);
@@ -128,38 +146,43 @@ class Sprint3Test extends TestCase
 
     public function test_product_stock_deduction_and_transaction_creation_on_sale()
     {
-        $product = Product::create([
-            'branch_id' => $this->branch->id,
-            'name' => 'Şampuan',
-            'purchase_price' => 50,
-            'sell_price' => 100,
-            'stock_quantity' => 10,
-            'is_active' => true,
-        ]);
-
-        $response = $this->actingAs($this->manager)
-            ->withSession(['active_branch_id' => $this->branch->id])
-            ->post(route('products.sales.store'), [
-                'product_id' => $product->id,
-                'quantity' => 2,
-                'customer_id' => $this->customer->id,
-                'payment_method' => 'cash',
+        try {
+            $product = Product::create([
+                'branch_id' => $this->branch->id,
+                'name' => 'Şampuan',
+                'purchase_price' => 50,
+                'sell_price' => 100,
+                'stock_quantity' => 10,
+                'is_active' => true,
             ]);
 
-        $response->assertRedirect(route('products.sales.index'));
-        
-        $product->refresh();
-        $this->assertEquals(8, $product->stock_quantity);
+            $response = $this->actingAs($this->manager)
+                ->withSession(['active_branch_id' => $this->branch->id])
+                ->post(route('products.sales.store'), [
+                    'product_id' => $product->id,
+                    'quantity' => 2,
+                    'customer_id' => $this->customer->id,
+                    'payment_method' => 'cash',
+                ]);
 
-        $this->assertDatabaseHas('product_sales', [
-            'product_id' => $product->id,
-            'quantity' => 2,
-            'total_price' => 200,
-        ]);
+            $response->assertRedirect(route('products.sales.index'));
+            
+            $product->refresh();
+            $this->assertEquals(8, $product->stock_quantity);
 
-        $this->assertDatabaseHas('transactions', [
-            'amount' => 200,
-            'transaction_type' => 'income',
-        ]);
+            $this->assertDatabaseHas('product_sales', [
+                'product_id' => $product->id,
+                'quantity' => 2,
+                'total_price' => 200,
+            ]);
+
+            $this->assertDatabaseHas('transactions', [
+                'amount' => 200,
+                'transaction_type' => 'income',
+            ]);
+        } catch (\Throwable $e) {
+            dump($e->getMessage(), $e->getFile() . ':' . $e->getLine());
+            throw $e;
+        }
     }
 }

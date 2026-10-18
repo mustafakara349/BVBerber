@@ -217,7 +217,7 @@
 @endsection
 
 @push('scripts')
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('selectedServices');
             const checkboxes = document.querySelectorAll('.service-check');

@@ -169,7 +169,7 @@
 </div>
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', () => {
         const settingsTab = document.querySelectorAll('#settingsTab button');
         settingsTab.forEach(tabEl => {

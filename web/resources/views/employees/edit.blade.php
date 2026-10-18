@@ -192,7 +192,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     // Profil resmi önizleme
     function previewImage(event) {
         const input = event.target;

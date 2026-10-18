@@ -327,8 +327,8 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-<script>
+<script nonce="{{ $cspNonce }}" src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<script nonce="{{ $cspNonce }}">
 document.addEventListener('DOMContentLoaded', () => {
 
     // ============== CUSTOMER SEARCH ==============
@@ -362,13 +362,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let rowIndex = 0;
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     function buildProductOptions(excludeIds = []) {
         let html = '<option value="">Ürün seçin...</option>';
         allProducts.forEach(p => {
             const disabled = excludeIds.includes(p.id) ? 'disabled' : '';
-            const sku = p.sku ? ` [${p.sku}]` : '';
+            const sku = p.sku ? ` [${escapeHtml(p.sku)}]` : '';
             html += `<option value="${p.id}" data-price="${p.sell_price}" data-stock="${p.stock_quantity}" ${disabled}>
-                ${p.name}${sku} — Stok: ${p.stock_quantity} | ₺${parseFloat(p.sell_price).toLocaleString('tr-TR', {minimumFractionDigits: 2})}
+                ${escapeHtml(p.name)}${sku} — Stok: ${p.stock_quantity} | ₺${parseFloat(p.sell_price).toLocaleString('tr-TR', {minimumFractionDigits: 2})}
             </option>`;
         });
         return html;
@@ -583,18 +593,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const paymentLabels = { cash: 'Nakit', credit_card: 'Kredi Kartı', bank_transfer: 'Havale/EFT' };
                 const customerHtml = customer
-                    ? `<div class="fw-semibold text-dark">${customer.full_name || (customer.first_name + ' ' + customer.last_name)}</div>
-                       <small class="text-muted">${customer.phone ?? ''}</small>
-                       <small class="text-muted d-block">${customer.email ?? ''}</small>`
+                    ? `<div class="fw-semibold text-dark">${escapeHtml(customer.full_name || (customer.first_name + ' ' + customer.last_name))}</div>
+                       <small class="text-muted">${escapeHtml(customer.phone ?? '')}</small>
+                       <small class="text-muted d-block">${escapeHtml(customer.email ?? '')}</small>`
                     : `<span class="text-muted small">Kayıtsız Müşteri / Hızlı Satış</span>`;
 
                 const productHtml = product
-                    ? `<div class="fw-semibold text-dark">${product.name}</div>
-                       ${product.sku ? `<small class="text-muted">SKU: ${product.sku}</small>` : ''}
-                       ${product.barcode ? `<small class="text-muted d-block">Barkod: ${product.barcode}</small>` : ''}`
+                    ? `<div class="fw-semibold text-dark">${escapeHtml(product.name)}</div>
+                       ${product.sku ? `<small class="text-muted">SKU: ${escapeHtml(product.sku)}</small>` : ''}
+                       ${product.barcode ? `<small class="text-muted d-block">Barkod: ${escapeHtml(product.barcode)}</small>` : ''}`
                     : `<span class="text-danger small">Silinmiş Ürün</span>`;
 
-                const sellerName = seller ? (seller.full_name || (seller.first_name + ' ' + seller.last_name)) : 'Sistem';
+                const sellerName = escapeHtml(seller ? (seller.full_name || (seller.first_name + ' ' + seller.last_name)) : 'Sistem');
 
                 codeEl.textContent = `#${sale.sale_code ?? sale.id}`;
 
@@ -652,7 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="row g-3">
                         <div class="col-4 text-center">
                             <div class="text-muted small mb-1 fw-semibold">Satılan Adet</div>
-                            <div class="fs-4 fw-bold text-dark">${sale.quantity}</div>
+                            <div class="fs-4 fw-bold text-dark">${parseInt(sale.quantity, 10)}</div>
                         </div>
                         <div class="col-4 text-center border-start border-end">
                             <div class="text-muted small mb-1 fw-semibold">Birim Fiyat</div>
@@ -666,11 +676,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     <div class="mt-4 p-3 bg-light rounded-3 d-flex justify-content-between align-items-center border">
                         <span class="text-muted small fw-semibold">Ödeme Yöntemi</span>
-                        <span class="badge bg-dark text-white rounded-pill px-3 py-2">${paymentLabels[sale.payment_method] ?? sale.payment_method}</span>
+                        <span class="badge bg-dark text-white rounded-pill px-3 py-2">${escapeHtml(paymentLabels[sale.payment_method] ?? sale.payment_method)}</span>
                     </div>
 
                     <div class="mt-3 text-center">
-                        <a href="{{ url('finance/transactions') }}?search=${sale.sale_code}" class="btn btn-outline-info rounded-pill px-4 py-2 w-100 fw-semibold text-decoration-none shadow-sm">
+                        <a href="{{ url('finance/transactions') }}?search=${encodeURIComponent(sale.sale_code ?? '')}" class="btn btn-outline-info rounded-pill px-4 py-2 w-100 fw-semibold text-decoration-none shadow-sm">
                             <i class="ti ti-external-link me-1"></i> İlgili Kasa Hareketini Gör
                         </a>
                     </div>

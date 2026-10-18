@@ -139,7 +139,7 @@
     @keyframes sn-item-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
     #notificationList li.sn-new { animation: sn-item-in .35s ease-out; }
 </style>
-<script>
+<script nonce="{{ $cspNonce }}">
     /**
      * Sistem bildirimleri — anlık akış.
      * - Birincil: Reverb WebSocket özel kanalı (admin.notifications.{userId}). Sinyal gelince

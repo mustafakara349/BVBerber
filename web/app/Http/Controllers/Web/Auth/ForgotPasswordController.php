@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use App\Models\AuditLog;
+use Illuminate\Validation\Rules\Password;
 
 class ForgotPasswordController extends Controller
 {
@@ -59,6 +61,12 @@ class ForgotPasswordController extends Controller
 
         // Sadece admin yetkisi olanların (panele giriş yetkisi olanlar) şifre sıfırlamasına izin ver
         if (!$user || !$user->isAdmin()) {
+            AuditLog::record(
+                action: 'auth.password_reset_otp.rejected',
+                actorId: $user?->id,
+                details: ['email' => $email, 'reason' => 'non_admin_panel_access'],
+                outcome: 'failure'
+            );
             return back()->withErrors(['email' => 'Bu panele erişim yetkiniz bulunmamaktadır. Lütfen mobil uygulamayı kullanın.'])->withInput();
         }
 
@@ -78,6 +86,15 @@ class ForgotPasswordController extends Controller
 
         // E-posta gönderimi (ham OTP kullanıcıya iletilir)
         Mail::to($email)->send(new PasswordResetOtpMail($otp));
+
+        AuditLog::record(
+            action: 'auth.password_reset_otp.requested',
+            modelType: User::class,
+            modelId: $user->id,
+            actorId: $user->id,
+            details: ['email' => $email],
+            outcome: 'success'
+        );
 
         // Session'a kaydet ve önceki doğrulama durumlarını temizle
         session(['reset_email' => $email]);
@@ -163,8 +180,19 @@ class ForgotPasswordController extends Controller
         });
 
         if (!$result['success']) {
+            AuditLog::record(
+                action: 'auth.password_reset_otp.failed',
+                details: ['email' => $email, 'error' => $result['error']],
+                outcome: 'failure'
+            );
             return back()->withErrors(['otp' => $result['error']]);
         }
+
+        AuditLog::record(
+            action: 'auth.password_reset_otp.verified',
+            details: ['email' => $email],
+            outcome: 'success'
+        );
 
         session([
             'reset_otp_verified' => true,
@@ -196,10 +224,9 @@ class ForgotPasswordController extends Controller
         }
 
         $request->validate([
-            'password' => 'required|min:6|confirmed',
+            'password' => ['required', 'string', 'confirmed', Password::defaults()],
         ], [
             'password.required'  => 'Şifre alanı zorunludur.',
-            'password.min'       => 'Şifre en az 6 karakter olmalıdır.',
             'password.confirmed' => 'Şifreler birbiriyle eşleşmiyor.',
         ]);
 
@@ -242,16 +269,30 @@ class ForgotPasswordController extends Controller
             // Kullanılan OTP kaydını derhal sil
             $otpRecord->delete();
 
-            return ['success' => true];
+            return ['success' => true, 'user_id' => $user?->id];
         });
 
         if (!$result['success']) {
+            AuditLog::record(
+                action: 'auth.password_reset.failed',
+                details: ['email' => $email, 'error' => $result['error']],
+                outcome: 'failure'
+            );
             if (($result['redirect'] ?? '') === 'back') {
                 return back()->withErrors(['password' => $result['error']]);
             }
             session()->forget(['reset_email', 'reset_otp_verified', 'reset_token']);
             return redirect()->route('password.request')->withErrors(['email' => $result['error']]);
         }
+
+        AuditLog::record(
+            action: 'auth.password_reset.success',
+            modelType: User::class,
+            modelId: $result['user_id'] ?? null,
+            actorId: $result['user_id'] ?? null,
+            details: ['email' => $email],
+            outcome: 'success'
+        );
 
         // Geçerli oturumu temizle ve session ID'sini yenile
         session()->forget(['reset_email', 'reset_otp_verified', 'reset_token']);

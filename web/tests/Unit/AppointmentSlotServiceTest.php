@@ -26,6 +26,11 @@ class AppointmentSlotServiceTest extends TestCase
     {
         parent::setUp();
 
+        config([
+            'database.default' => 'mysql',
+            'database.connections.mysql.database' => 'bvapp_db',
+        ]);
+
         $this->slotService = app(AppointmentSlotServiceInterface::class);
 
         $this->branch = Branch::first();
@@ -60,7 +65,7 @@ class AppointmentSlotServiceTest extends TestCase
         // 14:00 - 15:00 arası 60 dakikalık randevu oluştur
         Appointment::create([
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
-            'appointment_code' => 'TEST-001',
+            'appointment_code' => 'TEST-' . \Illuminate\Support\Str::random(8),
             'branch_id' => $this->branch->id,
             'customer_id' => $this->customer->id,
             'employee_id' => $this->employee->id,
@@ -104,7 +109,7 @@ class AppointmentSlotServiceTest extends TestCase
         // 14:00'te 30 dakikalık bir randevu olsun (14:00 - 14:30)
         Appointment::create([
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
-            'appointment_code' => 'TEST-002',
+            'appointment_code' => 'TEST-' . \Illuminate\Support\Str::random(8),
             'branch_id' => $this->branch->id,
             'customer_id' => $this->customer->id,
             'employee_id' => $this->employee->id,

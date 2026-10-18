@@ -264,5 +264,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/employee-titles.js') }}"></script>
+    <script nonce="{{ $cspNonce }}" src="{{ asset('js/employee-titles.js') }}"></script>
 @endpush

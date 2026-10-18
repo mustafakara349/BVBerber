@@ -248,7 +248,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', () => {
         const editModal = document.getElementById('editSupplierModal');
         if (editModal) {

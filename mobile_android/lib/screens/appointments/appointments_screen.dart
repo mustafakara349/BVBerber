@@ -9,7 +9,6 @@ import 'package:mobile_android/routes/app_routes.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile_android/services/api_service.dart';
-import 'package:mobile_android/models/review_result_model.dart';
 import 'package:mobile_android/widgets/google_review_invite_bottom_sheet.dart';
 
 class AppointmentsScreen extends StatefulWidget {

@@ -4,10 +4,12 @@ namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 
 trait MobileAuthTrait
 {
@@ -25,6 +27,17 @@ trait MobileAuthTrait
         try {
             $result = $authService->apiLogin($request->only('email', 'password'));
 
+            \App\Models\AuditLog::record(
+                action: 'auth.mobile_login.success',
+                modelType: 'user',
+                modelId: $result['user']->id,
+                oldValues: null,
+                newValues: ['email' => $result['user']->email],
+                userId: $result['user']->id,
+                status: 'success',
+                details: 'Mobile user authenticated successfully'
+            );
+
             return $this->success([
                 'user' => [
                     'id' => (string)$result['user']->id,
@@ -39,6 +52,17 @@ trait MobileAuthTrait
                 'token' => $result['token'],
             ], 'Login successful');
         } catch (\Exception $e) {
+            \App\Models\AuditLog::record(
+                action: 'auth.mobile_login.failed',
+                modelType: 'user',
+                modelId: 0,
+                oldValues: null,
+                newValues: ['email' => $request->input('email')],
+                userId: null,
+                status: 'failed',
+                details: 'Mobile login failed: ' . $e->getMessage()
+            );
+
             return $this->error($e->getMessage(), 401);
         }
     }
@@ -53,7 +77,7 @@ trait MobileAuthTrait
             'surname' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|string',
-            'password' => 'required|string|min:6',
+            'password' => ['required', 'string', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
         $customerRole = \App\Models\Role::where('slug', 'customer')->first();
@@ -117,16 +141,49 @@ trait MobileAuthTrait
         $user = $request->user();
         $request->validate([
             'currentPassword' => 'required|string',
-            'newPassword' => 'required|string|min:6',
+            'newPassword' => ['required', 'string', 'different:currentPassword', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
         if (!Hash::check($request->currentPassword, $user->password)) {
+            \App\Models\AuditLog::record(
+                action: 'auth.password_update.failed',
+                modelType: 'user',
+                modelId: $user->id,
+                oldValues: null,
+                newValues: null,
+                userId: $user->id,
+                status: 'failed',
+                details: 'Current password verification failed during password update'
+            );
+
             return $this->error('Mevcut şifre hatalı.', 400);
         }
 
-        $user->update([
-            'password' => Hash::make($request->newPassword)
-        ]);
+        DB::transaction(function () use ($user, $request) {
+            $user->update([
+                'password' => Hash::make($request->newPassword),
+            ]);
+
+            // Revoke all other active personal access tokens; keep only the current device token
+            $currentToken = $user->currentAccessToken();
+            if ($currentToken instanceof PersonalAccessToken && !empty($currentToken->id)) {
+                $user->tokens()->where('id', '!=', $currentToken->id)->delete();
+            } else {
+                // If there is no specific personal access token, revoke all tokens to be safe
+                $user->tokens()->delete();
+            }
+        });
+
+        \App\Models\AuditLog::record(
+            action: 'auth.password_update.success',
+            modelType: 'user',
+            modelId: $user->id,
+            oldValues: null,
+            newValues: null,
+            userId: $user->id,
+            status: 'success',
+            details: 'User successfully updated account password and revoked other device tokens'
+        );
 
         return $this->success(null, 'Password updated');
     }
@@ -251,6 +308,20 @@ trait MobileAuthTrait
      */
     public function logout(Request $request): JsonResponse
     {
+        $user = $request->user();
+        if ($user) {
+            \App\Models\AuditLog::record(
+                action: 'auth.mobile_logout',
+                modelType: 'user',
+                modelId: $user->id,
+                oldValues: null,
+                newValues: null,
+                userId: $user->id,
+                status: 'success',
+                details: 'Mobile user token revoked'
+            );
+        }
+
         $request->user()->currentAccessToken()->delete();
         return $this->success(null, 'Logged out successfully');
     }

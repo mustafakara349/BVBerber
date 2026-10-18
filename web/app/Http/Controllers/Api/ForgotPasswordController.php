@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use App\Models\AuditLog;
+use Illuminate\Validation\Rules\Password;
 
 class ForgotPasswordController extends Controller
 {
@@ -69,6 +71,12 @@ class ForgotPasswordController extends Controller
 
         // E-posta gönderimi (kullanıcıya ham OTP iletilir, loglanmaz)
         Mail::to($email)->send(new PasswordResetOtpMail($otp));
+
+        AuditLog::record(
+            action: 'auth.password_reset_otp.requested',
+            details: ['email' => $email],
+            outcome: 'success'
+        );
 
         return response()->json([
             'success' => true,
@@ -143,6 +151,20 @@ class ForgotPasswordController extends Controller
             return ['status' => 200, 'payload' => ['success' => true, 'message' => 'Kod doğrulandı.']];
         });
 
+        if ($result['status'] === 200) {
+            AuditLog::record(
+                action: 'auth.password_reset_otp.verified',
+                details: ['email' => $email],
+                outcome: 'success'
+            );
+        } else {
+            AuditLog::record(
+                action: 'auth.password_reset_otp.failed',
+                details: ['email' => $email, 'error' => $result['payload']['message'] ?? 'verification_failed'],
+                outcome: 'failure'
+            );
+        }
+
         return response()->json($result['payload'], $result['status']);
     }
 
@@ -154,7 +176,7 @@ class ForgotPasswordController extends Controller
         $validator = Validator::make($request->all(), [
             'email'    => 'required|email',
             'otp'      => 'required|numeric|digits:6',
-            'password' => 'required|min:6|confirmed',
+            'password' => ['required', 'string', 'confirmed', Password::defaults()],
         ]);
 
         if ($validator->fails()) {
@@ -226,8 +248,25 @@ class ForgotPasswordController extends Controller
             // Kullanılan OTP kodunu derhal sil (Tek kullanımlık kuralı)
             $otpRecord->delete();
 
-            return ['status' => 200, 'payload' => ['success' => true, 'message' => 'Şifreniz başarıyla güncellendi.']];
+            return ['status' => 200, 'payload' => ['success' => true, 'message' => 'Şifreniz başarıyla güncellendi.'], 'user_id' => $user?->id];
         });
+
+        if ($result['status'] === 200) {
+            AuditLog::record(
+                action: 'auth.password_reset.success',
+                modelType: User::class,
+                modelId: $result['user_id'] ?? null,
+                actorId: $result['user_id'] ?? null,
+                details: ['email' => $email],
+                outcome: 'success'
+            );
+        } else {
+            AuditLog::record(
+                action: 'auth.password_reset.failed',
+                details: ['email' => $email, 'error' => $result['payload']['message'] ?? 'failed'],
+                outcome: 'failure'
+            );
+        }
 
         return response()->json($result['payload'], $result['status']);
     }

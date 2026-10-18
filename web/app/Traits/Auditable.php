@@ -29,15 +29,19 @@ trait Auditable
 
     protected static function logAudit($model, string $action, ?array $oldValues, ?array $newValues): void
     {
-        AuditLog::create([
-            'user_id' => Auth::id(),
-            'action' => $action,
-            'model_type' => get_class($model),
-            'model_id' => $model->getKey(),
-            'old_values' => $oldValues ? json_encode($oldValues) : null,
-            'new_values' => $newValues ? json_encode($newValues) : null,
-            'ip_address' => Request::ip(),
-            'user_agent' => Request::userAgent(),
-        ]);
+        $modelType = get_class($model);
+        $modelId = $model->getKey();
+        $actionName = strtolower(class_basename($model)) . '.' . $action;
+
+        AuditLog::record(
+            action: $actionName,
+            modelType: $modelType,
+            modelId: is_numeric($modelId) ? (int)$modelId : 0,
+            oldValues: $oldValues,
+            newValues: $newValues,
+            userId: Auth::id(),
+            status: 'success',
+            details: "Model {$action} event for {$modelType} #{$modelId}"
+        );
     }
 }

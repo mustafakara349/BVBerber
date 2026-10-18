@@ -29,6 +29,14 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Pagination\Paginator::useBootstrapFive();
 
+        // Default empty CSP nonce across views (populated per-request by SecurityHeadersMiddleware)
+        \Illuminate\Support\Facades\View::share('cspNonce', '');
+
+        // Enforce consistent application-wide password policy (SEC-BE-2026-009)
+        \Illuminate\Validation\Rules\Password::defaults(function () {
+            return \Illuminate\Validation\Rules\Password::min(8)->letters()->numbers();
+        });
+
         // Route model binding: {customer} → User model (müşteri rolündeki kullanıcılar)
         Route::bind('customer', function ($value) {
             return User::withTrashed()->where('uuid', $value)->orWhere('id', $value)->firstOrFail();

@@ -345,7 +345,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', function () {
         // Toggle new password
         const toggleBtn = document.getElementById('togglePasswordBtn');

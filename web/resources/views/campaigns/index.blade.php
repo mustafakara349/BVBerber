@@ -938,9 +938,19 @@
 </div>
 
 @push('scripts')
-<script>
-    const appCampaigns = {!! json_encode($campaigns) !!};
-    const appCoupons = {!! json_encode($coupons) !!};
+<script nonce="{{ $cspNonce }}">
+    const appCampaigns = @json($campaigns);
+    const appCoupons = @json($coupons);
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
 
     function generateRandomCouponCode() {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -1079,10 +1089,10 @@
                 let employeeName = (usage.appointment && usage.appointment.employee) ? usage.appointment.employee.first_name + ' ' + usage.appointment.employee.last_name : '-';
                 
                 tr.innerHTML = `
-                    <td class="ps-3 small text-secondary">${dateFormatted}</td>
-                    <td class="small fw-medium">${customerName}</td>
-                    <td class="small font-monospace text-primary">${appointmentCode}</td>
-                    <td class="small">${employeeName}</td>
+                    <td class="ps-3 small text-secondary">${escapeHtml(dateFormatted)}</td>
+                    <td class="small fw-medium">${escapeHtml(customerName)}</td>
+                    <td class="small font-monospace text-primary">${escapeHtml(appointmentCode)}</td>
+                    <td class="small">${escapeHtml(employeeName)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1188,10 +1198,10 @@
                 let employeeName = (usage.appointment && usage.appointment.employee) ? usage.appointment.employee.first_name + ' ' + usage.appointment.employee.last_name : '-';
                 
                 tr.innerHTML = `
-                    <td class="ps-3 small text-secondary">${dateFormatted}</td>
-                    <td class="small fw-medium">${customerName}</td>
-                    <td class="small font-monospace text-primary">${appointmentCode}</td>
-                    <td class="small">${employeeName}</td>
+                    <td class="ps-3 small text-secondary">${escapeHtml(dateFormatted)}</td>
+                    <td class="small fw-medium">${escapeHtml(customerName)}</td>
+                    <td class="small font-monospace text-primary">${escapeHtml(appointmentCode)}</td>
+                    <td class="small">${escapeHtml(employeeName)}</td>
                 `;
                 tbody.appendChild(tr);
             });

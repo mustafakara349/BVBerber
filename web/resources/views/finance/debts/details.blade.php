@@ -351,7 +351,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', () => {
         const payDebtModal = document.getElementById('payDebtModal');
         if (payDebtModal) {

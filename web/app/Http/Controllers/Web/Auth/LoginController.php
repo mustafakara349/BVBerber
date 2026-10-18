@@ -29,9 +29,29 @@ class LoginController extends Controller
             );
         } catch (ValidationException $e) {
             $request->hitRateLimiter();
+            \App\Models\AuditLog::record(
+                action: 'auth.login.failed',
+                modelType: 'user',
+                modelId: 0,
+                oldValues: null,
+                newValues: ['email' => $request->input('email')],
+                userId: null,
+                status: 'failed',
+                details: 'Web login failed: invalid credentials or rate limited'
+            );
             throw $e;
         } catch (\Throwable $e) {
             $request->hitRateLimiter();
+            \App\Models\AuditLog::record(
+                action: 'auth.login.failed',
+                modelType: 'user',
+                modelId: 0,
+                oldValues: null,
+                newValues: ['email' => $request->input('email')],
+                userId: null,
+                status: 'failed',
+                details: 'Web login error: ' . $e->getMessage()
+            );
             throw $e;
         }
 
@@ -39,11 +59,34 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
+        \App\Models\AuditLog::record(
+            action: 'auth.login.success',
+            modelType: 'user',
+            modelId: auth()->id() ?? 0,
+            oldValues: null,
+            newValues: ['email' => auth()->user()?->email],
+            userId: auth()->id(),
+            status: 'success',
+            details: 'Web user authenticated successfully'
+        );
+
         return redirect()->intended(route('dashboard'));
     }
 
     public function logout(): RedirectResponse
     {
+        $userId = auth()->id();
+        \App\Models\AuditLog::record(
+            action: 'auth.logout',
+            modelType: 'user',
+            modelId: $userId ?? 0,
+            oldValues: null,
+            newValues: null,
+            userId: $userId,
+            status: 'success',
+            details: 'Web user logged out'
+        );
+
         $this->authService->logout();
 
         return redirect()->route('login');

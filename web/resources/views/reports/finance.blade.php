@@ -242,8 +242,8 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
+<script nonce="{{ $cspNonce }}" src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', () => {
         // Toggle Custom Date Fields
         const periodSelect = document.getElementById('periodSelect');
@@ -308,8 +308,8 @@
         @if(count($incomeByMethod) > 0)
             const incomeMethodOptions = {
                 chart: { type: 'donut', height: 280, fontFamily: 'Outfit, system-ui, -apple-system, sans-serif' },
-                labels: {!! json_encode(array_column($incomeByMethod, 'label')) !!},
-                series: {!! json_encode(array_column($incomeByMethod, 'total')) !!},
+                labels: @json(array_column($incomeByMethod, 'label')),
+                series: @json(array_column($incomeByMethod, 'total')),
                 colors: ['#10b981', '#6366f1', '#06b6d4', '#f59e0b'],
                 legend: { position: 'bottom' },
                 dataLabels: { enabled: true, formatter: (val) => val.toFixed(1) + '%' },
@@ -323,8 +323,8 @@
         @if(count($expenseByCategory) > 0)
             const expenseCategoryOptions = {
                 chart: { type: 'donut', height: 280, fontFamily: 'Outfit, system-ui, -apple-system, sans-serif' },
-                labels: {!! json_encode(array_column($expenseByCategory, 'label')) !!},
-                series: {!! json_encode(array_column($expenseByCategory, 'total')) !!},
+                labels: @json(array_column($expenseByCategory, 'label')),
+                series: @json(array_column($expenseByCategory, 'total')),
                 colors: ['#ef4444', '#ec4899', '#f59e0b', '#8b5cf6', '#3b82f6'],
                 legend: { position: 'bottom' },
                 dataLabels: { enabled: true, formatter: (val) => val.toFixed(1) + '%' },

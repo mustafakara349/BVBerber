@@ -14,16 +14,23 @@ class AuditLogMiddleware
         $response = $next($request);
 
         if (in_array($request->method(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
-            AuditLog::create([
-                'user_id' => $request->user()?->id,
-                'action' => strtolower($request->method()) . ':' . $request->path(),
-                'model_type' => 'http_request',
-                'model_id' => 0,
-                'old_values' => null,
-                'new_values' => json_encode($request->except(['password', 'password_confirmation', '_token'])),
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-            ]);
+            // Exclude auth credential submission routes (handled with dedicated auth audit events)
+            if ($request->is('login') || $request->is('api/*/auth/login') || $request->is('api/*/mobile/login') || $request->is('password/*') || $request->is('api/*/mobile/*password*')) {
+                return $response;
+            }
+
+            $sanitizedPayload = AuditLog::redactSensitiveData($request->all());
+
+            AuditLog::record(
+                action: strtolower($request->method()) . ':' . $request->path(),
+                modelType: 'http_request',
+                modelId: 0,
+                oldValues: null,
+                newValues: $sanitizedPayload,
+                userId: $request->user()?->id,
+                status: ($response->isSuccessful() || $response->isRedirection()) ? 'success' : 'failed',
+                details: 'HTTP ' . $request->method() . ' ' . $request->path() . ' (Status: ' . $response->getStatusCode() . ')'
+            );
         }
 
         return $response;

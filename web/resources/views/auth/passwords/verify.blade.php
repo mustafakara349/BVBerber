@@ -333,7 +333,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     document.addEventListener('DOMContentLoaded', function () {
         // Button submit loading state
         const form = document.getElementById('verifyForm');

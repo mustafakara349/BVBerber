@@ -9,7 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\AdminNotificationService;
 use App\Services\AdminNotifications\AdminAlert;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -23,7 +23,17 @@ use Tests\TestCase;
  */
 class NotificationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config([
+            'database.default' => 'mysql',
+            'database.connections.mysql.database' => 'bvapp_db',
+        ]);
+    }
 
     private function createUserWithRole(string $slug): User
     {

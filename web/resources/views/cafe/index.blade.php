@@ -513,7 +513,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
 document.addEventListener('DOMContentLoaded', function () {
 
     // ── Image preview helper ──────────────────────────────────────
@@ -622,8 +622,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-<script src="{{ asset('js/category-manager.js') }}"></script>
-<script>
+<script nonce="{{ $cspNonce }}" src="{{ asset('js/category-manager.js') }}"></script>
+<script nonce="{{ $cspNonce }}">
 document.addEventListener('DOMContentLoaded', function () {
     CategoryManager.init({
         modalId:    'cafeCategoriesModal',

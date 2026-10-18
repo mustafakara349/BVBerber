@@ -49,7 +49,7 @@ class CustomerController extends Controller
             'phone' => 'nullable|string',
             'gender' => 'nullable|in:male,female,other',
             'birth_date' => 'nullable|date',
-            'password' => 'nullable|string|min:6',
+            'password' => ['nullable', 'string', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
         $customerRole = Role::where('slug', 'customer')->first();
@@ -63,7 +63,7 @@ class CustomerController extends Controller
             'phone' => $validated['phone'],
             'gender' => $validated['gender'],
             'birth_date' => $validated['birth_date'],
-            'password' => Hash::make($validated['password'] ?? Str::random(10)),
+            'password' => Hash::make($validated['password'] ?? Str::random(16)),
             'status' => 'active',
         ]);
 
@@ -133,13 +133,17 @@ class CustomerController extends Controller
             'gender'     => 'nullable|in:male,female,other',
             'birth_date' => 'nullable|date',
             'status'     => 'required|in:active,inactive,blocked',
+            'password'   => ['nullable', 'string', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
-        $customer->update($validated);
+        $password = $validated['password'] ?? null;
+        unset($validated['password']);
 
-        if ($request->filled('password')) {
-            $customer->update(['password' => Hash::make($request->password)]);
+        if (!empty($password)) {
+            $validated['password'] = Hash::make($password);
         }
+
+        $customer->update($validated);
 
         return redirect()->route('customers.index')->with('success', 'Müşteri başarıyla güncellendi.');
     }

@@ -36,12 +36,12 @@ return [
     'csp' => [
         'enabled' => (bool) env('CSP_ENABLED', true),
         'report_only' => (bool) env('CSP_REPORT_ONLY', false),
+        'nonce_enabled' => (bool) env('CSP_NONCE_ENABLED', true),
         'directives' => [
             'default-src' => ["'self'"],
             'script-src' => [
                 "'self'",
                 "'unsafe-inline'",
-                "'unsafe-eval'",
                 'https://cdn.jsdelivr.net',
             ],
             'style-src' => [

@@ -261,7 +261,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('editImageInput').addEventListener('change', function () {
         const file = this.files[0];

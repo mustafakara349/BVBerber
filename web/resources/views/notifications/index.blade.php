@@ -479,7 +479,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     (function () {
         const rows = document.getElementById('notificationRows');
         const banner = document.getElementById('newNotificationsBanner');

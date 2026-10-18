@@ -28,6 +28,11 @@ class AppointmentConcurrencyTest extends TestCase
     {
         parent::setUp();
 
+        config([
+            'database.default' => 'mysql',
+            'database.connections.mysql.database' => 'bvapp_db',
+        ]);
+
         $this->appointmentService = app(AppointmentService::class);
 
         $this->branch = Branch::first();
@@ -41,7 +46,7 @@ class AppointmentConcurrencyTest extends TestCase
 
     public function test_overlapping_appointment_is_rejected_and_cannot_double_book(): void
     {
-        $testDate = Carbon::now()->addDays(40)->toDateString();
+        $testDate = Carbon::now()->addDays(rand(90, 150))->toDateString();
 
         // 1. Müşteri 14:00 için 60 dakikalık randevu alıyor (14:00 - 15:00)
         $appt1 = $this->appointmentService->createAppointment([
@@ -79,7 +84,7 @@ class AppointmentConcurrencyTest extends TestCase
 
     public function test_mobile_api_returns_409_conflict_on_overlapping_appointment(): void
     {
-        $testDate = Carbon::now()->addDays(41)->toDateString();
+        $testDate = Carbon::now()->addDays(rand(160, 220))->toDateString();
 
         // İlk randevuyu oluştur (14:00 - 15:00)
         $this->appointmentService->createAppointment([

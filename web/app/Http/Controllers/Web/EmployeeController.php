@@ -54,7 +54,7 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:users',
             'phone' => 'nullable|string',
             'role_id' => 'required|exists:roles,id',
-            'password' => 'required|string|min:6',
+            'password' => ['required', 'string', \Illuminate\Validation\Rules\Password::defaults()],
             'employee_title_id' => 'nullable|exists:employee_titles,id',
             'salary_type' => 'required|in:fixed,commission,fixed_plus_commission,hourly',
             'salary_amount' => 'required|numeric',
@@ -150,7 +150,7 @@ class EmployeeController extends Controller
 
     public function update(Request $request, Employee $employee)
     {
-        if ($employee->branch_id !== session('active_branch_id', 1)) {
+        if ((int)$employee->branch_id !== (int)session('active_branch_id', 1)) {
             abort(403, 'Yetkisiz işlem.');
         }
 
@@ -166,19 +166,22 @@ class EmployeeController extends Controller
             'commission_rate' => 'required|numeric',
             'hire_date' => 'required|date',
             'profile_photo' => 'nullable|file|image|mimes:jpeg,png,jpg,webp|mimetypes:image/jpeg,image/png,image/webp|max:2048',
+            'password' => ['nullable', 'string', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
-        $employee->user->update([
+        $userData = [
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'role_id' => $validated['role_id'],
-        ]);
+        ];
 
-        if ($request->filled('password')) {
-            $employee->user->update(['password' => Hash::make($request->password)]);
+        if (!empty($validated['password'])) {
+            $userData['password'] = Hash::make($validated['password']);
         }
+
+        $employee->user->update($userData);
 
         if ($request->hasFile('profile_photo')) {
             $file = $request->file('profile_photo');

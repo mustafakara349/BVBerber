@@ -355,7 +355,7 @@
 @endsection
 
 @push('scripts')
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             const chartDataAll = @json($revenueChart);
 
@@ -545,6 +545,16 @@
             const topServicesPeriodSelect = document.getElementById('topServicesStatsPeriod');
             const topServicesList = document.getElementById('topServicesList');
 
+            function escapeHtml(str) {
+                if (str === null || str === undefined) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
             function fetchTopServices(period) {
                 topServicesList.innerHTML = `
                     <li class="list-group-item d-flex align-items-center gap-3">
@@ -587,7 +597,7 @@
                                         <i class="ti ti-cut"></i>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <p class="mb-1">${service.name}</p>
+                                        <p class="mb-1">${escapeHtml(service.name)}</p>
                                         <div class="d-flex align-items-center gap-2 text-muted">
                                             <small class="fw-semibold">₺${formattedRevenue}</small>
                                             <small>•</small>
