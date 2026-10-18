@@ -136,7 +136,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Reviews
         Route::get('/reviews', [App\Http\Controllers\Web\ReviewController::class, 'index'])->name('reviews.index');
-        Route::delete('/reviews/{review}', [App\Http\Controllers\Web\ReviewController::class, 'destroy'])->name('reviews.destroy');
+        Route::get('/reviews/{review}', [App\Http\Controllers\Web\ReviewController::class, 'show'])->name('reviews.show');
 
         // Reports
         Route::get('/reports', [App\Http\Controllers\Web\ReportController::class, 'index'])->name('reports.index');
@@ -148,3 +148,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/settings/branch', [App\Http\Controllers\Web\SettingController::class, 'updateBranch'])->name('settings.branch.update');
     });
 });
+
+if (app()->isLocal()) {
+    Route::get('/dev-error-test/{code}', function ($code) {
+        $status = (int) $code;
+        if ($status === 500) {
+            throw new \RuntimeException('Simüle edilmiş kritik sunucu hatası (Test 500).');
+        }
+        abort($status, 'Bu bir ' . $status . ' test hatasıdır.');
+    });
+}
+

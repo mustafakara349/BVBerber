@@ -10,11 +10,23 @@ use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $branchId = session('active_branch_id', 1);
-        $services = Service::where('branch_id', $branchId)->with('category')->paginate(15);
-        return view('services.index', compact('services'));
+        $query = Service::where('branch_id', $branchId)->with('category');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $services = $query->paginate(15)->withQueryString();
+        $categories = ServiceCategory::all();
+        return view('services.index', compact('services', 'categories'));
     }
 
     public function create()

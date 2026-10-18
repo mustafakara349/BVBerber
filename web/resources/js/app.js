@@ -2,6 +2,7 @@ import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
 import './sidebar.js';
+import './skeleton.js';
 import '../scss/style.scss';
 import ApexCharts from 'apexcharts';
 

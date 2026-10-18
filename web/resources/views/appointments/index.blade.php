@@ -406,6 +406,13 @@
                     slotEventOverlap: false, // Fix overlap completely by laying events side-by-side!
                     eventMinHeight: 54, // Prevent events from collapsing into unreadable thin lines
                     events: '{{ route("appointments.events") }}',
+                    loading: function(isLoading) {
+                        if (isLoading) {
+                            if (window.SkeletonLoader) window.SkeletonLoader.startProgress();
+                        } else {
+                            if (window.SkeletonLoader) window.SkeletonLoader.finishProgress();
+                        }
+                    },
                     eventClick: function(info) {
                         if (info.event.url) {
                             info.jsEvent.preventDefault();

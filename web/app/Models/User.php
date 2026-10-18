@@ -33,6 +33,7 @@ class User extends Authenticatable
         'email_verified_at',
         'phone_verified_at',
         'last_login_at',
+        'last_google_redirect_at',
         'status',
         'is_guest',
     ];
@@ -48,6 +49,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'last_google_redirect_at' => 'datetime',
             'birth_date' => 'date',
             'gender' => Gender::class,
             'status' => UserStatus::class,

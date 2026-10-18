@@ -315,6 +315,16 @@ class AppointmentController extends Controller
             abort(403, 'Yetkisiz işlem.');
         }
 
+        if ($request->filled('amount')) {
+            $rawAmount = str_replace(' ', '', (string) $request->amount);
+            if (str_contains($rawAmount, ',') && !str_contains($rawAmount, '.')) {
+                $rawAmount = str_replace(',', '.', $rawAmount);
+            } elseif (str_contains($rawAmount, '.') && str_contains($rawAmount, ',')) {
+                $rawAmount = str_replace(',', '.', str_replace('.', '', $rawAmount));
+            }
+            $request->merge(['amount' => $rawAmount]);
+        }
+
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0.01',
             'payment_method' => 'required|string|in:cash,credit_card,bank_transfer,online',

@@ -9,6 +9,7 @@
     @stack('styles')
 </head>
 <body class="bg-auth">
+    <div id="skeletonGlobalProgress" aria-hidden="true"></div>
     @yield('content')
     @stack('scripts')
 </body>

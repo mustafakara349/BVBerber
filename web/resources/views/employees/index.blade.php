@@ -21,6 +21,29 @@
                 </div>
             </div>
         </div>
+    <div class="row mb-3">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form method="GET" action="{{ route('employees.index') }}" class="d-flex gap-2">
+                <div class="input-group bg-white rounded-pill shadow-sm overflow-hidden border flex-grow-1">
+                    <span class="input-group-text bg-transparent border-0 pe-1 text-muted">
+                        <i class="ti ti-search fs-5"></i>
+                    </span>
+                    <input type="text" name="search" class="form-control border-0 ps-1 py-2" placeholder="Personel ara..." value="{{ request('search') }}">
+                    @if(request('search') || request('role_id'))
+                        <a href="{{ route('employees.index') }}" class="btn btn-link text-muted border-0 d-flex align-items-center text-decoration-none">
+                            <i class="ti ti-x"></i>
+                        </a>
+                    @endif
+                </div>
+                <select name="role_id" class="form-select bg-white rounded-pill shadow-sm border w-auto" onchange="this.form.submit()">
+                    <option value="">Tüm Roller</option>
+                    @foreach($roles as $role)
+                        <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                    @endforeach
+                </select>
+                <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm flex-shrink-0">Ara</button>
+            </form>
+        </div>
     </div>
 
     <div class="row">

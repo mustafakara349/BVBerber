@@ -23,6 +23,7 @@ class AppointmentsViewModel: ObservableObject {
     @Published var selectedTab = 0
     @Published var appointmentToCancel: Appointment? = nil
     @Published var showCancelAlert = false
+    @Published var appointmentToReview: Appointment? = nil
 
     // MARK: - Misafir (Guest) Durumu
     @Published var isGuestMode: Bool = false
@@ -175,6 +176,15 @@ class AppointmentsViewModel: ObservableObject {
         }
 
         isLoading = false
+    }
+
+    /// Değerlendirme gönderildikten sonra kartı anında günceller (sunucu yanıtı beklenmeden).
+    func markAsReviewed(appointmentId: String?, rating: Int, comment: String? = nil) {
+        guard let appointmentId,
+              let index = pastAppointments.firstIndex(where: { $0.id == appointmentId }) else { return }
+        pastAppointments[index].isReviewed = true
+        pastAppointments[index].rating = rating
+        pastAppointments[index].reviewComment = comment
     }
 
     // MARK: - Randevu Oluşturma Verilerini Getir

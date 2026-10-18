@@ -193,7 +193,7 @@
                         </thead>
                         <tbody>
                             @forelse($transactions as $transaction)
-                            <tr class="border-bottom border-light hover-bg-light transition-all" style="cursor: pointer;" onclick="window.location.href='{{ route('finance.transactions.show', $transaction) }}'">
+                            <tr class="border-bottom border-light hover-bg-light transition-all" style="cursor: pointer;" data-href="{{ route('finance.transactions.show', $transaction) }}">
                                 <td class="ps-4 py-3 fw-semibold">
                                     #TXN-{{ str_pad($transaction->id, 5, '0', STR_PAD_LEFT) }}
                                 </td>

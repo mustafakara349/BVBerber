@@ -1,0 +1,249 @@
+// =============================================================================
+// B&V BARBER SKELETON LOADING DESIGN SYSTEM
+// =============================================================================
+
+$skeleton-bg-start: #f1f5f9;
+$skeleton-bg-mid:   #e2e8f0;
+$skeleton-bg-end:   #f1f5f9;
+$skeleton-glow:     rgba(230, 98, 57, 0.06); // Subtle warm B&V Barber amber accent
+
+@keyframes skeletonShimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes skeletonPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.55;
+    }
+}
+
+.skeleton-shimmer {
+    background: linear-gradient(
+        90deg,
+        $skeleton-bg-start 0%,
+        $skeleton-bg-mid 50%,
+        $skeleton-bg-start 100%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    vertical-align: middle;
+    pointer-events: none;
+    user-select: none;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        background: $skeleton-bg-mid;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Atomic Skeleton Primitives
+// -----------------------------------------------------------------------------
+
+.skeleton-text {
+    @extend .skeleton-shimmer;
+    height: 14px;
+    width: 100%;
+    margin-bottom: 6px;
+    border-radius: 4px;
+
+    &.xs { height: 9px; margin-bottom: 4px; }
+    &.sm { height: 11px; margin-bottom: 5px; }
+    &.md { height: 14px; }
+    &.lg { height: 18px; margin-bottom: 8px; }
+    &.heading { height: 24px; width: 60%; margin-bottom: 10px; border-radius: 6px; }
+    &.title { height: 32px; width: 40%; margin-bottom: 12px; border-radius: 8px; }
+}
+
+.skeleton-avatar {
+    @extend .skeleton-shimmer;
+    border-radius: 50% !important;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+
+    &.xs { width: 24px; height: 24px; }
+    &.sm { width: 32px; height: 32px; }
+    &.md { width: 40px; height: 40px; }
+    &.lg { width: 56px; height: 56px; }
+    &.xl { width: 72px; height: 72px; }
+}
+
+.skeleton-icon {
+    @extend .skeleton-shimmer;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    flex-shrink: 0;
+
+    &.sm { width: 32px; height: 32px; border-radius: 8px; }
+    &.lg { width: 56px; height: 56px; border-radius: 14px; }
+}
+
+.skeleton-btn {
+    @extend .skeleton-shimmer;
+    height: 34px;
+    width: 100px;
+    border-radius: 50rem !important;
+
+    &.sm { height: 28px; width: 80px; }
+    &.lg { height: 42px; width: 140px; }
+}
+
+.skeleton-badge {
+    @extend .skeleton-shimmer;
+    height: 22px;
+    width: 70px;
+    border-radius: 50rem !important;
+
+    &.sm { height: 18px; width: 55px; }
+    &.lg { height: 26px; width: 90px; }
+}
+
+.skeleton-input {
+    @extend .skeleton-shimmer;
+    height: 42px;
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+// -----------------------------------------------------------------------------
+// Component-Level Skeleton Cards & Layouts
+// -----------------------------------------------------------------------------
+
+.skeleton-card {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-stat-card {
+    @extend .skeleton-card;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 140px;
+}
+
+.skeleton-table-wrapper {
+    background: #ffffff;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+
+    table {
+        margin-bottom: 0;
+        th, td {
+            vertical-align: middle;
+            border-bottom: 1px solid #f8fafc;
+            padding: 1rem 1.25rem;
+        }
+        thead th {
+            background-color: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+    }
+}
+
+.skeleton-chart-box {
+    @extend .skeleton-card;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .skeleton-chart-bars {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+        height: 220px;
+        padding: 0 10px;
+
+        .skeleton-bar {
+            @extend .skeleton-shimmer;
+            flex: 1;
+            border-radius: 6px 6px 0 0;
+        }
+    }
+}
+
+.skeleton-calendar-grid {
+    @extend .skeleton-card;
+    padding: 1.25rem;
+
+    .skeleton-cal-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .skeleton-cal-body {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+
+        .skeleton-cal-cell {
+            @extend .skeleton-card;
+            min-height: 90px;
+            padding: 8px;
+            background: #fafafa;
+            border-color: #f1f5f9;
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Transition & Display State Classes
+// -----------------------------------------------------------------------------
+
+.skeleton-content-fade {
+    transition: opacity 0.25s ease-in-out, visibility 0.25s ease-in-out;
+}
+
+.is-skeleton-loading {
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+// Micro loader bar at top of page for instant navigation feedback
+#skeletonGlobalProgress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #E66239, #f7a085);
+    z-index: 9999;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(230, 98, 57, 0.5);
+
+    &.running {
+        opacity: 1;
+    }
+    &.done {
+        width: 100% !important;
+        opacity: 0;
+        transition: width 0.15s ease, opacity 0.35s ease 0.15s;
+    }
+}

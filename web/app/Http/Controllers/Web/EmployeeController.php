@@ -23,7 +23,17 @@ class EmployeeController extends Controller
             });
         }
 
-        $employees = $query->paginate(15);
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $employees = $query->paginate(15)->withQueryString();
         $roles = Role::all();
         $titles = \App\Models\EmployeeTitle::forBranch($branchId)->get();
         return view('employees.index', compact('employees', 'roles', 'titles'));

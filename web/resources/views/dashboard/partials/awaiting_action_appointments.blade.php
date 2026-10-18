@@ -98,73 +98,6 @@
                                     </td>
                                 </tr>
 
-                                <!-- Complete with Payment Modal for this specific appointment -->
-                                <div class="modal fade" id="dashboardCompleteModal{{ $apt->id }}" tabindex="-1" aria-labelledby="dashboardCompleteModalLabel{{ $apt->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered text-start">
-                                        <div class="modal-content border-0 rounded-4 shadow-lg">
-                                            <div class="modal-header border-0 bg-success text-white py-3">
-                                                <h5 class="modal-title fw-bold" id="dashboardCompleteModalLabel{{ $apt->id }}">Randevuyu Tamamla & Ödeme Kaydet</h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                                            </div>
-                                            <form action="{{ route('appointments.complete-payment', $apt) }}" method="POST">
-                                                @csrf
-                                                <div class="modal-body p-4">
-                                                    <div class="alert alert-success border-0 p-3 rounded-3 mb-3" role="alert">
-                                                        <div class="d-flex justify-content-between fw-bold">
-                                                            <span>Randevu Toplam Fiyatı:</span>
-                                                            <span>₺{{ number_format($apt->total_price, 2, ',', '.') }}</span>
-                                                        </div>
-                                                        <div class="small text-success mt-1">
-                                                            <span>Müşteri: {{ $apt->customer?->full_name }}</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Amount -->
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold text-secondary">Ödenen Tutar (₺)</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text border-0 bg-light">₺</span>
-                                                            <input type="number" step="0.01" min="0.01" name="amount" class="form-control border-0 bg-light rounded-end-3" value="{{ $apt->total_price }}" required>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Paid At & Payment Method -->
-                                                    <div class="row g-3 mb-3">
-                                                        <div class="col-6">
-                                                            <label class="form-label fw-semibold text-secondary">Ödeme Yöntemi</label>
-                                                            <select name="payment_method" class="form-select border-0 bg-light" required>
-                                                                <option value="cash">Nakit (Kasa)</option>
-                                                                <option value="credit_card">Kredi Kartı</option>
-                                                                <option value="bank_transfer">Banka Transferi</option>
-                                                                <option value="online">Online</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <label class="form-label fw-semibold text-secondary">Ödeme Tarihi</label>
-                                                            <input type="date" name="paid_at" class="form-control border-0 bg-light" value="{{ date('Y-m-d') }}" required>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Reference Number -->
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold text-secondary">Referans / İşlem Kodu (İsteğe Bağlı)</label>
-                                                        <input type="text" name="transaction_reference" class="form-control border-0 bg-light" placeholder="Havale referansı, fiş numarası vb...">
-                                                    </div>
-
-                                                    <!-- Completion note -->
-                                                    <div class="mb-2">
-                                                        <label class="form-label fw-semibold text-secondary">İşlem / Randevu Notu (İsteğe Bağlı)</label>
-                                                        <textarea name="note" rows="2" class="form-control border-0 bg-light" placeholder="Randevu tamamlanmasına dair not ekleyin..."></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer border-0 p-4 pt-0">
-                                                    <button type="button" class="btn btn-light rounded-pill px-4 text-secondary" data-bs-dismiss="modal">Vazgeç</button>
-                                                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-bold">Tamamla ve Ödeme Al</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                                 @endforeach
                             </tbody>
                         </table>
@@ -173,4 +106,74 @@
             </div>
         </div>
     </div>
+
+    <!-- Complete with Payment Modals for Awaiting Action Appointments (Outside Table) -->
+    @foreach($awaitingActionAppointments as $apt)
+        <div class="modal fade" id="dashboardCompleteModal{{ $apt->id }}" tabindex="-1" aria-labelledby="dashboardCompleteModalLabel{{ $apt->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered text-start">
+                <div class="modal-content border-0 rounded-4 shadow-lg">
+                    <div class="modal-header border-0 bg-success text-white py-3">
+                        <h5 class="modal-title fw-bold" id="dashboardCompleteModalLabel{{ $apt->id }}">Randevuyu Tamamla & Ödeme Kaydet</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+                    <form action="{{ route('appointments.complete-payment', $apt) }}" method="POST">
+                        @csrf
+                        <div class="modal-body p-4">
+                            <div class="alert alert-success border-0 p-3 rounded-3 mb-3" role="alert">
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Randevu Toplam Fiyatı:</span>
+                                    <span>₺{{ number_format($apt->total_price, 2, ',', '.') }}</span>
+                                </div>
+                                <div class="small text-success mt-1">
+                                    <span>Müşteri: {{ $apt->customer?->full_name }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Amount -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Ödenen Tutar (₺)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-0 bg-light">₺</span>
+                                    <input type="number" step="0.01" min="0.01" name="amount" class="form-control border-0 bg-light rounded-end-3" value="{{ $apt->total_price }}" required>
+                                </div>
+                            </div>
+
+                            <!-- Paid At & Payment Method -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold text-secondary">Ödeme Yöntemi</label>
+                                    <select name="payment_method" class="form-select border-0 bg-light" required>
+                                        <option value="cash">Nakit (Kasa)</option>
+                                        <option value="credit_card">Kredi Kartı</option>
+                                        <option value="bank_transfer">Banka Transferi</option>
+                                        <option value="online">Online</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold text-secondary">Ödeme Tarihi</label>
+                                    <input type="date" name="paid_at" class="form-control border-0 bg-light" value="{{ date('Y-m-d') }}" required>
+                                </div>
+                            </div>
+
+                            <!-- Reference Number -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Referans / İşlem Kodu (İsteğe Bağlı)</label>
+                                <input type="text" name="transaction_reference" class="form-control border-0 bg-light" placeholder="Havale referansı, fiş numarası vb...">
+                            </div>
+
+                            <!-- Completion note -->
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold text-secondary">İşlem / Randevu Notu (İsteğe Bağlı)</label>
+                                <textarea name="note" rows="2" class="form-control border-0 bg-light" placeholder="Randevu tamamlanmasına dair not ekleyin..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 p-4 pt-0">
+                            <button type="button" class="btn btn-light rounded-pill px-4 text-secondary" data-bs-dismiss="modal">Vazgeç</button>
+                            <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-bold">Tamamla ve Ödeme Al</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endif

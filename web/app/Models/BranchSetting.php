@@ -14,6 +14,7 @@ class BranchSetting extends Model
         'currency',
         'loyalty_enabled',
         'review_enabled',
+        'google_review_url',
         'online_payment_enabled',
     ];
 

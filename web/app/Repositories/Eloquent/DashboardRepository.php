@@ -101,7 +101,9 @@ class DashboardRepository implements DashboardRepositoryInterface
                     ->whereMonth('start_at', now()->month);
             }], 'total_price')
             ->withAvg('reviews', 'rating')
+            ->orderByDesc('reviews_avg_rating')
             ->orderByDesc('monthly_revenue')
+            ->orderByDesc('completed_appointments_count')
             ->get()
             ->map(fn ($e) => [
                 'id' => $e->id,

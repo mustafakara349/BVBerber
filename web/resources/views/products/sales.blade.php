@@ -266,9 +266,58 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4" id="saleDetailBody">
-                <div class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status"></div>
-                    <p class="text-muted mt-2">Yükleniyor...</p>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="skeleton-avatar sm"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <div class="skeleton-text w-75 mb-2"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="skeleton-avatar sm"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <div class="skeleton-text w-75 mb-2"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="skeleton-avatar sm"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="skeleton-avatar sm"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <div class="skeleton-text w-50 mb-1"></div>
+                            <div class="skeleton-text w-25"></div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4 border-light">
+                <div class="row g-3">
+                    <div class="col-4 text-center">
+                        <div class="skeleton-card" style="height: 60px;"></div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="skeleton-card" style="height: 60px;"></div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="skeleton-card" style="height: 60px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -468,7 +517,61 @@ document.addEventListener('DOMContentLoaded', () => {
             const saleId = this.dataset.saleId;
             const body = document.getElementById('saleDetailBody');
             const codeEl = document.getElementById('saleDetailCode');
-            body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="text-muted mt-2">Yükleniyor...</p></div>';
+            body.innerHTML = `
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="skeleton-avatar sm"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <div class="skeleton-text w-75 mb-2"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="skeleton-avatar sm"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <div class="skeleton-text w-75 mb-2"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="skeleton-avatar sm"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="skeleton-avatar sm"></div>
+                            <div class="skeleton-text w-50"></div>
+                        </div>
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <div class="skeleton-text w-50 mb-1"></div>
+                            <div class="skeleton-text w-25"></div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4 border-light">
+                <div class="row g-3">
+                    <div class="col-4 text-center">
+                        <div class="skeleton-card" style="height: 60px;"></div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="skeleton-card" style="height: 60px;"></div>
+                    </div>
+                    <div class="col-4 text-center">
+                        <div class="skeleton-card" style="height: 60px;"></div>
+                    </div>
+                </div>
+            `;
             codeEl.textContent = '';
 
             fetch(`/products-sales/${saleId}`, {

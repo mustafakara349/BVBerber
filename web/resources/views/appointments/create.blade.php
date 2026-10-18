@@ -270,7 +270,16 @@
 
                 const previousSelectedTime = startAtInput.value ? startAtInput.value.split('T')[1] : null;
 
-                timeSlotsContainer.innerHTML = '<span class="text-muted small"><i class="ti ti-loader ti-spin me-1"></i>Saatler yükleniyor...</span>';
+                timeSlotsContainer.innerHTML = `
+                    <div class="d-flex flex-wrap gap-2 py-1">
+                        <div class="skeleton-btn sm" style="width: 72px; height: 38px; border-radius: 8px !important;"></div>
+                        <div class="skeleton-btn sm" style="width: 72px; height: 38px; border-radius: 8px !important;"></div>
+                        <div class="skeleton-btn sm" style="width: 72px; height: 38px; border-radius: 8px !important;"></div>
+                        <div class="skeleton-btn sm" style="width: 72px; height: 38px; border-radius: 8px !important;"></div>
+                        <div class="skeleton-btn sm" style="width: 72px; height: 38px; border-radius: 8px !important;"></div>
+                        <div class="skeleton-btn sm" style="width: 72px; height: 38px; border-radius: 8px !important;"></div>
+                    </div>
+                `;
 
                 fetch(`/appointments/available-slots?employee_id=${empId}&date=${date}&duration=${totalDuration}`)
                     .then(res => res.json())

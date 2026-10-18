@@ -39,4 +39,9 @@ return [
         'credentials' => env('FIREBASE_CREDENTIALS_PATH', 'firebase-service-account.json'),
     ],
 
+    // Son çare (fallback) Google yorum linki. Asıl link panelden (Şube Ayarları / Setting) yönetilir.
+    'google' => [
+        'review_url' => env('GOOGLE_REVIEW_URL'),
+    ],
+
 ];

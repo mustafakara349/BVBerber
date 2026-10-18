@@ -14,7 +14,7 @@ use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
  */
 class ReviewObserver implements ShouldHandleEventsAfterCommit
 {
-    private const LOW_RATING_THRESHOLD = 2;
+    private const LOW_RATING_THRESHOLD = 3;
 
     public function __construct(private readonly AdminNotificationService $notifications)
     {

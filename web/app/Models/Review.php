@@ -15,10 +15,13 @@ class Review extends Model
     protected $fillable = [
         'appointment_id', 'customer_id', 'employee_id',
         'rating', 'comment',
+        'prompted_for_google', 'redirected_to_google_at',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
+        'prompted_for_google' => 'boolean',
+        'redirected_to_google_at' => 'datetime',
     ];
 
     public function appointment(): BelongsTo

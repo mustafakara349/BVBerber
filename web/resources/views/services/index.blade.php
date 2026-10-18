@@ -13,6 +13,31 @@
             </a>
         </div>
     </div>
+<div class="row mb-3">
+    <div class="col-12 col-md-8 col-lg-6">
+        <form method="GET" action="{{ route('services.index') }}" class="d-flex gap-2">
+            <div class="input-group bg-white rounded-pill shadow-sm overflow-hidden border flex-grow-1">
+                <span class="input-group-text bg-transparent border-0 pe-1 text-muted">
+                    <i class="ti ti-search fs-5"></i>
+                </span>
+                <input type="text" name="search" class="form-control border-0 ps-1 py-2" placeholder="Hizmet adı ile ara..." value="{{ request('search') }}">
+                @if(request('search') || request('category_id'))
+                    <a href="{{ route('services.index') }}" class="btn btn-link text-muted border-0 d-flex align-items-center text-decoration-none">
+                        <i class="ti ti-x"></i>
+                    </a>
+                @endif
+            </div>
+            @if(isset($categories) && count($categories) > 0)
+                <select name="category_id" class="form-select bg-white rounded-pill shadow-sm border w-auto" onchange="this.form.submit()">
+                    <option value="">Tüm Kategoriler</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                    @endforeach
+                </select>
+            @endif
+            <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm flex-shrink-0">Ara</button>
+        </form>
+    </div>
 </div>
 
 <div class="row">

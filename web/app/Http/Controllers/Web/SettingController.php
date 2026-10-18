@@ -43,7 +43,12 @@ class SettingController extends Controller
             'appointment_interval' => 'required|integer|in:15,30,45,60',
             'cancellation_limit_hours' => 'required|integer|min:0',
             'currency' => 'required|string|max:5',
+            'google_review_url' => ['nullable', 'url:https', 'max:500'],
         ]);
+
+        $validated['google_review_url'] = filled($validated['google_review_url'] ?? null)
+            ? trim($validated['google_review_url'])
+            : null;
 
         $validated['loyalty_enabled'] = $request->has('loyalty_enabled');
         $validated['review_enabled'] = $request->has('review_enabled');

@@ -124,48 +124,108 @@ class MobileApiController extends Controller
 
     /**
      * Create review and rating for a completed appointment.
+     * 4-5 yıldızda (uygunsa) veritabanındaki Google yorum linki istemciye döner.
      */
     public function createReview(Request $request): JsonResponse
     {
         $request->validate([
-            'appointment_id' => 'required|exists:appointments,id',
+            'appointment_id' => 'required|integer|exists:appointments,id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ]);
 
         $user = $request->user();
-        $appointment = \App\Models\Appointment::findOrFail($request->appointment_id);
+        $appointment = \App\Models\Appointment::with('branch.settings')->findOrFail($request->appointment_id);
 
-        if ($appointment->customer_id != $user->id) {
+        if ((string) $appointment->customer_id !== (string) $user->id) {
             return $this->error('Bu randevu size ait değil.', 403);
         }
 
-        $allowedStatuses = [
-            \App\Enums\AppointmentStatus::Completed,
-            \App\Enums\AppointmentStatus::Confirmed,
-        ];
-
-        if (!in_array($appointment->status, $allowedStatuses)) {
+        if ($appointment->status !== \App\Enums\AppointmentStatus::Completed) {
             return $this->error('Sadece tamamlanmış randevular için yorum yapabilirsiniz.', 400);
         }
 
-        if ($appointment->status === \App\Enums\AppointmentStatus::Confirmed && $appointment->start_at->isFuture()) {
-            return $this->error('Henüz gerçekleşmemiş randevular için yorum yapamazsınız.', 400);
-        }
-
         if ($appointment->review()->exists()) {
-            return $this->error('Bu randevu için zaten yorum yapılmış.', 400);
+            return $this->error('Bu randevu için zaten yorum yapılmış.', 409);
         }
 
-        $review = \App\Models\Review::create([
-            'appointment_id' => $appointment->id,
-            'customer_id' => $user->id,
-            'employee_id' => $appointment->employee_id,
-            'rating' => $request->rating,
-            'comment' => $request->comment,
+        $comment = $request->filled('comment') ? trim(strip_tags($request->comment)) : null;
+        $comment = ($comment === '') ? null : $comment;
+        $rating = (int) $request->rating;
+
+        try {
+            $review = \App\Models\Review::create([
+                'appointment_id' => $appointment->id,
+                'customer_id' => $user->id,
+                'employee_id' => $appointment->employee_id,
+                'rating' => $rating,
+                'comment' => $comment,
+            ]);
+        } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+            return $this->error('Bu randevu için zaten yorum yapılmış.', 409);
+        }
+
+        $googleUrl = null;
+        if ($rating >= 4 && ! $this->isInGoogleCooldown($user)) {
+            $googleUrl = $this->resolveGoogleReviewUrl($appointment);
+        }
+
+        $shouldPrompt = $googleUrl !== null;
+
+        return $this->success([
+            'id' => $review->id,
+            'review_id' => $review->id,
+            'rating' => $rating,
+            'should_prompt_google' => $shouldPrompt,
+            'google_review_url' => $googleUrl,
+        ], $rating <= 3
+            ? 'Geri bildiriminiz için teşekkürler. Notunuz işletme yöneticimize iletildi.'
+            : 'Yorumunuz başarıyla kaydedildi.');
+    }
+
+    /**
+     * Müşteri Google yorum butonuna bastığında çağrılır; tekrar yönlendirme (cooldown) kaydı tutulur.
+     */
+    public function trackGoogleClick(Request $request, int $review): JsonResponse
+    {
+        $user = $request->user();
+
+        $reviewModel = \App\Models\Review::where('id', $review)
+            ->where('customer_id', $user->id)
+            ->firstOrFail();
+
+        $reviewModel->update([
+            'prompted_for_google' => true,
+            'redirected_to_google_at' => now(),
         ]);
 
-        return $this->success($review, 'Yorumunuz başarıyla kaydedildi.');
+        $user->forceFill(['last_google_redirect_at' => now()])->save();
+
+        return $this->success(null, 'Google yönlendirmesi kaydedildi.');
+    }
+
+    private function isInGoogleCooldown($user): bool
+    {
+        return $user->last_google_redirect_at !== null
+            && $user->last_google_redirect_at->gt(now()->subDays(90));
+    }
+
+    /**
+     * Link önceliği: şube ayarı → genel ayar (settings) → config fallback. Sadece https kabul edilir.
+     */
+    private function resolveGoogleReviewUrl(\App\Models\Appointment $appointment): ?string
+    {
+        $url = $appointment->branch?->settings?->google_review_url
+            ?: \App\Models\Setting::getValue('google_review_url')
+            ?: config('services.google.review_url');
+
+        $url = is_string($url) ? trim($url) : null;
+
+        if (! $url || ! str_starts_with(strtolower($url), 'https://') || ! filter_var($url, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        return $url;
     }
 
     public function availableSlots(Request $request, int|string $barberId): JsonResponse
