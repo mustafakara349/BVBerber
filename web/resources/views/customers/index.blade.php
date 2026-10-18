@@ -13,6 +13,23 @@
             </a>
         </div>
     </div>
+<div class="row mb-3">
+    <div class="col-12 col-md-6 col-lg-4">
+        <form method="GET" action="{{ route('customers.index') }}" class="d-flex gap-2">
+            <div class="input-group bg-white rounded-pill shadow-sm overflow-hidden border">
+                <span class="input-group-text bg-transparent border-0 pe-1 text-muted">
+                    <i class="ti ti-search fs-5"></i>
+                </span>
+                <input type="text" name="search" class="form-control border-0 ps-1 py-2" placeholder="İsim, e-posta veya telefon ile ara..." value="{{ request('search') }}">
+                @if(request('search'))
+                    <a href="{{ route('customers.index') }}" class="btn btn-link text-muted border-0 d-flex align-items-center text-decoration-none">
+                        <i class="ti ti-x"></i>
+                    </a>
+                @endif
+            </div>
+            <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm flex-shrink-0">Ara</button>
+        </form>
+    </div>
 </div>
 
 <div class="row">

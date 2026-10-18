@@ -34,7 +34,7 @@
                         </thead>
                         <tbody>
                             @forelse($counts as $count)
-                            <tr class="border-bottom border-light" style="cursor:pointer;" onclick="window.location='{{ route('stock-counts.show', $count) }}'" title="Detayı Gör">
+                            <tr class="border-bottom border-light" style="cursor:pointer;" data-href="{{ route('stock-counts.show', $count) }}" title="Detayı Gör">
                                 <td class="ps-4 py-3">
                                     <div class="fw-bold text-dark">{{ \Carbon\Carbon::parse($count->count_date)->format('d.m.Y') }}</div>
                                 </td>

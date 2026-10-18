@@ -28,6 +28,10 @@ struct Appointment: Identifiable, Codable {
 
     var reminderSent: Bool?     // Cloud Function CRON tarafından true yapılır
 
+    var isReviewed: Bool?       // Backend: randevu için değerlendirme yapılmış mı
+    var rating: Int?            // Verilen puan (1-5)
+    var reviewComment: String?  // Müşterinin yazdığı yorum metni
+
     var createdAt: Date?
     var updatedAt: Date?
 
@@ -36,6 +40,9 @@ struct Appointment: Identifiable, Codable {
     var isActive: Bool     { status == "active" || status == "confirmed" || status == "pending" || status == "in_progress" }
     var isCancelled: Bool  { status == "cancelled" || status == "rejected" }
     var isCompleted: Bool  { status == "completed" || status == "no_show" }
+
+    /// Yalnızca tamamlanmış ve henüz değerlendirilmemiş randevular değerlendirilebilir.
+    var canReview: Bool    { status == "completed" && !(isReviewed ?? false) && id != nil }
 
     // MARK: - Upcoming Check
     /// Gün + saat + dakika bazında karşılaştırma yapar.

@@ -13,24 +13,44 @@ return new class extends Migration
     {
         // 1. reviews tablosu
         Schema::table('reviews', function (Blueprint $table) {
-            $table->unique('appointment_id', 'uniq_reviews_appointment_id');
-            $table->boolean('prompted_for_google')->default(false)->after('rating');
-            $table->timestamp('redirected_to_google_at')->nullable()->after('prompted_for_google');
+            if (!Schema::hasColumn('reviews', 'prompted_for_google')) {
+                $table->boolean('prompted_for_google')->default(false)->after('rating');
+            }
+            if (!Schema::hasColumn('reviews', 'redirected_to_google_at')) {
+                $table->timestamp('redirected_to_google_at')->nullable()->after('prompted_for_google');
+            }
         });
+
+        try {
+            Schema::table('reviews', function (Blueprint $table) {
+                $table->unique('appointment_id', 'uniq_reviews_appointment_id');
+            });
+        } catch (\Throwable) {
+            // Index already exists
+        }
 
         // 2. appointments tablosu
-        Schema::table('appointments', function (Blueprint $table) {
-            $table->timestamp('review_reminder_sent_at')->nullable()->after('status');
-        });
+        if (!Schema::hasColumn('appointments', 'review_reminder_sent_at')) {
+            Schema::table('appointments', function (Blueprint $table) {
+                $table->timestamp('review_reminder_sent_at')->nullable()->after('status');
+            });
+        }
 
         // 3. users tablosu
-        Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('last_google_redirect_at')->nullable()->after('remember_token');
-        });
+        if (!Schema::hasColumn('users', 'last_google_redirect_at')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->timestamp('last_google_redirect_at')->nullable()->after('remember_token');
+            });
+        }
 
         // 4. branch_settings tablosu
         Schema::table('branch_settings', function (Blueprint $table) {
-            $table->string('google_place_id')->nullable()->after('review_enabled');
+            if (!Schema::hasColumn('branch_settings', 'google_place_id')) {
+                $table->string('google_place_id')->nullable()->after('review_enabled');
+            }
+            if (!Schema::hasColumn('branch_settings', 'google_review_url')) {
+                $table->string('google_review_url', 500)->nullable()->after('review_enabled');
+            }
         });
     }
 
@@ -40,20 +60,41 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('branch_settings', function (Blueprint $table) {
-            $table->dropColumn('google_place_id');
+            if (Schema::hasColumn('branch_settings', 'google_place_id')) {
+                $table->dropColumn('google_place_id');
+            }
+            if (Schema::hasColumn('branch_settings', 'google_review_url')) {
+                $table->dropColumn('google_review_url');
+            }
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('last_google_redirect_at');
+            if (Schema::hasColumn('users', 'last_google_redirect_at')) {
+                $table->dropColumn('last_google_redirect_at');
+            }
         });
 
         Schema::table('appointments', function (Blueprint $table) {
-            $table->dropColumn('review_reminder_sent_at');
+            if (Schema::hasColumn('appointments', 'review_reminder_sent_at')) {
+                $table->dropColumn('review_reminder_sent_at');
+            }
         });
 
         Schema::table('reviews', function (Blueprint $table) {
-            $table->dropUnique('uniq_reviews_appointment_id');
-            $table->dropColumn(['prompted_for_google', 'redirected_to_google_at']);
+            try {
+                $table->dropUnique('uniq_reviews_appointment_id');
+            } catch (\Throwable) {}
+
+            $dropCols = [];
+            if (Schema::hasColumn('reviews', 'prompted_for_google')) {
+                $dropCols[] = 'prompted_for_google';
+            }
+            if (Schema::hasColumn('reviews', 'redirected_to_google_at')) {
+                $dropCols[] = 'redirected_to_google_at';
+            }
+            if (!empty($dropCols)) {
+                $table->dropColumn($dropCols);
+            }
         });
     }
 };

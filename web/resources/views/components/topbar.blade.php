@@ -29,8 +29,19 @@
                     </div>
                     <div class="py-1" style="max-height: 320px; overflow-y: auto;">
                         <ul class="list-unstyled p-0 m-0" id="notificationList">
-                            <li class="px-4 py-4 text-center text-muted small" data-placeholder>
-                                <i class="ti ti-loader-2 me-1"></i> Yükleniyor...
+                            <li class="px-4 py-3 border-bottom d-flex align-items-center gap-3" data-placeholder>
+                                <div class="skeleton-avatar sm"></div>
+                                <div class="flex-grow-1">
+                                    <div class="skeleton-text w-75 mb-1"></div>
+                                    <div class="skeleton-text w-50"></div>
+                                </div>
+                            </li>
+                            <li class="px-4 py-3 d-flex align-items-center gap-3" data-placeholder>
+                                <div class="skeleton-avatar sm"></div>
+                                <div class="flex-grow-1">
+                                    <div class="skeleton-text w-50 mb-1"></div>
+                                    <div class="skeleton-text w-25"></div>
+                                </div>
                             </li>
                         </ul>
                     </div>

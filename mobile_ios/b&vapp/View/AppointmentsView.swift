@@ -115,7 +115,10 @@ struct AppointmentsView: View {
                             ScrollView {
                                 VStack(spacing: 20) {
                                     ForEach(viewModel.pastAppointments) { appointment in
-                                        PastAppointmentCardView(appointment: appointment)
+                                        PastAppointmentCardView(
+                                            appointment: appointment,
+                                            onReview: { viewModel.appointmentToReview = $0 }
+                                        )
                                     }
                                 }
                                 .padding()
@@ -141,6 +144,11 @@ struct AppointmentsView: View {
                 }
             } message: {
                 Text("Randevunuz iptal edilecektir. Onaylıyor musunuz?")
+            }
+            .sheet(item: $viewModel.appointmentToReview) { appointment in
+                ReviewSheetView(appointment: appointment) { rating, comment in
+                    viewModel.markAsReviewed(appointmentId: appointment.id, rating: rating, comment: comment)
+                }
             }
         }
         .task {

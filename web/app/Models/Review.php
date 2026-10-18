@@ -13,8 +13,13 @@ class Review extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'appointment_id', 'customer_id', 'employee_id',
-        'rating', 'comment', 'prompted_for_google', 'redirected_to_google_at',
+        'appointment_id',
+        'customer_id',
+        'employee_id',
+        'rating',
+        'comment',
+        'prompted_for_google',
+        'redirected_to_google_at',
     ];
 
     protected $casts = [

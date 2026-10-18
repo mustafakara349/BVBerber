@@ -124,95 +124,127 @@ class MobileApiController extends Controller
 
     /**
      * Create review and rating for a completed appointment.
+     * 4-5 yıldızda (uygunsa) veritabanındaki Google yorum linki istemciye döner.
      */
     public function createReview(Request $request): JsonResponse
     {
         $request->validate([
-            'appointment_id' => 'required|exists:appointments,id',
+            'appointment_id' => 'required|integer|exists:appointments,id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ]);
 
         $user = $request->user();
-        $appointment = \App\Models\Appointment::with(['branch.settings'])->findOrFail($request->appointment_id);
+        $appointment = \App\Models\Appointment::with('branch.settings')->findOrFail($request->appointment_id);
 
-        if ((int)$appointment->customer_id !== (int)$user->id) {
+        if ((int) $appointment->customer_id !== (int) $user->id) {
             return $this->error('Bu randevu size ait değil.', 403);
         }
 
-        $allowedStatuses = [
-            \App\Enums\AppointmentStatus::Completed,
-            \App\Enums\AppointmentStatus::Confirmed,
-        ];
-
-        if (!in_array($appointment->status, $allowedStatuses)) {
+        if ($appointment->status !== \App\Enums\AppointmentStatus::Completed) {
             return $this->error('Sadece tamamlanmış randevular için yorum yapabilirsiniz.', 400);
-        }
-
-        if ($appointment->status === \App\Enums\AppointmentStatus::Confirmed && $appointment->start_at->isFuture()) {
-            return $this->error('Henüz gerçekleşmemiş randevular için yorum yapamazsınız.', 400);
         }
 
         if ($appointment->review()->exists() || \App\Models\Review::where('appointment_id', $appointment->id)->exists()) {
             return $this->error('Bu randevu için zaten yorum yapılmış.', 409);
         }
 
-        $comment = $request->filled('comment') ? strip_tags(trim($request->comment)) : null;
+        $comment = $request->filled('comment') ? trim(strip_tags($request->comment)) : null;
+        $comment = ($comment === '') ? null : $comment;
+        $rating = (int) $request->rating;
 
-        $review = \App\Models\Review::create([
-            'appointment_id' => $appointment->id,
-            'customer_id' => $user->id,
-            'employee_id' => $appointment->employee_id,
-            'rating' => (int)$request->rating,
-            'comment' => $comment,
-            'prompted_for_google' => false,
-        ]);
-
-        $rating = (int)$review->rating;
-        $shouldPromptGoogle = false;
-        $googleReviewUrl = null;
-
-        if ($rating >= 4) {
-            $isCooldown = $user->last_google_redirect_at && $user->last_google_redirect_at->gt(now()->subDays(90));
-            $placeId = $appointment->branch?->settings?->google_place_id ?: config('services.google.place_id');
-
-            if ($placeId && !$isCooldown) {
-                $shouldPromptGoogle = true;
-                $baseUrl = config('services.google.review_base_url', 'https://search.google.com/local/writereview?placeid=');
-                $googleReviewUrl = $baseUrl . $placeId;
-            }
+        try {
+            $review = \App\Models\Review::create([
+                'appointment_id' => $appointment->id,
+                'customer_id' => $user->id,
+                'employee_id' => $appointment->employee_id,
+                'rating' => $rating,
+                'comment' => $comment,
+                'prompted_for_google' => false,
+            ]);
+        } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+            return $this->error('Bu randevu için zaten yorum yapılmış.', 409);
         }
 
+        $googleUrl = null;
+        if ($rating >= 4 && ! $this->isInGoogleCooldown($user)) {
+            $googleUrl = $this->resolveGoogleReviewUrl($appointment);
+        }
+
+        $shouldPrompt = $googleUrl !== null;
+
         return $this->success([
+            'id' => $review->id,
             'review_id' => $review->id,
             'rating' => $rating,
-            'should_prompt_google' => $shouldPromptGoogle,
-            'google_review_url' => $googleReviewUrl,
-        ], $rating >= 4 
-            ? 'Değerlendirmeniz başarıyla kaydedildi.' 
+            'should_prompt_google' => $shouldPrompt,
+            'google_review_url' => $googleUrl,
+        ], $rating >= 4
+            ? 'Değerlendirmeniz başarıyla kaydedildi.'
             : 'Geri bildiriminiz için teşekkürler. Notunuz işletme yöneticimize iletildi.');
     }
 
     /**
-     * Track when user clicks to write a Google review.
+     * Müşteri Google yorum butonuna bastığında çağrılır; tekrar yönlendirme (cooldown) kaydı tutulur.
      */
-    public function trackGoogleReviewClick(Request $request, int|string $id): JsonResponse
+    public function trackGoogleClick(Request $request, int|string $review): JsonResponse
     {
         $user = $request->user();
-        $review = \App\Models\Review::where('id', $id)
+
+        $reviewModel = \App\Models\Review::where('id', (int) $review)
             ->where('customer_id', $user->id)
             ->firstOrFail();
 
-        $review->update([
-            'redirected_to_google_at' => now(),
+        $reviewModel->update([
             'prompted_for_google' => true,
+            'redirected_to_google_at' => now(),
         ]);
 
-        $user->update([
-            'last_google_redirect_at' => now(),
-        ]);
+        $user->forceFill(['last_google_redirect_at' => now()])->save();
 
         return $this->success(null, 'Google yönlendirmesi kaydedildi.');
+    }
+
+    /**
+     * Alias for mobile backward compatibility.
+     */
+    public function trackGoogleReviewClick(Request $request, int|string $id): JsonResponse
+    {
+        return $this->trackGoogleClick($request, $id);
+    }
+
+    private function isInGoogleCooldown($user): bool
+    {
+        return $user->last_google_redirect_at !== null
+            && $user->last_google_redirect_at->gt(now()->subDays(90));
+    }
+
+    /**
+     * Link önceliği: şube google_review_url → şube google_place_id → genel ayar (settings) → config fallback.
+     */
+    private function resolveGoogleReviewUrl(\App\Models\Appointment $appointment): ?string
+    {
+        $settings = $appointment->branch?->settings;
+
+        if ($settings?->google_review_url) {
+            $url = trim($settings->google_review_url);
+            if (str_starts_with(strtolower($url), 'https://') && filter_var($url, FILTER_VALIDATE_URL)) {
+                return $url;
+            }
+        }
+
+        $placeId = $settings?->google_place_id ?: config('services.google.place_id');
+        if ($placeId) {
+            $baseUrl = config('services.google.review_base_url', 'https://search.google.com/local/writereview?placeid=');
+            return $baseUrl . $placeId;
+        }
+
+        $generalUrl = \App\Models\Setting::getValue('google_review_url') ?: config('services.google.review_url');
+        if ($generalUrl && str_starts_with(strtolower($generalUrl), 'https://') && filter_var($generalUrl, FILTER_VALIDATE_URL)) {
+            return trim($generalUrl);
+        }
+
+        return null;
     }
 
     public function availableSlots(Request $request, int|string $barberId): JsonResponse

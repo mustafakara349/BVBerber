@@ -32,6 +32,7 @@ class AppointmentResource extends JsonResource
             'no_show' => $this->no_show,
             'is_reviewed' => $this->review()->exists(),
             'rating' => $this->review?->rating,
+            'review_comment' => $this->review?->comment,
             'ical_url' => $request->schemeAndHttpHost() . '/api/v1/mobile/appointments/' . $this->id . '/ical?signature=' . hash_hmac('sha256', $this->id, config('app.key')),
             'customer' => $this->whenLoaded('customer', fn () => new UserResource($this->customer)),
             'employee' => $this->whenLoaded('employee', fn () => new EmployeeResource($this->employee)),

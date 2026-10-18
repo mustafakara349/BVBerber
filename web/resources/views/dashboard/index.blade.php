@@ -486,9 +486,20 @@
             const btnApplyStatsFilter = document.getElementById('btnApplyStatsFilter');
 
             function fetchAppointmentStats(period, startDate = '', endDate = '') {
+                const statIds = ['stat_total', 'stat_cancelled', 'stat_no_show', 'stat_cancellation_rate', 'stat_avg_spending'];
+                statIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('skeleton-shimmer');
+                });
+
                 fetch(`{{ route('dashboard.appointment-stats') }}?period=${period}&start_date=${startDate}&end_date=${endDate}`)
                     .then(response => response.json())
                     .then(data => {
+                        statIds.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.classList.remove('skeleton-shimmer');
+                        });
+
                         document.getElementById('stat_total').textContent = data.total;
                         document.getElementById('stat_cancelled').textContent = data.cancelled;
                         document.getElementById('stat_no_show').textContent = data.no_show;
@@ -500,6 +511,10 @@
                         document.getElementById('stat_avg_spending').textContent = '₺' + Number(data.avg_spending).toLocaleString('tr-TR', { maximumFractionDigits: 0 });
                     })
                     .catch(err => {
+                        statIds.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.classList.remove('skeleton-shimmer');
+                        });
                         console.error("Error fetching stats:", err);
                     });
             }
@@ -531,6 +546,30 @@
             const topServicesList = document.getElementById('topServicesList');
 
             function fetchTopServices(period) {
+                topServicesList.innerHTML = `
+                    <li class="list-group-item d-flex align-items-center gap-3">
+                        <div class="skeleton-icon sm"></div>
+                        <div class="flex-grow-1">
+                            <div class="skeleton-text sm w-75 mb-1"></div>
+                            <div class="skeleton-text xs w-50 mb-0"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center gap-3">
+                        <div class="skeleton-icon sm"></div>
+                        <div class="flex-grow-1">
+                            <div class="skeleton-text sm w-50 mb-1"></div>
+                            <div class="skeleton-text xs w-25 mb-0"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center gap-3">
+                        <div class="skeleton-icon sm"></div>
+                        <div class="flex-grow-1">
+                            <div class="skeleton-text sm w-60 mb-1"></div>
+                            <div class="skeleton-text xs w-40 mb-0"></div>
+                        </div>
+                    </li>
+                `;
+
                 fetch(`{{ route('dashboard.top-services') }}?period=${period}`)
                     .then(response => response.json())
                     .then(data => {
@@ -579,6 +618,8 @@
 
             async function refreshDashboardLiveSections() {
                 if (isRefreshingLive) return;
+                // Kullanıcı herhangi bir modal açıkken DOM'un üzerine yazılmasını engelle
+                if (document.querySelector('.modal.show')) return;
                 isRefreshingLive = true;
 
                 try {

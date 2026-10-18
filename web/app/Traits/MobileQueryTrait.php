@@ -186,6 +186,7 @@ trait MobileQueryTrait
                         'status' => $appt->status->value,
                         'isReviewed' => $appt->review !== null,
                         'rating' => $appt->review ? (int)$appt->review->rating : null,
+                        'reviewComment' => $appt->review?->comment,
                         'rewardType' => $rewardType,
                         'rewardName' => $rewardName,
                         'icalUrl' => $request->schemeAndHttpHost() . '/api/v1/mobile/appointments/' . $appt->id . '/ical?signature=' . hash_hmac('sha256', $appt->id, config('app.key')),

@@ -47,6 +47,7 @@ class Appointment extends Model
             'cancelled_at' => 'datetime',
             'completed_at' => 'datetime',
             'checked_in_at' => 'datetime',
+            'review_reminder_sent_at' => 'datetime',
             'no_show' => 'boolean',
             'reminder_sent' => 'boolean',
             'review_reminder_sent_at' => 'datetime',

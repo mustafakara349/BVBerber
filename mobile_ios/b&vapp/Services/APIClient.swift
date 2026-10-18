@@ -23,6 +23,21 @@ struct APIResponseError: Codable {
 
 struct EmptyResponse: Codable {}
 
+/// POST /reviews yanıtı
+struct ReviewSubmissionResult: Codable {
+    let reviewId: Int
+    let rating: Int
+    let shouldPromptGoogle: Bool
+    let googleReviewUrl: String?
+
+    enum CodingKeys: String, CodingKey {
+        case reviewId = "review_id"
+        case rating
+        case shouldPromptGoogle = "should_prompt_google"
+        case googleReviewUrl = "google_review_url"
+    }
+}
+
 // MARK: - APIClient
 
 class APIClient {
@@ -277,6 +292,33 @@ class APIClient {
     func postData(to endpoint: String, data: [String: Any]) async throws -> EmptyResponse {
         let jsonData = try JSONSerialization.data(withJSONObject: data)
         return try await sendRequest(path: "/\(endpoint)", method: "POST", body: jsonData)
+    }
+
+    // MARK: - Reviews
+
+    /// Randevu değerlendirmesi gönderir. 4-5 yıldızda sunucu Google yorum linkini de döner.
+    func submitReview(appointmentId: String, rating: Int, comment: String?) async throws -> ReviewSubmissionResult {
+        let idValue: Any
+        if let numericId = Int(appointmentId) {
+            idValue = numericId
+        } else {
+            idValue = appointmentId
+        }
+        var payload: [String: Any] = [
+            "appointment_id": idValue,
+            "rating": rating
+        ]
+        if let comment = comment?.trimmingCharacters(in: .whitespacesAndNewlines), !comment.isEmpty {
+            payload["comment"] = comment
+        }
+
+        let jsonData = try JSONSerialization.data(withJSONObject: payload)
+        return try await sendRequest(path: "/reviews", method: "POST", body: jsonData)
+    }
+
+    /// Müşteri Google butonuna bastığında sunucuya bildirir (sessiz; hata kullanıcıya yansıtılmaz).
+    func trackGoogleReviewClick(reviewId: Int) async {
+        let _: EmptyResponse? = try? await sendRequest(path: "/reviews/\(reviewId)/google-clicked", method: "POST")
     }
 
     // MARK: - Available Slots

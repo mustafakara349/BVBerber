@@ -143,6 +143,17 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Google Haritalar Değerlendirme Linki -->
+                            <h6 class="fw-bold mb-3 text-secondary text-uppercase small border-top pt-4">Google Haritalar Yönlendirmesi</h6>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-secondary" for="google_review_url">Google Değerlendirme Linki</label>
+                                <input type="url" name="google_review_url" id="google_review_url" maxlength="500" class="form-control border-0 bg-light rounded-3 py-2.5 px-3 @error('google_review_url') is-invalid @enderror" value="{{ old('google_review_url', $branchSetting->google_review_url ?? '') }}" placeholder="https://g.page/r/.../review">
+                                @error('google_review_url')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text small text-muted">4 ve 5 yıldız veren müşteriler bu linke yönlendirilir. Link değişirse buradan güncelleyin; boş bırakılırsa Google yönlendirmesi yapılmaz.</div>
+                            </div>
                             
                             <div class="d-flex justify-content-end border-top pt-4">
                                 <button type="submit" class="btn btn-primary rounded-pill px-4 fw-semibold">
