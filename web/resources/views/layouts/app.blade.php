@@ -23,21 +23,21 @@
     <main id="content" class="content py-10 skeleton-content-fade">
         <div class="container-fluid">
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="alert alert-success alert-dismissible fade show page-animate-fade-up mb-4" role="alert">
                     {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show page-animate-fade-up mb-4" role="alert">
                     {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
             @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show page-animate-fade-up mb-4" role="alert">
                     <ul class="mb-0">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -47,7 +47,9 @@
                 </div>
             @endif
 
-            @yield('content')
+            <div class="page-body-animate">
+                @yield('content')
+            </div>
 
             <div class="row">
                 <div class="col-12">
