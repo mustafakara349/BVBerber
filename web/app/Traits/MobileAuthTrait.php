@@ -302,6 +302,10 @@ trait MobileAuthTrait
                 default => \App\Enums\DeviceType::Android,
             };
 
+            // Güvenlik ve Gizlilik: Bu cihaz daha önce başka bir kullanıcıya ait idiyse,
+            // o kullanıcının bildirimlerinin bu cihaza düşmemesi için eski kaydı temizle
+            Device::where('push_token', $token)->where('user_id', '!=', $user->id)->delete();
+
             $user->devices()->updateOrCreate(
                 ['push_token' => $token],
                 [

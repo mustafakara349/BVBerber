@@ -2,21 +2,11 @@
 @section('title', 'Sayım Detayı - B&V Barber')
 @section('content')
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Sayım Detayı</h1>
-                <p class="text-muted mb-0">Geçmiş tarihli stok sayım sonuçlarını inceleyin.</p>
-            </div>
-            <div>
-                <a href="{{ route('stock-counts.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
-                    Geri Dön
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Sayım Detayı" description="Geçmiş tarihli stok sayım sonuçlarını inceleyin.">
+    <x-btn-outline href="{{ route('stock-counts.index') }}" icon="ti ti-arrow-left">
+        Sayımlara Dön
+    </x-btn-outline>
+</x-page-header>
 
 <div class="row">
     <div class="col-md-4 mb-4">

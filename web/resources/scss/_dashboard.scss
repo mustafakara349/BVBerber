@@ -1,0 +1,420 @@
+// ============================================================================
+// B&V Barber Dashboard Premium Modern Design Tokens & Components
+// ============================================================================
+
+// Base Dashboard Card
+.db-card {
+    background: #ffffff;
+    border: 1px solid #eef2f6;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.02), 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    .card-header {
+        background: transparent;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 1.15rem 1.4rem;
+    }
+
+    .card-body {
+        padding: 1.35rem 1.4rem;
+    }
+}
+
+// Top Stat Metric Cards (Revenue Widgets)
+.db-stat-card {
+    background: #ffffff;
+    border: 1px solid #eef2f6;
+    border-radius: 16px;
+    padding: 1.25rem 1.35rem;
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.02), 0 4px 14px -2px rgba(15, 23, 42, 0.03);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.08);
+        border-color: #e2e8f0;
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: transparent;
+        transition: background 0.2s ease;
+    }
+
+    &.db-stat-primary::before { background: linear-gradient(90deg, #E66239, #f97316); }
+    &.db-stat-success::before { background: linear-gradient(90deg, #00C951, #10b981); }
+    &.db-stat-danger::before  { background: linear-gradient(90deg, #FB2C36, #f43f5e); }
+    &.db-stat-warning::before { background: linear-gradient(90deg, #F0B100, #eab308); }
+
+    .db-stat-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        transition: transform 0.2s ease;
+
+        &.icon-primary { background: rgba(230, 98, 57, 0.1); color: #E66239; }
+        &.icon-success { background: rgba(0, 201, 81, 0.1); color: #00C951; }
+        &.icon-danger  { background: rgba(251, 44, 54, 0.1); color: #FB2C36; }
+        &.icon-warning { background: rgba(240, 177, 0, 0.12); color: #d99b00; }
+    }
+
+    &:hover .db-stat-icon {
+        transform: scale(1.05);
+    }
+
+    .db-stat-title {
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+        margin-bottom: 0.35rem;
+    }
+
+    .db-stat-value {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.15;
+        font-feature-settings: 'tnum';
+        letter-spacing: -0.025em;
+        margin-bottom: 0.25rem;
+    }
+
+    .db-stat-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.2rem 0.55rem;
+        border-radius: 50rem;
+    }
+}
+
+// Financial Summary Cards (Aylık Kâr, Gelir, Gider)
+.db-finance-card {
+    background: #ffffff;
+    border: 1px solid #eef2f6;
+    border-radius: 16px;
+    padding: 1.35rem 1.4rem;
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.02), 0 4px 14px -2px rgba(15, 23, 42, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.07);
+    }
+
+    .db-finance-icon {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .db-finance-value {
+        font-size: 1.65rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.15;
+        font-feature-settings: 'tnum';
+        letter-spacing: -0.025em;
+    }
+
+    .db-finance-label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #64748b;
+    }
+
+    .db-finance-btn {
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.3rem 0.85rem;
+        border-radius: 50rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #E66239;
+        transition: all 0.15s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+
+        &:hover {
+            background: #E66239;
+            color: #ffffff;
+            border-color: #E66239;
+            transform: translateX(1px);
+        }
+    }
+}
+
+// Gender Breakdown Card
+.db-distribution-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.85rem 0.6rem;
+    text-align: center;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+}
+
+// Modern List Group for Dashboard (Top Barbers, Top Services, Stats)
+.db-list-group {
+    .list-group-item {
+        padding: 0.9rem 1.35rem;
+        border-color: #f1f5f9;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background-color: #f8fafc;
+        }
+
+        &:first-child {
+            border-top: none;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+}
+
+// Modern Table Cards for Dashboard (Pending, Awaiting, Today)
+.db-table-card {
+    border: 1px solid #eef2f6;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.02), 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+
+    .card-header {
+        padding: 1.1rem 1.4rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+
+        th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.85rem 1rem;
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+    }
+}
+
+// Time Badge Tag
+.db-time-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: -0.01em;
+    font-feature-settings: 'tnum';
+    transition: all 0.2s ease;
+
+    &.db-time-primary,
+    &.db-time-dark {
+        background: rgba(230, 98, 57, 0.1);
+        color: #E66239;
+        border: 1px solid rgba(230, 98, 57, 0.2);
+    }
+
+    &.db-time-past {
+        background: #f1f5f9;
+        color: #94a3b8;
+        border: 1px solid #e2e8f0;
+    }
+}
+
+// Period Segmented Control Pill
+.db-period-pills {
+    background: #f1f5f9;
+    border-radius: 50rem;
+    padding: 3px;
+    display: inline-flex;
+
+    .btn-period {
+        font-size: 0.78rem;
+        font-weight: 600;
+        border-radius: 50rem;
+        padding: 0.3rem 0.95rem;
+        border: none;
+        color: #64748b;
+        background: transparent;
+        transition: all 0.2s ease;
+
+        &:hover {
+            color: #0f172a;
+        }
+
+        &.active {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        }
+    }
+}
+
+// Status Pill Badges
+.db-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.35rem 0.85rem;
+    border-radius: 50rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+// ============================================================================
+// Soft Entrance Animations & Micro-interactions
+// ============================================================================
+
+@keyframes dbFadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dbFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.db-animate-fade-up {
+    animation: dbFadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.db-animate-fade {
+    animation: dbFadeIn 0.4s ease both;
+}
+
+// Stagger Delay Utility Classes
+.db-delay-1 { animation-delay: 0.05s; }
+.db-delay-2 { animation-delay: 0.10s; }
+.db-delay-3 { animation-delay: 0.16s; }
+.db-delay-4 { animation-delay: 0.22s; }
+.db-delay-5 { animation-delay: 0.28s; }
+.db-delay-6 { animation-delay: 0.34s; }
+
+// Stagger Grid Container - auto staggers immediate column children
+.db-stagger-grid > * {
+    animation: dbFadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+    @for $i from 1 through 8 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 0.05}s;
+        }
+    }
+}
+
+// Stagger Grid with Base Delays for Subsequent Rows
+.db-stagger-grid.db-stagger-delay-2 > * {
+    @for $i from 1 through 8 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{0.10 + ($i * 0.05)}s;
+        }
+    }
+}
+
+.db-stagger-grid.db-stagger-delay-3 > * {
+    @for $i from 1 through 8 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{0.18 + ($i * 0.05)}s;
+        }
+    }
+}
+
+.db-stagger-grid.db-stagger-delay-4 > * {
+    @for $i from 1 through 8 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{0.26 + ($i * 0.05)}s;
+        }
+    }
+}
+
+// Micro-interactions for Cards & Elements
+.db-card, .db-stat-card, .db-finance-card, .db-table-card {
+    will-change: transform, box-shadow;
+}
+
+.db-finance-card {
+    .db-finance-btn i {
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    &:hover .db-finance-btn i {
+        transform: translateX(3px);
+    }
+}
+
+.db-table-card {
+    tbody tr {
+        transition: background-color 0.18s ease;
+    }
+}
+
+// Accessibility: Respect reduced motion
+@media (prefers-reduced-motion: reduce) {
+    .db-animate-fade-up,
+    .db-animate-fade,
+    .db-stagger-grid > * {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}

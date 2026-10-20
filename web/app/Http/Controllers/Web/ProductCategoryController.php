@@ -13,10 +13,16 @@ class ProductCategoryController extends Controller
      * Ayrıca ProductController::index() içindeki $categories değişkenine veri sağlar.
      * Bu endpoint artık kullanılmasa da çakışma olmaması için kaldırılmıyor.
      */
-    public function index()
+    public function index(Request $request)
     {
         $branchId   = session('active_branch_id', 1);
         $categories = ProductCategory::forBranch($branchId)
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            })
+            ->when($request->filled('status'), function ($q) use ($request) {
+                $q->where('is_active', $request->status === 'active' ? 1 : 0);
+            })
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();

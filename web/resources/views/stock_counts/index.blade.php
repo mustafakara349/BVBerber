@@ -2,18 +2,38 @@
 @section('title', 'Stok Sayımları - B&V Barber')
 @section('content')
 
+<x-page-header title="Stok Sayımları" description="Depo ve salon stok sayımlarını görüntüleyin ve yeni sayım girin.">
+    <x-btn-primary href="{{ route('stock-counts.create') }}" icon="ti ti-plus">
+        Yeni Sayım Gir
+    </x-btn-primary>
+</x-page-header>
+
+{{-- Filters --}}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Stok Sayımları</h1>
-                <p class="text-muted mb-0">Depo ve salon stok sayımlarını görüntüleyin ve yeni sayım girin.</p>
-            </div>
-            <div>
-                <a href="{{ route('stock-counts.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
-                    <i class="ti ti-plus fs-5"></i> Yeni Sayım Gir
-                </a>
-            </div>
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form action="{{ route('stock-counts.index') }}" method="GET" class="row g-2 align-items-end">
+                <div class="col-12 col-md-5">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="Not veya personel adı ile ara..." :value="request('search')" :resetUrl="route('stock-counts.index')" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <x-date-input name="date_from" label="Başlangıç" :value="request('date_from')" :pill="true" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <x-date-input name="date_to" label="Bitiş" :value="request('date_to')" :pill="true" />
+                </div>
+                <div class="col-12 col-md-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['search', 'date_from', 'date_to']))
+                        <a href="{{ route('stock-counts.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -34,7 +54,7 @@
                         </thead>
                         <tbody>
                             @forelse($counts as $count)
-                            <tr class="border-bottom border-light" style="cursor:pointer;" data-href="{{ route('stock-counts.show', $count) }}" title="Detayı Gör">
+                            <tr class="border-bottom border-light" style="cursor:pointer;" onclick="window.location='{{ route('stock-counts.show', $count) }}'" title="Detayı Gör">
                                 <td class="ps-4 py-3">
                                     <div class="fw-bold text-dark">{{ \Carbon\Carbon::parse($count->count_date)->format('d.m.Y') }}</div>
                                 </td>
@@ -53,21 +73,15 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="4" class="text-center py-5 text-muted">
-                                    <i class="ti ti-clipboard-list fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Kayıt bulunamadı.</h5>
-                                    <p class="small text-secondary mb-0">Yeni bir periyodik sayım girmek için "Yeni Sayım Gir" butonunu kullanın.</p>
-                                </td>
-                            </tr>
+                            <x-empty-state icon="ti ti-clipboard-list" title="Kayıt bulunamadı" message="Yeni bir periyodik sayım girmek için 'Yeni Sayım Gir' butonunu kullanın." colspan="4" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($counts->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
-                    {{ $counts->links('pagination::bootstrap-5') }}
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                    {{ $counts->links() }}
                 </div>
             @endif
         </div>

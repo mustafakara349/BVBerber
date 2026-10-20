@@ -17,21 +17,11 @@
 </style>
 @endpush
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Hızlı Ürün Satışı</h1>
-                <p class="text-muted mb-0">Salonunuzdaki stok ürünlerini kasadan anında satın ve tahsilatı kaydedin.</p>
-            </div>
-            <div>
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#newSaleModal">
-                    <i class="ti ti-shopping-cart fs-5"></i> Yeni Satış
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Hızlı Ürün Satışı" description="Salonunuzdaki stok ürünlerini kasadan anında satın ve tahsilatı kaydedin.">
+    <x-btn-primary icon="ti ti-shopping-cart" data-bs-toggle="modal" data-bs-target="#newSaleModal">
+        Yeni Satış
+    </x-btn-primary>
+</x-page-header>
 
 {{-- Flash Messages --}}
 @if(session('success'))
@@ -47,50 +37,44 @@
     </div>
 @endif
 
-{{-- Filter Panel --}}
+{{-- Filters --}}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-body p-4 bg-light bg-opacity-30">
-                <form action="{{ route('products.sales.index') }}" method="GET" class="row g-3 align-items-end">
-                    <div class="col-12 col-md-3">
-                        <label class="form-label text-secondary fw-semibold small">Müşteri</label>
-                        <select name="customer_id" class="form-select border-0 shadow-sm rounded-3" id="filterCustomerSelect">
-                            <option value="">Tüm Müşteriler</option>
-                            @foreach($customers as $c)
-                                <option value="{{ $c->id }}" {{ request('customer_id') == $c->id ? 'selected' : '' }}>{{ $c->full_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <label class="form-label text-secondary fw-semibold small">Ürün</label>
-                        <select name="product_id" class="form-select border-0 shadow-sm rounded-3">
-                            <option value="">Tüm Ürünler</option>
-                            @foreach($products as $p)
-                                <option value="{{ $p->id }}" {{ request('product_id') == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="form-label text-secondary fw-semibold small">Başlangıç</label>
-                        <input type="date" name="date_from" class="form-control border-0 shadow-sm rounded-3" value="{{ request('date_from') }}">
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="form-label text-secondary fw-semibold small">Bitiş</label>
-                        <input type="date" name="date_to" class="form-control border-0 shadow-sm rounded-3" value="{{ request('date_to') }}">
-                    </div>
-                    <div class="col-12 col-md-2 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary rounded-3 w-100 py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                            <i class="ti ti-filter fs-5"></i> Filtrele
-                        </button>
-                        @if(request()->hasAny(['customer_id','product_id','date_from','date_to']))
-                            <a href="{{ route('products.sales.index') }}" class="btn btn-light rounded-3 py-2 shadow-sm" title="Filtreyi Temizle">
-                                <i class="ti ti-x"></i>
-                            </a>
-                        @endif
-                    </div>
-                </form>
-            </div>
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form action="{{ route('products.sales.index') }}" method="GET" class="row g-2 align-items-end">
+                <div class="col-12 col-md-3">
+                    <x-form-select name="customer_id" id="filterCustomerSelect" label="Müşteri" :pill="true">
+                        <option value="">Tüm Müşteriler</option>
+                        @foreach($customers as $c)
+                            <option value="{{ $c->id }}" {{ request('customer_id') == $c->id ? 'selected' : '' }}>{{ $c->full_name }}</option>
+                        @endforeach
+                    </x-form-select>
+                </div>
+                <div class="col-12 col-md-3">
+                    <x-form-select name="product_id" label="Ürün" :pill="true">
+                        <option value="">Tüm Ürünler</option>
+                        @foreach($products as $p)
+                            <option value="{{ $p->id }}" {{ request('product_id') == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+                        @endforeach
+                    </x-form-select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <x-date-input name="date_from" label="Başlangıç" :value="request('date_from')" :pill="true" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <x-date-input name="date_to" label="Bitiş" :value="request('date_to')" :pill="true" />
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->hasAny(['customer_id','product_id','date_from','date_to']))
+                        <a href="{{ route('products.sales.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -157,21 +141,15 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
-                                    <i class="ti ti-shopping-cart-x fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Henüz satış yapılmamış.</h5>
-                                    <p class="small mb-0">Filtrelerinizi değiştirmeyi deneyin.</p>
-                                </td>
-                            </tr>
+                            <x-empty-state icon="ti ti-shopping-cart-x" title="Henüz satış yapılmamış" message="Filtrelerinizi değiştirmeyi deneyin veya yeni bir satış işlemi gerçekleştirin." colspan="6" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($sales->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
-                    {{ $sales->links('pagination::bootstrap-5') }}
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                    {{ $sales->links() }}
                 </div>
             @endif
         </div>

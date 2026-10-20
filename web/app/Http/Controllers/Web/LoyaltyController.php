@@ -13,7 +13,7 @@ class LoyaltyController extends Controller
 {
     public function __construct(private LoyaltyService $loyaltyService) {}
 
-    public function show(User $customer)
+    public function show(Request $request, User $customer)
     {
         $this->authorize('view', $customer);
 
@@ -24,11 +24,22 @@ class LoyaltyController extends Controller
 
         $account = LoyaltyAccount::where('customer_id', $customer->id)->first();
         
-        $transactions = collect();
         if ($account) {
-            $transactions = LoyaltyTransaction::where('loyalty_account_id', $account->id)
-                ->latest()
-                ->paginate(15);
+            $query = LoyaltyTransaction::where('loyalty_account_id', $account->id)->latest();
+
+            if ($request->filled('type')) {
+                $query->where('type', $request->input('type'));
+            }
+
+            if ($request->filled('date_from')) {
+                $query->whereDate('created_at', '>=', $request->input('date_from'));
+            }
+
+            if ($request->filled('date_to')) {
+                $query->whereDate('created_at', '<=', $request->input('date_to'));
+            }
+
+            $transactions = $query->paginate(15)->withQueryString();
         } else {
             $transactions = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
         }

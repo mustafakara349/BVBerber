@@ -55,6 +55,7 @@ class FirebasePushService
         $tokens = Device::where('user_id', $userId)
             ->whereNotNull('push_token')
             ->pluck('push_token')
+            ->unique()
             ->toArray();
 
         return $this->sendToTokens($tokens, $title, $body, $data);
@@ -68,6 +69,7 @@ class FirebasePushService
         $tokens = Device::whereIn('user_id', $userIds)
             ->whereNotNull('push_token')
             ->pluck('push_token')
+            ->unique()
             ->toArray();
 
         return $this->sendToTokens($tokens, $title, $body, $data);

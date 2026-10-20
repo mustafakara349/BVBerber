@@ -3,13 +3,14 @@
 
 @section('content')
 
-{{-- Breadcrumb --}}
-<nav aria-label="breadcrumb" class="mb-4">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('products.index') }}" class="text-decoration-none text-muted">Satış Ürünleri</a></li>
-        <li class="breadcrumb-item active text-dark fw-semibold">{{ Str::limit($product->name, 40) }}</li>
-    </ol>
-</nav>
+<x-page-header title="{{ $product->name }}" description="Ürün detayları, stok durumu ve fiyat bilgileri.">
+    <x-btn-outline href="{{ route('products.index') }}" icon="ti ti-arrow-left">
+        Ürünlere Dön
+    </x-btn-outline>
+    <x-btn-primary href="{{ route('products.edit', $product) }}" icon="ti ti-pencil">
+        Ürünü Düzenle
+    </x-btn-primary>
+</x-page-header>
 
 <div class="row g-4">
 

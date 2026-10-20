@@ -2,19 +2,11 @@
 @section('title', 'Sadakat Programı - ' . $customer->full_name . ' - B&V Barber')
 @section('content')
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('customers.show', $customer) }}" class="btn btn-light rounded-circle p-2 text-secondary shadow-sm">
-                <i class="ti ti-arrow-left fs-4"></i>
-            </a>
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">{{ $customer->full_name }} - Sadakat Programı</h1>
-                <p class="text-muted mb-0">Müşterinin puanlarını görüntüleyin veya manuel işlem yapın.</p>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="{{ $customer->full_name }} - Sadakat Programı" description="Müşterinin puanlarını görüntüleyin veya manuel işlem yapın.">
+    <x-btn-outline href="{{ route('customers.show', $customer) }}" icon="ti ti-arrow-left">
+        Müşteri Profiline Dön
+    </x-btn-outline>
+</x-page-header>
 
 <div class="row g-4">
     <!-- Balance Card -->
@@ -72,6 +64,48 @@
 
     <!-- Transaction History -->
     <div class="col-12 col-md-8">
+        <!-- Filter Form -->
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-3">
+            <form method="GET" action="{{ route('customers.loyalty.show', $customer) }}" class="row g-2 align-items-end">
+                <div class="col-12 col-sm-4">
+                    <label class="form-label text-secondary small fw-medium mb-1">İşlem Türü</label>
+                    <x-form-select name="type" :pill="true">
+                        <option value="">Tüm İşlem Türleri</option>
+                        <option value="earn" {{ request('type') === 'earn' ? 'selected' : '' }}>Kazanım</option>
+                        <option value="spend" {{ request('type') === 'spend' ? 'selected' : '' }}>Harcama</option>
+                        <option value="manual" {{ request('type') === 'manual' ? 'selected' : '' }}>Manuel</option>
+                    </x-form-select>
+                </div>
+
+                <div class="col-12 col-sm-3">
+                    <label class="form-label text-secondary small fw-medium mb-1">Başlangıç</label>
+                    <x-date-input 
+                        name="date_from" 
+                        value="{{ request('date_from') }}" 
+                        :pill="true" />
+                </div>
+
+                <div class="col-12 col-sm-3">
+                    <label class="form-label text-secondary small fw-medium mb-1">Bitiş</label>
+                    <x-date-input 
+                        name="date_to" 
+                        value="{{ request('date_to') }}" 
+                        :pill="true" />
+                </div>
+
+                <div class="col-12 col-sm-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-2 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->hasAny(['type', 'date_from', 'date_to']))
+                        <a href="{{ route('customers.loyalty.show', $customer) }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+
         <div class="card border-0 rounded-4 shadow-sm h-100">
             <div class="card-header bg-white border-0 py-3 d-flex align-items-center gap-2">
                 <i class="ti ti-history text-primary fs-4"></i>
@@ -113,20 +147,19 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="4" class="text-center py-5 text-muted">
-                                    <i class="ti ti-ghost fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Henüz puan hareketi bulunamadı.</h5>
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                icon="ti ti-star-off" 
+                                title="Puan hareketi bulunamadı" 
+                                description="{{ request()->hasAny(['type', 'date_from', 'date_to']) ? 'Arama kriterlerinize uygun puan hareketi bulunamadı.' : 'Bu müşteriye ait henüz bir puan kazanımı veya harcaması gerçekleşmemiştir.' }}" 
+                                colspan="4" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($transactions->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
-                    {{ $transactions->links('pagination::bootstrap-5') }}
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                    {{ $transactions->links() }}
                 </div>
             @endif
         </div>

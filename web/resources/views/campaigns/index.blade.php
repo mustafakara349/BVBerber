@@ -1,24 +1,14 @@
 @extends('layouts.app')
 @section('title', 'Kampanyalar & Kuponlar - B&V Barber')
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-            <div>
-                <h1 class="fs-3 mb-1">Kampanya & Kupon Yönetimi</h1>
-                <p class="text-muted">Müşteri sadakatini artırmak için promosyonlar, indirim kampanyaları ve kuponlar oluşturun.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary rounded-pill px-4 btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#addCampaignModal">
-                    <i class="ti ti-plus me-1"></i> Yeni Kampanya
-                </button>
-                <button class="btn btn-outline-primary rounded-pill px-4 btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#addCouponModal">
-                    <i class="ti ti-ticket me-1"></i> Yeni Kupon Kodu
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Kampanya & Kupon Yönetimi" description="Müşteri sadakatini artırmak için promosyonlar, indirim kampanyaları ve kuponlar oluşturun.">
+    <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addCampaignModal">
+        Yeni Kampanya
+    </x-btn-primary>
+    <x-btn-outline icon="ti ti-ticket" data-bs-toggle="modal" data-bs-target="#addCouponModal">
+        Yeni Kupon Kodu
+    </x-btn-outline>
+</x-page-header>
 
 <!-- KPI Stats Row -->
 <div class="row g-4 mb-4">
@@ -69,6 +59,40 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Filter Form -->
+<div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+    <form method="GET" action="{{ route('campaigns.index') }}" class="row g-2 align-items-end">
+        <div class="col-12 col-md-5">
+            <label class="form-label text-secondary small fw-medium mb-1">Ara</label>
+            <x-search-input 
+                name="search" 
+                value="{{ request('search') }}" 
+                placeholder="Kampanya başlığı veya kupon kodu ile ara..." 
+                :pill="true" />
+        </div>
+
+        <div class="col-12 col-md-4">
+            <label class="form-label text-secondary small fw-medium mb-1">Durum</label>
+            <x-form-select name="status" :pill="true">
+                <option value="">Tüm Durumlar</option>
+                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif / Geçerli</option>
+                <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Pasif / Süresi Dolmuş</option>
+            </x-form-select>
+        </div>
+
+        <div class="col-12 col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                <i class="ti ti-filter"></i> Filtrele
+            </button>
+            @if(request()->hasAny(['search', 'status']))
+                <a href="{{ route('campaigns.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                    <i class="ti ti-rotate"></i>
+                </a>
+            @endif
+        </div>
+    </form>
 </div>
 
 <!-- Tabs Card -->
@@ -172,12 +196,11 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="ti ti-speakerphone fs-1 d-block mb-2"></i>
-                                    Henüz oluşturulmuş kampanya bulunmuyor.
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                colspan="5" 
+                                icon="ti ti-speakerphone"
+                                title="Henüz kampanya bulunmuyor" 
+                                description="Yeni bir kampanya oluşturarak müşterilerinize promosyon sağlayabilirsiniz." />
                             @endforelse
                         </tbody>
                     </table>
@@ -255,12 +278,11 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
-                                    <i class="ti ti-ticket fs-1 d-block mb-2"></i>
-                                    Oluşturulmuş kupon kodu bulunmuyor.
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                colspan="6" 
+                                icon="ti ti-ticket"
+                                title="Henüz kupon kodu bulunmuyor" 
+                                description="Müşterilerinize özel veya genel kullanım için yeni bir kupon kodu tanımlayabilirsiniz." />
                             @endforelse
                         </tbody>
                     </table>

@@ -201,6 +201,7 @@ class AuthManager: ObservableObject {
         // Clean local state
         UserDefaults.standard.removeObject(forKey: "auth_token")
         UserDefaults.standard.removeObject(forKey: "user_id")
+        NotificationManager.shared.resetSyncState()
 
         await MainActor.run {
             self.currentUserId = nil

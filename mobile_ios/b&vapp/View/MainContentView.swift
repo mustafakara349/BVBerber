@@ -78,6 +78,9 @@ struct MainContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: .navigateToNotifications)) { _ in
             showNotificationView = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToCampaigns)) { _ in
+            showCampaignsView = true
+        }
         .sheet(item: $selectedSaleProduct) { product in
             SaleProductDetailSheet(product: product, allProducts: viewModel.saleProducts)
         }

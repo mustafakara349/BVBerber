@@ -76,6 +76,7 @@ struct NotificationView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
         .task {
+            NotificationManager.shared.clearBadge()
             await viewModel.fetchNotifications()
         }
     }

@@ -2,28 +2,16 @@
 @section('title', 'Borç Detayları - B&V Barber')
 @section('content')
 
-<!-- Modern Header & Return Link -->
-<div class="row mb-4">
-    <div class="col-12">
-        <a href="{{ $type === 'receivable' ? route('finance.receivables.index') : route('finance.payables.index') }}" class="btn btn-light rounded-pill px-3 shadow-sm mb-3 d-inline-flex align-items-center gap-2">
-            <i class="ti ti-arrow-left"></i> Geri Dön
-        </a>
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">
-                    {{ $debts->first()?->customer->full_name ?? $counterpartyName ?? 'Bilinmeyen Kişi' }} 
-                    <span class="fs-5 text-muted fw-normal">({{ $type === 'receivable' ? 'Alacak Detayları' : 'Ödeme Detayları' }})</span>
-                </h1>
-                <p class="text-muted mb-0">Kişiye ait tüm geçmiş ve mevcut borç/alacak işlemleri.</p>
-            </div>
-            <div>
-                <button type="button" class="btn btn-{{ $type === 'receivable' ? 'primary' : 'danger' }} rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addDebtModal">
-                    <i class="ti ti-plus fs-5"></i> Yeni Kayıt Ekle
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header 
+    title="{{ $debts->first()?->customer->full_name ?? $counterpartyName ?? 'Bilinmeyen Kişi' }} ({{ $type === 'receivable' ? 'Alacak Detayları' : 'Ödeme Detayları' }})" 
+    description="Kişiye ait tüm geçmiş ve mevcut borç/alacak işlemleri.">
+    <x-btn-outline href="{{ $type === 'receivable' ? route('finance.receivables.index') : route('finance.payables.index') }}" icon="ti ti-arrow-left">
+        Geri Dön
+    </x-btn-outline>
+    <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addDebtModal">
+        Yeni Kayıt Ekle
+    </x-btn-primary>
+</x-page-header>
 
 <!-- Summary Cards -->
 <div class="row g-4 mb-4">
@@ -49,6 +37,46 @@
                 <h6 class="text-white text-opacity-75 small mb-1 fw-medium text-uppercase">Kalan Bakiye</h6>
                 <h3 class="fs-3 fw-bold mb-0">₺{{ number_format($remainingDebt, 2, ',', '.') }}</h3>
             </div>
+        </div>
+    </div>
+</div>
+
+{{-- Filters --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form action="{{ route('finance.debts.details') }}" method="GET" class="row g-2 align-items-end">
+                <input type="hidden" name="type" value="{{ $type }}">
+                @if($customerId)
+                    <input type="hidden" name="customer_id" value="{{ $customerId }}">
+                @else
+                    <input type="hidden" name="counterparty_name" value="{{ $counterpartyName }}">
+                @endif
+                <div class="col-12 col-md-4">
+                    <x-form-select name="status" label="Ödeme Durumu" :pill="true">
+                        <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Tümü</option>
+                        <option value="unpaid" {{ request('status') === 'unpaid' ? 'selected' : '' }}>Ödenmemiş</option>
+                        <option value="partial" {{ request('status') === 'partial' ? 'selected' : '' }}>Kısmi Ödenmiş</option>
+                        <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Tamamen Ödenmiş</option>
+                    </x-form-select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <x-date-input name="date_from" label="Başlangıç Tarihi" :value="request('date_from')" :pill="true" />
+                </div>
+                <div class="col-6 col-md-3">
+                    <x-date-input name="date_to" label="Bitiş Tarihi" :value="request('date_to')" :pill="true" />
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['status', 'date_from', 'date_to']))
+                        <a href="{{ route('finance.debts.details', array_filter(['type' => $type, 'customer_id' => $customerId, 'counterparty_name' => $counterpartyName])) }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -218,20 +246,18 @@
                             </tr>
                             @endif
                             @empty
-                            <tr>
-                                <td colspan="8" class="text-center py-5 text-muted">
-                                    <i class="ti ti-mood-empty fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Kayıt bulunamadı.</h5>
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                colspan="6" 
+                                title="Kayıt bulunamadı" 
+                                description="Bu kişiye ait herhangi bir borç veya alacak kaydı bulunmuyor." />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($debts->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
-                    {{ $debts->links('pagination::bootstrap-5') }}
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                    {{ $debts->links() }}
                 </div>
             @endif
         </div>

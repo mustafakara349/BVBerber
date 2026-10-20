@@ -10,10 +10,22 @@ use Carbon\Carbon;
 
 class EmployeeTimeBlockController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Tüm blokları çek ve employee, ardından tarihe göre artan (asc) sırala
         $rawBlocks = EmployeeTimeBlock::with('employee.user')
+            ->when($request->filled('employee_id'), function ($q) use ($request) {
+                $q->where('employee_id', $request->employee_id);
+            })
+            ->when($request->filled('type'), function ($q) use ($request) {
+                $q->where('type', $request->type);
+            })
+            ->when($request->filled('date_from'), function ($q) use ($request) {
+                $q->whereDate('date', '>=', $request->date_from);
+            })
+            ->when($request->filled('date_to'), function ($q) use ($request) {
+                $q->whereDate('date', '<=', $request->date_to);
+            })
             ->orderBy('employee_id')
             ->orderBy('date', 'asc')
             ->get();

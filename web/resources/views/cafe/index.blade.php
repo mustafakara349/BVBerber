@@ -74,30 +74,14 @@
 
 @section('content')
 
-{{-- ── Header ──────────────────────────────────────────── --}}
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="fs-2">☕</span>
-                    <h1 class="fs-3 fw-bold mb-0 text-dark">Cafe Bölümü</h1>
-                </div>
-                <p class="text-muted mb-0">Cafe menüsündeki tüm ürünleri görsel ve fiyatlarıyla yönetin.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
-                        data-bs-toggle="modal" data-bs-target="#cafeCategoriesModal">
-                    <i class="ti ti-category fs-5"></i> Kategorileri Yönet
-                </button>
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
-                        data-bs-toggle="modal" data-bs-target="#addCafeModal" id="addCafeBtn">
-                    <i class="ti ti-plus fs-5"></i> Yeni Ürün Ekle
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Cafe Bölümü" description="Cafe menüsündeki tüm ürünleri görsel ve fiyatlarıyla yönetin.">
+    <x-btn-outline icon="ti ti-category" data-bs-toggle="modal" data-bs-target="#cafeCategoriesModal">
+        Kategorileri Yönet
+    </x-btn-outline>
+    <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addCafeModal" id="addCafeBtn">
+        Yeni Ürün Ekle
+    </x-btn-primary>
+</x-page-header>
 
 
 @if($errors->any())
@@ -112,36 +96,49 @@
     </div>
 @endif
 
-{{-- ── Filter / Search ──────────────────────────────────── --}}
-<div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body p-3">
-        <form action="{{ route('cafe.index') }}" method="GET" class="d-flex flex-wrap gap-2 align-items-center">
-            {{-- Kategori Pills --}}
-            <a href="{{ route('cafe.index', array_merge(request()->except('category'), [])) }}"
-               class="category-pill {{ !request('category') ? 'active' : '' }}">Tümü</a>
-            @foreach($categories as $category)
-                <a href="{{ route('cafe.index', array_merge(request()->except('category'), ['category' => $category->id])) }}"
-                   class="category-pill {{ request('category') == $category->id ? 'active' : '' }}">{{ $category->name }}</a>
-            @endforeach
-            <div class="ms-auto d-flex gap-2">
-                <input type="text" name="search" class="form-control border-0 bg-light rounded-3"
-                       placeholder="Ürün ara..." value="{{ request('search') }}" style="width: 200px;">
-                <select name="status" class="form-select border-0 bg-light rounded-3" style="width: 140px;">
-                    <option value="">Tüm Durumlar</option>
-                    <option value="active"   {{ request('status') === 'active'   ? 'selected' : '' }}>Aktif</option>
-                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Pasif</option>
-                    <option value="featured" {{ request('status') === 'featured' ? 'selected' : '' }}>Öne Çıkan</option>
-                </select>
-                <button type="submit" class="btn btn-primary rounded-3 px-3">
-                    <i class="ti ti-search"></i>
-                </button>
-                @if(request()->hasAny(['search','category','status']))
-                    <a href="{{ route('cafe.index') }}" class="btn btn-light rounded-3 px-3">
-                        <i class="ti ti-x"></i>
-                    </a>
+{{-- Filters --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            @if(isset($categories) && count($categories) > 0)
+                <div class="d-flex flex-wrap gap-2 align-items-center mb-3 pb-2 border-bottom border-light">
+                    <span class="text-secondary small fw-medium me-1">Kategori:</span>
+                    <a href="{{ route('cafe.index', array_merge(request()->except('category'), [])) }}"
+                       class="category-pill {{ !request('category') ? 'active' : '' }}">Tümü</a>
+                    @foreach($categories as $category)
+                        <a href="{{ route('cafe.index', array_merge(request()->except('category'), ['category' => $category->id])) }}"
+                           class="category-pill {{ request('category') == $category->id ? 'active' : '' }}">{{ $category->name }}</a>
+                    @endforeach
+                </div>
+            @endif
+            <form action="{{ route('cafe.index') }}" method="GET" class="row g-2 align-items-end">
+                @if(request('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
                 @endif
-            </div>
-        </form>
+                <div class="col-12 col-md-5 col-lg-5">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="Ürün ara..." :value="request('search')" :resetUrl="route('cafe.index', array_filter(['category' => request('category')]))" />
+                </div>
+                <div class="col-6 col-md-4 col-lg-4">
+                    <x-form-select name="status" label="Durum" :pill="true">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="active"   {{ request('status') === 'active'   ? 'selected' : '' }}>Aktif</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Pasif</option>
+                        <option value="featured" {{ request('status') === 'featured' ? 'selected' : '' }}>Öne Çıkan</option>
+                    </x-form-select>
+                </div>
+                <div class="col-6 col-md-3 col-lg-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->hasAny(['search', 'category', 'status']))
+                        <a href="{{ route('cafe.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -176,7 +173,7 @@
                                     <div class="fw-semibold text-dark">{{ $item->name }}</div>
                                     @if($item->description)
                                         <small class="text-muted" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
-                                            {{ $item->description }}
+                                             {{ $item->description }}
                                         </small>
                                     @endif
                                 </div>
@@ -246,24 +243,24 @@
                         </td>
                     </tr>
                     @empty
-                    <tr>
-                        <td colspan="6" class="text-center py-5">
-                            <div class="mb-3" style="font-size:3.5rem;">☕</div>
-                            <h5 class="fw-semibold text-dark">Cafe ürünü bulunamadı</h5>
-                            <p class="text-muted mb-3">Cafe menünüze ürün ekleyerek başlayın.</p>
-                            <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addCafeModal">
-                                <i class="ti ti-plus me-1"></i> İlk Ürünü Ekle
-                            </button>
-                        </td>
-                    </tr>
+                    <x-empty-state 
+                        colspan="6" 
+                        title="Cafe ürünü bulunamadı" 
+                        description="Cafe menünüze ürün ekleyerek başlayın.">
+                        <x-slot:action>
+                            <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addCafeModal">
+                                İlk Ürünü Ekle
+                            </x-btn-primary>
+                        </x-slot:action>
+                    </x-empty-state>
                     @endforelse
                 </tbody>
             </table>
         </div>
     </div>
     @if($cafeProducts->hasPages())
-        <div class="card-footer bg-white border-0 py-3 px-4">
-            {{ $cafeProducts->links('pagination::bootstrap-5') }}
+        <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+            {{ $cafeProducts->links() }}
         </div>
     @endif
 </div>

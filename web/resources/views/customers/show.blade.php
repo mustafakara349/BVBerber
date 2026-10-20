@@ -2,19 +2,11 @@
 @section('title', 'Müşteri Detayı - B&V Barber')
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fs-3 mb-1 fw-bold">Müşteri Profili</h1>
-                <p class="text-muted">{{ $customer->full_name }} detayları, harcama istatistikleri ve randevu geçmişi.</p>
-            </div>
-            <a href="{{ route('customers.index') }}" class="btn btn-light rounded-pill border shadow-sm">
-                <i class="ti ti-arrow-left me-1"></i> Geri Dön
-            </a>
-        </div>
-    </div>
-</div>
+<x-page-header title="Müşteri Profili" description="{{ $customer->full_name }} detayları, harcama istatistikleri ve randevu geçmişi.">
+    <x-btn-outline href="{{ route('customers.index') }}" icon="ti ti-arrow-left">
+        Müşterilere Dön
+    </x-btn-outline>
+</x-page-header>
 
 <div class="row g-4">
     <!-- Sol Taraf: Profil ve Bilgiler -->
@@ -133,6 +125,49 @@
             </div>
         </div>
 
+        <!-- Filter Form -->
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-3">
+            <form method="GET" action="{{ route('customers.show', $customer) }}" class="row g-2 align-items-end">
+                <div class="col-12 col-sm-4">
+                    <label class="form-label text-secondary small fw-medium mb-1">Durum</label>
+                    <x-form-select name="status" :pill="true">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Tamamlandı</option>
+                        <option value="confirmed" {{ request('status') === 'confirmed' ? 'selected' : '' }}>Onaylandı</option>
+                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Bekliyor</option>
+                        <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>İptal Edildi</option>
+                    </x-form-select>
+                </div>
+
+                <div class="col-12 col-sm-3">
+                    <label class="form-label text-secondary small fw-medium mb-1">Başlangıç</label>
+                    <x-date-input 
+                        name="date_from" 
+                        value="{{ request('date_from') }}" 
+                        :pill="true" />
+                </div>
+
+                <div class="col-12 col-sm-3">
+                    <label class="form-label text-secondary small fw-medium mb-1">Bitiş</label>
+                    <x-date-input 
+                        name="date_to" 
+                        value="{{ request('date_to') }}" 
+                        :pill="true" />
+                </div>
+
+                <div class="col-12 col-sm-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-2 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->hasAny(['status', 'date_from', 'date_to']))
+                        <a href="{{ route('customers.show', $customer) }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+
         <!-- Randevu Geçmişi Tablosu -->
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
@@ -160,7 +195,7 @@
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="icon-shape icon-sm bg-warning-subtle text-warning rounded-circle">
-                                            <i class="ti ti-cut fs-5"></i>
+                                             <i class="ti ti-cut fs-5"></i>
                                         </div>
                                         <span class="fw-medium text-dark">{{ $apt->employee->user->full_name ?? 'Bilinmiyor' }}</span>
                                     </div>
@@ -184,19 +219,18 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="ti ti-calendar-off fs-1 d-block mb-2"></i>
-                                    Bu müşterinin geçmiş randevusu bulunmuyor.
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                icon="ti ti-calendar-off" 
+                                title="Randevu bulunamadı" 
+                                description="{{ request()->hasAny(['status', 'date_from', 'date_to']) ? 'Arama kriterlerinize uygun randevu kaydı bulunamadı.' : 'Bu müşterinin geçmiş randevusu bulunmuyor.' }}" 
+                                colspan="5" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($appointments->hasPages())
-            <div class="card-footer bg-white border-top p-3 d-flex justify-content-center">
+            <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
                 {{ $appointments->links() }}
             </div>
             @endif

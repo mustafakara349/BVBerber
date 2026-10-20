@@ -1,19 +1,11 @@
 @extends('layouts.app')
 @section('title', 'Çalışan Detayı - B&V Barber')
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fs-3 mb-1">Çalışan İstatistikleri</h1>
-                <p class="text-muted">{{ $employee->user->full_name }} detayları ve performans verileri.</p>
-            </div>
-            <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary">
-                <i class="ti ti-arrow-left me-1"></i> Geri Dön
-            </a>
-        </div>
-    </div>
-</div>
+<x-page-header title="Çalışan İstatistikleri" description="{{ $employee->user->full_name }} detayları ve performans verileri.">
+    <x-btn-outline href="{{ route('employees.index') }}" icon="ti ti-arrow-left">
+        Çalışanlara Dön
+    </x-btn-outline>
+</x-page-header>
 
 <div class="row g-4">
     <!-- Profil & Kimlik Kartı -->
@@ -173,7 +165,7 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="5" class="text-center py-4 text-muted">Geçmiş randevu bulunmuyor.</td></tr>
+                            <x-empty-state icon="ti ti-calendar-off" title="Randevu bulunamadı" message="Bu çalışana ait geçmiş randevu kaydı bulunmuyor." colspan="5" />
                             @endforelse
                         </tbody>
                     </table>

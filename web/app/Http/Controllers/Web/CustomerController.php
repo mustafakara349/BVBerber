@@ -70,7 +70,7 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->with('success', 'Müşteri başarıyla eklendi.');
     }
 
-    public function show(User $customer)
+    public function show(Request $request, User $customer)
     {
         $this->authorize('view', $customer);
 
@@ -98,10 +98,23 @@ class CustomerController extends Controller
             ->whereYear('start_at', now()->year)
             ->sum('total_price');
 
-        $appointments = $customer->appointments()
+        $appointmentsQuery = $customer->appointments()
             ->with(['employee.user', 'appointmentServices.service'])
-            ->orderBy('start_at', 'desc')
-            ->paginate(10);
+            ->orderBy('start_at', 'desc');
+
+        if ($request->filled('status')) {
+            $appointmentsQuery->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('date_from')) {
+            $appointmentsQuery->whereDate('start_at', '>=', $request->input('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $appointmentsQuery->whereDate('start_at', '<=', $request->input('date_to'));
+        }
+
+        $appointments = $appointmentsQuery->paginate(10)->withQueryString();
 
         return view('customers.show', compact('customer', 'totalSpent', 'completedAppointments', 'thisMonthAppointments', 'thisMonthSpent', 'thisYearSpent', 'appointments'));
     }

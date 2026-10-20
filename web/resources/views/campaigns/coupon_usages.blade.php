@@ -1,39 +1,61 @@
 @extends('layouts.app')
 @section('title', 'Kupon Kodu - Kullanım Geçmişi')
 @section('content')
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <a href="{{ route('campaigns.index') }}#couponsPanel" class="btn btn-sm btn-light rounded-pill px-3 mb-2" onclick="setTimeout(()=>document.getElementById('coupons-tab').click(), 100)">
-                    <i class="ti ti-arrow-left me-1"></i> Kuponlara Dön
-                </a>
-                <h1 class="fs-3 mb-1">
-                    <i class="ti ti-ticket text-primary me-2"></i> 
-                    <span class="font-monospace">{{ $coupon->code }}</span>
-                </h1>
-                <p class="text-muted mb-0">
-                    @if($coupon->title) {{ $coupon->title }} - @endif
-                    Kuponunun detaylı kullanım geçmişini inceliyorsunuz.
-                </p>
-            </div>
-            <div>
-                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fs-6">
-                    Kullanım Durumu: {{ $coupon->used_count }} / {{ $coupon->usage_limit }}
-                </span>
-            </div>
+<x-page-header title="{{ $coupon->code }} - Kullanım Geçmişi" description="@if($coupon->title) {{ $coupon->title }} - @endif Kuponunun detaylı kullanım geçmişini inceliyorsunuz.">
+    <x-btn-outline href="{{ route('campaigns.index') }}#couponsPanel" icon="ti ti-arrow-left">
+        Kuponlara Dön
+    </x-btn-outline>
+</x-page-header>
+
+<!-- Filter Form -->
+<div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+    <form method="GET" action="{{ route('campaigns.coupons.usages', $coupon) }}" class="row g-2 align-items-end">
+        <div class="col-12 col-md-4">
+            <label class="form-label text-secondary small fw-medium mb-1">Müşteri Ara</label>
+            <x-search-input 
+                name="search" 
+                value="{{ request('search') }}" 
+                placeholder="Müşteri adı veya telefon..." 
+                :pill="true" />
         </div>
-    </div>
+
+        <div class="col-12 col-md-3">
+            <label class="form-label text-secondary small fw-medium mb-1">Başlangıç Tarihi</label>
+            <x-date-input 
+                name="date_from" 
+                value="{{ request('date_from') }}" 
+                :pill="true" />
+        </div>
+
+        <div class="col-12 col-md-3">
+            <label class="form-label text-secondary small fw-medium mb-1">Bitiş Tarihi</label>
+            <x-date-input 
+                name="date_to" 
+                value="{{ request('date_to') }}" 
+                :pill="true" />
+        </div>
+
+        <div class="col-12 col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                <i class="ti ti-filter"></i> Filtrele
+            </button>
+            @if(request()->hasAny(['search', 'date_from', 'date_to']))
+                <a href="{{ route('campaigns.coupons.usages', $coupon) }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                    <i class="ti ti-rotate"></i>
+                </a>
+            @endif
+        </div>
+    </form>
 </div>
 
-<div class="card shadow-sm border-0 rounded-4">
-    <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 rounded-top-4">
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="card-header bg-white border-bottom border-light-subtle pt-4 pb-3 px-4">
         <h5 class="mb-0 fw-bold"><i class="ti ti-history me-2 text-secondary"></i>Kullanım Kayıtları</h5>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0 text-dark">
+                <thead class="bg-light text-secondary">
                     <tr>
                         <th class="ps-4">Tarih / Saat</th>
                         <th>Müşteri Bilgileri</th>
@@ -98,20 +120,17 @@
                         </td>
                     </tr>
                     @empty
-                    <tr>
-                        <td colspan="4" class="text-center py-5 text-muted">
-                            <i class="ti ti-info-circle fs-1 d-block mb-3 text-secondary opacity-50"></i>
-                            <h5 class="fw-medium">Kullanım Bulunamadı</h5>
-                            <p class="mb-0 small">Bu kupon kodu henüz hiçbir müşteri tarafından kullanılmamış.</p>
-                        </td>
-                    </tr>
+                    <x-empty-state 
+                        colspan="4" 
+                        title="Kullanım bulunamadı" 
+                        description="{{ request()->hasAny(['search', 'date_from', 'date_to']) ? 'Arama kriterlerinize uygun kullanım kaydı bulunamadı.' : 'Bu kupon kodu henüz hiçbir müşteri tarafından kullanılmamış.' }}" />
                     @endforelse
                 </tbody>
             </table>
         </div>
     </div>
     @if($usages->hasPages())
-    <div class="card-footer bg-white border-top py-3 px-4 rounded-bottom-4">
+    <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
         {{ $usages->links() }}
     </div>
     @endif

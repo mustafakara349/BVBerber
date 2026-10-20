@@ -155,13 +155,3 @@ Route::middleware(['auth', 'audit'])->group(function () {
     });
 });
 
-if (app()->isLocal()) {
-    Route::get('/dev-error-test/{code}', function ($code) {
-        $status = (int) $code;
-        if ($status === 500) {
-            throw new \RuntimeException('Simüle edilmiş kritik sunucu hatası (Test 500).');
-        }
-        abort($status, 'Bu bir ' . $status . ' test hatasıdır.');
-    });
-}
-

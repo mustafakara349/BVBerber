@@ -1,53 +1,49 @@
 @extends('layouts.app')
 @section('title', 'Randevu Analizleri - B&V Barber')
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-            <div>
-                <h1 class="fs-3 mb-1">Randevu Raporları & Analizleri</h1>
-                <p class="text-muted">Randevu yoğunluğu, berber performansları, hizmet popülerliği ve iptal analizleri.</p>
-            </div>
-            <a href="{{ route('reports.index') }}" class="btn btn-light border rounded-pill px-3">
-                <i class="ti ti-arrow-left me-1"></i> Geri Dön
-            </a>
-        </div>
-    </div>
-</div>
+<x-page-header title="Randevu Raporları & Analizleri" description="Randevu yoğunluğu, berber performansları, hizmet popülerliği ve iptal analizleri.">
+    <x-btn-outline href="{{ route('reports.index') }}" icon="ti ti-arrow-left">
+        Geri Dön
+    </x-btn-outline>
+</x-page-header>
 
-<!-- Filters Card -->
-<div class="card shadow-sm border-0 rounded-4 mb-4">
-    <div class="card-body p-4">
-        <form method="GET" action="{{ route('reports.show', 'appointments') }}" class="row g-3 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label small fw-bold text-secondary">Rapor Dönemi</label>
-                <select name="period" id="periodSelect" class="form-select border-0 bg-light rounded-3">
-                    <option value="today" {{ $filters['period'] === 'today' ? 'selected' : '' }}>Bugün</option>
-                    <option value="this_week" {{ $filters['period'] === 'this_week' ? 'selected' : '' }}>Bu Hafta</option>
-                    <option value="this_month" {{ $filters['period'] === 'this_month' ? 'selected' : '' }}>Bu Ay</option>
-                    <option value="last_30_days" {{ $filters['period'] === 'last_30_days' ? 'selected' : '' }}>Son 30 Gün</option>
-                    <option value="last_month" {{ $filters['period'] === 'last_month' ? 'selected' : '' }}>Geçen Ay</option>
-                    <option value="this_year" {{ $filters['period'] === 'this_year' ? 'selected' : '' }}>Bu Yıl</option>
-                    <option value="custom" {{ $filters['period'] === 'custom' ? 'selected' : '' }}>Özel Tarih Aralığı</option>
-                </select>
-            </div>
-            
-            <div class="col-md-3 date-range-fields" style="display: {{ $filters['period'] === 'custom' ? 'block' : 'none' }};">
-                <label class="form-label small fw-bold text-secondary">Başlangıç Tarihi</label>
-                <input type="date" name="start_date" class="form-control border-0 bg-light rounded-3" value="{{ $filters['start_date'] }}">
-            </div>
-            
-            <div class="col-md-3 date-range-fields" style="display: {{ $filters['period'] === 'custom' ? 'block' : 'none' }};">
-                <label class="form-label small fw-bold text-secondary">Bitiş Tarihi</label>
-                <input type="date" name="end_date" class="form-control border-0 bg-light rounded-3" value="{{ $filters['end_date'] }}">
-            </div>
-            
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary rounded-3 w-100 fw-semibold py-2">
-                    <i class="ti ti-filter me-1"></i> Filtrele ve Güncelle
-                </button>
-            </div>
-        </form>
+{{-- Filters --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form method="GET" action="{{ route('reports.show', 'appointments') }}" class="row g-2 align-items-end">
+                <div class="col-12 col-md-3">
+                    <x-form-select name="period" id="periodSelect" label="Rapor Dönemi" :pill="true">
+                        <option value="today" {{ $filters['period'] === 'today' ? 'selected' : '' }}>Bugün</option>
+                        <option value="this_week" {{ $filters['period'] === 'this_week' ? 'selected' : '' }}>Bu Hafta</option>
+                        <option value="this_month" {{ $filters['period'] === 'this_month' ? 'selected' : '' }}>Bu Ay</option>
+                        <option value="last_30_days" {{ $filters['period'] === 'last_30_days' ? 'selected' : '' }}>Son 30 Gün</option>
+                        <option value="last_month" {{ $filters['period'] === 'last_month' ? 'selected' : '' }}>Geçen Ay</option>
+                        <option value="this_year" {{ $filters['period'] === 'this_year' ? 'selected' : '' }}>Bu Yıl</option>
+                        <option value="custom" {{ $filters['period'] === 'custom' ? 'selected' : '' }}>Özel Tarih Aralığı</option>
+                    </x-form-select>
+                </div>
+                
+                <div class="col-6 col-md-3 date-range-fields" style="display: {{ $filters['period'] === 'custom' ? 'block' : 'none' }};">
+                    <x-date-input name="start_date" label="Başlangıç Tarihi" :value="$filters['start_date']" :pill="true" />
+                </div>
+                
+                <div class="col-6 col-md-3 date-range-fields" style="display: {{ $filters['period'] === 'custom' ? 'block' : 'none' }};">
+                    <x-date-input name="end_date" label="Bitiş Tarihi" :value="$filters['end_date']" :pill="true" />
+                </div>
+                
+                <div class="col-12 col-md-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if($filters['period'] !== 'this_month')
+                        <a href="{{ route('reports.show', 'appointments') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -94,7 +90,7 @@
     <div class="col-md-3">
         <div class="card shadow-sm border-0 rounded-4" style="border-bottom: 4px solid #f59e0b !important;">
             <div class="card-body p-4 text-center">
-                <h6 class="text-secondary small fw-medium text-uppercase mb-1">Gelmeyen (No-Show)</h6>
+                <h6 class="text-secondary small fw-medium text-uppercase mb-1">Gelmeyen</h6>
                 <h3 class="fw-bold mb-0 text-warning">{{ $noShowCount }}</h3>
                 <span class="text-warning small fw-medium">
                     %{{ $totalAppointments > 0 ? round(($noShowCount / $totalAppointments) * 100, 1) : 0 }} Kayıp
@@ -149,19 +145,19 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table table-hover align-middle mb-0 text-dark">
+                        <thead class="bg-light text-secondary">
                             <tr>
-                                <th class="ps-4">Berber</th>
-                                <th class="text-center">Tamamlanan</th>
-                                <th class="text-center">İptal/Red/Gelmeyen</th>
-                                <th class="text-end pe-4">Toplam Ciro</th>
+                                <th class="ps-4 py-3 border-0">Berber</th>
+                                <th class="py-3 border-0 text-center">Tamamlanan</th>
+                                <th class="py-3 border-0 text-center">İptal/Red/Gelmeyen</th>
+                                <th class="pe-4 py-3 border-0 text-end">Toplam Ciro</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($barberStats as $barber)
-                            <tr>
-                                <td class="ps-4">
+                            <tr class="border-bottom border-light">
+                                <td class="ps-4 py-3">
                                     <div class="fw-semibold text-dark">{{ $barber->first_name }} {{ $barber->last_name }}</div>
                                     <div class="text-secondary small">{{ $barber->title }}</div>
                                 </td>
@@ -170,7 +166,7 @@
                                 <td class="text-end pe-4 fw-bold text-dark">₺{{ number_format($barber->total_revenue, 2, ',', '.') }}</td>
                             </tr>
                             @empty
-                            <tr><td colspan="4" class="text-center py-4 text-muted">Kayıt bulunamadı.</td></tr>
+                            <x-empty-state colspan="4" title="Kayıt bulunamadı" description="Bu periyotta berber randevu verisi bulunmuyor." />
                             @endforelse
                         </tbody>
                     </table>
@@ -188,23 +184,23 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table table-hover align-middle mb-0 text-dark">
+                        <thead class="bg-light text-secondary">
                             <tr>
-                                <th class="ps-4">Hizmet Adı</th>
-                                <th class="text-center">Tercih Edilme</th>
-                                <th class="text-end pe-4">Toplam Gelir</th>
+                                <th class="ps-4 py-3 border-0">Hizmet Adı</th>
+                                <th class="py-3 border-0 text-center">Tercih Edilme</th>
+                                <th class="pe-4 py-3 border-0 text-end">Toplam Gelir</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($serviceStats as $srv)
-                            <tr>
-                                <td class="ps-4 fw-semibold text-dark">{{ $srv->name }}</td>
+                            <tr class="border-bottom border-light">
+                                <td class="ps-4 py-3 fw-semibold text-dark">{{ $srv->name }}</td>
                                 <td class="text-center fw-bold text-primary">{{ $srv->completed_count }} Kez</td>
                                 <td class="text-end pe-4 fw-bold text-success">₺{{ number_format($srv->total_revenue, 2, ',', '.') }}</td>
                             </tr>
                             @empty
-                            <tr><td colspan="3" class="text-center py-4 text-muted">Kayıt bulunamadı.</td></tr>
+                            <x-empty-state colspan="3" title="Kayıt bulunamadı" description="Bu periyotta hizmet verisi bulunmuyor." />
                             @endforelse
                         </tbody>
                     </table>
@@ -222,21 +218,21 @@
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0 text-dark">
+                <thead class="bg-light text-secondary">
                     <tr>
-                        <th class="ps-4">İptal / Red Nedeni Açıklaması</th>
-                        <th class="text-center pe-4" style="width: 150px;">Tekrar Sayısı</th>
+                        <th class="ps-4 py-3 border-0">İptal / Red Nedeni Açıklaması</th>
+                        <th class="pe-4 py-3 border-0 text-center" style="width: 150px;">Tekrar Sayısı</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($cancellationReasons as $reason)
-                    <tr>
-                        <td class="ps-4 text-dark font-monospace text-wrap">{{ $reason->cancellation_reason }}</td>
+                    <tr class="border-bottom border-light">
+                        <td class="ps-4 py-3 text-dark font-monospace text-wrap">{{ $reason->cancellation_reason }}</td>
                         <td class="text-center pe-4 fw-bold text-danger">{{ $reason->total }} Kez</td>
                     </tr>
                     @empty
-                    <tr><td colspan="2" class="text-center py-4 text-muted">Gerekçe girilmiş herhangi bir iptal kaydı bulunmuyor.</td></tr>
+                    <x-empty-state colspan="2" title="İptal gerekçesi bulunamadı" description="Gerekçe girilmiş herhangi bir iptal kaydı bulunmuyor." />
                     @endforelse
                 </tbody>
             </table>
@@ -298,7 +294,7 @@
         @if($totalAppointments > 0)
             const statusOptions = {
                 chart: { type: 'donut', height: 280, fontFamily: 'Outfit, system-ui, -apple-system, sans-serif' },
-                labels: ['Tamamlanan', 'İptal Edilen', 'Reddedilen', 'Gelmeyen (No-Show)', 'Bekleyen/Onaylı'],
+                labels: ['Tamamlanan', 'İptal Edilen', 'Reddedilen', 'Gelmeyen', 'Bekleyen/Onaylı'],
                 series: [
                     {{ $completedCount }},
                     {{ $cancelledCount }},

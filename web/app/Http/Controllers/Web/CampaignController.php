@@ -12,20 +12,51 @@ use App\Enums\DiscountType;
 
 class CampaignController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $branchId = session('active_branch_id', 1);
 
-        $campaigns = Campaign::where('branch_id', $branchId)
+        $campaignsQuery = Campaign::where('branch_id', $branchId)
             ->with(['categories', 'services', 'usages.customer', 'usages.appointment.employee'])
-            ->latest()
-            ->get();
+            ->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $campaignsQuery->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $campaignsQuery->where('is_active', $request->input('status') === 'active');
+        }
+
+        $campaigns = $campaignsQuery->get();
             
-        // Since coupons are independent, we just fetch all coupons for now. 
-        // Or if we want branch specific coupons, we'd need branch_id on coupons, but we didn't add it.
-        $coupons = Coupon::with(['users', 'usages.customer', 'usages.appointment.employee'])
-            ->latest()
-            ->get();
+        // Coupons
+        $couponsQuery = Coupon::with(['users', 'usages.customer', 'usages.appointment.employee'])
+            ->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $couponsQuery->where(function ($q) use ($search) {
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $now = now();
+            if ($request->input('status') === 'active') {
+                $couponsQuery->where('expires_at', '>=', $now);
+            } elseif ($request->input('status') === 'inactive') {
+                $couponsQuery->where('expires_at', '<', $now);
+            }
+        }
+
+        $coupons = $couponsQuery->get();
 
         $categories = ServiceCategory::where('branch_id', $branchId)->get();
         $services = \App\Models\Service::where('branch_id', $branchId)->get();
@@ -34,10 +65,10 @@ class CampaignController extends Controller
         $users = User::all();
 
         $stats = [
-            'total_campaigns'  => $campaigns->count(),
-            'active_campaigns' => $campaigns->where('is_active', true)->count(),
-            'total_coupons'    => $coupons->count(),
-            'active_coupons'   => $coupons->filter(fn($c) => $c->isValid())->count(),
+            'total_campaigns'  => Campaign::where('branch_id', $branchId)->count(),
+            'active_campaigns' => Campaign::where('branch_id', $branchId)->where('is_active', true)->count(),
+            'total_coupons'    => Coupon::count(),
+            'active_coupons'   => Coupon::where('expires_at', '>=', now())->count(),
         ];
 
         return view('campaigns.index', compact('campaigns', 'coupons', 'stats', 'categories', 'services', 'products', 'cafeProducts', 'users'));
@@ -228,18 +259,56 @@ class CampaignController extends Controller
         return redirect()->route('campaigns.index')->with('success', 'Kupon kodu silindi.');
     }
 
-    public function usages(Campaign $campaign)
+    public function usages(Request $request, Campaign $campaign)
     {
         $this->authorizeBranchAccess($campaign->branch_id);
         
-        $usages = $campaign->usages()->with(['customer', 'appointment.employee'])->latest('used_at')->paginate(20);
+        $query = $campaign->usages()->with(['customer', 'appointment.employee'])->latest('used_at');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('customer', function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('used_at', '>=', $request->input('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('used_at', '<=', $request->input('date_to'));
+        }
+
+        $usages = $query->paginate(20)->withQueryString();
         
         return view('campaigns.usages', compact('campaign', 'usages'));
     }
 
-    public function couponUsages(Coupon $coupon)
+    public function couponUsages(Request $request, Coupon $coupon)
     {
-        $usages = $coupon->usages()->with(['customer', 'appointment.employee'])->latest('used_at')->paginate(20);
+        $query = $coupon->usages()->with(['customer', 'appointment.employee'])->latest('used_at');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('customer', function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('used_at', '>=', $request->input('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('used_at', '<=', $request->input('date_to'));
+        }
+
+        $usages = $query->paginate(20)->withQueryString();
         
         return view('campaigns.coupon_usages', compact('coupon', 'usages'));
     }

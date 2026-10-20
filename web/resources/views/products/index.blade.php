@@ -50,29 +50,14 @@
 
 @section('content')
 
-{{-- ── Header ────────────────────────────────────────────── --}}
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="fs-2"></span>
-                    <h1 class="fs-3 fw-bold mb-0 text-dark">Ürünler</h1>
-                </div>
-                <p class="text-muted mb-0">Salonda sattığınız ürünleri detaylı bilgileriyle yönetin.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
-                        data-bs-toggle="modal" data-bs-target="#productCategoriesModal">
-                    <i class="ti ti-category fs-5"></i> Kategorileri Yönet
-                </button>
-                <a href="{{ route('products.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" id="addProductBtn">
-                    <i class="ti ti-plus fs-5"></i> Yeni Ürün Ekle
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Ürünler" description="Salonda sattığınız ürünleri detaylı bilgileriyle yönetin.">
+    <x-btn-outline icon="ti ti-category" data-bs-toggle="modal" data-bs-target="#productCategoriesModal">
+        Kategorileri Yönet
+    </x-btn-outline>
+    <x-btn-primary href="{{ route('products.create') }}" icon="ti ti-plus" id="addProductBtn">
+        Yeni Ürün Ekle
+    </x-btn-primary>
+</x-page-header>
 
 
 
@@ -124,45 +109,44 @@
     </div>
 </div>
 
-{{-- ── Filtreler ───────────────────────────────────────────── --}}
-<div class="card border-0 shadow-sm rounded-4 mb-4 filter-card">
-    <div class="card-body p-3">
-        <form action="{{ route('products.index') }}" method="GET" class="row g-2 align-items-end">
-            <div class="col-12 col-md-4">
-                <label class="form-label small fw-semibold text-secondary mb-1">Arama</label>
-                <input type="text" name="search" class="form-control border-0 bg-white rounded-3 shadow-sm"
-                       placeholder="Ürün adı, barkod, SKU..." value="{{ request('search') }}">
-            </div>
-            <div class="col-6 col-md-2">
-                <label class="form-label small fw-semibold text-secondary mb-1">Kategori</label>
-                <select name="category" class="form-select border-0 bg-white rounded-3 shadow-sm">
-                    <option value="">Tümü</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-6 col-md-2">
-                <label class="form-label small fw-semibold text-secondary mb-1">Durum</label>
-                <select name="status" class="form-select border-0 bg-white rounded-3 shadow-sm">
-                    <option value="">Tümü</option>
-                    <option value="active"       {{ request('status') === 'active'       ? 'selected' : '' }}>Aktif</option>
-                    <option value="inactive"     {{ request('status') === 'inactive'     ? 'selected' : '' }}>Pasif</option>
-                    <option value="out_of_stock" {{ request('status') === 'out_of_stock' ? 'selected' : '' }}>Stok Yok</option>
-                    <option value="low_stock"    {{ request('status') === 'low_stock'    ? 'selected' : '' }}>Kritik Stok</option>
-                </select>
-            </div>
-            <div class="col-12 col-md-4 d-flex gap-2">
-                <button type="submit" class="btn btn-primary rounded-3 px-3 flex-fill">
-                    <i class="ti ti-search me-1"></i> Ara
-                </button>
-                @if(request()->hasAny(['search','category','status']))
-                    <a href="{{ route('products.index') }}" class="btn btn-light rounded-3 px-3">
-                        <i class="ti ti-x"></i>
-                    </a>
-                @endif
-            </div>
-        </form>
+{{-- Filters --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form action="{{ route('products.index') }}" method="GET" class="row g-2 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="Ürün adı, barkod, SKU..." :value="request('search')" :resetUrl="route('products.index')" />
+                </div>
+                <div class="col-6 col-md-3">
+                    <x-form-select name="category" label="Kategori" :pill="true">
+                        <option value="">Tüm Kategoriler</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </x-form-select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <x-form-select name="status" label="Durum" :pill="true">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="active"       {{ request('status') === 'active'       ? 'selected' : '' }}>Aktif</option>
+                        <option value="inactive"     {{ request('status') === 'inactive'     ? 'selected' : '' }}>Pasif</option>
+                        <option value="out_of_stock" {{ request('status') === 'out_of_stock' ? 'selected' : '' }}>Stok Yok</option>
+                        <option value="low_stock"    {{ request('status') === 'low_stock'    ? 'selected' : '' }}>Kritik Stok</option>
+                    </x-form-select>
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['search', 'category', 'status']))
+                        <a href="{{ route('products.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -269,24 +253,19 @@
                         </td>
                     </tr>
                     @empty
-                    <tr>
-                        <td colspan="8" class="text-center py-5">
-                            <div class="mb-3 text-muted"><i class="ti ti-package" style="font-size: 3.5rem;"></i></div>
-                            <h5 class="fw-semibold text-dark">Ürün bulunamadı</h5>
-                            <p class="text-muted mb-3">Arama kriterlerinizi değiştirin veya yeni ürün ekleyin.</p>
-                            <a href="{{ route('products.create') }}" class="btn btn-primary rounded-pill px-4">
-                                <i class="ti ti-plus me-1"></i> Yeni Ürün Ekle
-                            </a>
-                        </td>
-                    </tr>
+                    <x-empty-state icon="ti ti-package" title="Ürün bulunamadı" message="Arama kriterlerinizi değiştirin veya yeni ürün ekleyin." colspan="8">
+                        <x-btn-primary href="{{ route('products.create') }}" icon="ti ti-plus">
+                            Yeni Ürün Ekle
+                        </x-btn-primary>
+                    </x-empty-state>
                     @endforelse
                 </tbody>
             </table>
         </div>
     </div>
     @if($products->hasPages())
-        <div class="card-footer bg-white border-0 py-3 px-4">
-            {{ $products->links('pagination::bootstrap-5') }}
+        <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+            {{ $products->links() }}
         </div>
     @endif
 </div>

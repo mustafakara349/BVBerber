@@ -21,19 +21,11 @@
 </div>
 @endif
 
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fs-3 mb-1">Randevu #{{ $appointment->appointment_code }}</h1>
-                <p class="mb-0">Randevu detayları</p>
-            </div>
-            <a href="{{ route('appointments.index') }}" class="btn btn-outline-secondary">
-                <i class="ti ti-arrow-left me-1"></i>Geri
-            </a>
-        </div>
-    </div>
-</div>
+<x-page-header title="Randevu #{{ $appointment->appointment_code }}" description="Randevu detayları ve işlem geçmişi">
+    <x-btn-outline href="{{ route('appointments.index') }}" icon="ti ti-arrow-left">
+        Randevulara Dön
+    </x-btn-outline>
+</x-page-header>
 
 <div class="row g-3">
     {{-- Main Info --}}

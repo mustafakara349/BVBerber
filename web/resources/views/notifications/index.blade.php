@@ -177,58 +177,6 @@
     }
     .sn-btn-icon-danger:hover {
         background-color: rgba(250, 82, 82, 0.1);
-        color: #e03131;
-    }
-
-    /* Sayfalama (Görsel 2) */
-    .sn-pagination-box {
-        display: inline-flex;
-        background-color: #f3f4f6;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    .sn-page-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 38px;
-        height: 38px;
-        padding: 0 12px;
-        background-color: #ffffff;
-        color: #374151;
-        font-size: 14px;
-        font-weight: 500;
-        text-decoration: none;
-        border-right: 1px solid #e5e7eb;
-        transition: background-color 0.15s ease, color 0.15s ease;
-        user-select: none;
-    }
-    .sn-page-link:last-child {
-        border-right: none;
-    }
-    .sn-page-link:first-child,
-    .sn-page-link:last-child {
-        background-color: #f3f4f6;
-        color: #4b5563;
-        font-size: 18px;
-        font-weight: 400;
-    }
-    .sn-page-link.is-active {
-        background-color: #E66239 !important;
-        color: #ffffff !important;
-        font-weight: 700;
-    }
-    .sn-page-link.disabled {
-        color: #9ca3af !important;
-        background-color: #f3f4f6 !important;
-        cursor: not-allowed;
-    }
-    .sn-page-link:not(.is-active):not(.disabled):hover {
-        background-color: #f9fafb;
-        color: #111827;
-    }
-
     .sn-new-banner { animation: sn-slide .35s ease; }
     @keyframes sn-slide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 </style>
@@ -240,30 +188,21 @@
     $activeCategory = $filters['category'] ?? null;
 @endphp
 
-{{-- Başlık --}}
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-    <div>
-        <h1 class="fs-3 mb-1 d-flex align-items-center gap-2">
-            Sistem Bildirimleri
-        </h1>
-        <p class="text-muted mb-0">Randevu, stok ve değerlendirme gibi işletme olaylarına ait size özel uyarılar. Bildirimden doğrudan ilgili işleme geçebilirsiniz.</p>
-    </div>
-    <div class="d-flex gap-2">
-        <form method="POST" action="{{ route('notifications.mark-all-read') }}">
-            @csrf
-            <button type="submit" id="markAllReadBtn" class="btn btn-light border rounded-pill px-4 btn-sm fw-semibold" @disabled($stats['unread'] === 0)>
-                <i class="ti ti-checks me-1"></i> Tümünü Okundu Yap
-            </button>
-        </form>
-        <form method="POST" action="{{ route('notifications.destroy-read') }}" onsubmit="return confirm('Okunmuş tüm bildirimler silinecek. Emin misiniz?');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" id="clearReadBtn" class="btn btn-outline-danger rounded-pill px-4 btn-sm fw-semibold" @disabled($stats['read'] === 0)>
-                <i class="ti ti-trash me-1"></i> Okunmuşları Temizle
-            </button>
-        </form>
-    </div>
-</div>
+<x-page-header title="Sistem Bildirimleri" description="Randevu, stok ve değerlendirme gibi işletme olaylarına ait size özel uyarılar. Bildirimden doğrudan ilgili işleme geçebilirsiniz.">
+    <form method="POST" action="{{ route('notifications.mark-all-read') }}" class="d-inline-block">
+        @csrf
+        <x-btn-outline icon="ti ti-checks" type="submit" id="markAllReadBtn" :disabled="$stats['unread'] === 0">
+            Tümünü Okundu Yap
+        </x-btn-outline>
+    </form>
+    <form method="POST" action="{{ route('notifications.destroy-read') }}" onsubmit="return confirm('Okunmuş tüm bildirimler silinecek. Emin misiniz?');" class="d-inline-block">
+        @csrf
+        @method('DELETE')
+        <x-btn-danger icon="ti ti-trash" type="submit" id="clearReadBtn" :disabled="$stats['read'] === 0">
+            Okunmuşları Temizle
+        </x-btn-danger>
+    </form>
+</x-page-header>
 
 {{-- KPI --}}
 <div class="row g-4 mb-4">
@@ -469,10 +408,10 @@
         </ul>
     </div>
 
-    {{-- Sayfalama (Görsel 2) --}}
+    {{-- Sayfalama --}}
     @if($notifications->hasPages())
-        <div class="card-footer bg-transparent border-top px-4 px-lg-5 py-3.5">
-            {{ $notifications->links('partials.pagination') }}
+        <div class="card-footer bg-white border-top border-light-subtle px-4 px-lg-5 py-3">
+            {{ $notifications->links() }}
         </div>
     @endif
 </div>

@@ -27,7 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Illuminate\Pagination\Paginator::useBootstrapFive();
+        \Illuminate\Pagination\Paginator::defaultView('partials.pagination');
+        \Illuminate\Pagination\Paginator::defaultSimpleView('partials.pagination');
 
         // Default empty CSP nonce across views (populated per-request by SecurityHeadersMiddleware)
         \Illuminate\Support\Facades\View::share('cspNonce', '');
