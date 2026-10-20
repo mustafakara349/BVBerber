@@ -2,28 +2,61 @@
 @section('title', 'İzin Yönetimi - B&V Barber')
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-4">
-                <div class="me-md-4">
-                    <h1 class="fs-3 mb-1 fw-bold">İzin Yönetimi</h1>
-                    <p class="text-muted mb-0">Personellerin acil işlerini, saatlik bloklarını veya tüm gün izinlerini buradan yönetebilirsiniz. Aynı saatler veya günler için çakışan kayıtlar otomatik olarak engellenir.</p>
+<x-page-header title="İzin Yönetimi" description="Personellerin acil işlerini, saatlik bloklarını veya tüm gün izinlerini buradan yönetebilirsiniz.">
+    <x-btn-outline icon="ti ti-bolt" data-bs-toggle="modal" data-bs-target="#quickActionModal">
+        Hızlı İşlemler
+    </x-btn-outline>
+    <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#timeBlockModal">
+        Yeni İzin Ekle
+    </x-btn-primary>
+</x-page-header>
+
+{{-- Filters --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form action="{{ route('employee-time-blocks.index') }}" method="GET" class="row g-2 align-items-end">
+                <div class="col-12 col-md-3">
+                    <x-form-select name="employee_id" label="Personel" :pill="true">
+                        <option value="">Tüm Personeller</option>
+                        @foreach($employees as $emp)
+                            <option value="{{ $emp->id }}" {{ request('employee_id') == $emp->id ? 'selected' : '' }}>{{ $emp->user->full_name }}</option>
+                        @endforeach
+                    </x-form-select>
                 </div>
-                <div class="d-flex gap-2 flex-shrink-0">
-                    <button type="button" class="btn btn-warning rounded-pill shadow-sm fw-bold px-3 py-2 text-dark btn-sm" style="font-size: 0.9rem;" data-bs-toggle="modal"
-                        data-bs-target="#quickActionModal">
-                        <i class="ti ti-bolt me-1"></i> Hızlı İşlemler
-                    </button>
-                    <button type="button" class="btn btn-danger rounded-pill shadow-sm fw-bold px-3 py-2 btn-sm" style="font-size: 0.9rem;" data-bs-toggle="modal"
-                        data-bs-target="#timeBlockModal">
-                        <i class="ti ti-plus me-1"></i> Yeni İzin Ekle
-                    </button>
+
+                <div class="col-12 col-md-3">
+                    <x-form-select name="type" label="İzin Türü" :pill="true">
+                        <option value="">Tüm Türler</option>
+                        <option value="partial_time" {{ request('type') === 'partial_time' ? 'selected' : '' }}>Saatlik Kısıtlama</option>
+                        <option value="full_day" {{ request('type') === 'full_day' ? 'selected' : '' }}>Tüm Gün İzin</option>
+                    </x-form-select>
                 </div>
-            </div>
+
+                <div class="col-6 col-md-2">
+                    <x-date-input name="date_from" label="Başlangıç" :value="request('date_from')" :pill="true" />
+                </div>
+
+                <div class="col-6 col-md-2">
+                    <x-date-input name="date_to" label="Bitiş" :value="request('date_to')" :pill="true" />
+                </div>
+
+                <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['employee_id', 'type', 'date_from', 'date_to']))
+                        <a href="{{ route('employee-time-blocks.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <div class="row">
+<div class="row">
         <div class="col-12">
             <div class="card shadow-sm border-0 rounded-4">
                 <div class="card-body p-0">
@@ -110,17 +143,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center text-muted py-5">
-                                            <div class="d-flex flex-column align-items-center justify-content-center">
-                                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                                                    <i class="ti ti-calendar-off fs-1 text-secondary"></i>
-                                                </div>
-                                                <h5 class="fw-semibold text-dark">Henüz izin eklenmemiş</h5>
-                                                <p class="text-muted mb-0">Personeller için eklenen kısıtlamalar burada listelenecektir.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <x-empty-state icon="ti ti-calendar-off" title="Henüz izin eklenmemiş" message="Personeller için eklenen kısıtlamalar burada listelenecektir." colspan="6" />
                                 @endforelse
                             </tbody>
                         </table>

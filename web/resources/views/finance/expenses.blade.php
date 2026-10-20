@@ -2,25 +2,14 @@
 @section('title', 'Giderler - B&V Barber')
 @section('content')
 
-<!-- Header Area -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Giderler</h1>
-                <p class="text-muted mb-0">İşletme masraflarını, faturaları, tedarik ve personel giderlerini kaydedip analiz edin.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                    <i class="ti ti-folder-plus fs-5"></i> Yeni Kategori Ekle
-                </button>
-                <button type="button" class="btn btn-danger rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
-                    <i class="ti ti-plus fs-5"></i> Yeni Gider Kaydet
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Giderler" description="İşletme masraflarını, faturaları, tedarik ve personel giderlerini kaydedip analiz edin.">
+    <x-btn-outline icon="ti ti-folder-plus" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+        Yeni Kategori Ekle
+    </x-btn-outline>
+    <x-btn-danger icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+        Yeni Gider Kaydet
+    </x-btn-danger>
+</x-page-header>
 
 <!-- Dynamic Summary Cards -->
 <div class="row g-4 mb-4">
@@ -109,54 +98,39 @@
 </div>
 @endif
 
-<!-- Advanced Filter Panel -->
+{{-- Filters --}}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="ti ti-filter text-danger fs-4"></i>
-                    <h5 class="card-title fw-bold text-dark mb-0 fs-6">Giderleri Filtrele</h5>
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form action="{{ route('finance.expenses') }}" method="GET" class="row g-2 align-items-end">
+                <div class="col-12 col-md-4">
+                    <x-form-select name="category_name" label="Gider Kategorisi" :pill="true">
+                        <option value="">Tüm Gider Kategorileri</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->name }}" {{ request('category_name') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </x-form-select>
                 </div>
-                @if(request()->anyFilled(['category_name', 'start_date', 'end_date']))
-                    <a href="{{ route('finance.expenses') }}" class="btn btn-light rounded-pill btn-sm text-secondary d-flex align-items-center gap-1">
-                        <i class="ti ti-rotate"></i> Filtreleri Temizle
-                    </a>
-                @endif
-            </div>
-            <div class="card-body p-4 bg-light bg-opacity-30">
-                <form action="{{ route('finance.expenses') }}" method="GET" class="row g-3">
-                    <!-- Category Filter -->
-                    <div class="col-12 col-md-4">
-                        <label class="form-label text-secondary fw-semibold small">Gider Kategorisi</label>
-                        <select name="category_name" class="form-select border-0 shadow-sm rounded-3">
-                            <option value="">Tüm Gider Kategorileri</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->name }}" {{ request('category_name') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
 
-                    <!-- Start Date Filter -->
-                    <div class="col-12 col-md-3">
-                        <label class="form-label text-secondary fw-semibold small">Başlangıç Tarihi</label>
-                        <input type="date" name="start_date" class="form-control border-0 shadow-sm rounded-3" value="{{ request('start_date') }}">
-                    </div>
+                <div class="col-6 col-md-3">
+                    <x-date-input name="start_date" label="Başlangıç Tarihi" :value="request('start_date')" :pill="true" />
+                </div>
 
-                    <!-- End Date Filter -->
-                    <div class="col-12 col-md-3">
-                        <label class="form-label text-secondary fw-semibold small">Bitiş Tarihi</label>
-                        <input type="date" name="end_date" class="form-control border-0 shadow-sm rounded-3" value="{{ request('end_date') }}">
-                    </div>
+                <div class="col-6 col-md-3">
+                    <x-date-input name="end_date" label="Bitiş Tarihi" :value="request('end_date')" :pill="true" />
+                </div>
 
-                    <!-- Submit Button -->
-                    <div class="col-12 col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-danger rounded-3 w-100 py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                            <i class="ti ti-search fs-5"></i> Giderleri Bul
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['category_name', 'start_date', 'end_date']))
+                        <a href="{{ route('finance.expenses') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -225,20 +199,14 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
-                                    <i class="ti ti-mood-empty fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Hiç gider kaydı bulunamadı.</h5>
-                                    <p class="small text-secondary mb-0">İlk gider kaydınızı eklemek için sağ üst köşedeki "Yeni Gider Kaydet" butonuna tıklayabilirsiniz.</p>
-                                </td>
-                            </tr>
+                            <x-empty-state icon="ti ti-receipt-off" title="Hiç gider kaydı bulunamadı" message="İlk gider kaydınızı eklemek için sağ üst köşedeki 'Yeni Gider Kaydet' butonuna tıklayabilirsiniz." colspan="7" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($expenses->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
                     {{ $expenses->links() }}
                 </div>
             @endif

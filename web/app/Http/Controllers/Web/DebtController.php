@@ -154,6 +154,14 @@ class DebtController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
         $debts = $query->paginate(15)->withQueryString();
 
         // Calculate totals for this specific person

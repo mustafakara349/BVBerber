@@ -2,49 +2,41 @@
 @section('title', 'Tedarikçiler - Stok & Tedarik - B&V Barber')
 @section('content')
 
+<x-page-header title="Tedarikçiler" description="Mal alımı yaptığınız toptancı ve firmaları yönetin.">
+    <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+        Yeni Tedarikçi Ekle
+    </x-btn-primary>
+</x-page-header>
+
+{{-- Filters --}}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Tedarikçiler</h1>
-                <p class="text-muted mb-0">Mal alımı yaptığınız toptancı ve firmaları yönetin.</p>
-            </div>
-            <div>
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
-                    <i class="ti ti-plus fs-5"></i> Yeni Tedarikçi Ekle
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+        <div class="card border-0 shadow-sm rounded-4 bg-white p-3">
+            <form action="{{ route('suppliers.index') }}" method="GET" class="row g-2 align-items-end">
+                <div class="col-12 col-md-5 col-lg-5">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="Firma adı, e-posta, telefon..." :value="request('search')" :resetUrl="route('suppliers.index')" />
+                </div>
 
-<!-- Advanced Filter Panel -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-body p-4 bg-light bg-opacity-30">
-                <form action="{{ route('suppliers.index') }}" method="GET" class="row g-3">
-                    <div class="col-12 col-md-4">
-                        <label class="form-label text-secondary fw-semibold small">Durum</label>
-                        <select name="status" class="form-select border-0 shadow-sm rounded-3">
-                            <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Tümü</option>
-                            <option value="active" {{ request('status') === 'active' || !request('status') ? 'selected' : '' }}>Aktif Tedarikçiler</option>
-                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Pasif Tedarikçiler</option>
-                        </select>
-                    </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <x-form-select name="status" label="Durum" :pill="true">
+                        <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Tümü</option>
+                        <option value="active" {{ request('status') === 'active' || !request('status') ? 'selected' : '' }}>Aktif Tedarikçiler</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Pasif Tedarikçiler</option>
+                    </x-form-select>
+                </div>
 
-                    <div class="col-12 col-md-6">
-                        <label class="form-label text-secondary fw-semibold small">Arama</label>
-                        <input type="text" name="search" class="form-control border-0 shadow-sm rounded-3" placeholder="Firma adı, e-posta, telefon..." value="{{ request('search') }}">
-                    </div>
-
-                    <div class="col-12 col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary rounded-3 w-100 py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                            <i class="ti ti-search fs-5"></i> Ara
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="col-12 col-md-3 col-lg-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->filled('search') || (request()->filled('status') && request('status') !== 'active'))
+                        <a href="{{ route('suppliers.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -121,21 +113,15 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="ti ti-truck fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Tedarikçi bulunamadı.</h5>
-                                    <p class="small text-secondary mb-0">Mal alımı yapabilmek için sisteme tedarikçi ekleyin.</p>
-                                </td>
-                            </tr>
+                            <x-empty-state icon="ti ti-truck" title="Tedarikçi bulunamadı" message="Mal alımı yapabilmek için sisteme tedarikçi ekleyin veya arama kriterinizi değiştirin." colspan="5" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($suppliers->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
-                    {{ $suppliers->links('pagination::bootstrap-5') }}
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                    {{ $suppliers->links() }}
                 </div>
             @endif
         </div>

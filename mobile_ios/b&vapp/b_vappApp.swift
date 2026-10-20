@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseCore
+import FirebaseMessaging
 import Combine
 
 // MARK: - AppDelegate
@@ -39,6 +40,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) {
         print("[AppDelegate] APNs kaydı başarısız: \(error.localizedDescription)")
     }
+
+    // MARK: - Arka Plan Uzaktan Bildirim Alma
+
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        NotificationManager.shared.appDidReceiveRemoteNotification(userInfo)
+        completionHandler(.newData)
+    }
 }
 
 // MARK: - App Entry Point
@@ -47,6 +59,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct b_vappApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject var authManager = AuthManager.shared
     @StateObject var notificationManager = NotificationManager.shared
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
@@ -95,6 +108,23 @@ struct b_vappApp: App {
                 if newUserId != nil {
                     Task {
                         await notificationManager.activateRemoteNotifications()
+                    }
+                }
+            }
+            .task {
+                // Önceden giriş yapılmış oturum mevcutsa başlangıçta token senkronizasyonunu garantile
+                if authManager.currentUserId != nil {
+                    await notificationManager.activateRemoteNotifications()
+                }
+            }
+            // Uygulama ön plana geldiğinde rozeti temizle ve bağlantı koptuysa token'ı yenile
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .active {
+                    notificationManager.clearBadge()
+                    if authManager.currentUserId != nil {
+                        Task {
+                            await notificationManager.syncTokenWithBackend()
+                        }
                     }
                 }
             }

@@ -2,37 +2,25 @@
 @section('title', 'Finansal İşlemler - B&V Barber')
 @section('content')
 
-<!-- Modern and Premium Header -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Finansal İşlemler</h1>
-                <p class="text-muted mb-0">İşletmenizin gelir, gider ve genel kasa hareketlerini tek bir yerden yönetin.</p>
-            </div>
-            <div class="d-flex gap-2 align-items-center">
-                <form action="{{ route('finance.transactions') }}" method="GET" id="dateFilterForm">
-                    <!-- Preserve existing query strings except date_filter -->
-                    @foreach(request()->except('date_filter', 'page') as $key => $value)
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
-                    <select name="date_filter" class="form-select rounded-pill border-0 shadow-sm" onchange="document.getElementById('dateFilterForm').submit()">
-                        <option value="daily" {{ $dateFilter === 'daily' ? 'selected' : '' }}>Bugün</option>
-                        <option value="monthly" {{ $dateFilter === 'monthly' ? 'selected' : '' }}>Bu Ay</option>
-                        <option value="yearly" {{ $dateFilter === 'yearly' ? 'selected' : '' }}>Bu Yıl</option>
-                        <option value="all" {{ $dateFilter === 'all' ? 'selected' : '' }}>Tüm Zamanlar</option>
-                        @if($dateFilter === 'custom')
-                            <option value="custom" selected>Özel Aralık</option>
-                        @endif
-                    </select>
-                </form>
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
-                    <i class="ti ti-plus fs-5"></i> Yeni Kasa İşlemi Ekle
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Finansal İşlemler" description="İşletmenizin gelir, gider ve genel kasa hareketlerini tek bir yerden yönetin.">
+    <form action="{{ route('finance.transactions') }}" method="GET" id="dateFilterForm" class="d-inline-block">
+        @foreach(request()->except('date_filter', 'page') as $key => $value)
+            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+        @endforeach
+        <select name="date_filter" class="form-select form-select-pill bg-white shadow-sm" onchange="document.getElementById('dateFilterForm').submit()">
+            <option value="daily" {{ $dateFilter === 'daily' ? 'selected' : '' }}>Bugün</option>
+            <option value="monthly" {{ $dateFilter === 'monthly' ? 'selected' : '' }}>Bu Ay</option>
+            <option value="yearly" {{ $dateFilter === 'yearly' ? 'selected' : '' }}>Bu Yıl</option>
+            <option value="all" {{ $dateFilter === 'all' ? 'selected' : '' }}>Tüm Zamanlar</option>
+            @if($dateFilter === 'custom')
+                <option value="custom" selected>Özel Aralık</option>
+            @endif
+        </select>
+    </form>
+    <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+        Yeni Kasa İşlemi Ekle
+    </x-btn-primary>
+</x-page-header>
 
 <!-- Dynamic Summary Cards with Vibrant Gradients -->
 <div class="row g-4 mb-4">
@@ -108,66 +96,54 @@
 </div>
 @endif
 
-<!-- Advanced Filter Panel -->
+{{-- Filters --}}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="ti ti-filter text-primary fs-4"></i>
-                    <h5 class="card-title fw-bold text-dark mb-0 fs-6">Gelişmiş Filtreleme</h5>
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form action="{{ route('finance.transactions') }}" method="GET" class="row g-2 align-items-end">
+                <!-- Type Filter -->
+                <div class="col-12 col-md-3">
+                    <x-form-select name="transaction_type" label="İşlem Tipi" :pill="true">
+                        <option value="">Tüm İşlem Tipleri</option>
+                        <option value="income" {{ request('transaction_type') === 'income' ? 'selected' : '' }}>Gelir (+)</option>
+                        <option value="expense" {{ request('transaction_type') === 'expense' ? 'selected' : '' }}>Gider (-)</option>
+                        <option value="refund" {{ request('transaction_type') === 'refund' ? 'selected' : '' }}>İade (↺)</option>
+                    </x-form-select>
                 </div>
-                @if(request()->anyFilled(['transaction_type', 'payment_method', 'start_date', 'end_date']))
-                    <a href="{{ route('finance.transactions') }}" class="btn btn-light rounded-pill btn-sm text-secondary d-flex align-items-center gap-1">
-                        <i class="ti ti-rotate"></i> Filtreleri Temizle
-                    </a>
-                @endif
-            </div>
-            <div class="card-body p-4 bg-light bg-opacity-30">
-                <form action="{{ route('finance.transactions') }}" method="GET" class="row g-3">
-                    <!-- Type Filter -->
-                    <div class="col-12 col-md-3">
-                        <label class="form-label text-secondary fw-semibold small">İşlem Tipi</label>
-                        <select name="transaction_type" class="form-select border-0 shadow-sm rounded-3">
-                            <option value="">Tüm İşlem Tipleri</option>
-                            <option value="income" {{ request('transaction_type') === 'income' ? 'selected' : '' }}>Gelir (+)</option>
-                            <option value="expense" {{ request('transaction_type') === 'expense' ? 'selected' : '' }}>Gider (-)</option>
-                            <option value="refund" {{ request('transaction_type') === 'refund' ? 'selected' : '' }}>İade (↺)</option>
-                        </select>
-                    </div>
 
-                    <!-- Payment Method Filter -->
-                    <div class="col-12 col-md-3">
-                        <label class="form-label text-secondary fw-semibold small">Ödeme Yöntemi</label>
-                        <select name="payment_method" class="form-select border-0 shadow-sm rounded-3">
-                            <option value="">Tüm Ödeme Yöntemleri</option>
-                            <option value="cash" {{ request('payment_method') === 'cash' ? 'selected' : '' }}>Nakit</option>
-                            <option value="credit_card" {{ request('payment_method') === 'credit_card' ? 'selected' : '' }}>Kredi Kartı</option>
-                            <option value="bank_transfer" {{ request('payment_method') === 'bank_transfer' ? 'selected' : '' }}>Banka Transferi</option>
-                            <option value="online" {{ request('payment_method') === 'online' ? 'selected' : '' }}>Online</option>
-                        </select>
-                    </div>
+                <!-- Payment Method Filter -->
+                <div class="col-12 col-md-3">
+                    <x-form-select name="payment_method" label="Ödeme Yöntemi" :pill="true">
+                        <option value="">Tüm Ödeme Yöntemleri</option>
+                        <option value="cash" {{ request('payment_method') === 'cash' ? 'selected' : '' }}>Nakit</option>
+                        <option value="credit_card" {{ request('payment_method') === 'credit_card' ? 'selected' : '' }}>Kredi Kartı</option>
+                        <option value="bank_transfer" {{ request('payment_method') === 'bank_transfer' ? 'selected' : '' }}>Banka Transferi</option>
+                        <option value="online" {{ request('payment_method') === 'online' ? 'selected' : '' }}>Online</option>
+                    </x-form-select>
+                </div>
 
-                    <!-- Start Date Filter -->
-                    <div class="col-12 col-md-2">
-                        <label class="form-label text-secondary fw-semibold small">Başlangıç Tarihi</label>
-                        <input type="date" name="start_date" class="form-control border-0 shadow-sm rounded-3" value="{{ request('start_date') }}">
-                    </div>
+                <!-- Start Date Filter -->
+                <div class="col-6 col-md-2">
+                    <x-date-input name="start_date" label="Başlangıç Tarihi" :value="request('start_date')" :pill="true" />
+                </div>
 
-                    <!-- End Date Filter -->
-                    <div class="col-12 col-md-2">
-                        <label class="form-label text-secondary fw-semibold small">Bitiş Tarihi</label>
-                        <input type="date" name="end_date" class="form-control border-0 shadow-sm rounded-3" value="{{ request('end_date') }}">
-                    </div>
+                <!-- End Date Filter -->
+                <div class="col-6 col-md-2">
+                    <x-date-input name="end_date" label="Bitiş Tarihi" :value="request('end_date')" :pill="true" />
+                </div>
 
-                    <!-- Search Submit Button -->
-                    <div class="col-12 col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary rounded-3 w-100 py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                            <i class="ti ti-search fs-5"></i> Filtrele
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <!-- Search Submit Button -->
+                <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['transaction_type', 'payment_method', 'start_date', 'end_date']))
+                        <a href="{{ route('finance.transactions') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -252,20 +228,17 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="8" class="text-center py-5 text-muted">
-                                    <i class="ti ti-mood-empty fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Filtreye uygun finansal işlem bulunamadı.</h5>
-                                    <p class="small text-secondary mb-0">Filtre kriterlerinizi değiştirmeyi veya yeni kasa işlemi eklemeyi deneyin.</p>
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                colspan="8" 
+                                title="Filtreye uygun finansal işlem bulunamadı" 
+                                description="Filtre kriterlerinizi değiştirmeyi veya yeni kasa işlemi eklemeyi deneyin." />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($transactions->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
                     {{ $transactions->links() }}
                 </div>
             @endif

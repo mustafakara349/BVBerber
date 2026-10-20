@@ -227,7 +227,7 @@
             lastLatestId = latestId;
 
             document.dispatchEvent(new CustomEvent('admin-notifications:update', {
-                detail: { unreadCount: unread, latestId: data.latest_id, items: data.items },
+                detail: { unreadCount: unread, latestId: data.latest_id, items: data.items, isNew: isNew },
             }));
         }
 

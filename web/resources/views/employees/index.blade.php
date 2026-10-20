@@ -1,50 +1,46 @@
 @extends('layouts.app')
 @section('title', 'Çalışanlar - B&V Barber')
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="fs-3 mb-1">Çalışanlar</h1>
-                    <p class="text-muted">Personel listesini görüntüleyin ve yönetin.</p>
+<x-page-header title="Çalışanlar" description="Personel listesini görüntüleyin ve yönetin.">
+    <x-btn-outline icon="ti ti-list" data-bs-toggle="modal" data-bs-target="#titlesModal">
+        Unvanları Yönet
+    </x-btn-outline>
+    <x-btn-primary href="{{ route('employees.create') }}" icon="ti ti-plus">
+        Yeni Çalışan Ekle
+    </x-btn-primary>
+</x-page-header>
+
+{{-- Filters --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form method="GET" action="{{ route('employees.index') }}" class="row g-2 align-items-end">
+                <div class="col-12 col-md-5 col-lg-5">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="Personel ara..." :value="request('search')" :resetUrl="route('employees.index')" />
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button"
-                        class="btn btn-outline-secondary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
-                        data-bs-toggle="modal" data-bs-target="#titlesModal">
-                        <i class="ti ti-list me-1"></i> Unvanları Yönet
+                <div class="col-12 col-md-4 col-lg-4">
+                    <x-form-select name="role_id" label="Rol" :pill="true">
+                        <option value="">Tüm Roller</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                        @endforeach
+                    </x-form-select>
+                </div>
+                <div class="col-12 col-md-3 col-lg-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
                     </button>
-                    <a href="{{ route('employees.create') }}"
-                        class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
-                        <i class="ti ti-plus fs-5"></i> Yeni Çalışan Ekle
-                    </a>
-                </div>
-            </div>
-        </div>
-    <div class="row mb-3">
-        <div class="col-12 col-md-8 col-lg-6">
-            <form method="GET" action="{{ route('employees.index') }}" class="d-flex gap-2">
-                <div class="input-group bg-white rounded-pill shadow-sm overflow-hidden border flex-grow-1">
-                    <span class="input-group-text bg-transparent border-0 pe-1 text-muted">
-                        <i class="ti ti-search fs-5"></i>
-                    </span>
-                    <input type="text" name="search" class="form-control border-0 ps-1 py-2" placeholder="Personel ara..." value="{{ request('search') }}">
-                    @if(request('search') || request('role_id'))
-                        <a href="{{ route('employees.index') }}" class="btn btn-link text-muted border-0 d-flex align-items-center text-decoration-none">
-                            <i class="ti ti-x"></i>
+                    @if(request()->anyFilled(['search', 'role_id']))
+                        <a href="{{ route('employees.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
                         </a>
                     @endif
                 </div>
-                <select name="role_id" class="form-select bg-white rounded-pill shadow-sm border w-auto" onchange="this.form.submit()">
-                    <option value="">Tüm Roller</option>
-                    @foreach($roles as $role)
-                        <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
-                    @endforeach
-                </select>
-                <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm flex-shrink-0">Ara</button>
             </form>
         </div>
     </div>
+</div>
 
     <div class="row">
         <div class="col-12">
@@ -175,27 +171,15 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center py-5">
-                                            <div
-                                                class="d-flex flex-column align-items-center justify-content-center text-muted">
-                                                <div class="bg-light rounded-circle p-4 mb-3 d-flex align-items-center justify-content-center"
-                                                    style="width: 80px; height: 80px;">
-                                                    <i class="ti ti-users fs-1 text-secondary"></i>
-                                                </div>
-                                                <h5 class="fw-medium text-dark">Kayıtlı çalışan bulunamadı</h5>
-                                                <p class="mb-0">Sisteme henüz bir çalışan eklenmemiş.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <x-empty-state icon="ti ti-users" title="Kayıtlı çalışan bulunamadı" message="Sisteme henüz bir çalışan eklenmemiş veya arama kriterinize uygun çalışan bulunamadı." colspan="7" />
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
                 @if($employees->hasPages())
-                    <div class="card-footer bg-white border-top p-3">
-                        {{ $employees->links('pagination::bootstrap-5') }}
+                    <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                        {{ $employees->links() }}
                     </div>
                 @endif
             </div>

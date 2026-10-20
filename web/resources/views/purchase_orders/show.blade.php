@@ -2,21 +2,11 @@
 @section('title', 'Fatura Detayı - Mal Alımları - B&V Barber')
 @section('content')
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Fatura Detayı</h1>
-                <p class="text-muted mb-0">Mal alım işleminin detaylarını inceleyin.</p>
-            </div>
-            <div>
-                <a href="{{ route('purchase-orders.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
-                    Geri Dön
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Fatura Detayı" description="Mal alım işleminin detaylarını inceleyin.">
+    <x-btn-outline href="{{ route('purchase-orders.index') }}" icon="ti ti-arrow-left">
+        Mal Alımlarına Dön
+    </x-btn-outline>
+</x-page-header>
 
 <div class="row">
     <div class="col-md-4 mb-4">

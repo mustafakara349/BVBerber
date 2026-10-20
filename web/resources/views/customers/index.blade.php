@@ -1,34 +1,33 @@
 @extends('layouts.app')
 @section('title', 'Müşteriler - B&V Barber')
 @section('content')
-<div class="row">
+<x-page-header title="Müşteriler" description="Kayıtlı tüm müşterilerinizi görüntüleyin ve yönetin.">
+    <x-btn-primary href="{{ route('customers.create') }}" icon="ti ti-plus">
+        Yeni Müşteri Ekle
+    </x-btn-primary>
+</x-page-header>
+
+{{-- Filters --}}
+<div class="row mb-4">
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fs-3 mb-1">Müşteriler</h1>
-                <p class="text-muted">Kayıtlı tüm müşterilerinizi görüntüleyin ve yönetin.</p>
-            </div>
-            <a href="{{ route('customers.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
-                <i class="ti ti-plus me-1"></i> Yeni Müşteri Ekle
-            </a>
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form method="GET" action="{{ route('customers.index') }}" class="row g-2 align-items-end">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="İsim, e-posta veya telefon ile ara..." :value="request('search')" :resetUrl="route('customers.index')" />
+                </div>
+                <div class="col-12 col-md-4 col-lg-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->filled('search'))
+                        <a href="{{ route('customers.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
-    </div>
-<div class="row mb-3">
-    <div class="col-12 col-md-6 col-lg-4">
-        <form method="GET" action="{{ route('customers.index') }}" class="d-flex gap-2">
-            <div class="input-group bg-white rounded-pill shadow-sm overflow-hidden border">
-                <span class="input-group-text bg-transparent border-0 pe-1 text-muted">
-                    <i class="ti ti-search fs-5"></i>
-                </span>
-                <input type="text" name="search" class="form-control border-0 ps-1 py-2" placeholder="İsim, e-posta veya telefon ile ara..." value="{{ request('search') }}">
-                @if(request('search'))
-                    <a href="{{ route('customers.index') }}" class="btn btn-link text-muted border-0 d-flex align-items-center text-decoration-none">
-                        <i class="ti ti-x"></i>
-                    </a>
-                @endif
-            </div>
-            <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm flex-shrink-0">Ara</button>
-        </form>
     </div>
 </div>
 
@@ -121,25 +120,15 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-5">
-                                    <div class="d-flex flex-column align-items-center justify-content-center text-muted">
-                                        <div class="bg-light rounded-circle p-4 mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                            <i class="ti ti-user-circle fs-1 text-secondary"></i>
-                                        </div>
-                                        <h5 class="fw-medium text-dark">Kayıtlı müşteri bulunamadı</h5>
-                                        <p class="mb-0">Sisteme henüz bir müşteri kayıt olmamış.</p>
-                                    </div>
-                                </td>
-                            </tr>
+                            <x-empty-state icon="ti ti-user-circle" title="Kayıtlı müşteri bulunamadı" message="Sisteme henüz bir müşteri kayıt olmamış veya arama kriterinize uygun müşteri bulunamadı." colspan="6" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($customers->hasPages())
-            <div class="card-footer bg-white border-top p-3">
-                {{ $customers->links('pagination::bootstrap-5') }}
+            <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                {{ $customers->links() }}
             </div>
             @endif
         </div>

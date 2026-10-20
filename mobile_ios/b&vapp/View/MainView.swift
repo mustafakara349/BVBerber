@@ -10,6 +10,7 @@ import SwiftUI
 struct MainView: View {
     
     @State private var selectedTab: Tab = .home
+    @ObservedObject private var notificationManager = NotificationManager.shared
     
     // ViewModels for the entire Main app flow. Preserved in memory.
     @StateObject private var homeVM = HomeViewModel()
@@ -69,8 +70,40 @@ struct MainView: View {
             
             _ = await (t1, t2, t3, t4, t5)
         }
+        .onAppear {
+            handlePendingDestination()
+        }
+        .onReceive(notificationManager.$pendingDestination) { destination in
+            if destination != nil {
+                handlePendingDestination()
+            }
+        }
         .onReceive(NotificationCenter.default.publisher(for: .navigateToNotifications)) { _ in
             selectedTab = .home
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToCampaigns)) { _ in
+            selectedTab = .home
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .navigateToAppointments)) { _ in
+            selectedTab = .appointments
+        }
+    }
+
+    private func handlePendingDestination() {
+        guard let destination = notificationManager.pendingDestination else { return }
+        notificationManager.pendingDestination = nil
+
+        switch destination {
+        case .campaigns:
+            selectedTab = .home
+            NotificationCenter.default.post(name: .navigateToCampaigns, object: nil)
+        case .appointments:
+            selectedTab = .appointments
+            NotificationCenter.default.post(name: .refreshAppointments, object: nil)
+            NotificationCenter.default.post(name: .navigateToAppointments, object: nil)
+        case .notifications:
+            selectedTab = .home
+            NotificationCenter.default.post(name: .navigateToNotifications, object: nil)
         }
     }
 }

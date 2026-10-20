@@ -2,35 +2,26 @@
 @section('title', 'Ödemeler - B&V Barber')
 @section('content')
 
-<!-- Modern Header & Tabs -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Ödemeler (Bizim Borçlarımız)</h1>
-                <p class="text-muted mb-0">Tedarikçi borçlarını, masrafları ve işletmenizin yapması gereken ödemeleri yönetin.</p>
-            </div>
-            <div>
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addDebtModal">
-                    <i class="ti ti-plus fs-5"></i> Yeni Borç Kaydı Ekle
-                </button>
-            </div>
-        </div>
+<x-page-header title="Ödemeler (Bizim Borçlarımız)" description="Tedarikçi borçlarını, masrafları ve işletmenizin yapması gereken ödemeleri yönetin.">
+    <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addDebtModal">
+        Yeni Borç Kaydı Ekle
+    </x-btn-primary>
+</x-page-header>
 
-        <!-- Navigation Tabs -->
-        <ul class="nav nav-pills p-1 bg-light rounded-pill d-inline-flex border">
-            <li class="nav-item">
-                <a class="nav-link rounded-pill px-4 text-secondary" href="{{ route('finance.receivables.index') }}">
-                    <i class="ti ti-arrow-down-right me-1"></i> Alacaklar (Müşteriler)
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active rounded-pill px-4" href="{{ route('finance.payables.index') }}">
-                    <i class="ti ti-arrow-up-right me-1"></i> Ödemeler (Tedarikçiler/Giderler)
-                </a>
-            </li>
-        </ul>
-    </div>
+<!-- Navigation Tabs -->
+<div class="mb-4">
+    <ul class="nav nav-pills p-1 bg-white rounded-pill d-inline-flex border shadow-sm">
+        <li class="nav-item">
+            <a class="nav-link rounded-pill px-4 text-secondary" href="{{ route('finance.receivables.index') }}">
+                <i class="ti ti-arrow-down-right me-1"></i> Alacaklar (Müşteriler)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active rounded-pill px-4" href="{{ route('finance.payables.index') }}">
+                <i class="ti ti-arrow-up-right me-1"></i> Ödemeler (Tedarikçiler/Giderler)
+            </a>
+        </li>
+    </ul>
 </div>
 
 
@@ -94,49 +85,40 @@
     </div>
 </div>
 
-<!-- Advanced Filter Panel -->
+{{-- Filters --}}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="ti ti-filter text-primary fs-4"></i>
-                    <h5 class="card-title fw-bold text-dark mb-0 fs-6">Gelişmiş Filtreleme</h5>
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form action="{{ route('finance.payables.index') }}" method="GET" class="row g-2 align-items-end">
+                <!-- Search Filter -->
+                <div class="col-12 col-md-5 col-lg-5">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="Müşteri adı, telefon, randevu kodu..." :value="request('search')" :resetUrl="route('finance.payables.index')" />
                 </div>
-                @if(request()->anyFilled(['status', 'search']))
-                    <a href="{{ route('finance.payables.index') }}" class="btn btn-light rounded-pill btn-sm text-secondary d-flex align-items-center gap-1">
-                        <i class="ti ti-rotate"></i> Filtreleri Temizle
-                    </a>
-                @endif
-            </div>
-            <div class="card-body p-4 bg-light bg-opacity-30">
-                <form action="{{ route('finance.payables.index') }}" method="GET" class="row g-3">
-                    <!-- Status Filter -->
-                    <div class="col-12 col-md-4">
-                        <label class="form-label text-secondary fw-semibold small">Ödeme Durumu</label>
-                        <select name="status" class="form-select border-0 shadow-sm rounded-3">
-                            <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Tüm Borçlar (Ödenenler Dahil)</option>
-                            <option value="" {{ request('status') === null || request('status') === '' ? 'selected' : '' }}>Aktif Borçlar (Ödenmemiş & Kısmi)</option>
-                            <option value="unpaid" {{ request('status') === 'unpaid' ? 'selected' : '' }}>Ödenmemiş</option>
-                            <option value="partial" {{ request('status') === 'partial' ? 'selected' : '' }}>Kısmi Ödenmiş</option>
-                            <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Tamamen Ödenmiş</option>
-                        </select>
-                    </div>
 
-                    <!-- Search Filter -->
-                    <div class="col-12 col-md-4">
-                        <label class="form-label text-secondary fw-semibold small">Arama</label>
-                        <input type="text" name="search" class="form-control border-0 shadow-sm rounded-3" placeholder="Müşteri adı, telefon, randevu kodu..." value="{{ request('search') }}">
-                    </div>
+                <!-- Status Filter -->
+                <div class="col-12 col-md-4 col-lg-4">
+                    <x-form-select name="status" label="Ödeme Durumu" :pill="true">
+                        <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Tüm Borçlar (Ödenenler Dahil)</option>
+                        <option value="" {{ request('status') === null || request('status') === '' ? 'selected' : '' }}>Aktif Borçlar (Ödenmemiş & Kısmi)</option>
+                        <option value="unpaid" {{ request('status') === 'unpaid' ? 'selected' : '' }}>Ödenmemiş</option>
+                        <option value="partial" {{ request('status') === 'partial' ? 'selected' : '' }}>Kısmi Ödenmiş</option>
+                        <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Tamamen Ödenmiş</option>
+                    </x-form-select>
+                </div>
 
-                    <!-- Search Button -->
-                    <div class="col-12 col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary rounded-3 w-100 py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                            <i class="ti ti-search fs-5"></i> Filtrele
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <!-- Search Button -->
+                <div class="col-12 col-md-3 col-lg-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['status', 'search']))
+                        <a href="{{ route('finance.payables.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -194,21 +176,18 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="9" class="text-center py-5 text-muted">
-                                    <i class="ti ti-mood-empty fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Borç kaydı bulunamadı.</h5>
-                                    <p class="small text-secondary mb-0">Tüm borçlar ödenmiş olabilir veya filtre kriterleriniz çok dar olabilir.</p>
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                colspan="7" 
+                                title="Borç kaydı bulunamadı" 
+                                description="Tüm borçlar ödenmiş olabilir veya filtre kriterleriniz çok dar olabilir." />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($debts->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
-                    {{ $debts->links('pagination::bootstrap-5') }}
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                    {{ $debts->links() }}
                 </div>
             @endif
         </div>

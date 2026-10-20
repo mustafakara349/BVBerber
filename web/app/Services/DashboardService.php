@@ -13,7 +13,7 @@ class DashboardService
 
     private function getCacheTtl(int $seconds): int
     {
-        return app()->environment('local') ? 1 : $seconds;
+        return $seconds;
     }
 
     public function getWidgetData(int $branchId): array

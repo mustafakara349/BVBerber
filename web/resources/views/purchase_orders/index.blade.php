@@ -2,52 +2,44 @@
 @section('title', 'Mal Alımları - Stok & Tedarik - B&V Barber')
 @section('content')
 
+<x-page-header title="Mal Alımları" description="Tedarikçilerden aldığınız ürünleri faturalandırın ve stoklara ekleyin.">
+    <x-btn-primary href="{{ route('purchase-orders.create') }}" icon="ti ti-plus">
+        Yeni Mal Alımı
+    </x-btn-primary>
+</x-page-header>
+
+{{-- Filters --}}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Mal Alımları</h1>
-                <p class="text-muted mb-0">Tedarikçilerden aldığınız ürünleri faturalandırın ve stoklara ekleyin.</p>
-            </div>
-            <div>
-                <a href="{{ route('purchase-orders.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
-                    <i class="ti ti-plus fs-5"></i> Yeni Mal Alımı
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+        <div class="card border-0 shadow-sm rounded-4 bg-white p-3">
+            <form action="{{ route('purchase-orders.index') }}" method="GET" class="row g-2 align-items-end">
+                <div class="col-12 col-md-5 col-lg-5">
+                    <label class="form-label text-secondary small fw-medium mb-1">Fatura Numarası</label>
+                    <x-search-input name="invoice_number" placeholder="Fatura veya fiş no..." :value="request('invoice_number')" :resetUrl="route('purchase-orders.index')" />
+                </div>
 
-<!-- Advanced Filter Panel -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-body p-4 bg-light bg-opacity-30">
-                <form action="{{ route('purchase-orders.index') }}" method="GET" class="row g-3">
-                    <div class="col-12 col-md-4">
-                        <label class="form-label text-secondary fw-semibold small">Tedarikçi</label>
-                        <select name="supplier_id" class="form-select border-0 shadow-sm rounded-3">
-                            <option value="">Tümü</option>
-                            @foreach($suppliers as $supplier)
-                                <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : '' }}>
-                                    {{ $supplier->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <x-form-select name="supplier_id" label="Tedarikçi" :pill="true">
+                        <option value="">Tüm Tedarikçiler</option>
+                        @foreach($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                {{ $supplier->name }}
+                            </option>
+                        @endforeach
+                    </x-form-select>
+                </div>
 
-                    <div class="col-12 col-md-6">
-                        <label class="form-label text-secondary fw-semibold small">Fatura Numarası</label>
-                        <input type="text" name="invoice_number" class="form-control border-0 shadow-sm rounded-3" placeholder="Fatura veya fiş no..." value="{{ request('invoice_number') }}">
-                    </div>
-
-                    <div class="col-12 col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary rounded-3 w-100 py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                            <i class="ti ti-search fs-5"></i> Ara
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="col-12 col-md-3 col-lg-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['supplier_id', 'invoice_number']))
+                        <a href="{{ route('purchase-orders.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -92,21 +84,15 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="ti ti-file-invoice fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Kayıt bulunamadı.</h5>
-                                    <p class="small text-secondary mb-0">Mal alımı yapabilmek için "Yeni Mal Alımı" butonuna tıklayın.</p>
-                                </td>
-                            </tr>
+                            <x-empty-state icon="ti ti-file-invoice" title="Kayıt bulunamadı" message="Mal alımı yapabilmek için 'Yeni Mal Alımı' butonuna tıklayın veya filtrelerinizi değiştirin." colspan="5" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($orders->hasPages())
-                <div class="card-footer bg-white border-0 py-3">
-                    {{ $orders->links('pagination::bootstrap-5') }}
+                <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                    {{ $orders->links() }}
                 </div>
             @endif
         </div>

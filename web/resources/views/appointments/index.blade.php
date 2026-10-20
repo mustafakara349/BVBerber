@@ -150,63 +150,51 @@
 @endpush
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fs-3 mb-1">Randevular</h1>
-                <p class="mb-0">Tüm randevuları yönetin</p>
-            </div>
-            <div class="d-flex align-items-center gap-3">
-                <div class="btn-group p-1 bg-light rounded-pill border border-light" role="group">
-                    <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 fw-bold border-0 btn-view-mode active bg-white text-dark shadow-sm" data-mode="list" style="font-size: 12px; transition: all 0.2s ease;">Liste</button>
-                    <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 fw-bold border-0 btn-view-mode" data-mode="calendar" style="font-size: 12px; transition: all 0.2s ease;">Takvim</button>
-                </div>
-                <a href="{{ route('appointments.create') }}" class="btn btn-primary">
-                    <i class="ti ti-plus me-1"></i>Yeni Randevu
-                </a>
-            </div>
-        </div>
+<x-page-header title="Randevular" description="Tüm randevuları filtreleyin, listeleyin ve yönetin.">
+    <div class="btn-group p-1 bg-light rounded-pill border border-light me-1" role="group">
+        <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 fw-bold border-0 btn-view-mode active bg-white text-dark shadow-sm" data-mode="list" style="font-size: 12px; transition: all 0.2s ease;">Liste</button>
+        <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 fw-bold border-0 btn-view-mode" data-mode="calendar" style="font-size: 12px; transition: all 0.2s ease;">Takvim</button>
     </div>
-</div>
+    <x-btn-primary href="{{ route('appointments.create') }}" icon="ti ti-plus">
+        Yeni Randevu
+    </x-btn-primary>
+</x-page-header>
 
 {{-- Filters --}}
-<div class="row mb-3" id="filtersRow">
+<div class="row mb-4" id="filtersRow">
     <div class="col-12">
-        <div class="card p-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
             <form method="GET" action="{{ route('appointments.index') }}" class="row g-2 align-items-end">
                 <div class="col-lg-3 col-md-6">
-                    <label class="form-label small">Ara</label>
-                    <input type="text" name="search" class="form-control form-control-sm" placeholder="Kod, isim, telefon..." value="{{ request('search') }}">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="Kod, isim, telefon..." :value="request('search')" :resetUrl="route('appointments.index')" />
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <label class="form-label small">Durum</label>
-                    <select name="status" class="form-select form-select-sm">
+                    <x-form-select name="status" label="Durum" :pill="true">
                         <option value="">Tümü</option>
                         @foreach($statuses as $status)
                             <option value="{{ $status->value }}" {{ request('status') == $status->value ? 'selected' : '' }}>{{ $status->label() }}</option>
                         @endforeach
-                    </select>
+                    </x-form-select>
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <label class="form-label small">Berber</label>
-                    <select name="employee_id" class="form-select form-select-sm">
+                    <x-form-select name="employee_id" label="Berber" :pill="true">
                         <option value="">Tümü</option>
                         @foreach($employees as $emp)
                             <option value="{{ $emp->id }}" {{ request('employee_id') == $emp->id ? 'selected' : '' }}>{{ $emp->user->full_name }}</option>
                         @endforeach
-                    </select>
+                    </x-form-select>
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <label class="form-label small">Başlangıç</label>
-                    <input type="date" name="date_from" class="form-control form-control-sm" value="{{ request('date_from') }}">
+                    <x-date-input name="date_from" label="Başlangıç" :value="request('date_from')" :pill="true" />
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <label class="form-label small">Bitiş</label>
-                    <input type="date" name="date_to" class="form-control form-control-sm" value="{{ request('date_to') }}">
+                    <x-date-input name="date_to" label="Bitiş" :value="request('date_to')" :pill="true" />
                 </div>
-                <div class="col-lg-1 col-md-6">
-                    <button type="submit" class="btn btn-primary btn-sm w-100"><i class="ti ti-filter me-1"></i> Filtrele</button>
+                <div class="col-lg-1 col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
                 </div>
             </form>
         </div>
@@ -216,17 +204,17 @@
 {{-- Table --}}
 <div class="row" id="listView">
     <div class="col-12">
-        <div class="card">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead>
                         <tr>
-                            <th style="min-width: 80px;">Kod</th>
+                            <th class="ps-4" style="min-width: 80px;">Kod</th>
                             <th style="min-width: 200px;">Müşteri</th>
                             <th style="min-width: 150px;">Berber</th>
-                            <th style="min-width: 130px;">Tarih / Saat</th>
-                            <th style="min-width: 200px;">Hizmetler</th>
-                            <th style="min-width: 100px;">Tutar</th>
+                            <th style="min-width: 140px;">Tarih / Saat</th>
+                            <th style="min-width: 180px;">Hizmetler</th>
+                            <th style="min-width: 110px;">Tutar</th>
                             <th style="min-width: 110px;">Durum</th>
                             <th style="min-width: 110px;">Ödeme</th>
                             <th class="pe-4 text-end" style="min-width: 100px;">İşlemler</th>
@@ -234,8 +222,8 @@
                     </thead>
                     <tbody>
                         @forelse($appointments as $apt)
-                        <tr style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form')){window.location='{{ route('appointments.show', $apt) }}'}" title="Randevu Detayını Gör">
-                            <td class="text-secondary fw-bold">#{{ $apt->appointment_code }}</td>
+                        <tr style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form, a')){window.location='{{ route('appointments.show', $apt) }}'}" title="Randevu Detayını Gör">
+                            <td class="ps-4 text-secondary fw-bold">#{{ $apt->appointment_code }}</td>
                             <td>
                                 <div class="d-flex align-items-center gap-3">
                                     @if($apt->customer?->profile_photo_url)
@@ -286,12 +274,12 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge bg-{{ $apt->status->color() }}-subtle text-{{ $apt->status->color() }} border border-{{ $apt->status->color() }}">
+                                <span class="badge bg-{{ $apt->status->color() }}-subtle text-{{ $apt->status->color() }} border border-{{ $apt->status->color() }} rounded-pill px-3 py-1.5">
                                     {{ $apt->status->label() }}
                                 </span>
                             </td>
                             <td>
-                                <span class="badge bg-{{ $apt->payment_status->color() }}-subtle text-{{ $apt->payment_status->color() }}">
+                                <span class="badge bg-{{ $apt->payment_status->color() }}-subtle text-{{ $apt->payment_status->color() }} rounded-pill px-3 py-1.5">
                                     {{ $apt->payment_status->label() }}
                                 </span>
                             </td>
@@ -311,18 +299,13 @@
                             </td>
                         </tr>
                         @empty
-                        <tr>
-                            <td colspan="9" class="text-center py-5 text-muted">
-                                <i class="ti ti-calendar-off fs-1 d-block mb-2"></i>
-                                Randevu bulunamadı
-                            </td>
-                        </tr>
+                        <x-empty-state icon="ti ti-calendar-off" title="Randevu bulunamadı" message="Arama kriterlerinize uygun randevu kaydı bulunmamaktadır." colspan="9" />
                         @endforelse
                     </tbody>
                 </table>
             </div>
             @if($appointments->hasPages())
-            <div class="card-footer d-flex justify-content-center">
+            <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
                 {{ $appointments->links() }}
             </div>
             @endif

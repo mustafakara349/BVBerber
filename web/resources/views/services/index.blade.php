@@ -1,42 +1,43 @@
 @extends('layouts.app')
 @section('title', 'Hizmetler - B&V Barber')
 @section('content')
-<div class="row">
+<x-page-header title="Hizmetler" description="Tüm hizmetleri görüntüleyin, filtreleyin ve yönetin.">
+    <x-btn-primary href="{{ route('services.create') }}" icon="ti ti-plus">
+        Yeni Hizmet Ekle
+    </x-btn-primary>
+</x-page-header>
+
+{{-- Filters --}}
+<div class="row mb-4">
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fs-3 mb-1">Hizmetler</h1>
-                <p class="text-muted">Tüm hizmetleri görüntüleyin ve yönetin.</p>
-            </div>
-            <a href="{{ route('services.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
-                <i class="ti ti-plus me-1"></i> Yeni Hizmet Ekle
-            </a>
-        </div>
-    </div>
-<div class="row mb-3">
-    <div class="col-12 col-md-8 col-lg-6">
-        <form method="GET" action="{{ route('services.index') }}" class="d-flex gap-2">
-            <div class="input-group bg-white rounded-pill shadow-sm overflow-hidden border flex-grow-1">
-                <span class="input-group-text bg-transparent border-0 pe-1 text-muted">
-                    <i class="ti ti-search fs-5"></i>
-                </span>
-                <input type="text" name="search" class="form-control border-0 ps-1 py-2" placeholder="Hizmet adı ile ara..." value="{{ request('search') }}">
-                @if(request('search') || request('category_id'))
-                    <a href="{{ route('services.index') }}" class="btn btn-link text-muted border-0 d-flex align-items-center text-decoration-none">
-                        <i class="ti ti-x"></i>
-                    </a>
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form method="GET" action="{{ route('services.index') }}" class="row g-2 align-items-end">
+                <div class="col-12 col-md-5 col-lg-5">
+                    <label class="form-label text-secondary small fw-medium mb-1">Arama</label>
+                    <x-search-input name="search" placeholder="Hizmet adı ile ara..." :value="request('search')" :resetUrl="route('services.index')" />
+                </div>
+                @if(isset($categories) && count($categories) > 0)
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <x-form-select name="category_id" label="Kategori" :pill="true">
+                            <option value="">Tüm Kategoriler</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </x-form-select>
+                    </div>
                 @endif
-            </div>
-            @if(isset($categories) && count($categories) > 0)
-                <select name="category_id" class="form-select bg-white rounded-pill shadow-sm border w-auto" onchange="this.form.submit()">
-                    <option value="">Tüm Kategoriler</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                    @endforeach
-                </select>
-            @endif
-            <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm flex-shrink-0">Ara</button>
-        </form>
+                <div class="col-12 col-md-3 col-lg-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
+                    </button>
+                    @if(request()->anyFilled(['search', 'category_id']))
+                        <a href="{{ route('services.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -148,25 +149,15 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <div class="d-flex flex-column align-items-center justify-content-center text-muted">
-                                        <div class="bg-light rounded-circle p-4 mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                            <i class="ti ti-cut fs-1 text-secondary"></i>
-                                        </div>
-                                        <h5 class="fw-medium text-dark">Kayıtlı hizmet bulunamadı</h5>
-                                        <p class="mb-0">Sisteme henüz bir hizmet eklenmemiş. Yeni hizmet ekleyerek başlayabilirsiniz.</p>
-                                    </div>
-                                </td>
-                            </tr>
+                            <x-empty-state icon="ti ti-cut" title="Kayıtlı hizmet bulunamadı" message="Sisteme henüz bir hizmet eklenmemiş veya arama kriterinize uygun hizmet bulunamadı." colspan="7" />
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
             @if($services->hasPages())
-            <div class="card-footer bg-white border-top p-3">
-                {{ $services->links('pagination::bootstrap-5') }}
+            <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                {{ $services->links() }}
             </div>
             @endif
         </div>

@@ -1,15 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Müşteri Değerlendirmeleri - B&V Barber')
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="mb-4">
-                <h1 class="fs-3 mb-1">Müşteri Değerlendirmeleri</h1>
-                <p class="text-muted">Müşterilerinizin hizmet sonrası salonunuza ve berberlerinize bıraktığı puanlar ile
-                    geri bildirimler.</p>
-            </div>
-        </div>
-    </div>
+<x-page-header title="Müşteri Değerlendirmeleri" description="Müşterilerinizin hizmet sonrası salonunuza ve berberlerinize bıraktığı puanlar ile geri bildirimler." />
 
     <div class="row g-4 mb-4">
         <!-- Star Average -->
@@ -93,78 +85,77 @@
         </div>
     </div>
 
-    <!-- Filters Card -->
-    <div class="card shadow-sm border-0 rounded-4 mb-4">
-        <div class="card-body p-4">
-            <form method="GET" action="{{ route('reviews.index') }}" class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold text-secondary">Berber Filtresi</label>
-                    <select name="employee_id" class="form-select border-0 bg-light rounded-3">
+{{-- Filters --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+            <form method="GET" action="{{ route('reviews.index') }}" class="row g-2 align-items-end">
+                <div class="col-12 col-md-3">
+                    <x-form-select name="employee_id" label="Berber Filtresi" :pill="true">
                         <option value="">Tüm Berberler</option>
                         @foreach($barbers as $barber)
                             <option value="{{ $barber->id }}" {{ request('employee_id') == $barber->id ? 'selected' : '' }}>
                                 {{ $barber->user->full_name }}
                             </option>
                         @endforeach
-                    </select>
+                    </x-form-select>
                 </div>
 
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold text-secondary">Puan Derecesi</label>
-                    <select name="rating" class="form-select border-0 bg-light rounded-3">
+                <div class="col-6 col-md-3">
+                    <x-form-select name="rating" label="Puan Derecesi" :pill="true">
                         <option value="">Tüm Puanlar</option>
                         <option value="5" {{ request('rating') == '5' ? 'selected' : '' }}>5 Yıldız</option>
                         <option value="4" {{ request('rating') == '4' ? 'selected' : '' }}>4 Yıldız</option>
                         <option value="3" {{ request('rating') == '3' ? 'selected' : '' }}>3 Yıldız</option>
                         <option value="2" {{ request('rating') == '2' ? 'selected' : '' }}>2 Yıldız</option>
                         <option value="1" {{ request('rating') == '1' ? 'selected' : '' }}>1 Yıldız</option>
-                    </select>
+                    </x-form-select>
                 </div>
 
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold text-secondary">Yönlendirme Durumu</label>
-                    <select name="nps_status" class="form-select border-0 bg-light rounded-3">
+                <div class="col-6 col-md-3">
+                    <x-form-select name="nps_status" label="Yönlendirme Durumu" :pill="true">
                         <option value="">Tümü</option>
-                        <option value="low_rating" {{ request('nps_status') == 'low_rating' ? 'selected' : '' }}>⚠️ Şikayetler
-                            (1-3 Yıldız)</option>
+                        <option value="low_rating" {{ request('nps_status') == 'low_rating' ? 'selected' : '' }}>⚠️ Şikayetler (1-3 Yıldız)</option>
                         <option value="google_redirected" {{ request('nps_status') == 'google_redirected' ? 'selected' : '' }}>📍 Google'a Yönlendirilenler</option>
-                        <option value="promoter" {{ request('nps_status') == 'promoter' ? 'selected' : '' }}>🌟 Memnun
-                            Müşteriler (4-5 Yıldız)</option>
-                    </select>
+                        <option value="promoter" {{ request('nps_status') == 'promoter' ? 'selected' : '' }}>🌟 Memnun Müşteriler (4-5 Yıldız)</option>
+                    </x-form-select>
                 </div>
 
-                <div class="col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary rounded-3 w-100 fw-semibold py-2">
-                        <i class="ti ti-filter me-1"></i> Filtrele
+                <div class="col-12 col-md-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                        <i class="ti ti-filter"></i> Filtrele
                     </button>
-                    <a href="{{ route('reviews.index') }}" class="btn btn-light border rounded-3 w-100 fw-semibold py-2">
-                        Sıfırla
-                    </a>
+                    @if(request()->anyFilled(['employee_id', 'rating', 'nps_status']))
+                        <a href="{{ route('reviews.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                            <i class="ti ti-rotate"></i>
+                        </a>
+                    @endif
                 </div>
             </form>
         </div>
     </div>
+</div>
 
     <!-- Reviews Table List -->
-    <div class="card shadow-sm border-0 rounded-4">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle mb-0 text-dark">
+                    <thead class="bg-light text-secondary">
                         <tr>
-                            <th class="ps-4">Müşteri</th>
-                            <th>Hizmet Veren</th>
-                            <th class="text-center">Puan</th>
-                            <th>Müşteri Yorumu</th>
-                            <th class="text-center">Durum / Yönlendirme</th>
-                            <th class="text-center">Tarih</th>
-                            <th class="text-end pe-4">İşlemler</th>
+                            <th class="ps-4 py-3 border-0">Müşteri</th>
+                            <th class="py-3 border-0">Hizmet Veren</th>
+                            <th class="py-3 border-0 text-center">Puan</th>
+                            <th class="py-3 border-0">Müşteri Yorumu</th>
+                            <th class="py-3 border-0 text-center">Durum / Yönlendirme</th>
+                            <th class="py-3 border-0 text-center">Tarih</th>
+                            <th class="pe-4 py-3 border-0 text-end">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($reviews as $rev)
-                            <tr data-href="{{ route('reviews.show', $rev) }}" style="cursor: pointer;" class="review-row">
-                                <td class="ps-4">
+                            <tr data-href="{{ route('reviews.show', $rev) }}" style="cursor: pointer;" class="review-row border-bottom border-light">
+                                <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
                                         @if($rev->customer?->profile_photo_url)
                                             <img src="{{ $rev->customer->profile_photo_url }}"
@@ -250,17 +241,20 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
-                                    <i class="ti ti-mood-empty fs-1 d-block mb-1"></i>
-                                    Kriterlere uygun değerlendirme bulunamadı.
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                colspan="7" 
+                                title="Değerlendirme bulunamadı" 
+                                description="Kriterlere uygun müşteri değerlendirmesi bulunamadı." />
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
+        @if(method_exists($reviews, 'hasPages') && $reviews->hasPages())
+            <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                {{ $reviews->links() }}
+            </div>
+        @endif
     </div>
     @push('styles')
         <style>

@@ -2,40 +2,11 @@
 @section('title', 'Değerlendirme #' . $review->id . ' - B&V Barber')
 
 @section('content')
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-            <div>
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <h1 class="fs-3 mb-0">Değerlendirme #{{ $review->id }}</h1>
-                    @if($review->rating <= 2)
-                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1.5 rounded-pill fw-semibold">
-                            <i class="ti ti-shield-alert me-1"></i> Şikayet / Düşük Puan
-                        </span>
-                    @elseif($review->rating == 3)
-                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-1.5 rounded-pill fw-semibold">
-                            <i class="ti ti-alert-circle me-1"></i> 3 Yıldız / Orta Deneyim
-                        </span>
-                    @elseif($review->redirected_to_google_at)
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 rounded-pill fw-semibold">
-                            <i class="ti ti-brand-google me-1"></i> Google'a Yönlendirildi
-                        </span>
-                    @else
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 rounded-pill fw-semibold">
-                            <i class="ti ti-star-filled text-success me-1"></i> {{ $review->rating }} Yıldız
-                        </span>
-                    @endif
-                </div>
-                <p class="text-muted mb-0">Müşterinin hizmet sonrası bıraktığı geri bildirim ve ilişkili randevu detayları.</p>
-            </div>
-            <div>
-                <a href="{{ route('reviews.index') }}" class="btn btn-outline-secondary rounded-pill px-4 fw-medium">
-                    <i class="ti ti-arrow-left me-1"></i> Değerlendirmelere Dön
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+<x-page-header title="Değerlendirme #{{ $review->id }}" description="Müşterinin hizmet sonrası bıraktığı geri bildirim ve ilişkili randevu detayları.">
+    <x-btn-outline href="{{ route('reviews.index') }}" icon="ti ti-arrow-left">
+        Değerlendirmelere Dön
+    </x-btn-outline>
+</x-page-header>
 
 <div class="row g-4">
     <!-- Sol Kolon: Değerlendirme, NPS ve Hizmetler -->

@@ -2,23 +2,50 @@
 @section('title', 'Personel Prim ve Hakedişleri - B&V Barber')
 @section('content')
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-                <h1 class="fs-3 fw-bold mb-1 text-dark">Prim ve Maaş Hakedişleri</h1>
-                <p class="text-muted mb-0">Personelinizin aylık baz maaş ve randevu primlerini takip edin.</p>
-            </div>
-            
-            <form action="{{ route('finance.commissions.index') }}" method="GET" class="d-flex align-items-center gap-2 bg-white p-2 rounded-pill shadow-sm">
-                <select name="month" class="form-select border-0 bg-transparent fw-semibold text-primary" onchange="this.form.submit()">
-                    @foreach($months as $val => $label)
-                        <option value="{{ $val }}" {{ $monthInput === $val ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-            </form>
+<x-page-header title="Prim ve Maaş Hakedişleri" description="Personelinizin aylık baz maaş ve randevu primlerini takip edin." />
+
+<!-- Filter Form -->
+<div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+    <form method="GET" action="{{ route('finance.commissions.index') }}" class="row g-2 align-items-end">
+        <div class="col-12 col-md-4">
+            <label class="form-label text-secondary small fw-medium mb-1">Personel Ara</label>
+            <x-search-input 
+                name="search" 
+                value="{{ request('search') }}" 
+                placeholder="Personel adı ile ara..." 
+                :pill="true" />
         </div>
-    </div>
+
+        <div class="col-12 col-md-3">
+            <label class="form-label text-secondary small fw-medium mb-1">Dönem (Ay)</label>
+            <x-form-select name="month" :pill="true">
+                @foreach($months as $val => $label)
+                    <option value="{{ $val }}" {{ $monthInput === $val ? 'selected' : '' }}>{{ $label }}</option>
+                @endforeach
+            </x-form-select>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <label class="form-label text-secondary small fw-medium mb-1">Maaş Tipi</label>
+            <x-form-select name="salary_type" :pill="true">
+                <option value="">Tüm Maaş Tipleri</option>
+                @foreach($salaryTypes as $type)
+                    <option value="{{ $type->value }}" {{ request('salary_type') === $type->value ? 'selected' : '' }}>{{ $type->label() }}</option>
+                @endforeach
+            </x-form-select>
+        </div>
+
+        <div class="col-12 col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary rounded-pill px-3 shadow-sm w-100 d-inline-flex align-items-center justify-content-center gap-1 fw-medium" style="height: 38px;">
+                <i class="ti ti-filter"></i> Filtrele
+            </button>
+            @if(request()->hasAny(['search', 'salary_type']) || (request()->filled('month') && request('month') !== now()->format('Y-m')))
+                <a href="{{ route('finance.commissions.index') }}" class="btn btn-light rounded-pill px-2 shadow-sm d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="height: 38px; width: 38px;" title="Filtreleri Temizle">
+                    <i class="ti ti-rotate"></i>
+                </a>
+            @endif
+        </div>
+    </form>
 </div>
 
 <!-- Summary Cards -->
@@ -122,12 +149,11 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
-                                    <i class="ti ti-receipt-off fs-1 mb-2 d-block text-secondary opacity-50"></i>
-                                    <h5>Bu aya ait prim/hakediş verisi bulunamadı.</h5>
-                                </td>
-                            </tr>
+                            <x-empty-state 
+                                colspan="7" 
+                                icon="ti ti-receipt-off" 
+                                title="Hakediş kaydı bulunamadı" 
+                                description="{{ request()->hasAny(['search', 'salary_type']) ? 'Arama kriterlerinize uygun personel hakediş verisi bulunamadı.' : 'Seçilen döneme ait hakediş veya prim kaydı mevcut değil.' }}" />
                             @endforelse
                         </tbody>
                     </table>

@@ -19,9 +19,25 @@ class StockCountController extends Controller
 
         $query = StockCount::with('creator')
             ->where('branch_id', $branchId)
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $term = $request->search;
+                $q->where(function ($sub) use ($term) {
+                    $sub->where('notes', 'like', "%{$term}%")
+                        ->orWhereHas('creator', function ($u) use ($term) {
+                            $u->where('first_name', 'like', "%{$term}%")
+                              ->orWhere('last_name', 'like', "%{$term}%");
+                        });
+                });
+            })
+            ->when($request->filled('date_from'), function ($q) use ($request) {
+                $q->whereDate('count_date', '>=', $request->date_from);
+            })
+            ->when($request->filled('date_to'), function ($q) use ($request) {
+                $q->whereDate('count_date', '<=', $request->date_to);
+            })
             ->latest('count_date');
 
-        $counts = $query->paginate(15);
+        $counts = $query->paginate(15)->withQueryString();
 
         return view('stock_counts.index', compact('counts'));
     }
