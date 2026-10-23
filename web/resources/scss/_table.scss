@@ -29,10 +29,16 @@
             border-bottom: none;
         }
 
-        &[onclick], &.is-clickable {
+        &[data-href],
+        &[data-url],
+        &[data-campaign-id],
+        &[data-coupon-id],
+        &[onclick],
+        &.clickable-row,
+        &.is-clickable {
             cursor: pointer;
             &:hover {
-                background-color: rgba(230, 98, 57, 0.035) !important;
+                background-color: rgba(230, 98, 57, 0.04) !important;
             }
         }
     }

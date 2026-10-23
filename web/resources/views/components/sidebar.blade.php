@@ -296,6 +296,16 @@
                 <span class="nav-text">Ayarlar</span>
             </a>
         </li>
+
+        @if(in_array(auth()->user()?->role?->slug, ['super_admin', 'owner']))
+        <li>
+            <a class="nav-link {{ (request()->is('audit-logs*') || request()->routeIs('audit-logs.*')) ? 'active' : '' }}"
+                href="{{ route('audit-logs.index') }}">
+                <i class="ti ti-history"></i>
+                <span class="nav-text">İşlem & Hata Günlükleri</span>
+            </a>
+        </li>
+        @endif
         <li class="py-4"></li>
     </ul>
 </aside>

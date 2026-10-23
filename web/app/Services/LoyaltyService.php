@@ -96,4 +96,20 @@ class LoyaltyService
             ]);
         });
     }
+
+    /**
+     * Verilen puanın TL karşılığını hesaplar (1.000 Puan = 1 ₺)
+     */
+    public function pointsToTl(int $points): float
+    {
+        return LoyaltyAccount::pointsToTl($points);
+    }
+
+    /**
+     * Verilen TL tutarının Puan karşılığını hesaplar
+     */
+    public function tlToPoints(float $tl): int
+    {
+        return LoyaltyAccount::tlToPoints($tl);
+    }
 }

@@ -69,90 +69,78 @@
             <div class="tab-pane fade" id="branchPanel" role="tabpanel" aria-labelledby="branch-tab">
                 <div class="card shadow-sm border-0 rounded-4">
                     <div class="card-header bg-transparent border-0 pt-4 px-4 pb-2">
-                        <h5 class="fw-bold text-dark mb-0">Aktif Şube Yapılandırması</h5>
-                        <p class="text-muted small mb-0">Yalnızca oturum açmış olduğunuz şubenizin randevu takvimini ve aktif modüllerini yönetin.</p>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <div>
+                                <h5 class="fw-bold text-dark mb-0">Aktif Şube Yapılandırması</h5>
+                                <p class="text-muted small mb-0">Oturum açmış olduğunuz şubenizin randevu iptal sınırını ve harita yönlendirmelerini yönetin.</p>
+                            </div>
+                            <span class="badge bg-light text-primary border rounded-pill px-3 py-2 fw-medium">
+                                <i class="ti ti-building me-1"></i> Şube ID: #{{ session('active_branch_id', 1) }}
+                            </span>
+                        </div>
                     </div>
                     <div class="card-body p-4">
+                        <!-- Bilgi Kutusu: Sabit Sistem Kuralları -->
+                        <div class="alert alert-light border-0 rounded-3 p-3 mb-4 d-flex align-items-start gap-3">
+                            <div class="text-primary fs-3 lh-1">
+                                <i class="ti ti-info-circle"></i>
+                            </div>
+                            <div class="small text-secondary">
+                                <div class="fw-bold text-dark mb-1">Şube Operasyon Standartları:</div>
+                                <ul class="mb-0 ps-3">
+                                    <li>Randevu saat slotları dükkan standardı olan <strong>30 dakikalık periyotlarla</strong> üretilmektedir.</li>
+                                    <li><strong>Sadakat Sistemi</strong> (1 ₺ harcama = 1 Puan, <strong>1.000 Puan = 1 ₺</strong>) ve <strong>Değerlendirme Sistemi</strong> şubenizde daima aktiftir.</li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <form method="POST" action="{{ route('settings.branch.update') }}">
                             @csrf
                             
                             <div class="row g-4 mb-4">
-                                <!-- Calendar Interval -->
+                                <!-- Cancellation Limit -->
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-secondary">Randevu Takvim Aralığı</label>
-                                    <select name="appointment_interval" class="form-select border-0 bg-light rounded-3 py-2.5 px-3" required>
-                                        <option value="15" {{ ($branchSetting->appointment_interval ?? 30) == 15 ? 'selected' : '' }}>15 Dakika</option>
-                                        <option value="30" {{ ($branchSetting->appointment_interval ?? 30) == 30 ? 'selected' : '' }}>30 Dakika (Önerilen)</option>
-                                        <option value="45" {{ ($branchSetting->appointment_interval ?? 30) == 45 ? 'selected' : '' }}>45 Dakika</option>
-                                        <option value="60" {{ ($branchSetting->appointment_interval ?? 30) == 60 ? 'selected' : '' }}>60 Dakika (1 Saat)</option>
-                                    </select>
-                                    <div class="form-text small text-muted">Müşteri uygulamasında sunulacak randevu saat slotu genişliği.</div>
-                                </div>
-                                
-                                <!-- Cancel limit -->
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-secondary">İptal Limiti (Saat)</label>
-                                    <input type="number" name="cancellation_limit_hours" class="form-control border-0 bg-light rounded-3 py-2.5 px-3" value="{{ $branchSetting->cancellation_limit_hours ?? 2 }}" min="0" required>
-                                    <div class="form-text small text-muted">Müşterinin randevuya en geç kaç saat kala kendisinin iptal edebileceği limit.</div>
-                                </div>
-
-                                <!-- Currency -->
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-secondary">Para Birimi Simgesi</label>
-                                    <input type="text" name="currency" class="form-control border-0 bg-light rounded-3 py-2.5 px-3" value="{{ $branchSetting->currency ?? 'TRY' }}" max="5" required>
-                                    <div class="form-text small text-muted">Fiyat etiketlerinde ve ciro hesaplamalarında kullanılacak birim (örn: TRY, USD, EUR).</div>
+                                    <label class="form-label small fw-bold text-secondary" for="cancellation_limit_hours">
+                                        <i class="ti ti-clock-pause text-primary me-1"></i> Randevu İptal Limiti (Saat)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" 
+                                               name="cancellation_limit_hours" 
+                                               id="cancellation_limit_hours" 
+                                               class="form-control border-0 bg-light rounded-start-3 py-2.5 px-3 @error('cancellation_limit_hours') is-invalid @enderror" 
+                                               value="{{ old('cancellation_limit_hours', $branchSetting->cancellation_limit_hours ?? 2) }}" 
+                                               min="0" 
+                                               max="168" 
+                                               required>
+                                        <span class="input-group-text border-0 bg-light text-muted rounded-end-3 px-3">Saat Kala</span>
+                                    </div>
+                                    @error('cancellation_limit_hours')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text small text-muted">
+                                        Müşterinin mobil uygulama üzerinden randevusunu en geç kaç saat öncesine kadar iptal edebileceğini belirler. Kalan süre bu limitin altına indiğinde iptal butonu engellenir ve telefon yönlendirmesi yapılır. (0 = Başlangıç anına kadar serbest).
+                                    </div>
                                 </div>
                             </div>
                             
-                            <!-- Features Toggles -->
-                            <h6 class="fw-bold mb-3 text-secondary text-uppercase small border-top pt-4">Aktif Sistem Modülleri</h6>
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-4">
-                                    <div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
-                                        <div>
-                                            <div class="fw-bold text-dark small">Sadakat Sistemi</div>
-                                            <div class="text-secondary" style="font-size: 10px;">Loyalty puan toplama</div>
-                                        </div>
-                                        <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" name="loyalty_enabled" id="loyalty_enabled" value="1" {{ ($branchSetting->loyalty_enabled ?? true) ? 'checked' : '' }}>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4">
-                                    <div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
-                                        <div>
-                                            <div class="fw-bold text-dark small">Değerlendirme Sistemi</div>
-                                            <div class="text-secondary" style="font-size: 10px;">Müşteri yorumları & puanlar</div>
-                                        </div>
-                                        <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" name="review_enabled" id="review_enabled" value="1" {{ ($branchSetting->review_enabled ?? true) ? 'checked' : '' }}>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
-                                        <div>
-                                            <div class="fw-bold text-dark small">Online Ödeme</div>
-                                            <div class="text-secondary" style="font-size: 10px;">Kredi kartıyla tahsilat</div>
-                                        </div>
-                                        <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" name="online_payment_enabled" id="online_payment_enabled" value="1" {{ ($branchSetting->online_payment_enabled ?? true) ? 'checked' : '' }}>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Google Haritalar Değerlendirme Linki -->
-                            <h6 class="fw-bold mb-3 text-secondary text-uppercase small border-top pt-4">Google Haritalar Yönlendirmesi</h6>
-                            <div class="mb-4">
-                                <label class="form-label small fw-bold text-secondary" for="google_review_url">Google Değerlendirme Linki</label>
-                                <input type="url" name="google_review_url" id="google_review_url" maxlength="500" class="form-control border-0 bg-light rounded-3 py-2.5 px-3 @error('google_review_url') is-invalid @enderror" value="{{ old('google_review_url', $branchSetting->google_review_url ?? '') }}" placeholder="https://g.page/r/.../review">
+                            <div class="border-top pt-4 mb-4">
+                                <label class="form-label small fw-bold text-secondary" for="google_review_url">
+                                    <i class="ti ti-brand-google text-primary me-1"></i> Google Haritalar Değerlendirme Linki
+                                </label>
+                                <input type="url" 
+                                       name="google_review_url" 
+                                       id="google_review_url" 
+                                       maxlength="500" 
+                                       class="form-control border-0 bg-light rounded-3 py-2.5 px-3 @error('google_review_url') is-invalid @enderror" 
+                                       value="{{ old('google_review_url', $branchSetting->google_review_url ?? '') }}" 
+                                       placeholder="https://g.page/r/.../review">
                                 @error('google_review_url')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <div class="form-text small text-muted">4 ve 5 yıldız veren müşteriler bu linke yönlendirilir. Link değişirse buradan güncelleyin; boş bırakılırsa Google yönlendirmesi yapılmaz.</div>
+                                <div class="form-text small text-muted">
+                                    Uygulama üzerinden 4 ve 5 yıldız veren memnun müşteriler Google Haritalar profilinize yönlendirilir. Boş bırakılırsa genel Google yönlendirme linki kullanılır.
+                                </div>
                             </div>
                             
                             <div class="d-flex justify-content-end border-top pt-4">

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Expense extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'branch_id', 'category_id', 'created_by',
         'amount', 'expense_date', 'description', 'receipt_file',

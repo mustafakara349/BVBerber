@@ -152,6 +152,13 @@ Route::middleware(['auth', 'audit'])->group(function () {
         // Broadcast Push Notifications (Toplu Bildirim & Duyuru Gönder)
         Route::get('/broadcast-notifications', [App\Http\Controllers\Web\BroadcastNotificationController::class, 'index'])->name('broadcast.index');
         Route::post('/broadcast-notifications/send', [App\Http\Controllers\Web\BroadcastNotificationController::class, 'send'])->name('broadcast.send');
+
+        // Audit & Error Logs (İşlem & Hata Günlükleri - Yalnızca Super Admin ve Sahip)
+        Route::middleware(['role:super_admin,owner'])->group(function () {
+            Route::get('/audit-logs', [App\Http\Controllers\Web\AuditLogController::class, 'index'])->name('audit-logs.index');
+            Route::get('/audit-logs/export/csv', [App\Http\Controllers\Web\AuditLogController::class, 'exportCsv'])->name('audit-logs.export');
+            Route::get('/audit-logs/{auditLog}', [App\Http\Controllers\Web\AuditLogController::class, 'show'])->name('audit-logs.show');
+        });
     });
 });
 

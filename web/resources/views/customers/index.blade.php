@@ -49,7 +49,7 @@
                         </thead>
                         <tbody>
                             @forelse($customers as $customer)
-                            <tr class="border-bottom" style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form')){window.location='{{ route('customers.show', $customer) }}'}" title="Müşteri Detayını Gör">
+                            <tr data-href="{{ route('customers.show', $customer) }}" class="clickable-row border-bottom" title="Müşteri Detayını Gör">
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
                                         @if($customer->profile_photo_url)

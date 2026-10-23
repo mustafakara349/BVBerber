@@ -42,12 +42,22 @@ class AppointmentRepository extends BaseRepository implements AppointmentReposit
         }
 
         if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('appointment_code', 'like', "%{$search}%")
-                    ->orWhereHas('customer', fn ($q2) => $q2->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%"));
+            $rawSearch = trim((string) $filters['search']);
+            $cleanSearch = ltrim($rawSearch, '#');
+
+            $query->where(function ($q) use ($rawSearch, $cleanSearch) {
+                $q->where('appointment_code', 'like', "%{$cleanSearch}%")
+                    ->orWhere('appointment_code', 'like', "%{$rawSearch}%");
+
+                if (ctype_digit($cleanSearch)) {
+                    $q->orWhere('id', (int) $cleanSearch);
+                }
+
+                $q->orWhereHas('customer', fn ($q2) => 
+                    $q2->where('first_name', 'like', "%{$cleanSearch}%")
+                        ->orWhere('last_name', 'like', "%{$cleanSearch}%")
+                        ->orWhere('phone', 'like', "%{$cleanSearch}%")
+                );
             });
         }
 

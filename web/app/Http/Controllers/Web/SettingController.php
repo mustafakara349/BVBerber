@@ -40,23 +40,25 @@ class SettingController extends Controller
         $branchId = session('active_branch_id', 1);
 
         $validated = $request->validate([
-            'appointment_interval' => 'required|integer|in:15,30,45,60',
-            'cancellation_limit_hours' => 'required|integer|min:0',
-            'currency' => 'required|string|max:5',
+            'cancellation_limit_hours' => 'required|integer|min:0|max:168',
             'google_review_url' => ['nullable', 'url:https', 'max:500'],
         ]);
 
-        $validated['google_review_url'] = filled($validated['google_review_url'] ?? null)
+        $googleReviewUrl = filled($validated['google_review_url'] ?? null)
             ? trim($validated['google_review_url'])
             : null;
 
-        $validated['loyalty_enabled'] = $request->has('loyalty_enabled');
-        $validated['review_enabled'] = $request->has('review_enabled');
-        $validated['online_payment_enabled'] = $request->has('online_payment_enabled');
-
         BranchSetting::updateOrCreate(
             ['branch_id' => $branchId],
-            $validated
+            [
+                'cancellation_limit_hours' => $validated['cancellation_limit_hours'],
+                'google_review_url'        => $googleReviewUrl,
+                'appointment_interval'     => 30,    // Standart 30 dk
+                'currency'                 => 'TRY', // Sabit TL
+                'loyalty_enabled'          => true,  // Sadakat sistemi daima aktif
+                'review_enabled'           => true,  // Değerlendirme sistemi daima aktif
+                'online_payment_enabled'   => false, // Online ödeme devre dışı
+            ]
         );
 
         return redirect()->route('settings.index')->with('success', 'Şube ayarları başarıyla güncellendi.');

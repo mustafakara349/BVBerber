@@ -33,7 +33,13 @@
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div>
                         <span class="db-finance-label d-block mb-1">Aylık Net Kâr</span>
-                        <div class="db-finance-value">₺{{ number_format($widgets['financial']['profit'] ?? 0, 0, ',', '.') }}</div>
+                        <div class="db-finance-value" id="stat_monthly_profit">
+                            @if(($widgets['financial']['profit'] ?? 0) < 0)
+                                -₺{{ number_format(abs($widgets['financial']['profit']), 2, ',', '.') }}
+                            @else
+                                ₺{{ number_format($widgets['financial']['profit'] ?? 0, 2, ',', '.') }}
+                            @endif
+                        </div>
                     </div>
                     <div class="db-finance-icon bg-primary-subtle text-primary">
                         <i class="ti ti-layers-subtract"></i>
@@ -52,7 +58,7 @@
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div>
                         <span class="db-finance-label d-block mb-1">Aylık Toplam Gelir</span>
-                        <div class="db-finance-value text-success">₺{{ number_format($widgets['financial']['income'] ?? 0, 0, ',', '.') }}</div>
+                        <div class="db-finance-value text-success" id="stat_monthly_income">₺{{ number_format($widgets['financial']['income'] ?? 0, 2, ',', '.') }}</div>
                     </div>
                     <div class="db-finance-icon bg-success-subtle text-success">
                         <i class="ti ti-trending-up"></i>
@@ -71,7 +77,7 @@
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div>
                         <span class="db-finance-label d-block mb-1">Aylık Toplam Gider</span>
-                        <div class="db-finance-value text-danger">₺{{ number_format($widgets['financial']['expense'] ?? 0, 0, ',', '.') }}</div>
+                        <div class="db-finance-value text-danger" id="stat_monthly_expense">₺{{ number_format($widgets['financial']['expense'] ?? 0, 2, ',', '.') }}</div>
                     </div>
                     <div class="db-finance-icon bg-danger-subtle text-danger">
                         <i class="ti ti-trending-down"></i>
@@ -352,7 +358,9 @@
     <div id="todayAppointmentsSection">
         @include('dashboard.partials.today_appointments')
     </div>
+@endsection
 
+@push('modals')
     <!-- Rejection Reason Modal -->
     <div class="modal fade" id="rejectReasonModal" tabindex="-1" aria-labelledby="rejectReasonModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -458,7 +466,75 @@
             </div>
         </div>
     </div>
-@endsection
+
+    <!-- Complete with Payment Modal for Awaiting Action Appointments -->
+    <div class="modal fade" id="dashboardCompletePaymentModal" tabindex="-1" aria-labelledby="dashboardCompletePaymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered text-start">
+            <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+                <div class="modal-header border-0 bg-success text-white py-3 px-4">
+                    <h5 class="modal-title fw-bold" id="dashboardCompletePaymentModalLabel"><i class="ti ti-circle-check me-1"></i> Randevuyu Tamamla & Ödeme Kaydet</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <form id="dashboardCompletePaymentForm" action="" method="POST">
+                    @csrf
+                    <div class="modal-body p-4 text-dark">
+                        <div class="alert alert-success border-0 p-3 rounded-3 mb-3" role="alert">
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>Randevu Toplam Fiyatı:</span>
+                                <span id="dashboardCompleteModalTotalPrice">₺0,00</span>
+                            </div>
+                            <div class="small text-success mt-1">
+                                <span>Müşteri: <strong id="dashboardCompleteModalCustomerName">-</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-secondary">Ödenen Tutar (₺) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text border bg-light">₺</span>
+                                <input type="number" step="0.01" min="0.01" name="amount" id="dashboardCompleteModalAmountInput" class="form-control border bg-light rounded-end-3" value="" required>
+                            </div>
+                        </div>
+
+                        <!-- Paid At & Payment Method -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold text-secondary">Ödeme Yöntemi <span class="text-danger">*</span></label>
+                                <select name="payment_method" class="form-select border bg-light" required>
+                                    <option value="cash" selected>Nakit (Kasa)</option>
+                                    <option value="credit_card">Kredi Kartı</option>
+                                    <option value="bank_transfer">Banka Transferi</option>
+                                    <option value="online">Online</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold text-secondary">Ödeme Tarihi <span class="text-danger">*</span></label>
+                                <input type="date" name="paid_at" id="dashboardCompleteModalPaidAt" class="form-control border bg-light" value="{{ date('Y-m-d') }}" required>
+                            </div>
+                        </div>
+
+                        <!-- Reference Number -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-secondary">Referans / İşlem Kodu (İsteğe Bağlı)</label>
+                            <input type="text" name="transaction_reference" id="dashboardCompleteModalRef" class="form-control border bg-light" placeholder="Havale referansı, fiş numarası vb...">
+                        </div>
+
+                        <!-- Completion note -->
+                        <div class="mb-2">
+                            <label class="form-label fw-semibold text-secondary">İşlem / Randevu Notu (İsteğe Bağlı)</label>
+                            <textarea name="note" id="dashboardCompleteModalNote" rows="2" class="form-control border bg-light" placeholder="Randevu tamamlanmasına dair not ekleyin..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0 py-3 px-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4 text-secondary" data-bs-dismiss="modal">Vazgeç</button>
+                        <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-bold">Tamamla ve Ödeme Al</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endpush
 
 @push('scripts')
     <script nonce="{{ $cspNonce }}">
@@ -467,6 +543,39 @@
 
             // Reject Modal Trigger Handler (Event Delegation for live elements)
             document.addEventListener('click', function(e) {
+                // Complete with Payment Modal Trigger Handler (Event Delegation)
+                const completeBtn = e.target.closest('.btn-complete-payment-trigger');
+                if (completeBtn) {
+                    const actionUrl = completeBtn.getAttribute('data-action');
+                    const price = completeBtn.getAttribute('data-price');
+                    const priceFormatted = completeBtn.getAttribute('data-price-formatted');
+                    const customer = completeBtn.getAttribute('data-customer');
+
+                    const form = document.getElementById('dashboardCompletePaymentForm');
+                    if (form && actionUrl) form.action = actionUrl;
+
+                    const priceEl = document.getElementById('dashboardCompleteModalTotalPrice');
+                    if (priceEl && priceFormatted) priceEl.textContent = priceFormatted;
+
+                    const customerEl = document.getElementById('dashboardCompleteModalCustomerName');
+                    if (customerEl && customer) customerEl.textContent = customer;
+
+                    const amountInput = document.getElementById('dashboardCompleteModalAmountInput');
+                    if (amountInput && price) amountInput.value = price;
+
+                    const refInput = document.getElementById('dashboardCompleteModalRef');
+                    if (refInput) refInput.value = '';
+
+                    const noteInput = document.getElementById('dashboardCompleteModalNote');
+                    if (noteInput) noteInput.value = '';
+
+                    const paidAtInput = document.getElementById('dashboardCompleteModalPaidAt');
+                    if (paidAtInput) {
+                        const today = new Date().toISOString().split('T')[0];
+                        paidAtInput.value = today;
+                    }
+                }
+
                 const btn = e.target.closest('.btn-reject-trigger');
                 if (btn) {
                     const url = btn.getAttribute('data-url');
@@ -827,6 +936,21 @@
                         if (elExp) elExp.textContent = '₺' + data.widgets_data.daily_expense;
                         const elCust = document.getElementById('widgetNewCustomers');
                         if (elCust) elCust.textContent = data.widgets_data.new_customers;
+
+                        // Aylık Finansal Kartlar
+                        const elProfit = document.getElementById('stat_monthly_profit');
+                        if (elProfit && data.widgets_data.monthly_profit !== undefined) {
+                            const val = data.widgets_data.monthly_profit;
+                            elProfit.textContent = val.startsWith('-') ? '-₺' + val.substring(1) : '₺' + val;
+                        }
+                        const elIncome = document.getElementById('stat_monthly_income');
+                        if (elIncome && data.widgets_data.monthly_income !== undefined) {
+                            elIncome.textContent = '₺' + data.widgets_data.monthly_income;
+                        }
+                        const elExpense = document.getElementById('stat_monthly_expense');
+                        if (elExpense && data.widgets_data.monthly_expense !== undefined) {
+                            elExpense.textContent = '₺' + data.widgets_data.monthly_expense;
+                        }
                     } else {
                         const widgetsEl = document.getElementById('revenueWidgetsSection');
                         if (widgetsEl && typeof data.widgets_html === 'string') {

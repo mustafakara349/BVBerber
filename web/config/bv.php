@@ -19,8 +19,13 @@ return [
         'appointments' => 20,
         'customers' => 25,
     ],
+    'loyalty' => [
+        'points_per_tl' => (int) env('BV_LOYALTY_POINTS_PER_TL', 1000), // 1.000 Puan = 1 ₺
+        'earn_rate' => (float) env('BV_LOYALTY_EARN_RATE', 1),          // 1 ₺ harcama = 1 Puan
+    ],
     'cache' => [
         'dashboard_ttl' => 300,
         'analytics_ttl' => 600,
     ],
+    'audit_default_days' => (int) env('AUDIT_LOG_DEFAULT_DAYS', 60),
 ];

@@ -60,13 +60,12 @@
 // =============================================================================
 
 .page-body-animate {
-    animation: pageFadeIn 0.22s ease-out both;
+    animation: pageFadeIn 0.22s ease-out;
 
     // Direct children (rows, cards, headers, containers)
     // Excludes modals, scripts, templates, and dashboard elements with their own custom animations
     > :not(.modal):not(.fade):not(script):not(template):not(.db-animate-fade-up):not([class*="db-stagger"]) {
         animation: pageFadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-        will-change: opacity, transform;
     }
 
     // Step 1: Page Header / First element
@@ -93,7 +92,6 @@
 // Auto-stagger container utility (for multi-card grids)
 .page-stagger > * {
     animation: pageFadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-    will-change: opacity, transform;
 
     @for $i from 1 through 8 {
         &:nth-child(#{$i}) {

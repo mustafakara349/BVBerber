@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductSale extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'branch_id', 'product_id', 'customer_id', 'created_by',
         'quantity', 'unit_price', 'total_price', 'sold_at',

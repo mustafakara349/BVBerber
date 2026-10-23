@@ -128,3 +128,15 @@
 @import "./button";
 @import "./icon-shape";
 @import "./utilities";
+
+// Indigo subtle utility classes for security, auth & sessions
+.bg-indigo-subtle {
+    background-color: #eef2ff !important;
+}
+.text-indigo {
+    color: #3730a3 !important;
+}
+.border-indigo-subtle {
+    border-color: #c7d2fe !important;
+}
+

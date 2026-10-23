@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class EmployeeTimeBlock extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'employee_id',
         'type', // full_day, partial_time

@@ -169,7 +169,7 @@
                 </thead>
                 <tbody>
                     @forelse($products as $product)
-                    <tr class="border-bottom border-light" id="product-row-{{ $product->id }}" style="cursor:pointer;" onclick="if(!event.target.closest('.product-status-toggle, .btn-group, .action-icon, form')){window.location='{{ route('products.show', $product) }}'}" title="Ürün Detayını Görüntüle">
+                    <tr class="border-bottom border-light clickable-row" id="product-row-{{ $product->id }}" data-href="{{ route('products.show', $product) }}" title="Ürün Detayını Görüntüle">
                         {{-- Ürün Adı + Görsel --}}
                         <td class="ps-4 py-3">
                             <div class="d-flex align-items-center gap-3">

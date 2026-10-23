@@ -527,7 +527,7 @@ class AppointmentsViewModel: ObservableObject {
             )
             await fetchAppointments()
         } catch {
-            showError(title: "Hata", message: "Randevu iptal edilemedi.")
+            showError(title: "Hata", message: error.localizedDescription.isEmpty ? "Randevu iptal edilemedi." : error.localizedDescription)
         }
     }
 

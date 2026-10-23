@@ -10,13 +10,18 @@ class SkeletonLoaderManager {
     }
 
     init() {
-        // Ensure progress element exists
         if (typeof document !== 'undefined') {
-            document.addEventListener('DOMContentLoaded', () => {
+            const boot = () => {
                 this.ensureProgressBar();
                 this.bindNavigationEvents();
                 this.revealPage();
-            });
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', boot);
+            } else {
+                boot();
+            }
 
             window.addEventListener('pageshow', () => {
                 this.finishProgress();
@@ -67,6 +72,9 @@ class SkeletonLoaderManager {
     }
 
     bindNavigationEvents() {
+        if (this.eventsBound) return;
+        this.eventsBound = true;
+
         document.addEventListener('click', (e) => {
             const anchor = e.target.closest('a');
             if (!anchor) return;
@@ -100,15 +108,40 @@ class SkeletonLoaderManager {
             }
         });
 
-        // Support clickable rows with data-href
+        // Support clickable rows with data-href, data-url, clickable-row, and legacy onclick (CSP-safe)
         document.addEventListener('click', (e) => {
-            const clickableRow = e.target.closest('[data-href]');
-            if (clickableRow && !e.target.closest('button, a, input, select, .action-icon, .form-check-input')) {
-                const href = clickableRow.getAttribute('data-href');
-                if (href) {
-                    this.startProgress();
-                    window.location.href = href;
+            // Ignore clicks originating inside interactive elements, buttons, forms, dropdowns, or modals
+            if (e.target.closest('button, a, input, select, textarea, label, form, .btn, .btn-group, .dropdown, .dropdown-toggle, .dropdown-menu, .modal, .action-icon, .form-check, .form-check-input, .popover, [data-bs-toggle], [data-no-row-click]')) {
+                return;
+            }
+
+            const clickableRow = e.target.closest('tr[data-href], tr[data-url], tr.clickable-row, tr.is-clickable, tr[data-campaign-id], tr[data-coupon-id], tr[onclick]');
+            if (!clickableRow) return;
+
+            // Support campaign & coupon modal triggers without inline onclick
+            if (clickableRow.dataset.campaignId && typeof window.showCampaignDetails === 'function') {
+                window.showCampaignDetails(clickableRow.dataset.campaignId);
+                return;
+            }
+            if (clickableRow.dataset.couponId && typeof window.showCouponDetails === 'function') {
+                window.showCouponDetails(clickableRow.dataset.couponId);
+                return;
+            }
+
+            let href = clickableRow.getAttribute('data-href') || clickableRow.getAttribute('data-url');
+
+            // Fallback for legacy inline onclick blocked by CSP
+            if (!href && clickableRow.hasAttribute('onclick')) {
+                const onclickAttr = clickableRow.getAttribute('onclick') || '';
+                const match = onclickAttr.match(/window\.location(?:\.href)?\s*=\s*['"]([^'"]+)['"]/);
+                if (match && match[1]) {
+                    href = match[1];
                 }
+            }
+
+            if (href && href !== '#' && !href.startsWith('javascript:')) {
+                this.startProgress();
+                window.location.href = href;
             }
         });
 

@@ -55,7 +55,8 @@ class ReviewController extends Controller
             }
         }
 
-        $reviews = $query->latest('id')->get();
+        $perPage = max(5, min(100, (int) $request->get('per_page', 10)));
+        $reviews = $query->latest('id')->paginate($perPage)->withQueryString();
         $barbers = Employee::forBranch($branchId)->with('user')->get();
 
         return view('reviews.index', compact('reviews', 'barbers', 'stats'));

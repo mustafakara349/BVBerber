@@ -25,7 +25,7 @@
                     <i class="ti ti-currency-lira"></i>
                 </div>
             </div>
-            <div class="db-stat-value" id="widgetDailyRevenue">₺{{ number_format($widgets['revenue']['daily'] ?? 0, 0, ',', '.') }}</div>
+            <div class="db-stat-value" id="widgetDailyRevenue">₺{{ number_format($widgets['revenue']['daily'] ?? 0, 2, ',', '.') }}</div>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
                     <i class="ti ti-coins"></i>
                 </div>
             </div>
-            <div class="db-stat-value" id="widgetDailyExpense">₺{{ number_format($widgets['revenue']['daily_expense'] ?? 0, 0, ',', '.') }}</div>
+            <div class="db-stat-value" id="widgetDailyExpense">₺{{ number_format($widgets['revenue']['daily_expense'] ?? 0, 2, ',', '.') }}</div>
         </div>
     </div>
 

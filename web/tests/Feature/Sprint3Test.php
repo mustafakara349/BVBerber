@@ -28,7 +28,7 @@ class Sprint3Test extends TestCase
 
         config([
             'database.default' => 'mysql',
-            'database.connections.mysql.database' => 'bvapp_db',
+            'database.connections.mysql.database' => 'bv_db',
         ]);
         
         // Setup initial data
@@ -142,6 +142,8 @@ class Sprint3Test extends TestCase
         $this->assertNotNull($account);
         $this->assertEquals(200, $account->points_balance);
         $this->assertEquals(200, $account->total_earned);
+        $this->assertEquals(0.20, $account->tl_balance);
+        $this->assertEquals('₺0,20', $account->formatted_tl_balance);
     }
 
     public function test_product_stock_deduction_and_transaction_creation_on_sale()

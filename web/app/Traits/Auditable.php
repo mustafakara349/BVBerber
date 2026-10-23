@@ -33,6 +33,13 @@ trait Auditable
         $modelId = $model->getKey();
         $actionName = strtolower(class_basename($model)) . '.' . $action;
 
+        $actionDesc = match ($action) {
+            'created' => 'Yeni kayıt oluşturuldu',
+            'updated' => 'Kayıt güncellendi',
+            'deleted' => 'Kayıt silindi',
+            default => ucfirst($action)
+        };
+
         AuditLog::record(
             action: $actionName,
             modelType: $modelType,
@@ -41,7 +48,7 @@ trait Auditable
             newValues: $newValues,
             userId: Auth::id(),
             status: 'success',
-            details: "Model {$action} event for {$modelType} #{$modelId}"
+            details: "{$actionDesc} ({$modelType} #{$modelId})"
         );
     }
 }

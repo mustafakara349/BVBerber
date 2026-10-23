@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Enums\ApprovalStatus;
 use App\Enums\LeaveType;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmployeeLeave extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'employee_id', 'approved_by',
         'leave_type', 'start_date', 'end_date',

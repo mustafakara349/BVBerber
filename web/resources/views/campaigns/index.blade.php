@@ -129,7 +129,7 @@
                         </thead>
                         <tbody>
                             @forelse($campaigns as $camp)
-                            <tr style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form, input, .form-check')){showCampaignDetails({{ $camp->id }})}">
+                            <tr class="clickable-row" data-campaign-id="{{ $camp->id }}">
                                 <td class="ps-4">
                                     <div class="fw-bold text-dark fs-6">{{ $camp->title }}</div>
                                     <div class="text-secondary small">
@@ -223,7 +223,7 @@
                         </thead>
                         <tbody>
                             @forelse($coupons as $coup)
-                            <tr style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form, input, .form-check')){showCouponDetails({{ $coup->id }})}">
+                            <tr class="clickable-row" data-coupon-id="{{ $coup->id }}">
                                 <td class="ps-4 fw-bold text-dark font-monospace fs-5 text-primary">
                                     <span class="bg-primary bg-opacity-10 px-2.5 py-1 rounded text-primary">{{ $coup->code }}</span>
                                 </td>
@@ -1040,6 +1040,7 @@
     });
 
     function showCampaignDetails(id) {
+        id = parseInt(id, 10);
         const campaign = appCampaigns.find(c => c.id === id);
         if (!campaign) return;
 
@@ -1182,6 +1183,7 @@
     }
 
     function showCouponDetails(id) {
+        id = parseInt(id, 10);
         const coupon = appCoupons.find(c => c.id === id);
         if (!coupon) return;
 
@@ -1288,6 +1290,9 @@
         setupUserFilter('add_coup_user_search', 'add_coup_user_list');
         setupUserFilter('edit_coup_user_search', 'edit_coup_user_list');
     });
+
+    window.showCampaignDetails = showCampaignDetails;
+    window.showCouponDetails = showCouponDetails;
 </script>
 @endpush
 <style>

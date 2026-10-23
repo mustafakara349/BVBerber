@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StockCount extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'branch_id', 'count_date', 'notes', 'created_by'
     ];

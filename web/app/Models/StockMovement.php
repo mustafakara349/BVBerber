@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockMovement extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'branch_id', 'product_id', 'movement_type', 'quantity',
         'before_stock', 'after_stock', 'unit_cost', 'reference_type',

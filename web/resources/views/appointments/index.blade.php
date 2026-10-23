@@ -222,7 +222,7 @@
                     </thead>
                     <tbody>
                         @forelse($appointments as $apt)
-                        <tr style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form, a')){window.location='{{ route('appointments.show', $apt) }}'}" title="Randevu Detayını Gör">
+                        <tr data-href="{{ route('appointments.show', $apt) }}" class="clickable-row border-bottom" title="Randevu Detayını Gör">
                             <td class="ps-4 text-secondary fw-bold">#{{ $apt->appointment_code }}</td>
                             <td>
                                 <div class="d-flex align-items-center gap-3">

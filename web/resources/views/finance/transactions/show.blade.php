@@ -81,21 +81,43 @@
                     </div>
                 </div>
 
-                @if($transaction->reference)
+                @if($transaction->reference_type && $transaction->reference_id)
                     <div class="mb-4 p-4 border rounded-3 bg-primary bg-opacity-10 border-primary border-opacity-25">
                         <h6 class="fw-bold text-primary mb-2 d-flex align-items-center gap-2">
                             <i class="ti ti-link"></i> İlişkili Kayıt
                         </h6>
-                        <p class="text-secondary mb-3">Bu kasa işlemi sistemdeki başka bir kayıtla ilişkilendirilmiştir.</p>
+                        <p class="text-secondary mb-3">Bu kasa işlemi sistemdeki başka bir operasyonel kayıtla ilişkilendirilmiştir.</p>
                         
-                        @if(class_basename($transaction->reference_type) === 'Appointment')
-                            <a href="{{ route('appointments.index') }}?search={{ $transaction->reference_id }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
-                                <i class="ti ti-calendar-event me-2"></i> Randevu #{{ $transaction->reference_id }} Detayını Gör
-                            </a>
-                        @elseif(class_basename($transaction->reference_type) === 'Debt')
-                            <span class="btn btn-primary rounded-pill px-4 shadow-sm">
-                                <i class="ti ti-receipt me-2"></i> Borç / Alacak Kaydı (#{{ $transaction->reference_id }})
-                            </span>
+                        @if($transaction->reference)
+                            @if($transaction->reference_url)
+                                <a href="{{ $transaction->reference_url }}" class="btn btn-primary rounded-pill px-4 shadow-sm d-inline-flex align-items-center gap-2">
+                                    @if(class_basename($transaction->reference_type) === 'Appointment')
+                                        <i class="ti ti-calendar-event"></i>
+                                        <span>Randevu #{{ $transaction->reference_code }} Detayını Gör</span>
+                                        @if(method_exists($transaction->reference, 'trashed') && $transaction->reference->trashed())
+                                            <span class="badge bg-danger text-white rounded-pill ms-1 small">Silinmiş</span>
+                                        @endif
+                                    @elseif(class_basename($transaction->reference_type) === 'Debt')
+                                        <i class="ti ti-receipt"></i>
+                                        <span>Borç / Alacak Kaydı Detayı (#{{ $transaction->reference_code }})</span>
+                                    @elseif(class_basename($transaction->reference_type) === 'Expense')
+                                        <i class="ti ti-file-dollar"></i>
+                                        <span>Gider Kaydını İncele (#{{ $transaction->reference_code }})</span>
+                                    @else
+                                        <i class="ti ti-external-link"></i>
+                                        <span>{{ $transaction->reference_label }} (#{{ $transaction->reference_code }})</span>
+                                    @endif
+                                </a>
+                            @else
+                                <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill fs-6">
+                                    {{ $transaction->reference_label }} (#{{ $transaction->reference_code }})
+                                </span>
+                            @endif
+                        @else
+                            <div class="alert alert-warning mb-0 rounded-3 py-2 px-3 small d-flex align-items-center gap-2">
+                                <i class="ti ti-alert-triangle fs-5"></i>
+                                <span>İlişkili {{ $transaction->reference_label }} kaydı (#{{ $transaction->reference_id }}) sistemden kalıcı olarak silinmiştir.</span>
+                            </div>
                         @endif
                     </div>
                 @endif

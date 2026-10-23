@@ -61,7 +61,7 @@
                             </thead>
                             <tbody>
                                 @forelse($employees as $employee)
-                                    <tr class="border-bottom" style="cursor:pointer;" onclick="if(!event.target.closest('.btn, form')){window.location='{{ route('employees.show', $employee) }}'}" title="Çalışan Detayını Gör">
+                                    <tr data-href="{{ route('employees.show', $employee) }}" class="clickable-row border-bottom" title="Çalışan Detayını Gör">
                                         <td class="ps-4 py-3">
                                             <div class="d-flex align-items-center">
                                                 @if($employee->user && $employee->user->profile_photo)

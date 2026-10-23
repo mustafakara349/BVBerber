@@ -47,7 +47,7 @@
                             </thead>
                             <tbody>
                                 @foreach($pendingAppointments as $apt)
-                                    <tr data-appointment-id="{{ $apt->id }}" class="dashboard-pending-row">
+                                    <tr data-appointment-id="{{ $apt->id }}" data-href="{{ route('appointments.show', $apt) }}" class="dashboard-pending-row clickable-row" title="Randevu Detayını Gör">
                                         <td class="ps-4">
                                             <div class="db-time-tag db-time-primary">
                                                 <span>{{ $apt->start_at->format('d.m.Y') }}</span>

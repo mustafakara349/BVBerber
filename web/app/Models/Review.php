@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\ReviewObserver;
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[ObservedBy([ReviewObserver::class])]
 class Review extends Model
 {
+    use Auditable;
+
     public $timestamps = false;
 
     protected $fillable = [

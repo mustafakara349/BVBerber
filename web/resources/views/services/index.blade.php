@@ -60,7 +60,7 @@
                         </thead>
                         <tbody>
                             @forelse($services as $service)
-                            <tr class="border-bottom">
+                            <tr data-href="{{ route('services.edit', $service) }}" class="clickable-row border-bottom" title="Hizmeti Düzenle">
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
                                         @if($service->image)

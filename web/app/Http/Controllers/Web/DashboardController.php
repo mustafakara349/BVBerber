@@ -45,9 +45,12 @@ class DashboardController extends Controller
             'widgets_data' => [
                 'today_total' => $widgets['appointments']['today_total'] ?? 0,
                 'today_completed' => $widgets['appointments']['today_completed'] ?? 0,
-                'daily_revenue' => number_format($widgets['revenue']['daily'] ?? 0, 0, ',', '.'),
-                'daily_expense' => number_format($widgets['revenue']['daily_expense'] ?? 0, 0, ',', '.'),
+                'daily_revenue' => number_format($widgets['revenue']['daily'] ?? 0, 2, ',', '.'),
+                'daily_expense' => number_format($widgets['revenue']['daily_expense'] ?? 0, 2, ',', '.'),
                 'new_customers' => $widgets['customers']['new_this_month'] ?? 0,
+                'monthly_profit' => number_format($widgets['financial']['profit'] ?? 0, 2, ',', '.'),
+                'monthly_income' => number_format($widgets['financial']['income'] ?? 0, 2, ',', '.'),
+                'monthly_expense' => number_format($widgets['financial']['expense'] ?? 0, 2, ',', '.'),
             ],
         ]);
     }

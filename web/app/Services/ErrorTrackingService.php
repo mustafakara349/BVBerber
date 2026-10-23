@@ -79,6 +79,33 @@ class ErrorTrackingService
             } else {
                 Log::info("[{$ref}] {$exception->getMessage()}", $context);
             }
+
+            // Record to AuditLog database table with complete error context (fail-safe)
+            try {
+                \App\Models\AuditLog::record(
+                    action: 'system.exception',
+                    modelType: 'exception',
+                    modelId: 0,
+                    oldValues: null,
+                    newValues: [
+                        'reference_id' => $ref,
+                        'exception_class' => get_class($exception),
+                        'message' => $exception->getMessage(),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'status_code' => $statusCode,
+                        'url' => $request?->fullUrl(),
+                        'method' => $request?->method(),
+                        'trace' => array_slice(explode("\n", $exception->getTraceAsString()), 0, 20),
+                        'input' => $context['input'] ?? null,
+                    ],
+                    userId: $request?->user()?->id,
+                    status: $statusCode >= 500 ? 'error' : ($statusCode === 403 ? 'warning' : 'failed'),
+                    details: "[{$ref}] ({$statusCode}) {$exception->getMessage()}"
+                );
+            } catch (Throwable $auditError) {
+                error_log("Failed to write audit log for exception [{$ref}]: " . $auditError->getMessage());
+            }
         } catch (Throwable $loggingError) {
             // Failsafe: Never let logging error interrupt user error presentation
             error_log("Failed to log error [{$ref}]: " . $loggingError->getMessage());

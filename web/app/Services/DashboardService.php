@@ -18,12 +18,12 @@ class DashboardService
 
     public function getWidgetData(int $branchId): array
     {
-        return Cache::remember("dashboard.widgets.{$branchId}", $this->getCacheTtl(300), fn () => [
+        return [
             'revenue' => $this->dashboardRepo->getRevenueStats($branchId),
             'appointments' => $this->dashboardRepo->getAppointmentStats($branchId),
             'financial' => $this->dashboardRepo->getFinancialOverview($branchId),
             'customers' => $this->dashboardRepo->getCustomerStats($branchId),
-        ]);
+        ];
     }
 
     public function getFilteredAppointmentStats(int $branchId, string $period, ?string $startDate = null, ?string $endDate = null): array

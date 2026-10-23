@@ -154,7 +154,7 @@
                     </thead>
                     <tbody>
                         @forelse($reviews as $rev)
-                            <tr data-href="{{ route('reviews.show', $rev) }}" style="cursor: pointer;" class="review-row border-bottom border-light">
+                            <tr data-href="{{ route('reviews.show', $rev) }}" class="review-row clickable-row border-bottom border-light" title="Değerlendirme Detayını Gör">
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
                                         @if($rev->customer?->profile_photo_url)
@@ -250,7 +250,7 @@
                 </table>
             </div>
         </div>
-        @if(method_exists($reviews, 'hasPages') && $reviews->hasPages())
+        @if($reviews->hasPages())
             <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
                 {{ $reviews->links() }}
             </div>

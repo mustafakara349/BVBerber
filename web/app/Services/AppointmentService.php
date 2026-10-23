@@ -8,8 +8,10 @@ use App\Models\Appointment;
 use App\Models\AppointmentService as AppointmentServiceModel;
 use App\Models\AppointmentStatusLog;
 use App\Models\Branch;
+use App\Models\BranchSetting;
 use App\Models\Employee;
 use App\Models\EmployeeTimeBlock;
+use App\Models\User;
 use App\Repositories\Contracts\AppointmentRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -260,6 +262,10 @@ class AppointmentService
 
     public function updateStatus(Appointment $appointment, AppointmentStatus $status, ?int $userId = null, ?string $note = null, ?string $cancellationReason = null): Appointment
     {
+        if ($status === AppointmentStatus::Cancelled) {
+            $this->validateCustomerCancellation($appointment, $userId);
+        }
+
         $oldStatus = $appointment->status->value;
 
         $updateData = ['status' => $status];
@@ -267,10 +273,11 @@ class AppointmentService
         if ($status === AppointmentStatus::Completed) {
             $updateData['completed_at'] = now();
             
-            // Sadakat Puanı Kazanımı (1 TL = 1 Puan)
+            // Sadakat Puanı Kazanımı (1 ₺ harcama = 1 Puan | 1.000 Puan = 1 ₺)
             if ($oldStatus !== AppointmentStatus::Completed->value && $appointment->customer_id) {
                 try {
-                    $pointsToEarn = (int) $appointment->total_price;
+                    $earnRate = (float) config('bv.loyalty.earn_rate', 1);
+                    $pointsToEarn = (int) round($appointment->total_price * $earnRate);
                     if ($pointsToEarn > 0) {
                         app(\App\Services\LoyaltyService::class)->earnPoints(
                             $appointment->customer_id, 
@@ -291,10 +298,11 @@ class AppointmentService
                 $updateData['cancellation_reason'] = $cancellationReason;
             }
 
-            // Tamamlanmış bir randevu iptal ediliyorsa kazanılan puanları geri al
+            // Tamamlanmış bir randevu iptal ediliyorsa kazanılan puanları geri al (1 ₺ = 1 Puan)
             if ($oldStatus === AppointmentStatus::Completed->value && $appointment->customer_id) {
                 try {
-                    $pointsToRevoke = (int) $appointment->total_price;
+                    $earnRate = (float) config('bv.loyalty.earn_rate', 1);
+                    $pointsToRevoke = (int) round($appointment->total_price * $earnRate);
                     if ($pointsToRevoke > 0) {
                         app(\App\Services\LoyaltyService::class)->revokePoints(
                             $appointment->customer_id,
@@ -317,6 +325,51 @@ class AppointmentService
         $this->logStatusChange($appointment, $oldStatus, $status->value, $userId, $note);
 
         return $appointment->fresh();
+    }
+
+    /**
+     * Validate whether an appointment can be cancelled by a customer.
+     * Business staff (super_admin, owner, manager, receptionist, barber) are exempt.
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function validateCustomerCancellation(Appointment $appointment, ?int $userId = null): void
+    {
+        $user = $userId ? User::find($userId) : (auth()->check() ? auth()->user() : null);
+
+        // İşletme personeli (admin, super_admin, owner, manager, receptionist, barber) iptal sınırı kuralından muaftır
+        if ($user && ! $user->isCustomer() && $user->role?->slug !== 'customer') {
+            return;
+        }
+
+        // 1) Statü Kontrolü: Yalnızca beklemede veya onaylı randevular iptal edilebilir
+        if (! in_array($appointment->status, [AppointmentStatus::Pending, AppointmentStatus::Confirmed])) {
+            throw new \InvalidArgumentException('Yalnızca beklemede veya onaylanmış randevular iptal edilebilir.');
+        }
+
+        $timezone = config('app.timezone', 'Europe/Istanbul');
+        $now = now()->setTimezone($timezone);
+        $startAt = $appointment->start_at->copy()->setTimezone($timezone);
+
+        // 2) Geçmiş Randevu Kontrolü
+        if ($startAt->isPast()) {
+            throw new \InvalidArgumentException('Geçmiş randevular iptal edilemez.');
+        }
+
+        // 3) Şube İptal Limiti Kontrolü
+        $branchSetting = $appointment->branch?->settings
+            ?? BranchSetting::where('branch_id', $appointment->branch_id)->first();
+
+        $limitHours = (int) ($branchSetting?->cancellation_limit_hours ?? config('bv.appointment.cancellation_limit_hours', 2));
+
+        if ($limitHours > 0) {
+            $deadline = $startAt->copy()->subHours($limitHours);
+            if ($now->greaterThanOrEqualTo($deadline)) {
+                throw new \InvalidArgumentException(
+                    "Randevunuza {$limitHours} saatten az kaldığı için uygulama üzerinden iptal edilemez. Lütfen işletmemiz ile telefonla iletişime geçiniz."
+                );
+            }
+        }
     }
 
     private function logStatusChange(Appointment $appointment, ?string $old, string $new, ?int $userId = null, ?string $note = null): void

@@ -144,12 +144,16 @@ class AppointmentController extends Controller
             return $this->error('Müşteriler yalnızca randevularını iptal edebilir.', 403);
         }
 
-        $appointment = $this->appointmentService->updateStatus(
-            $appointment,
-            $status,
-            $user->id,
-            $request->get('note')
-        );
+        try {
+            $appointment = $this->appointmentService->updateStatus(
+                $appointment,
+                $status,
+                $user->id,
+                $request->get('note')
+            );
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 422);
+        }
 
         return $this->success(
             new AppointmentResource($appointment),

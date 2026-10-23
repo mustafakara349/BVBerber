@@ -107,7 +107,7 @@
                         </thead>
                         <tbody>
                             @forelse($sales as $sale)
-                            <tr class="border-bottom border-light" style="cursor:pointer;" onclick="if(!event.target.closest('.btn')){window.location='{{ route('products.sales.show', $sale->group_id) }}'}" title="Satış Detayını Gör">
+                            <tr class="border-bottom border-light clickable-row" data-href="{{ route('products.sales.show', $sale->group_id) }}" title="Satış Detayını Gör">
                                 <td class="ps-4 py-3">
                                     <span class="text-secondary small">{{ \Carbon\Carbon::parse($sale->sold_at)->format('d.m.Y H:i') }}</span>
                                     <div class="small text-muted">Satan: {{ $sale->seller->full_name ?? 'Sistem' }}</div>

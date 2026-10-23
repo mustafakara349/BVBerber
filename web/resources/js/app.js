@@ -1,6 +1,13 @@
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
+// Ensure any opened Bootstrap modal is attached directly to <body> so it always sits above the backdrop (z-index: 1055 > 1050)
+document.addEventListener('show.bs.modal', (e) => {
+    if (e.target && e.target.parentElement !== document.body) {
+        document.body.appendChild(e.target);
+    }
+});
+
 import './sidebar.js';
 import './skeleton.js';
 import '../scss/style.scss';

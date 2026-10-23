@@ -104,7 +104,17 @@ class TransactionController extends Controller
             abort(403);
         }
 
-        $transaction->load(['reference', 'createdBy']);
+        $transaction->load([
+            'createdBy',
+            'reference' => function ($morphTo) {
+                $morphTo->morphWith([
+                    \App\Models\Appointment::class => ['customer', 'employee.user'],
+                    \App\Models\Debt::class => ['customer'],
+                    \App\Models\Expense::class => ['category'],
+                ]);
+            }
+        ]);
+
         return view('finance.transactions.show', compact('transaction'));
     }
 

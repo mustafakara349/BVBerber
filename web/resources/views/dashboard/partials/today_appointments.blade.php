@@ -51,7 +51,7 @@
                                         }
                                     }
                                 @endphp
-                                <tr class="{{ $bgClass }} dashboard-today-row" data-appointment-id="{{ $apt->id }}" style="transition: all 0.2s ease;">
+                                <tr class="{{ $bgClass }} dashboard-today-row clickable-row" data-appointment-id="{{ $apt->id }}" data-href="{{ route('appointments.show', $apt) }}" title="Randevu Detayını Gör" style="transition: all 0.2s ease;">
                                     <td class="ps-4">
                                         <div class="db-time-tag {{ $isPast ? 'db-time-past' : 'db-time-primary' }}">
                                             <i class="ti ti-clock opacity-75"></i>

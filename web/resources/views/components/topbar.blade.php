@@ -53,69 +53,92 @@
 
             {{-- User Dropdown --}}
             <li class="dropdown">
-                <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="d-flex align-items-center gap-2 p-1 rounded-pill hover-bg-light" style="transition: all 0.2s ease; text-decoration: none;">
+                <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="d-flex align-items-center rounded-pill text-decoration-none user-dropdown-toggle" style="padding: 4px 14px 4px 5px; height: 42px; border: 1px solid #e2e8f0; background: #ffffff; transition: all 0.2s ease;">
                     @if(auth()->user()?->profile_photo_url)
-                        <img src="{{ auth()->user()->profile_photo_url }}" alt="" class="avatar avatar-sm rounded-circle border border-2 border-primary-subtle shadow-sm" style="width: 38px; height: 38px; object-fit: cover;">
+                        <img src="{{ auth()->user()->profile_photo_url }}" alt="" class="rounded-circle border border-2 border-primary-subtle object-fit-cover flex-shrink-0" style="width: 32px; height: 32px;">
                     @else
-                        <div class="avatar avatar-sm rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 38px; height: 38px; font-size: 14px;">
-                            {{ substr(auth()->user()?->first_name ?? 'A', 0, 1) }}{{ substr(auth()->user()?->last_name ?? 'A', 0, 1) }}
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 32px; height: 32px; font-size: 12.5px; letter-spacing: 0.5px;">
+                            {{ mb_substr(auth()->user()?->first_name ?? 'A', 0, 1) }}{{ mb_substr(auth()->user()?->last_name ?? 'A', 0, 1) }}
                         </div>
                     @endif
-                    <div class="d-none d-md-block text-start me-1">
-                        <span class="d-block fw-bold text-dark small" style="line-height: 1.1; font-size: 13px;">{{ auth()->user()?->full_name ?? 'Yönetici' }}</span>
-                        <span class="text-secondary" style="font-size: 10px;">{{ auth()->user()?->role?->name ?? 'Admin' }}</span>
-                    </div>
-                    <i class="ti ti-chevron-down text-secondary d-none d-md-block" style="font-size: 12px;"></i>
+                    <span class="d-none d-md-inline-block fw-semibold text-dark text-truncate ms-2 me-1" style="max-width: 150px; font-size: 13.5px;">{{ auth()->user()?->full_name ?? 'Yönetici' }}</span>
+                    <i class="ti ti-chevron-down text-secondary d-none d-md-inline-block" style="font-size: 11px;"></i>
                 </a>
 
-                <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 p-0 overflow-hidden" style="min-width: 280px; margin-top: 15px; border: 1px solid rgba(0, 0, 0, 0.05) !important;">
-                    <!-- Header with beautiful dark profile background or subtle gradient -->
-                    <div class="px-4 py-4 bg-dark text-white d-flex align-items-center gap-3" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
-                        @if(auth()->user()?->profile_photo_url)
-                            <img src="{{ auth()->user()->profile_photo_url }}" alt="" class="avatar avatar-md rounded-circle border border-2 border-white border-opacity-25 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
-                        @else
-                            <div class="avatar avatar-md rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold border border-2 border-white border-opacity-25 shadow-sm" style="width: 50px; height: 50px; font-size: 18px;">
-                                {{ substr(auth()->user()?->first_name ?? 'A', 0, 1) }}{{ substr(auth()->user()?->last_name ?? 'A', 0, 1) }}
+                <div class="dropdown-menu dropdown-menu-end border-0 rounded-4 p-0 shadow-lg" style="width: 295px; min-width: 295px; margin-top: 8px; border: 1px solid rgba(15, 23, 42, 0.08) !important; box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(15, 23, 42, 0.04) !important; overflow: hidden;">
+                    <!-- Header: Yalnızca İsim ve E-posta -->
+                    <div style="padding: 16px 18px; border-bottom: 1px solid #f1f5f9; background: #f8fafc;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flex-shrink-0">
+                                @if(auth()->user()?->profile_photo_url)
+                                    <img src="{{ auth()->user()->profile_photo_url }}" alt="" class="rounded-circle border border-2 border-white shadow-sm object-fit-cover" style="width: 44px; height: 44px;">
+                                @else
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm border border-2 border-white" style="width: 44px; height: 44px; font-size: 15px; letter-spacing: 0.5px;">
+                                        {{ mb_substr(auth()->user()?->first_name ?? 'A', 0, 1) }}{{ mb_substr(auth()->user()?->last_name ?? 'A', 0, 1) }}
+                                    </div>
+                                @endif
                             </div>
-                        @endif
-                        <div>
-                            <h5 class="mb-0 fw-bold text-white small" style="font-size: 14px;">{{ auth()->user()?->full_name ?? 'Yönetici' }}</h5>
-                            <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-0.5 rounded-pill mt-1" style="font-size: 10px;">
-                                <i class="ti ti-circle-filled me-1" style="font-size: 8px;"></i> Aktif / {{ auth()->user()?->role?->name ?? 'Admin' }}
-                            </span>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-bold text-dark text-truncate" style="font-size: 14.5px; line-height: 1.35; margin-bottom: 2px;">{{ auth()->user()?->full_name ?? 'Yönetici' }}</div>
+                                <div class="text-secondary text-truncate" style="font-size: 12px; line-height: 1.35;" title="{{ auth()->user()?->email }}">{{ auth()->user()?->email }}</div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Body Menu Options with Micro-Animations -->
-                    <div class="p-2 d-flex flex-column gap-1 text-dark">
-                        <a href="{{ route('dashboard') }}" class="dropdown-item px-3 py-2.5 rounded-3 d-flex align-items-center gap-2.5 hover-bg-light transition-all" style="font-size: 13px;">
-                            <span class="p-1.5 bg-primary bg-opacity-10 text-primary rounded-2 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
-                                <i class="ti ti-dashboard fs-5"></i>
-                            </span>
-                            <span class="fw-semibold text-dark">Yönetim Paneli</span>
-                        </a>
-                        
-                        <a href="{{ route('finance.transactions') }}" class="dropdown-item px-3 py-2.5 rounded-3 d-flex align-items-center gap-2.5 hover-bg-light transition-all" style="font-size: 13px;">
-                            <span class="p-1.5 bg-success bg-opacity-10 text-success rounded-2 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
-                                <i class="ti ti-wallet fs-5"></i>
-                            </span>
-                            <span class="fw-semibold text-dark">Kasa & Ciro</span>
+                    <!-- Menü Öğeleri -->
+                    <div style="padding: 8px 10px; display: flex; flex-direction: column; gap: 4px;">
+                        <a href="{{ route('dashboard') }}" class="dropdown-item d-flex align-items-center justify-content-between text-dark text-decoration-none" style="padding: 9px 12px; border-radius: 10px; transition: all 0.15s ease;">
+                            <div class="d-flex align-items-center gap-3 min-w-0">
+                                <div class="d-flex align-items-center justify-content-center flex-shrink-0 menu-icon-box" style="width: 36px; height: 36px; border-radius: 8px; background-color: #f1f5f9; color: #475569; transition: all 0.15s ease;">
+                                    <i class="ti ti-layout-dashboard fs-5"></i>
+                                </div>
+                                <div class="min-w-0 text-truncate">
+                                    <div class="fw-semibold text-dark text-truncate" style="font-size: 13.5px; line-height: 1.25;">Yönetim Paneli</div>
+                                    <div class="text-muted text-truncate" style="font-size: 11.5px; line-height: 1.25; margin-top: 1px;">Genel özet ve metrikler</div>
+                                </div>
+                            </div>
+                            <i class="ti ti-chevron-right text-muted opacity-50 flex-shrink-0 ms-2" style="font-size: 13px;"></i>
                         </a>
 
-                        <a href="{{ route('settings.index') }}" class="dropdown-item px-3 py-2.5 rounded-3 d-flex align-items-center gap-2.5 hover-bg-light transition-all" style="font-size: 13px;">
-                            <span class="p-1.5 bg-warning bg-opacity-10 text-warning rounded-2 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
-                                <i class="ti ti-settings fs-5"></i>
-                            </span>
-                            <span class="fw-semibold text-dark">Sistem Ayarları</span>
+                        <a href="{{ route('finance.transactions') }}" class="dropdown-item d-flex align-items-center justify-content-between text-dark text-decoration-none" style="padding: 9px 12px; border-radius: 10px; transition: all 0.15s ease;">
+                            <div class="d-flex align-items-center gap-3 min-w-0">
+                                <div class="d-flex align-items-center justify-content-center flex-shrink-0 menu-icon-box" style="width: 36px; height: 36px; border-radius: 8px; background-color: #f1f5f9; color: #475569; transition: all 0.15s ease;">
+                                    <i class="ti ti-wallet fs-5"></i>
+                                </div>
+                                <div class="min-w-0 text-truncate">
+                                    <div class="fw-semibold text-dark text-truncate" style="font-size: 13.5px; line-height: 1.25;">Kasa & Ciro</div>
+                                    <div class="text-muted text-truncate" style="font-size: 11.5px; line-height: 1.25; margin-top: 1px;">Gelir, gider ve raporlar</div>
+                                </div>
+                            </div>
+                            <i class="ti ti-chevron-right text-muted opacity-50 flex-shrink-0 ms-2" style="font-size: 13px;"></i>
+                        </a>
+
+                        <a href="{{ route('settings.index') }}" class="dropdown-item d-flex align-items-center justify-content-between text-dark text-decoration-none" style="padding: 9px 12px; border-radius: 10px; transition: all 0.15s ease;">
+                            <div class="d-flex align-items-center gap-3 min-w-0">
+                                <div class="d-flex align-items-center justify-content-center flex-shrink-0 menu-icon-box" style="width: 36px; height: 36px; border-radius: 8px; background-color: #f1f5f9; color: #475569; transition: all 0.15s ease;">
+                                    <i class="ti ti-settings fs-5"></i>
+                                </div>
+                                <div class="min-w-0 text-truncate">
+                                    <div class="fw-semibold text-dark text-truncate" style="font-size: 13.5px; line-height: 1.25;">Sistem Ayarları</div>
+                                    <div class="text-muted text-truncate" style="font-size: 11.5px; line-height: 1.25; margin-top: 1px;">Şube ve operasyon kuralları</div>
+                                </div>
+                            </div>
+                            <i class="ti ti-chevron-right text-muted opacity-50 flex-shrink-0 ms-2" style="font-size: 13px;"></i>
                         </a>
                     </div>
 
-                    <!-- Logout Action Bar -->
-                    <div class="bg-light p-3 border-top d-flex gap-2">
-                        <form method="POST" action="{{ route('logout') }}" class="w-100">
+                    <!-- Çıkış Butonu -->
+                    <div style="padding: 8px 10px; border-top: 1px solid #f1f5f9; background: #fafbfc;">
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
-                            <button type="submit" class="btn btn-sm btn-outline-danger w-100 py-2 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-1.5 shadow-sm" style="transition: all 0.2s ease; font-size: 12px;">
-                                <i class="ti ti-logout fs-5"></i> Güvenli Çıkış Yap
+                            <button type="submit" class="dropdown-item d-flex align-items-center justify-content-between text-danger w-100 border-0 bg-transparent" style="padding: 9px 12px; border-radius: 10px; transition: all 0.15s ease;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px; border-radius: 8px; background-color: #fee2e2; color: #dc2626;">
+                                        <i class="ti ti-logout fs-5"></i>
+                                    </div>
+                                    <span class="fw-semibold text-danger" style="font-size: 13.5px;">Güvenli Çıkış Yap</span>
+                                </div>
+                                <i class="ti ti-arrow-right text-danger opacity-75 flex-shrink-0 ms-2" style="font-size: 14px;"></i>
                             </button>
                         </form>
                     </div>
@@ -127,6 +150,27 @@
 
 @push('scripts')
 <style>
+    .user-dropdown-toggle:hover {
+        background-color: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+    }
+    .user-dropdown-toggle:focus,
+    .user-dropdown-toggle:active,
+    .user-dropdown-toggle.show {
+        box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12) !important;
+        border-color: var(--bs-primary, #ea580c) !important;
+        outline: none !important;
+    }
+    .dropdown-item:hover {
+        background-color: #f8fafc !important;
+    }
+    .dropdown-item:hover .menu-icon-box {
+        background-color: var(--bs-primary-bg-subtle, #ffedd5) !important;
+        color: var(--bs-primary, #ea580c) !important;
+    }
+    .dropdown-item.text-danger:hover {
+        background-color: #fef2f2 !important;
+    }
     @keyframes sn-bell-ring {
         0%, 100% { transform: rotate(0); }
         15% { transform: rotate(18deg); }

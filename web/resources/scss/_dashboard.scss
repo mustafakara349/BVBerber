@@ -323,7 +323,7 @@
     }
     100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: none;
     }
 }
 
@@ -417,4 +417,12 @@
         opacity: 1 !important;
         transform: none !important;
     }
+}
+
+// Modal & Backdrop Layering Guarantee
+.modal {
+    z-index: 1055 !important;
+}
+.modal-backdrop {
+    z-index: 1050 !important;
 }

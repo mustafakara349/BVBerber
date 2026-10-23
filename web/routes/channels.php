@@ -16,3 +16,13 @@ Broadcast::channel('admin.notifications.{userId}', function ($user, $userId) {
         && $user->status === UserStatus::Active
         && in_array($user->role?->slug, ['super_admin', 'owner', 'manager', 'receptionist', 'barber'], true);
 });
+
+/*
+| Sistem İşlem & Hata Günlükleri Canlı Akışı:
+| Yalnızca super_admin ve owner rolüne sahip aktif yöneticiler abone olabilir.
+*/
+Broadcast::channel('audit-logs', function ($user) {
+    return $user->status === UserStatus::Active
+        && in_array($user->role?->slug, ['super_admin', 'owner'], true);
+});
+
