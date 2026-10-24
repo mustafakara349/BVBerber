@@ -28,7 +28,12 @@ class TransactionController extends Controller
             ->orderBy('transaction_date', 'desc');
 
         // Date Filter Logic
-        $dateFilter = $request->input('date_filter', 'monthly'); // default to monthly
+        // Eğer kullanıcı doğrudan başlangıç veya bitiş tarihi girdiyse, öncelikli olarak özel tarih aralığı uygulanır
+        if ($request->filled('start_date') || $request->filled('end_date')) {
+            $dateFilter = 'custom';
+        } else {
+            $dateFilter = $request->input('date_filter', 'monthly');
+        }
         
         switch ($dateFilter) {
             case 'daily':
@@ -50,7 +55,7 @@ class TransactionController extends Controller
                 }
                 break;
             case 'all':
-                // no date filter
+                // Tüm zamanlar (tarih kısıtı yok)
                 break;
         }
 
@@ -84,8 +89,8 @@ class TransactionController extends Controller
         $netBalance = $totalIncome - $totalExpense;
 
         // Open debts/receivables for dynamic dropdown in create modal
-        $receivables = Debt::receivable()->forBranch($branchId)->active()->get();
-        $payables = Debt::payable()->forBranch($branchId)->active()->get();
+        $receivables = Debt::receivable()->forBranch($branchId)->active()->with('customer')->get();
+        $payables = Debt::payable()->forBranch($branchId)->active()->with('customer')->get();
 
         return view('finance.transactions.index', compact(
             'transactions',
@@ -141,7 +146,7 @@ class TransactionController extends Controller
             'amount' => $validated['amount'],
             'currency' => 'TRY',
             'payment_method' => $validated['payment_method'],
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'transaction_date' => $validated['transaction_date'],
         ];
 
@@ -150,8 +155,32 @@ class TransactionController extends Controller
         }
 
         if (!empty($validated['debt_id'])) {
+            $debt = Debt::where('branch_id', $branchId)->findOrFail($validated['debt_id']);
+
+            // Mutlak İş Mantığı Kontrolü:
+            // 1) Bizim borcumuz / ödememiz (payable) ise bu işlem MUTLAKA GİDER (- / expense) olmalıdır.
+            // 2) Bize olan borç / alacak (receivable) ise bu işlem MUTLAKA GELİR (+ / income) olmalıdır.
+            if ($debt->type === 'payable') {
+                $data['transaction_type'] = \App\Enums\TransactionType::Expense;
+                if (empty($data['category'])) {
+                    $data['category'] = 'Borç Ödemesi';
+                }
+                if (empty($data['description'])) {
+                    $data['description'] = 'Ödeme - ' . ($debt->counterparty_name ?? 'Borç Ödemesi');
+                }
+            } elseif ($debt->type === 'receivable') {
+                $data['transaction_type'] = \App\Enums\TransactionType::Income;
+                if (empty($data['category'])) {
+                    $data['category'] = 'Alacak Tahsilatı';
+                }
+                if (empty($data['description'])) {
+                    $debtorName = $debt->counterparty_name ?? ($debt->customer?->full_name ?? 'Müşteri');
+                    $data['description'] = 'Tahsilat - ' . $debtorName;
+                }
+            }
+
             $data['reference_type'] = Debt::class;
-            $data['reference_id'] = $validated['debt_id'];
+            $data['reference_id'] = $debt->id;
         }
 
         try {
@@ -166,6 +195,22 @@ class TransactionController extends Controller
     {
         if ($transaction->branch_id !== $this->getActiveBranchId()) {
             abort(403, 'Yetkisiz işlem.');
+        }
+
+        // Eğer silinen işlem bir borç/alacak kaydı ile ilişkili ise borç bakiyesini geri al
+        if ($transaction->reference_type === Debt::class && $transaction->reference_id) {
+            $debt = Debt::find($transaction->reference_id);
+            if ($debt) {
+                $debt->paid_amount = max(0, (float) $debt->paid_amount - (float) $transaction->amount);
+                if ($debt->paid_amount <= 0) {
+                    $debt->status = 'unpaid';
+                } elseif ($debt->paid_amount < $debt->amount) {
+                    $debt->status = 'partial';
+                } else {
+                    $debt->status = 'paid';
+                }
+                $debt->save();
+            }
         }
 
         $transaction->delete();

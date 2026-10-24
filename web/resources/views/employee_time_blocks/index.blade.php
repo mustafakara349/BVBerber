@@ -56,102 +56,253 @@
     </div>
 </div>
 
-<div class="row">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th class="ps-4 py-3">Tarih</th>
-                                    <th class="py-3">Çalışan</th>
-                                    <th class="py-3">Tür</th>
-                                    <th class="py-3">Saat Aralığı</th>
-                                    <th class="py-3">Açıklama</th>
-                                    <th class="text-end pe-4 py-3">İşlem</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($timeBlocks as $block)
-                                    <tr>
-                                        <td class="ps-4 fw-bold text-nowrap">
-                                            @php
-                                                $startDateStr = \Carbon\Carbon::parse($block->date)->format('Y-m-d');
-                                                $endDateStr = \Carbon\Carbon::parse($block->end_date_for_ui)->format('Y-m-d');
-                                            @endphp
-                                            @if($startDateStr != $endDateStr)
-                                                {{ \Carbon\Carbon::parse($startDateStr)->format('d.m.Y') }}
-                                                <span class="text-muted mx-1">-</span>
-                                                {{ \Carbon\Carbon::parse($endDateStr)->format('d.m.Y') }}
-                                            @else
-                                                {{ \Carbon\Carbon::parse($startDateStr)->format('d.m.Y') }}
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                @if($block->employee->user->profile_photo)
-                                                    <img src="{{ asset('storage/' . $block->employee->user->profile_photo) }}"
-                                                        class="rounded-circle me-3 object-fit-cover shadow-sm" width="40" height="40" alt="">
-                                                @else
-                                                    <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center me-3 fw-bold shadow-sm"
-                                                        style="width: 40px; height: 40px; font-size: 1rem;">
-                                                        {{ mb_substr($block->employee->user->first_name, 0, 1) }}
-                                                    </div>
-                                                @endif
-                                                <span class="fw-semibold text-dark">{{ $block->employee->user->full_name }}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @if($block->type == 'full_day')
-                                                <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill"><i class="ti ti-sun me-1"></i> Tüm Gün</span>
-                                            @else
-                                                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill"><i class="ti ti-clock me-1"></i> Saatlik</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($block->type == 'partial_time')
-                                                <span class="fw-bold text-dark">{{ \Carbon\Carbon::parse($block->start_time)->format('H:i') }}</span>
-                                                <span class="text-muted mx-1">-</span>
-                                                <span class="fw-bold text-dark">{{ \Carbon\Carbon::parse($block->end_time)->format('H:i') }}</span>
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-muted">{{ $block->reason ?? '-' }}</td>
-                                        <td class="text-end pe-4">
-                                            <div class="d-flex justify-content-end gap-2">
-                                                <!-- Düzenle Butonu -->
-                                                <button type="button" class="btn btn-sm btn-light border-0 text-primary rounded-circle shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
-                                                    title="Düzenle" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#editModal{{ $block->id }}">
-                                                    <i class="ti ti-pencil fs-5"></i>
-                                                </button>
-
-                                                <!-- Sil Butonu -->
-                                                <form action="{{ route('employee-time-blocks.destroy', $block->id) }}" method="POST"
-                                                    onsubmit="return confirm('Bu kaydı (varsa bağlı olduğu tüm seri günleri) silmek istediğinize emin misiniz?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <input type="hidden" name="grouped_ids" value="{{ implode(',', $block->grouped_ids) }}">
-                                                    <button type="submit"
-                                                        class="btn btn-sm btn-light border-0 text-danger rounded-circle shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
-                                                        title="Kaldır"><i class="ti ti-trash fs-5"></i></button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                <x-empty-state icon="ti ti-calendar-off" title="Henüz izin eklenmemiş" message="Personeller için eklenen kısıtlamalar burada listelenecektir." colspan="6" />
-                                @endforelse
-                            </tbody>
-                        </table>
+{{-- Aktif İzinler Kartı --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                        <i class="ti ti-calendar-check fs-5"></i>
                     </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold text-dark fs-6">Aktif İzinler</h5>
+                        <small class="text-muted">Şu anda devam eden ve yaklaşan personel izinleri</small>
+                    </div>
+                </div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1">
+                    <i class="ti ti-point-filled"></i>{{ $activeBlocks->count() }} Aktif
+                </span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3">Tarih</th>
+                                <th class="py-3">Çalışan</th>
+                                <th class="py-3">Tür</th>
+                                <th class="py-3">Durum</th>
+                                <th class="py-3">Saat Aralığı</th>
+                                <th class="py-3">Açıklama</th>
+                                <th class="text-end pe-4 py-3">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($activeBlocks as $block)
+                                <tr>
+                                    <td class="ps-4 fw-bold text-nowrap">
+                                        @php
+                                            $startDateStr = \Carbon\Carbon::parse($block->date)->format('Y-m-d');
+                                            $endDateStr = \Carbon\Carbon::parse($block->end_date_for_ui)->format('Y-m-d');
+                                            $isToday = ($startDateStr === now()->format('Y-m-d'));
+                                        @endphp
+                                        @if($startDateStr != $endDateStr)
+                                            {{ \Carbon\Carbon::parse($startDateStr)->format('d.m.Y') }}
+                                            <span class="text-muted mx-1">-</span>
+                                            {{ \Carbon\Carbon::parse($endDateStr)->format('d.m.Y') }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($startDateStr)->format('d.m.Y') }}
+                                            @if($isToday)
+                                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill ms-1 px-2 py-0.5" style="font-size: 0.72rem;">Bugün</span>
+                                            @endif
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if($block->employee->user->profile_photo)
+                                                <img src="{{ asset('storage/' . $block->employee->user->profile_photo) }}"
+                                                    class="rounded-circle me-3 object-fit-cover shadow-sm" width="40" height="40" alt="">
+                                            @else
+                                                <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center me-3 fw-bold shadow-sm"
+                                                    style="width: 40px; height: 40px; font-size: 1rem;">
+                                                    {{ mb_substr($block->employee->user->first_name, 0, 1) }}
+                                                </div>
+                                            @endif
+                                            <span class="fw-semibold text-dark">{{ $block->employee->user->full_name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if($block->type == 'full_day')
+                                            <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill"><i class="ti ti-sun me-1"></i> Tüm Gün</span>
+                                        @else
+                                            <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill"><i class="ti ti-clock me-1"></i> Saatlik</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($block->status_key === 'active')
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 rounded-pill">
+                                                Aktif
+                                            </span>
+                                        @else
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1.5 rounded-pill d-inline-flex align-items-center gap-1">
+                                                <i class="ti ti-calendar-time fs-6"></i>
+                                                Planlandı
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($block->type == 'partial_time')
+                                            <span class="fw-bold text-dark">{{ \Carbon\Carbon::parse($block->start_time)->format('H:i') }}</span>
+                                            <span class="text-muted mx-1">-</span>
+                                            <span class="fw-bold text-dark">{{ \Carbon\Carbon::parse($block->end_time)->format('H:i') }}</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-secondary small">{{ $block->reason ?? '-' }}</td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <!-- Düzenle Butonu -->
+                                            <button type="button" class="btn btn-sm btn-light border-0 text-primary rounded-circle shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
+                                                title="Düzenle" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editModal{{ $block->id }}">
+                                                <i class="ti ti-pencil fs-5"></i>
+                                            </button>
+
+                                            <!-- Sil Butonu -->
+                                            <form action="{{ route('employee-time-blocks.destroy', $block->id) }}" method="POST"
+                                                onsubmit="return confirm('Bu kaydı (varsa bağlı olduğu tüm seri günleri) silmek istediğinize emin misiniz?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="grouped_ids" value="{{ implode(',', $block->grouped_ids) }}">
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-light border-0 text-danger rounded-circle shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
+                                                    title="Kaldır"><i class="ti ti-trash fs-5"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <x-empty-state icon="ti ti-calendar-check" title="Aktif izin bulunmuyor" message="Şu anda devam eden veya yaklaşan planlanmış bir izin kaydı bulunmamaktadır." colspan="7" />
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+{{-- Geçmiş İzinler Kartı --}}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-secondary-subtle text-secondary d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                        <i class="ti ti-history fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold text-dark fs-6">Geçmiş İzinler</h5>
+                        <small class="text-muted">Süresi tamamlanmış ve geride kalmış personel izinleri</small>
+                    </div>
+                </div>
+                <span class="badge bg-light text-secondary border rounded-pill px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1">
+                    <i class="ti ti-history"></i>{{ $pastBlocks->count() }} Geçmiş
+                </span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3">Tarih</th>
+                                <th class="py-3">Çalışan</th>
+                                <th class="py-3">Tür</th>
+                                <th class="py-3">Durum</th>
+                                <th class="py-3">Saat Aralığı</th>
+                                <th class="py-3">Açıklama</th>
+                                <th class="text-end pe-4 py-3">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($pastBlocks as $block)
+                                <tr>
+                                    <td class="ps-4 fw-bold text-nowrap text-secondary">
+                                        @php
+                                            $startDateStr = \Carbon\Carbon::parse($block->date)->format('Y-m-d');
+                                            $endDateStr = \Carbon\Carbon::parse($block->end_date_for_ui)->format('Y-m-d');
+                                        @endphp
+                                        @if($startDateStr != $endDateStr)
+                                            {{ \Carbon\Carbon::parse($startDateStr)->format('d.m.Y') }}
+                                            <span class="text-muted mx-1">-</span>
+                                            {{ \Carbon\Carbon::parse($endDateStr)->format('d.m.Y') }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($startDateStr)->format('d.m.Y') }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if($block->employee->user->profile_photo)
+                                                <img src="{{ asset('storage/' . $block->employee->user->profile_photo) }}"
+                                                    class="rounded-circle me-3 object-fit-cover shadow-sm opacity-75" width="40" height="40" alt="">
+                                            @else
+                                                <div class="rounded-circle bg-light text-secondary d-flex align-items-center justify-content-center me-3 fw-bold shadow-sm"
+                                                    style="width: 40px; height: 40px; font-size: 1rem;">
+                                                    {{ mb_substr($block->employee->user->first_name, 0, 1) }}
+                                                </div>
+                                            @endif
+                                            <span class="fw-semibold text-secondary">{{ $block->employee->user->full_name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if($block->type == 'full_day')
+                                            <span class="badge bg-light text-secondary border px-3 py-2 rounded-pill"><i class="ti ti-sun me-1"></i> Tüm Gün</span>
+                                        @else
+                                            <span class="badge bg-light text-secondary border px-3 py-2 rounded-pill"><i class="ti ti-clock me-1"></i> Saatlik</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-secondary border px-3 py-1.5 rounded-pill d-inline-flex align-items-center gap-1">
+                                            <i class="ti ti-check fs-6 text-muted"></i>
+                                            Tamamlandı
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if($block->type == 'partial_time')
+                                            <span class="fw-medium text-secondary">{{ \Carbon\Carbon::parse($block->start_time)->format('H:i') }}</span>
+                                            <span class="text-muted mx-1">-</span>
+                                            <span class="fw-medium text-secondary">{{ \Carbon\Carbon::parse($block->end_time)->format('H:i') }}</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-secondary small">{{ $block->reason ?? '-' }}</td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <!-- Düzenle Butonu -->
+                                            <button type="button" class="btn btn-sm btn-light border-0 text-primary rounded-circle shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
+                                                title="Düzenle" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editModal{{ $block->id }}">
+                                                <i class="ti ti-pencil fs-5"></i>
+                                            </button>
+
+                                            <!-- Sil Butonu -->
+                                            <form action="{{ route('employee-time-blocks.destroy', $block->id) }}" method="POST"
+                                                onsubmit="return confirm('Bu kaydı (varsa bağlı olduğu tüm seri günleri) silmek istediğinize emin misiniz?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="grouped_ids" value="{{ implode(',', $block->grouped_ids) }}">
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-light border-0 text-danger rounded-circle shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;"
+                                                    title="Kaldır"><i class="ti ti-trash fs-5"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <x-empty-state icon="ti ti-calendar-off" title="Geçmiş izin kaydı yok" message="Geçmiş tarihlere ait bir izin kaydı bulunmamaktadır." colspan="7" />
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Modals in a separate loop outside the table -->
     @foreach($timeBlocks as $block)

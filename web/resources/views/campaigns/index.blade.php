@@ -2,10 +2,10 @@
 @section('title', 'Kampanyalar & Kuponlar - B&V Barber')
 @section('content')
 <x-page-header title="Kampanya & Kupon Yönetimi" description="Müşteri sadakatini artırmak için promosyonlar, indirim kampanyaları ve kuponlar oluşturun.">
-    <x-btn-primary icon="ti ti-plus" data-bs-toggle="modal" data-bs-target="#addCampaignModal">
+    <x-btn-primary icon="ti ti-plus" href="{{ route('campaigns.create') }}">
         Yeni Kampanya
     </x-btn-primary>
-    <x-btn-outline icon="ti ti-ticket" data-bs-toggle="modal" data-bs-target="#addCouponModal">
+    <x-btn-outline icon="ti ti-ticket" href="{{ route('campaigns.coupons.create') }}">
         Yeni Kupon Kodu
     </x-btn-outline>
 </x-page-header>
@@ -163,14 +163,19 @@
                                     <div class="text-secondary small">{{ $camp->end_date ? \Carbon\Carbon::parse($camp->end_date)->format('d.m.Y') : '' }}</div>
                                 </td>
                                 <td class="text-center">
-                                    <div class="form-check form-switch m-0 d-flex justify-content-center align-items-center">
-                                        <input class="form-check-input mt-0" type="checkbox" role="switch"
-                                               id="campSwitch{{ $camp->id }}" 
-                                               {{ $camp->is_active ? 'checked' : '' }}
-                                               onchange="document.getElementById('campForm{{ $camp->id }}').submit()">
-                                        <label class="form-check-label ms-2 small fw-medium {{ $camp->is_active ? 'text-success' : 'text-secondary' }}" for="campSwitch{{ $camp->id }}">
-                                            {{ $camp->is_active ? 'Aktif' : 'Pasif' }}
-                                        </label>
+                                    <div class="d-inline-flex flex-column align-items-center gap-1">
+                                        <span class="badge {{ $camp->status_badge_class }} px-3 py-1.5 rounded-pill fw-medium text-nowrap">
+                                            <i class="{{ $camp->status_icon }} me-1"></i>{{ $camp->status_label }}
+                                        </span>
+                                        <div class="form-check form-switch m-0 mt-1 d-flex justify-content-center align-items-center">
+                                            <input class="form-check-input mt-0" type="checkbox" role="switch"
+                                                   id="campSwitch{{ $camp->id }}" 
+                                                   {{ $camp->is_active ? 'checked' : '' }}
+                                                   onchange="document.getElementById('campForm{{ $camp->id }}').submit()">
+                                            <label class="form-check-label ms-1 text-muted small" for="campSwitch{{ $camp->id }}" style="font-size: 0.72rem;">
+                                                {{ $camp->is_active ? 'Açık' : 'Kapalı' }}
+                                            </label>
+                                        </div>
                                     </div>
                                     <form id="campForm{{ $camp->id }}" action="{{ route('campaigns.toggle', $camp) }}" method="POST" class="d-none">
                                         @csrf
@@ -289,272 +294,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Add Campaign Modal -->
-<div class="modal fade" id="addCampaignModal" tabindex="-1" aria-labelledby="addCampaignModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <form method="POST" action="{{ route('campaigns.store') }}" enctype="multipart/form-data" class="modal-content border-0 rounded-4 shadow">
-            @csrf
-            <div class="modal-header border-bottom-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="addCampaignModalLabel">Yeni Kampanya Ekle</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body px-4">
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Kampanya Kapsamı (Neyde Geçerli?)</label>
-                        <select name="trigger_type" id="add_trigger_type" class="form-select border-0 bg-light rounded-3" required onchange="toggleTriggerFields('add')">
-                            <option value="all">Tüm Hizmetlerde Geçerli</option>
-                            <option value="categories">Belirli Kategorilerde Geçerli</option>
-                            <option value="services">Belirli Hizmetlerde Geçerli</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Kampanya Ödülü</label>
-                        <select name="reward_type" id="add_reward_type" class="form-select border-0 bg-light rounded-3" required onchange="toggleRewardFields('add')">
-                            <option value="discount">İndirim (Yüzde veya Tutar)</option>
-                            <option value="gift_product">Hediye Satış Ürünü</option>
-                            <option value="gift_cafe">Hediye Kafe Ürünü</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Kampanya Başlığı</label>
-                    <input type="text" name="title" class="form-control border-0 bg-light rounded-3" placeholder="Örn: Yaz Sezonu İndirimi" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Açıklama (Opsiyonel)</label>
-                    <textarea name="description" rows="2" class="form-control border-0 bg-light rounded-3" placeholder="Kampanya detayı..."></textarea>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Kampanya Şartları</label>
-                    <textarea name="terms" rows="6" class="form-control border-0 bg-light rounded-3" placeholder="Kampanya şartları... (Müşteri uygulamasında görünecek)">• Bu kampanya sepetinizde otomatik olarak uygulanır.
-• Kampanya tüm müşterilerimiz için geçerlidir.
-• Kampanya tüm hizmet kategorilerinde geçerlidir.
-• Bu kampanya kişi başı en fazla 1 defa kullanılabilir.
-• Bu kampanya diğer indirimlerle birleştirilemez.
-• Sadece belirtilen geçerlilik tarihleri arasında kullanılabilir.</textarea>
-                </div>
-                
-
-
-                <!-- Kapsam Seçimleri -->
-                <div class="mb-3 d-none" id="add_categories_wrapper">
-                    <label class="form-label small fw-bold text-secondary">Geçerli Hizmet Kategorileri</label>
-                    <div class="border rounded-3 p-3 bg-light" style="max-height: 180px; overflow-y: auto;">
-                        @foreach($categories as $cat)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" name="categories[]" value="{{ $cat->id }}" id="cat_add_{{ $cat->id }}">
-                            <label class="form-check-label small fw-semibold text-dark" for="cat_add_{{ $cat->id }}">
-                                {{ $cat->name }}
-                            </label>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                <div class="mb-3 d-none" id="add_services_wrapper">
-                    <label class="form-label small fw-bold text-secondary">Geçerli Hizmetler</label>
-                    <div class="border rounded-3 p-3 bg-light" style="max-height: 180px; overflow-y: auto;">
-                        @foreach($services as $srv)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" name="services[]" value="{{ $srv->id }}" id="srv_add_{{ $srv->id }}">
-                            <label class="form-check-label small fw-semibold text-dark" for="srv_add_{{ $srv->id }}">
-                                {{ $srv->name }}
-                            </label>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Ödül Seçimleri -->
-                <div id="add_discount_wrapper">
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-secondary">İndirim Türü</label>
-                            <select name="discount_type" class="form-select border-0 bg-light rounded-3">
-                                <option value="percentage">Yüzde (%)</option>
-                                <option value="fixed">Sabit Tutar (₺)</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-secondary">İndirim Tutarı / Oranı</label>
-                            <input type="number" name="discount_value" step="0.01" min="0" class="form-control border-0 bg-light rounded-3">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3 d-none" id="add_gift_product_wrapper">
-                    <label class="form-label small fw-bold text-secondary">Hediye Edilecek Satış Ürünü</label>
-                    <select name="reward_product_id" class="form-select border-0 bg-light rounded-3">
-                        <option value="">-- Ürün Seçin --</option>
-                        @foreach($products as $prod)
-                        <option value="{{ $prod->id }}">{{ $prod->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="mb-3 d-none" id="add_gift_cafe_wrapper">
-                    <label class="form-label small fw-bold text-secondary">Hediye Edilecek Kafe Ürünü</label>
-                    <select name="reward_cafe_product_id" class="form-select border-0 bg-light rounded-3">
-                        <option value="">-- İçecek / Ürün Seçin --</option>
-                        @foreach($cafeProducts as $cprod)
-                        <option value="{{ $cprod->id }}">{{ $cprod->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6" id="add_type_wrapper">
-                        <label class="form-label small fw-bold text-secondary">Kampanya Türü</label>
-                        <select name="type" class="form-select border-0 bg-light rounded-3" required>
-                            <option value="auto_apply">Sepette Otomatik Uygula</option>
-                            <option value="coupon_required">Kupon Kodu Gerektirir</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Hedef Kitle</label>
-                        <select name="target_audience" class="form-select border-0 bg-light rounded-3" required>
-                            <option value="all">Tüm Müşteriler</option>
-                            <option value="new_customers">Sadece Yeni Müşteriler</option>
-                            <option value="loyalty_members">Sadece Sadakat Üyeleri</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="row g-3 mb-3" id="add_limits_wrapper">
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Minimum Sipariş Tutarı (₺)</label>
-                        <input type="number" name="min_order_amount" step="0.01" min="0" class="form-control border-0 bg-light rounded-3" placeholder="0">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Maksimum İndirim Tutarı (₺)</label>
-                        <input type="number" name="max_discount_amount" step="0.01" min="0" class="form-control border-0 bg-light rounded-3" placeholder="Limitsiz">
-                    </div>
-                </div>
-                
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Görsel (Opsiyonel)</label>
-                        <input type="file" name="image" class="form-control border-0 bg-light rounded-3" accept="image/*">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold text-secondary">Kişi Başı Limit</label>
-                        <input type="number" name="per_customer_limit" min="1" class="form-control border-0 bg-light rounded-3" placeholder="Limitsiz">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold text-secondary">Öncelik (Sıra)</label>
-                        <input type="number" name="priority" min="0" value="0" class="form-control border-0 bg-light rounded-3">
-                    </div>
-                </div>
-                
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Başlangıç Tarihi</label>
-                        <input type="date" name="start_date" class="form-control border-0 bg-light rounded-3" value="{{ date('Y-m-d') }}" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Bitiş Tarihi</label>
-                        <input type="date" name="end_date" class="form-control border-0 bg-light rounded-3" value="{{ date('Y-m-d', strtotime('+30 days')) }}" required>
-                    </div>
-                </div>
-                
-                <div class="form-check form-switch mb-2">
-                    <input class="form-check-input" type="checkbox" name="is_active" id="is_active" checked value="1">
-                    <label class="form-check-label small fw-semibold text-secondary" for="is_active">Aktif Olarak Yayına Al</label>
-                </div>
-            </div>
-            <div class="modal-footer border-top-0 pb-4 px-4">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Vazgeç</button>
-                <button type="submit" class="btn btn-primary rounded-pill px-4">Kampanyayı Oluştur</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Add Coupon Modal -->
-<div class="modal fade" id="addCouponModal" tabindex="-1" aria-labelledby="addCouponModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form method="POST" action="{{ route('campaigns.coupons.store') }}" class="modal-content border-0 rounded-4 shadow">
-            @csrf
-            <div class="modal-header border-bottom-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="addCouponModalLabel">Yeni Kupon Kodu Oluştur</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body px-4">
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Kupon Başlığı (Opsiyonel)</label>
-                    <input type="text" name="title" class="form-control border-0 bg-light rounded-3" placeholder="Örn: Telafi İndirimi">
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Açıklama (Opsiyonel)</label>
-                    <textarea name="description" rows="2" class="form-control border-0 bg-light rounded-3" placeholder="Kupon detayı..."></textarea>
-                </div>
-                
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">İndirim Türü</label>
-                        <select name="discount_type" class="form-select border-0 bg-light rounded-3" required>
-                            <option value="percentage">Yüzde (%)</option>
-                            <option value="fixed">Sabit Tutar (₺)</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">İndirim Tutarı / Oranı</label>
-                        <input type="number" name="discount_value" step="0.01" min="0" class="form-control border-0 bg-light rounded-3" required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Özel Kullanıcı Atama (Çoklu Seçim Yapabilirsiniz)</label>
-                    <input type="text" id="add_coup_user_search" class="form-control form-control-sm border-0 bg-light mb-2 rounded-3" placeholder="Kullanıcı ara (isim, telefon)...">
-                    <div class="list-group user-select-list" id="add_coup_user_list" style="max-height: 180px; overflow-y: auto;">
-                        @foreach($users as $u)
-                        <label class="list-group-item d-flex align-items-center gap-2 border-0 bg-light rounded-3 mb-1" style="cursor: pointer;">
-                            <input class="form-check-input flex-shrink-0 mt-0" type="checkbox" name="user_ids[]" value="{{ $u->id }}">
-                            <span class="user-text">{{ $u->first_name }} {{ $u->last_name }} <small class="text-muted">({{ $u->phone }})</small></span>
-                        </label>
-                        @endforeach
-                    </div>
-                    <div class="form-text small text-secondary mt-1">Boş bırakılırsa herkes kullanabilir. Sadece listeden üzerine tıklayarak kolayca seçebilirsiniz.</div>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Kupon Kodu</label>
-                    <div class="input-group">
-                        <input type="text" name="code" id="couponCodeInput" class="form-control border-0 bg-light rounded-start-3 font-monospace fw-bold text-uppercase" placeholder="KOD-YAZ" required>
-                        <button type="button" class="btn btn-outline-secondary border-0 bg-light text-primary rounded-end-3" onclick="generateRandomCouponCode()">
-                            Rastgele Üret
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="row g-3 mb-2">
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Maks. Toplam Kullanım</label>
-                        <input type="number" name="usage_limit" min="1" class="form-control border-0 bg-light rounded-3" placeholder="Örn: 100 Ziyaret" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Kişi Başı Limit</label>
-                        <input type="number" name="per_customer_limit" min="1" value="1" class="form-control border-0 bg-light rounded-3" required>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Son Geçerlilik Zamanı</label>
-                    <input type="datetime-local" name="expires_at" class="form-control border-0 bg-light rounded-3" value="{{ date('Y-m-d\TH:i', strtotime('+7 days')) }}" required>
-                </div>
-            </div>
-            <div class="modal-footer border-top-0 pb-4 px-4">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Vazgeç</button>
-                <button type="submit" class="btn btn-primary rounded-pill px-4">Kupon Kodunu Üret</button>
-            </div>
-        </form>
     </div>
 </div>
 
@@ -698,16 +437,12 @@
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label class="form-label small fw-bold text-secondary">Görsel (Opsiyonel - Değiştirmek istemiyorsanız boş bırakın)</label>
-                        <input type="file" name="image" class="form-control border-0 bg-light rounded-3" accept="image/*">
-                    </div>
-                    <div class="col-md-3">
                         <label class="form-label small fw-bold text-secondary">Kişi Başı Limit</label>
-                        <input type="number" name="per_customer_limit" id="edit_camp_per_customer_limit" min="1" class="form-control border-0 bg-light rounded-3">
+                        <input type="number" name="per_customer_limit" id="edit_camp_per_customer_limit" min="1" class="form-control border-0 bg-light rounded-3" placeholder="Limitsiz">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label class="form-label small fw-bold text-secondary">Öncelik (Sıra)</label>
-                        <input type="number" name="priority" id="edit_camp_priority" min="0" class="form-control border-0 bg-light rounded-3">
+                        <input type="number" name="priority" id="edit_camp_priority" min="0" class="form-control border-0 bg-light rounded-3" placeholder="0">
                     </div>
                 </div>
                 <div class="row g-3 mb-3">
@@ -814,9 +549,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pb-4">
-                <div id="view_camp_image_container" class="mb-3 text-center d-none">
-                    <img id="view_camp_image" src="" alt="Kampanya Görseli" class="img-fluid rounded-3 border" style="max-height: 200px; object-fit: cover;">
-                </div>
                 <h6 id="view_camp_title" class="fw-bold mb-3 fs-5"></h6>
                 <p id="view_camp_desc" class="text-secondary small mb-4"></p>
                 
@@ -1037,6 +769,14 @@
                 event.relatedTarget.classList.add('text-secondary');
             });
         });
+
+        // URL hash kontrolü: #couponsPanel varsa kuponlar sekmesini otomatik aç
+        if (window.location.hash === '#couponsPanel') {
+            const couponsTabBtn = document.getElementById('coupons-tab');
+            if (couponsTabBtn) {
+                bootstrap.Tab.getOrCreateInstance(couponsTabBtn).show();
+            }
+        }
     });
 
     function showCampaignDetails(id) {
@@ -1073,12 +813,34 @@
         
         // Durum
         const statusEl = document.getElementById('view_camp_status');
-        if (campaign.is_active) {
-            statusEl.textContent = 'Aktif';
-            statusEl.className = 'badge bg-success-subtle text-success';
-        } else {
+        if (!campaign.is_active) {
             statusEl.textContent = 'Pasif';
             statusEl.className = 'badge bg-secondary-subtle text-secondary';
+        } else {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const startDate = campaign.start_date ? new Date(campaign.start_date) : null;
+            if (startDate) startDate.setHours(0, 0, 0, 0);
+            const endDate = campaign.end_date ? new Date(campaign.end_date) : null;
+            if (endDate) endDate.setHours(23, 59, 59, 999);
+
+            const formatDate = (d) => {
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                return `${day}.${month}.${d.getFullYear()}`;
+            };
+
+            if (startDate && startDate > today) {
+                statusEl.textContent = `Beklemede ${formatDate(startDate)}'nde yayınlanacak`;
+                statusEl.className = 'badge bg-warning-subtle text-warning-emphasis border border-warning';
+            } else if (endDate && endDate < today) {
+                statusEl.textContent = `Süresi Doldu (${formatDate(endDate)})`;
+                statusEl.className = 'badge bg-danger-subtle text-danger border border-danger';
+            } else {
+                const endStr = endDate ? formatDate(endDate) : 'süresiz';
+                statusEl.textContent = `Yayından ${endStr}'nde kaldırılacak`;
+                statusEl.className = 'badge bg-success-subtle text-success border border-success';
+            }
         }
 
         // Kategoriler
@@ -1086,16 +848,6 @@
             ? campaign.categories.map(cat => cat.name).join(', ') 
             : 'Tüm Kategoriler';
         document.getElementById('view_camp_categories').textContent = catNames;
-
-        // Görsel
-        const imgContainer = document.getElementById('view_camp_image_container');
-        const imgEl = document.getElementById('view_camp_image');
-        if (campaign.image_path) {
-            imgEl.src = `/storage/${campaign.image_path}`;
-            imgContainer.classList.remove('d-none');
-        } else {
-            imgContainer.classList.add('d-none');
-        }
         
         // Usages Tablosu
         const tbody = document.getElementById('view_camp_usages');

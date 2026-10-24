@@ -339,6 +339,7 @@ class AppointmentController extends Controller
                 'branch_id' => $appointment->branch_id,
                 'created_by' => auth()->id(),
                 'transaction_type' => \App\Enums\TransactionType::Income,
+                'category' => 'Randevu Ödemesi',
                 'amount' => $validated['amount'],
                 'currency' => 'TRY',
                 'payment_method' => $validated['payment_method'],
@@ -468,6 +469,7 @@ class AppointmentController extends Controller
                 'branch_id' => $appointment->branch_id,
                 'created_by' => auth()->id(),
                 'transaction_type' => \App\Enums\TransactionType::Income,
+                'category' => 'Randevu Ödemesi',
                 'amount' => $validated['amount'],
                 'currency' => 'TRY',
                 'payment_method' => $validated['payment_method'],
@@ -479,6 +481,9 @@ class AppointmentController extends Controller
         });
 
         \App\Models\Debt::syncDebtForAppointment($appointment->fresh());
+
+        // Ödeme alındığında dashboard kasa verileri güncellenmeli
+        $this->dashboardService->flushBranchCache($appointment->branch_id);
 
         return back()->with('success', 'Randevu başarıyla tamamlandı ve ödemesi kaydedildi.');
     }

@@ -86,6 +86,10 @@ class Transaction extends Model
             return route('finance.expenses');
         }
 
+        if ($this->reference instanceof PurchaseOrder) {
+            return route('purchase-orders.show', $this->reference);
+        }
+
         return null;
     }
 
@@ -96,6 +100,10 @@ class Transaction extends Model
     {
         if ($this->reference instanceof Appointment && !empty($this->reference->appointment_code)) {
             return $this->reference->appointment_code;
+        }
+
+        if ($this->reference instanceof PurchaseOrder && !empty($this->reference->invoice_number)) {
+            return '#' . $this->reference->invoice_number;
         }
 
         return (string) ($this->reference_id ?? '-');
@@ -110,6 +118,7 @@ class Transaction extends Model
             'Appointment' => 'Randevu',
             'Debt' => 'Borç / Alacak Kaydı',
             'Expense' => 'Gider Kaydı',
+            'PurchaseOrder' => 'Mal Alımı',
             default => class_basename($this->reference_type ?? 'Kayıt'),
         };
     }

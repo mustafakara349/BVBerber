@@ -19,7 +19,7 @@ class PurchaseOrder extends Model
     protected $casts = [
         'subtotal' => 'decimal:2',
         'total_amount' => 'decimal:2',
-        'purchase_date' => 'date',
+        'purchase_date' => 'datetime',
     ];
 
     public function branch(): BelongsTo

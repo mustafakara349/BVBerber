@@ -41,8 +41,17 @@
                             <input type="text" name="invoice_number" class="form-control border-0 bg-light" placeholder="OPS-12345">
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label fw-semibold text-secondary">Alım Tarihi *</label>
-                            <input type="date" name="purchase_date" class="form-control border-0 bg-light" value="{{ date('Y-m-d') }}" required>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label fw-semibold text-secondary mb-0">Alım Tarihi & Saati *</label>
+                                <button type="button" id="btnSetNow" class="btn btn-link text-primary text-decoration-none p-0 small" style="font-size: 0.75rem;" title="Şu anki zamana ayarla">
+                                    <i class="ti ti-clock"></i> Şu An
+                                </button>
+                            </div>
+                            <input type="datetime-local" name="purchase_date" id="purchase_date_input" class="form-control border-0 bg-light" value="{{ now()->format('Y-m-d\TH:i') }}" required>
+                            <input type="hidden" name="is_custom_date" id="is_custom_date" value="0">
+                            <div class="form-text text-muted" style="font-size: 0.72rem;">
+                                <i class="ti ti-info-circle me-1"></i>Değiştirilmezse işlem anlık saat ve saniye ile kaydedilir.
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label fw-semibold text-secondary">Ödeme Yöntemi *</label>
@@ -166,7 +175,26 @@
         const itemsContainer = document.getElementById('itemsContainer');
         const addItemBtn = document.getElementById('addItemBtn');
         const grandTotalDisplay = document.getElementById('grandTotalDisplay');
+        const purchaseDateInput = document.getElementById('purchase_date_input');
+        const isCustomDate = document.getElementById('is_custom_date');
+        const btnSetNow = document.getElementById('btnSetNow');
         let itemIndex = 0;
+
+        if (purchaseDateInput) {
+            purchaseDateInput.addEventListener('change', () => {
+                if (isCustomDate) isCustomDate.value = "1";
+            });
+        }
+
+        if (btnSetNow) {
+            btnSetNow.addEventListener('click', () => {
+                const now = new Date();
+                const pad = (n) => String(n).padStart(2, '0');
+                const formatted = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+                if (purchaseDateInput) purchaseDateInput.value = formatted;
+                if (isCustomDate) isCustomDate.value = "0";
+            });
+        }
 
         let products = @json($products);
 

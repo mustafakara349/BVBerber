@@ -125,11 +125,13 @@ Route::middleware(['auth', 'audit'])->group(function () {
 
         // Campaigns
         Route::get('/campaigns', [App\Http\Controllers\Web\CampaignController::class, 'index'])->name('campaigns.index');
+        Route::get('/campaigns/create', [App\Http\Controllers\Web\CampaignController::class, 'create'])->name('campaigns.create');
         Route::post('/campaigns', [App\Http\Controllers\Web\CampaignController::class, 'store'])->name('campaigns.store');
         Route::put('/campaigns/{campaign}', [App\Http\Controllers\Web\CampaignController::class, 'update'])->name('campaigns.update');
         Route::patch('/campaigns/{campaign}/toggle', [App\Http\Controllers\Web\CampaignController::class, 'toggleStatus'])->name('campaigns.toggle');
         Route::delete('/campaigns/{campaign}', [App\Http\Controllers\Web\CampaignController::class, 'destroy'])->name('campaigns.destroy');
         Route::get('/campaigns/{campaign}/usages', [App\Http\Controllers\Web\CampaignController::class, 'usages'])->name('campaigns.usages');
+        Route::get('/campaigns/coupons/create', [App\Http\Controllers\Web\CampaignController::class, 'createCoupon'])->name('campaigns.coupons.create');
         Route::post('/campaigns/coupons', [App\Http\Controllers\Web\CampaignController::class, 'storeCoupon'])->name('campaigns.coupons.store');
         Route::put('/campaigns/coupons/{coupon}', [App\Http\Controllers\Web\CampaignController::class, 'updateCoupon'])->name('campaigns.coupons.update');
         Route::delete('/campaigns/coupons/{coupon}', [App\Http\Controllers\Web\CampaignController::class, 'destroyCoupon'])->name('campaigns.coupons.destroy');

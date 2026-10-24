@@ -29,7 +29,15 @@ class CampaignController extends Controller
         }
 
         if ($request->filled('status')) {
-            $campaignsQuery->where('is_active', $request->input('status') === 'active');
+            if ($request->input('status') === 'active') {
+                $campaignsQuery->active();
+            } else {
+                $campaignsQuery->where(function ($q) {
+                    $q->where('is_active', false)
+                      ->orWhereDate('start_date', '>', today())
+                      ->orWhereDate('end_date', '<', today());
+                });
+            }
         }
 
         $campaigns = $campaignsQuery->get();
@@ -66,12 +74,24 @@ class CampaignController extends Controller
 
         $stats = [
             'total_campaigns'  => Campaign::where('branch_id', $branchId)->count(),
-            'active_campaigns' => Campaign::where('branch_id', $branchId)->where('is_active', true)->count(),
+            'active_campaigns' => Campaign::where('branch_id', $branchId)->active()->count(),
             'total_coupons'    => Coupon::count(),
             'active_coupons'   => Coupon::where('expires_at', '>=', now())->count(),
         ];
 
         return view('campaigns.index', compact('campaigns', 'coupons', 'stats', 'categories', 'services', 'products', 'cafeProducts', 'users'));
+    }
+
+    public function create()
+    {
+        $branchId = session('active_branch_id', 1);
+
+        $categories = ServiceCategory::where('branch_id', $branchId)->orderBy('name')->get();
+        $services = \App\Models\Service::where('branch_id', $branchId)->orderBy('name')->get();
+        $products = \App\Models\Product::where('branch_id', $branchId)->orderBy('name')->get();
+        $cafeProducts = \App\Models\CafeProduct::where('branch_id', $branchId)->orderBy('name')->get();
+
+        return view('campaigns.create', compact('categories', 'services', 'products', 'cafeProducts'));
     }
 
     public function store(Request $request)
@@ -203,6 +223,13 @@ class CampaignController extends Controller
         return redirect()->route('campaigns.index')->with('success', 'Kampanya başarıyla silindi.');
     }
 
+    public function createCoupon()
+    {
+        $users = User::orderBy('first_name')->orderBy('last_name')->get();
+
+        return view('campaigns.coupons.create', compact('users'));
+    }
+
     public function storeCoupon(Request $request)
     {
         $validated = $request->validate([
@@ -224,7 +251,7 @@ class CampaignController extends Controller
             $coupon->users()->sync($request->user_ids);
         }
 
-        return redirect()->route('campaigns.index')->with('success', 'Kupon kodu başarıyla oluşturuldu.');
+        return redirect()->to(route('campaigns.index') . '#couponsPanel')->with('success', 'Kupon kodu başarıyla oluşturuldu.');
     }
 
     public function updateCoupon(Request $request, Coupon $coupon)
@@ -250,13 +277,13 @@ class CampaignController extends Controller
             $coupon->users()->detach();
         }
 
-        return redirect()->route('campaigns.index')->with('success', 'Kupon kodu başarıyla güncellendi.');
+        return redirect()->to(route('campaigns.index') . '#couponsPanel')->with('success', 'Kupon kodu başarıyla güncellendi.');
     }
 
     public function destroyCoupon(Coupon $coupon)
     {
         $coupon->delete();
-        return redirect()->route('campaigns.index')->with('success', 'Kupon kodu silindi.');
+        return redirect()->to(route('campaigns.index') . '#couponsPanel')->with('success', 'Kupon kodu silindi.');
     }
 
     public function usages(Request $request, Campaign $campaign)

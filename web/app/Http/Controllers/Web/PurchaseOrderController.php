@@ -58,6 +58,7 @@ class PurchaseOrderController extends Controller
             'supplier_id' => 'required|exists:suppliers,id',
             'invoice_number' => 'nullable|string|max:100',
             'purchase_date' => 'required|date',
+            'is_custom_date' => 'nullable|boolean',
             'notes' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
@@ -66,7 +67,17 @@ class PurchaseOrderController extends Controller
             'payment_method' => 'required|string|in:cash,credit_card,bank_transfer',
         ]);
 
-        DB::transaction(function () use ($validated, $branchId, $stockService) {
+        // Tarih & Saat belirleme:
+        // Kullanıcı özellikle farklı bir tarih/saat seçmediyse, kaydın oluşturulduğu anlık tam zaman (saniye dahil) kullanılır.
+        $parsedDate = \Carbon\Carbon::parse($validated['purchase_date']);
+        $isCustom = $request->boolean('is_custom_date');
+        if (!$isCustom && !$parsedDate->isToday()) {
+            $isCustom = true;
+        }
+
+        $effectiveDateTime = $isCustom ? $parsedDate : now();
+
+        DB::transaction(function () use ($validated, $effectiveDateTime, $branchId, $stockService) {
             $subtotal = 0;
             
             // Fatura Oluşturma
@@ -74,7 +85,7 @@ class PurchaseOrderController extends Controller
                 'branch_id' => $branchId,
                 'supplier_id' => $validated['supplier_id'],
                 'invoice_number' => $validated['invoice_number'],
-                'purchase_date' => $validated['purchase_date'],
+                'purchase_date' => $effectiveDateTime,
                 'notes' => $validated['notes'],
                 'created_by' => Auth::id(),
                 'subtotal' => 0, // Aşağıda hesaplanacak
@@ -132,6 +143,8 @@ class PurchaseOrderController extends Controller
             // 2. Kasa Hareketi (Transaction) Kaydı
             Transaction::create([
                 'branch_id'        => $branchId,
+                'reference_type'   => PurchaseOrder::class,
+                'reference_id'     => $order->id,
                 'created_by'       => Auth::id(),
                 'transaction_type' => TransactionType::Expense,
                 'category'         => 'Mal Alımı',
@@ -139,7 +152,7 @@ class PurchaseOrderController extends Controller
                 'currency'         => 'TRY',
                 'payment_method'   => $validated['payment_method'],
                 'description'      => 'Mal Alımı Ödemesi - ' . $invoiceText . ' (' . $supplier->name . ')',
-                'transaction_date' => $validated['purchase_date'],
+                'transaction_date' => $effectiveDateTime,
             ]);
         });
 

@@ -65,6 +65,7 @@
                             <tr class="border-bottom border-light" style="cursor:pointer;" onclick="window.location='{{ route('purchase-orders.show', $order) }}'" title="Detayı Görüntüle">
                                 <td class="ps-4 py-3">
                                     <div class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($order->purchase_date)->format('d.m.Y') }}</div>
+                                    <div class="text-secondary small">{{ \Carbon\Carbon::parse($order->purchase_date)->format('H:i') }}</div>
                                 </td>
                                 <td>
                                     @if($order->invoice_number)

@@ -18,15 +18,41 @@ class DashboardRepository implements DashboardRepositoryInterface
 {
     public function getRevenueStats(int $branchId, string $period = 'month'): array
     {
-        $base = Transaction::forBranch($branchId)->income();
-        $dailyExpense = Transaction::expense()->forBranch($branchId)->whereDate('transaction_date', today())->sum('amount');
+        $today = \Carbon\Carbon::today();
+
+        // Finansal İşlemler mantığı ile birebir uyumlu: bugüne ait gelir ve gider
+        $dailyIncome = Transaction::forBranch($branchId)
+            ->income()
+            ->whereDate('transaction_date', $today)
+            ->sum('amount');
+
+        $dailyExpense = Transaction::forBranch($branchId)
+            ->expense()
+            ->whereDate('transaction_date', $today)
+            ->sum('amount');
+
+        $weeklyIncome = Transaction::forBranch($branchId)
+            ->income()
+            ->whereBetween('transaction_date', [now()->startOfWeek(), now()->endOfWeek()])
+            ->sum('amount');
+
+        $monthlyIncome = Transaction::forBranch($branchId)
+            ->income()
+            ->whereMonth('transaction_date', now()->month)
+            ->whereYear('transaction_date', now()->year)
+            ->sum('amount');
+
+        $yearlyIncome = Transaction::forBranch($branchId)
+            ->income()
+            ->whereYear('transaction_date', now()->year)
+            ->sum('amount');
 
         return [
-            'daily' => round((clone $base)->whereDate('transaction_date', today())->sum('amount'), 2),
-            'daily_expense' => round($dailyExpense, 2),
-            'weekly' => round((clone $base)->whereBetween('transaction_date', [now()->startOfWeek(), now()->endOfWeek()])->sum('amount'), 2),
-            'monthly' => round((clone $base)->whereMonth('transaction_date', now()->month)->whereYear('transaction_date', now()->year)->sum('amount'), 2),
-            'yearly' => round((clone $base)->whereYear('transaction_date', now()->year)->sum('amount'), 2),
+            'daily' => round((float) $dailyIncome, 2),
+            'daily_expense' => round((float) $dailyExpense, 2),
+            'weekly' => round((float) $weeklyIncome, 2),
+            'monthly' => round((float) $monthlyIncome, 2),
+            'yearly' => round((float) $yearlyIncome, 2),
         ];
     }
 

@@ -77,11 +77,78 @@ class EmployeeTimeBlockController extends Controller
             $groupedBlocks->push($currentGroup);
         }
 
-        // UI'da en yakın tarihten (veya en yeni gruptan) eskiye doğru sıralı göster
-        $timeBlocks = $groupedBlocks->sortByDesc('date')->values();
+        $now = Carbon::now();
+
+        foreach ($groupedBlocks as $group) {
+            $startDate = Carbon::parse($group->date);
+            $endDate = Carbon::parse($group->end_date_for_ui);
+
+            if ($group->type === 'full_day') {
+                $startDateTime = $startDate->copy()->startOfDay();
+                $endDateTime = $endDate->copy()->endOfDay();
+            } else {
+                $startTimeStr = ($group->safe_start ?? '00:00') . ':00';
+                $endTimeStr = ($group->safe_end ?? '23:59') . ':59';
+                $startDateTime = Carbon::parse($startDate->format('Y-m-d') . ' ' . $startTimeStr);
+                $endDateTime = Carbon::parse($endDate->format('Y-m-d') . ' ' . $endTimeStr);
+            }
+
+            $group->start_datetime = $startDateTime;
+            $group->end_datetime = $endDateTime;
+
+            if ($endDateTime->lt($now)) {
+                $group->status_key = 'past';
+                $group->status_label = 'Tamamlandı';
+                $group->status_class = 'secondary';
+                $group->status_icon = 'ti-history';
+            } else {
+                $isCurrentlyActive = false;
+                $todayStr = $now->format('Y-m-d');
+                $startStr = $startDate->format('Y-m-d');
+                $endStr = $endDate->format('Y-m-d');
+
+                if ($todayStr >= $startStr && $todayStr <= $endStr) {
+                    if ($group->type === 'full_day') {
+                        $isCurrentlyActive = true;
+                    } else {
+                        $currentTimeStr = $now->format('H:i:s');
+                        if ($currentTimeStr >= $startTimeStr && $currentTimeStr <= $endTimeStr) {
+                            $isCurrentlyActive = true;
+                        }
+                    }
+                }
+
+                if ($isCurrentlyActive) {
+                    $group->status_key = 'active';
+                    $group->status_label = 'Aktif';
+                    $group->status_class = 'success';
+                    $group->status_icon = 'ti-activity';
+                } else {
+                    $group->status_key = 'upcoming';
+                    $group->status_label = 'Planlandı';
+                    $group->status_class = 'primary';
+                    $group->status_icon = 'ti-calendar-time';
+                }
+            }
+        }
+
+        $activeBlocks = $groupedBlocks->filter(function ($item) {
+            return $item->status_key !== 'past';
+        })->sortBy(function ($item) {
+            return $item->date . ' ' . ($item->safe_start ?? '00:00');
+        })->values();
+
+        $pastBlocks = $groupedBlocks->filter(function ($item) {
+            return $item->status_key === 'past';
+        })->sortByDesc(function ($item) {
+            return $item->date . ' ' . ($item->safe_start ?? '00:00');
+        })->values();
+
+        // Tüm blokları modallar ve genel referanslar için birleştir
+        $timeBlocks = $activeBlocks->concat($pastBlocks);
         $employees = \App\Models\Employee::with('user')->active()->get();
 
-        return view('employee_time_blocks.index', compact('timeBlocks', 'employees'));
+        return view('employee_time_blocks.index', compact('activeBlocks', 'pastBlocks', 'timeBlocks', 'employees'));
     }
 
     private function checkConflict($employeeId, $date, $type, $startTime = null, $endTime = null, $ignoreBlockIds = [])

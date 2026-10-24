@@ -25,8 +25,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <div class="text-secondary small fw-semibold">Alım Tarihi</div>
-                    <div class="text-dark">{{ \Carbon\Carbon::parse($purchaseOrder->purchase_date)->format('d.m.Y') }}</div>
+                    <div class="text-secondary small fw-semibold">Alım Tarihi & Saati</div>
+                    <div class="text-dark">{{ \Carbon\Carbon::parse($purchaseOrder->purchase_date)->format('d.m.Y H:i') }}</div>
                 </div>
 
                 <div class="mb-3">
